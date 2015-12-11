@@ -1,0 +1,22 @@
+################################################################################
+#
+# UNCOMMENT/COMMENT the respective lines
+#
+################################################################################
+
+# --->> SEARCH FOR BLAS/LAPACK libs in default directories <<---
+set(BLA_VENDOR "Generic")
+find_package (BLAS REQUIRED)
+# find_package (LAPACK REQUIRED)
+set (LINALG_LIBRARIES ${BLAS} ${LAPACK})
+# set (LINALG_LIBRARIES ${BLAS})
+
+# --->> AT THE ETH THE BLAS/LAPACK libs are at these (non-default) places <<---
+#set (LINALG_LIBRARIES 
+#/usr/lib64/atlas/libatlas.so /usr/lib64/atlas/liblapack.so /usr/lib64/atlas/libf77blas.so.3)
+#/usr/lib/libBLAS.dylib /usr/lib/liblapack.dylib)
+# set (LINALG_PATH $ENV{USERPROFILE}/3rd_party_lib/Linalg/Release)
+#message( "LINALG_PATH = ${LINALG_PATH}" )
+#set (LINALG_LIBS ${LINALG_PATH}/BLAS.lib ${LINALG_PATH}/LAPACK.lib)
+
+message(STATUS "Linear algebra settings from 'CMakeLists.linalg'" )
