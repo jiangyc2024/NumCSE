@@ -5,7 +5,7 @@
 
 class Figure {
   public:
-    Figure(mglGraph* gr);
+    Figure();
     void setRanges(const mglData& xd, const mglData& yd);
     void grid(const bool on = true, const char* gridType = 0, const char* gridCol = 0);
     void xlabel(const char* label, const double pos = 0);
@@ -14,21 +14,21 @@ class Figure {
     template <typename Vector> void plot(const Vector& x, const Vector& y, const char* style, const char* legend = 0);
     void ranges(const double xMin, const double xMax, const double yMin, const double yMax);
     void setlog(const bool logx = true, const bool logy = true);
-    void save(const char* file) const;
+    void save(const char* file);
     void title(const char* text);
 
   private:
-    mglGraph* gr_; // graph in which the plots will be saved
+    mglGraph gr_; // graph in which the plots will be saved
     bool axis_; // plot axis?
     bool grid_; // plot grid?
-    bool legend_; // plot legend?
-    bool ylabelActive_; // is there a y-label? necessary for layout, see figure.cpp
+    bool legend_; // plot legend
     std::pair<double, double> legendPos_; // legend position
     std::string gridType_; // grid type
     std::string gridCol_; // grid color
     double ranges_[4]; // axis ranges
     bool initRanges_; // have the ranges been set yet?
     bool autoRanges_; // auto ranges or ranges as the user set them?
+    double fontSizePT_; // font size in PT
     std::vector<mglData> xd_, yd_; // vector of plot data
     std::vector<std::string> styles_; // vector of plot styles 
 };
@@ -39,6 +39,9 @@ class Figure {
 template <typename Vector> // same syntax for Eigen::VectorXd and std::vector<T>
 void Figure::plot(const Vector& x, const Vector& y, const char* style, const char* legend)
 {
+  if (x.size() != y.size())
+    throw std::length_error("In function Figure::plot(): Vectors must have same sizes!");
+
   mglData xd(x.data(), x.size()),
           yd(y.data(), y.size());
   
@@ -48,5 +51,5 @@ void Figure::plot(const Vector& x, const Vector& y, const char* style, const cha
   styles_.push_back(style);
   
   if (legend != 0)
-    gr_->AddLegend(legend, style);
+    gr_.AddLegend(legend, style);
 }
