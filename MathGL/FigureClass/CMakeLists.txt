@@ -1,12 +1,13 @@
-# to use this Figure library 
-# 1. possibility: include the directory which contains this CMakeLists.txt (e.g. by add_subdirectory(FigureDirectory)
-# 2. possibility: include the directory containing the files figure.cpp and figure.hpp and modify your CMakeLists.txt as follows:
-#                 add_library(Figure figure.cpp)
-#                 add_executable(exec_name exec_source.cpp)
-#                 target_link_libraries(exec_name Figure)
-
 cmake_minimum_required(VERSION 2.8)
 project(FigureClass)
 
+add_definitions(-std=gnu++11)
+
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../CMake/Modules)
+find_package(Eigen3 REQUIRED)
+find_package(MathGL2 2.0.0 REQUIRED)
+include_directories(${EIGEN3_INCLUDE_DIR} ${MATHGL2_INCLUDE_DIRS})
+
 add_library(Figure figure.cpp)
-target_include_directories(Figure ${CMAKE_CURRENT_SOURCE_DIR})
+add_executable(main main.cpp)
+target_link_libraries(main Figure ${MATHGL2_LIBRARIES})
