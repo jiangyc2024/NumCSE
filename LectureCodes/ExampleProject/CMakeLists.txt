@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 project(ExampleProject)
 
-include(../CMakeLists.txt)
-get_dirs("Eigen Figure")
+include(../GetModules.cmake)
+get_modules("Eigen Figure")
 include_directories(${DIRS})
 
 add_executable(main main.cpp)
