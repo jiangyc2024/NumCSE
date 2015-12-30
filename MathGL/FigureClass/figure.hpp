@@ -7,7 +7,7 @@ class Figure {
   public:
     Figure();
     void setRanges(const mglData& xd, const mglData& yd);
-    void grid(const bool on = true, const char* gridType = 0, const char* gridCol = 0);
+    void grid(const bool on = true, const std::string gridType = "-", const std::string gridCol = "h");
     void xlabel(const char* label, const double pos = 0);
     void ylabel(const char* label, const double pos = 0);
     void legend(const double xPos = 1, const double yPos = 1);
@@ -28,7 +28,8 @@ class Figure {
     double ranges_[4]; // axis ranges
     bool initRanges_; // have the ranges been set yet?
     bool autoRanges_; // auto ranges or ranges as the user set them?
-    bool ylogScale_; // is the y Axis in logarithmic scale? needed for range margin
+    bool xlogScale_; // needed for warning in xlabel
+    bool ylogScale_; // is the y Axis in logarithmic scale? needed for range margin and warning in ylabel
     double fontSizePT_; // font size in PT
     std::vector<mglData> xd_, yd_; // vector of plot data
     std::vector<std::string> styles_; // vector of plot styles 
