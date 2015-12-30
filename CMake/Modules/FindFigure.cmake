@@ -26,3 +26,13 @@ if (FIGURE_LIBRARY)
 else()
   message("FATAL -- could not find library of Figure ( libFigure.a ). Did you try installing it with sudo make install?")
 endif()
+
+if (NOT FIGURE_INCLUDE_DIR AND FIGURE_LIBRARY)
+  set(FIGURE_NOT_FOUND "-- Found Figure library but couldn't find according header - try reinstalling!")
+elseif(FIGURE_INCLUDE_DIR AND NOT FIGURE_LIBRARY)
+  set(FIGURE_NOT_FOUND "-- Found Figure header but couldn't find according library - try reinstalling!")
+elseif (NOT FIGURE_INCLUDE_DIR AND NOT FIGURE_LIBRARY)
+  set(FIGURE_NOT_FOUND "-- Couldn't find either Figure library not header - try reinstalling!")
+endif()
+
+message("${FIGURE_NOT_FOUND}")
