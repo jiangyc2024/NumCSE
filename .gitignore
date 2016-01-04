@@ -1,10 +1,11 @@
 # CMake
-MakeCache.txt
+CMakeCache.txt
 CMakeFiles
 CMakeScripts
 Makefile
 cmake_install.cmake
 install_manifest.txt
+build
 
 # Compiled Object files
 *.slo
@@ -34,4 +35,3 @@ install_manifest.txt
 *.exe
 *.out
 *.app
-
