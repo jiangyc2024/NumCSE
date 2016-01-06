@@ -29,22 +29,25 @@ function(get_modules includes)
   string(REGEX MATCH "(mathgl)" include_mathgl "${includes_lower}")
   string(REGEX MATCH "(figure)" include_figure "${includes_lower}")
 
-
   # ---------------------------- FIGURE -------------------------------- #
   # if "figure" was in the input then find it and add the directory to DIRS and the library to LIBS
   if (include_figure)
  
-    # Figure needs the MathGL and Eigen so we will already get them in this part of the function
-    unset(include_mathgl)
-    unset(include_eigen)
-
-    add_definitions(-lmgl -std=gnu++11) # compiler definitions needed by MathGL
+    set(include_mathgl true) # figure needs mathgl
+    add_definitions(-std=gnu++11 -lmgl -lFigure) # compiler definitions
 
     # try to find Figure with FindFigure.cmake
     find_package(Figure QUIET)
-
+  
+    if(NOT FIGURE_NOT_FOUND)
+      set(DIRS ${DIRS} ${FIGURE_INCLUDE_DIR})
+      set(LIBS ${LIBS} ${FIGURE_LIBRARY})
     # case if Figure is not found by FindFigure.cmake - try to get it from MathGL/FigureClass
-    if (FIGURE_NOT_FOUND) 
+    else() 
+      # to build Figure we need MathGL and Eigen so we will already get them in this part of the function
+      unset(include_mathgl)
+      unset(include_eigen)
+
       message(STATUS "Figure GET_MODULES: Couldn't find Figure in your libraries, maybe you should consider (re-)installing it")
 
       set(FIGURE_INCLUDE_DIR ${LECTURE_CODES_DIR}/../MathGL/FigureClass) # directory which contains figure.hpp and .cpp
@@ -69,8 +72,8 @@ function(get_modules includes)
 
       # libFigure.a was not built yet, this happens when '$ make' is executed, so we need to use it like: 
       # target_link_libraries(main Figure) and *not* target_link_libraries(main libFigure.a) as we do it when Figure is installed locally
-      set(DIRS ${DIRS} ${FIGURE_INCLUDE_DIR} ${EIGEN3_INCLUDE_DIR} ${MATHGL2_INCLUDE_DIRS})
-      set(LIBS ${LIBS} Figure ${MATHGL2_LIBRARIES})
+      set(DIRS ${DIRS} ${EIGEN3_INCLUDE_DIR} ${MATHGL2_INCLUDE_DIRS} ${FIGURE_INCLUDE_DIR})
+      set(LIBS ${LIBS} ${MATHGL2_LIBRARIES} Figure)
       message(STATUS "Function GET_MODULES: Figure library marked to be built in build stage")
       message(STATUS "Function GET_MODULES: Included Eigen3, MathGL2 and Figure directories in variable DIRS")
       message(STATUS "Function GET_MODULES: Included MathGL2 library in variable LIBS")
