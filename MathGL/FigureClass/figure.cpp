@@ -21,6 +21,7 @@ Figure::Figure()
     styles_(std::vector<std::string>())
 {
   gr_.SubPlot(1,1,0,"_");
+  gr_.SetTuneTicks(true, 1.0); // put the 'x10^5' closer to the graph
   gr_.LoadFont("heros");
   gr_.SetFontSizePT(fontSizePT_);
   ranges_[0] = 1; ranges_[1] = 1.1; ranges_[2] = 1; ranges_[3] = 1.1;
