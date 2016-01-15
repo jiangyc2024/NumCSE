@@ -29,12 +29,14 @@ function(get_modules includes)
   string(REGEX MATCH "(mathgl)" include_mathgl "${includes_lower}")
   string(REGEX MATCH "(figure)" include_figure "${includes_lower}")
 
+  add_definitions(-std=gnu++11) # using gnu and not c++11 because mathgl needs the gnu standard
+
   # ---------------------------- FIGURE -------------------------------- #
   # if "figure" was in the input then find it and add the directory to DIRS and the library to LIBS
   if (include_figure)
  
     set(include_mathgl true) # figure needs mathgl
-    add_definitions(-std=gnu++11 -lmgl -lFigure) # compiler definitions
+    add_definitions(-lmgl -lFigure) # compiler definitions
 
     # try to find Figure with FindFigure.cmake
     find_package(Figure QUIET)
@@ -93,7 +95,7 @@ function(get_modules includes)
   # if "mathgl" was in the input then find it and add the directories to DIRS
   # and the libraries to LIBS
   if (include_mathgl)
-    add_definitions(-std=gnu++11 -lmgl)  # MathGL needs the GNU compiler 
+    add_definitions(-lmgl)  # MathGL needs the GNU compiler 
     find_package(MathGL2 2.0.0 REQUIRED)
     set(DIRS ${DIRS} ${MATHGL2_INCLUDE_DIRS})
     message(STATUS "Function GET_MODULES: Included MathGL2 directory in variable DIRS")
