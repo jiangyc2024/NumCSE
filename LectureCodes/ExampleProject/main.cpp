@@ -1,5 +1,5 @@
 # include <Eigen/Dense>
-# include "figure.hpp"
+# include "Figure"
 
 int main()
 {
@@ -7,8 +7,8 @@ int main()
   Eigen::VectorXd x = Eigen::VectorXd::LinSpaced(N, -5, 5);
   Eigen::VectorXd y = (1./(1 + x.array()*x.array())).matrix();
 
-  Figure fig;
-  fig.plot(x, y, "b", "1/\\(1 + x^2)^{-1}"); // Latex typesetting is supported when typing '\\' before the commands
+  mgl::Figure fig;
+  fig.plot(x, y).label("1/\\(1 + x^2)^{-1}"); // Latex typesetting is supported when typing '\\' before the commands
   fig.legend();
   fig.save("runge.eps");
 
