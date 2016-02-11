@@ -1,6 +1,8 @@
 # ================================= FindFigure.cmake =======================================
 # once finshed the following variables will be initialized:
 #   FIGURE_INCLUDE_DIR : directory which contains all Figure files
+#   FIGURE_FOUND : true, if all parts of the library have been found. Otherwise false.
+#   FIGURE_FILE_LIST : list of all needed files 
 # ==========================================================================================
 #   Typical usage:    find_package( Figure REQUIRED)
 #                     include_directories( ${FIGURE_INCLUDE_DIR} )
@@ -10,6 +12,16 @@
 if ( DEBUG )
   message( STATUS "Running FindFigure.cmake with DEBUG option .." )
 endif()
+
+# setting variable FIGURE_FILE_LIST
+set( FIGURE_FILE_LIST figure.hpp
+                      figure.cpp
+                      Figure
+                      FigureConfig.hpp
+                      MglLabel.hpp
+                      MglPlot.hpp
+                      MglStyle.hpp
+                      )
 
 # get paths to figure files
 set( FIGURE_PATH_SUFFIX figure )
@@ -38,6 +50,7 @@ endif()
 # check if the files are all in the correct place
 set( PATHS_ARE_VALID true )
 foreach( FILE_PATH ${FIGURE_PATHS} )
+
   if( NOT ${FILE_PATH} STREQUAL ${FIGURE} ) 
     set( PATHS_ARE_VALID false )
 
@@ -46,18 +59,24 @@ foreach( FILE_PATH ${FIGURE_PATHS} )
     endif()
   
   endif()
+
 endforeach()
 
 # if all filepaths are valid set FIGURE_INCLUDE_DIR, otherwise throw error/warning
 if( PATHS_ARE_VALID )
+  
   message( STATUS "Found Figure in ${FIGURE}" )
+  set( FIGURE_FOUND true )
   set( FIGURE_INCLUDE_DIR ${FIGURE} )
+
 else()
+  
+  set( FIGURE_FOUND false )
   if( Figure_REQUIRED )
-    message(FATAL "Couldn't find all necessary files for Figure, maybe try (re-)installing with administrator rights?")
-    message("   Run cmake with the '-DDEBUG=1' option for more information on which files are missing.")
+    message( FATAL_ERROR "Couldn't find all necessary files for Figure, maybe try (re-)installing with administrator rights?" )
+    message( "   Run cmake with the '-DDEBUG=1' option for more information on which files are missing." )
   else()
-    message(STATUS "Couldn't find all necessary files for Figure, maybe try (re-)installing with administrator rights?")
-    message("   Run cmake with the '-DDEBUG=1' option for more information on which files are missing.")
+    message( STATUS "FindFigure.cmake couldn't find all necessary files for Figure. Not stopping as Figure is not marked REQUIRED" )
   endif()
+
 endif()
