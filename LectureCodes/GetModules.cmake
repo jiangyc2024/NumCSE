@@ -35,52 +35,32 @@ function(get_modules includes)
   # if "figure" was in the input then find it and add the directory to DIRS and the library to LIBS
   if (include_figure)
  
-    set(include_mathgl true) # figure needs mathgl
-    add_definitions(-lmgl -lFigure) # compiler definitions
+    set(include_mathgl true) # Figure needs MathGL
+    add_definitions(-lmgl) # compiler definitions
 
     # try to find Figure with FindFigure.cmake
     find_package(Figure QUIET)
-  
-    if(NOT FIGURE_NOT_FOUND)
+    
+    if(FIGURE_FOUND)
       set(DIRS ${DIRS} ${FIGURE_INCLUDE_DIR})
-      set(LIBS ${LIBS} ${FIGURE_LIBRARY})
     # case if Figure is not found by FindFigure.cmake - try to get it from MathGL/FigureClass
     else() 
-      # to build Figure we need MathGL and Eigen so we will already get them in this part of the function
-      unset(include_mathgl)
-      unset(include_eigen)
-
-      message(STATUS "Figure GET_MODULES: Couldn't find Figure in your libraries, maybe you should consider (re-)installing it")
-
-      set(FIGURE_INCLUDE_DIR ${LECTURE_CODES_DIR}/../MathGL/FigureClass) # directory which contains figure.hpp and .cpp
+      set(FIGURE_INCLUDE_DIR ${LECTURE_CODES_DIR}/../MathGL/FigureClass/src) # directory which contains figure.hpp and .cpp
       message(STATUS "Trying to get it from ${FIGURE_INCLUDE_DIR} ...")
 
-      # check if necessary files (figure.hpp and figure.cpp) exist
-      if (EXISTS ${FIGURE_INCLUDE_DIR}/figure.cpp AND EXISTS ${FIGURE_INCLUDE_DIR}/figure.hpp)
-        message(STATUS "Found necessary files to build the Figure library!")
-      else()
-        message(FATAL_ERROR "Could not find necessary files (figure.hpp, figure.cpp) to build Figure library!")
-      endif()
+      # check if necessary files exist in MathGL/FigureClass
+      foreach(FIGURE_FILE ${FIGURE_FILE_LIST})
+        if (NOT EXISTS ${FIGURE_INCLUDE_DIR}/${FIGURE_FILE})
+          message(FATAL_ERROR "Could not find necessary files to build Figure library! Try cloning the git repo again or contact someone.")
+        endif()
+      endforeach()
+      message(STATUS "Found necessary Figure files: ${FIGURE_INCLUDE_DIR}")
+      set(DIRS ${DIRS} ${FIGURE_INCLUDE_DIR})
 
-      # to build Figure we need Eigen and MathGL so find the packages and libraries and include them
-      find_package(Eigen3 REQUIRED)
-      include_directories(${EIGEN3_INCLUDE_DIR})
-
-      find_package(MathGL2 2.0.0 REQUIRED)
-      include_directories(${MATHGL2_INCLUDE_DIRS})
-
-      add_library(Figure STATIC ${FIGURE_INCLUDE_DIR}/figure.cpp) 
-      target_link_libraries(Figure ${MATHGL2_LIBRARIES})
-
-      # libFigure.a was not built yet, this happens when '$ make' is executed, so we need to use it like: 
-      # target_link_libraries(main Figure) and *not* target_link_libraries(main libFigure.a) as we do it when Figure is installed locally
-      set(DIRS ${DIRS} ${EIGEN3_INCLUDE_DIR} ${MATHGL2_INCLUDE_DIRS} ${FIGURE_INCLUDE_DIR})
-      set(LIBS ${LIBS} ${MATHGL2_LIBRARIES} Figure)
-      message(STATUS "Function GET_MODULES: Figure library marked to be built in build stage")
-      message(STATUS "Function GET_MODULES: Included Eigen3, MathGL2 and Figure directories in variable DIRS")
-      message(STATUS "Function GET_MODULES: Included MathGL2 library in variable LIBS")
     endif()
-
+    
+    # if we got here either the FindFigure.cmake worked or we found the files in MathGL/FigureClass
+    message(STATUS "Function GET_MODULES: Included Figure directories in variable DIRS")
   endif()
 
   # ---------------------------- EIGEN --------------------------------- #
