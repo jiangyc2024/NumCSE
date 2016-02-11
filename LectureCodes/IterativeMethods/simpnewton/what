@@ -1,0 +1,1 @@
+Efficient implementation of simplified Newton method (frozen Jacobian and only one LU-Decomposition)
