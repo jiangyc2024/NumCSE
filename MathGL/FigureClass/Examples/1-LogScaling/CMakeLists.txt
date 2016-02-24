@@ -1,5 +1,5 @@
 cmake_minimum_required( VERSION 2.8 ) 
-project( Examples/5-CMake )
+project( Examples/1-LogScaling )
 
 add_definitions( -std=gnu++11 )
 
@@ -11,5 +11,5 @@ find_package( Figure REQUIRED )
 
 include_directories( ${EIGEN_INCLUDE_DIR} ${MATHGL2_INCLUDE_DIRS} ${FIGURE_INCLUDE_DIR} )
 add_executable( main main.cpp )
-target_link_libraries( main ${MATHGL2_LIBRARIES} )
+target_link_libraries( main ${MATHGL2_LIBRARIES} ${FIGURE_LIBRARY} )
 

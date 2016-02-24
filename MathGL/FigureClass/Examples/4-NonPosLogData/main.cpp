@@ -1,6 +1,6 @@
 # include <iostream>
 # include <Eigen/Dense>
-# include <Figure>
+# include <figure.hpp>
 
 using namespace Eigen;
 

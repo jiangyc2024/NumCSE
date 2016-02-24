@@ -34,7 +34,7 @@ function(get_modules includes)
   # ---------------------------- FIGURE -------------------------------- #
   # if "figure" was in the input then find it and add the directory to DIRS and the library to LIBS
   if (include_figure)
- 
+  
     set(include_mathgl true) # Figure needs MathGL
     add_definitions(-lmgl) # compiler definitions
 
@@ -43,9 +43,12 @@ function(get_modules includes)
     
     if(FIGURE_FOUND)
       set(DIRS ${DIRS} ${FIGURE_INCLUDE_DIR})
+      message(STATUS "Function GET_MODULES: Included Figure directory in variable DIRS")
+      set(LIBS ${LIBS} ${FIGURE_LIBRARY})
+      message(STATUS "Function GET_MODULES: Included Figure library in variable LIBS")
     # case if Figure is not found by FindFigure.cmake - try to get it from MathGL/FigureClass
     else() 
-      set(FIGURE_INCLUDE_DIR ${LECTURE_CODES_DIR}/../MathGL/FigureClass/src) # directory which contains figure.hpp and .cpp
+      set(FIGURE_INCLUDE_DIR ${LECTURE_CODES_DIR}/../MathGL/FigureClass/src) # directory which should contains the source files
       message(STATUS "Trying to get it from ${FIGURE_INCLUDE_DIR} ...")
 
       # check if necessary files exist in MathGL/FigureClass
@@ -55,12 +58,27 @@ function(get_modules includes)
         endif()
       endforeach()
       message(STATUS "Found necessary Figure files: ${FIGURE_INCLUDE_DIR}")
-      set(DIRS ${DIRS} ${FIGURE_INCLUDE_DIR})
+
+      # mark Figure library to be built in 'make' stage: we need Eigen and MathGL so fnd the packages and libraries and include them
+      unset(inlude_eigen) # we're already getting those packages here, so we don't need to do it again later
+      unset(include_mathgl)
+      find_package(Eigen3 REQUIRED)
+      find_package(MathGL2 2.0.0 REQUIRED)
+      include_directories(${EIGEN3_INCLUDE_DIR} ${MATHGL2_INCLUDE_DIRS})
+
+      add_library(Figure STATIC ${FIGURE_INCLUDE_DIR}/figure.cpp)
+      target_link_libraries(Figure ${MATHGL2_LIBRARIES})
+
+      # as libFigure.a was not built yet (this happens when '$ make' is executed) we need to call
+      # target_link_libraries(main Figure) and *not* target_link_libraries(main libFigure.a)
+      set(DIRS ${DIRS} ${EIGEN3_INCLUDE_DIR} ${MATHGL2_INCLUDE_DIRS} ${FIGURE_INCLUDE_DIR})
+      set(LIBS ${LIBS} ${MATHGL2_LIBRARIES} Figure)
+      message(STATUS "Function GET_MODULES: Included Eigen3, MathGL2 and Figure directories in variable DIRS")
+      message(STATUS "Function GET_MODULES: Included MathGL2 library in variable LIBS")
+      message(STATUS "Function GET_MODULES: Figure library marked to be built in build stage")
 
     endif()
     
-    # if we got here either the FindFigure.cmake worked or we found the files in MathGL/FigureClass
-    message(STATUS "Function GET_MODULES: Included Figure directories in variable DIRS")
   endif()
 
   # ---------------------------- EIGEN --------------------------------- #
