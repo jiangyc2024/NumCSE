@@ -7,5 +7,5 @@ if (fa > 0), v=-1; else v = 1; end
 x = 0.5*(b+a);
 while((b-a > tol) && ((a<x) & (x<b)))
   if (v*F(x)>0), b=x; else a=x; end;
-  x = 0.5*(a+b);
+  x = 0.5*(a+b)
 end  
