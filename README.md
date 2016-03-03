@@ -33,6 +33,23 @@ for the name of the directory of your code, as the directory names
 are chosen after the Latex label of the code. <br>
 Note: The code environment that's being used is called <i>samcode</i>.
 
+### Compiling the <code>.tex</code> files
+All <code>.tex</code> files are included in <code>NCSENEW.tex</code>.
+So if you changed something in e.g. <code>NCSENEW_Ch_Evp.tex</code> you 
+can simply compile the whole script to see the changes(*):
+<pre><code>$ latex -interaction=scrollmode -shell-escape NCSENEW.tex</code></pre>
+You will be prompted for the 'slidemode', explanations of the modes are given
+on the screen just above the question. <br>
+In the output <code>NCSENEW.dvi</code> the formatting doesn't work very well
+so you have to convert it to a <code>pdf</code> version with:
+<pre><code>$ dvipdf NCSENEW.dvi NCSENEW.pdf</code></pre> 
+
+<h6>(*) you can also compile only your chapter by choosing slidemode 4 and
+uncomment the name of the chapter in <code>NCSENEW.tex</code> in line 100
+and following and comment the other chapters.
+However try to compile the whole script when your changes are working on the
+small scale to make sure everything still works as it should.</h6>
+
 # How to use
 In the LectureCodes you can find a folder for each code from the script. <br>
 There you can find different versions of the same code:
