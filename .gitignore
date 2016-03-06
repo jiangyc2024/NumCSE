@@ -6,6 +6,7 @@ Makefile
 cmake_install.cmake
 install_manifest.txt
 build
+third_party
 
 # Compiled Object files
 *.slo
@@ -42,3 +43,8 @@ build
 *.toc
 *.log
 *.out
+
+# temporary files
+*~
+*.swp
+*.swo
