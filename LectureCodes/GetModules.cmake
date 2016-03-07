@@ -24,7 +24,7 @@ include(ExternalProject)
 message(STATUS "Current module path: ${CMAKE_MODULE_PATH}")
 
 ## include flags
-include(${LECTURE_CODES_DIR}/../CMake/cxx_flags/CMakeLists.txt)
+# include(${LECTURE_CODES_DIR}/../CMake/cxx_flags/CMakeLists.txt)
 
 function(link_modules includes)
 
@@ -79,6 +79,7 @@ function(get_modules includes)
 
    
       add_library(Figure STATIC ${FIGURE_INCLUDE_DIR}/figure.cpp)
+      
       add_dependencies(Figure Eigen)
       add_dependencies(Figure MathGL) 
 

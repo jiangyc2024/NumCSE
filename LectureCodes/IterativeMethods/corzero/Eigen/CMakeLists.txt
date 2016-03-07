@@ -3,6 +3,7 @@ project(corzero)
 
 include(../../../GetModules.cmake)
 get_modules("Figure")
+
 include_directories(${DIRS})
 
 add_executable(main main.cpp)
