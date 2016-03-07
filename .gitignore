@@ -33,6 +33,7 @@ third_party
 *.lib
 
 # Executables
+main
 *.exe
 *.out
 *.app
