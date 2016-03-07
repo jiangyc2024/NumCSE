@@ -97,7 +97,7 @@ function(get_modules includes)
   if (include_eigen)
     find_package(Eigen3)
 
-    if (NOT DEFINED ${EIGEN3_FOUND})
+    if (NOT EIGEN3_FOUND)
 
 	#  download if not on the local system
 	message("-- Download Eigen3 to ${LIBS_PATH}/Eigen")
@@ -126,7 +126,7 @@ function(get_modules includes)
     add_definitions(-lmgl)  # MathGL needs the GNU compiler 
     find_package(MathGL2 2.0.0)
 
-    if (NOT DEFINED ${MATHGL2_FOUND})
+    if (NOT MATHGL2_FOUND)
 
 	#  download if not on the local system
 	message("-- Download MathGl to ${LIBS_PATH}/mathgl_install")
