@@ -17,7 +17,6 @@ if strcmp(mode,'Gauss')
   end
 else
   p = (N+1:-1:1);
-  p
   w = (b.^p - a.^p)./p;
   w
   sum(w)
@@ -25,6 +24,7 @@ else
     if strcmp(mode,'Chebychev')
       % Chebychev nodes on \Blue{$[a,b]$}, see \eqref{eq:CHEBNODES}
       x = 0.5*(b-a)*cos((2*(0:deg)+1)/(2*deg+2)*pi)+0.5*(a+b);
+      x
     else
       x = (a:(b-a)/deg:b);
       x

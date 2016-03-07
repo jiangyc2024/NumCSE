@@ -48,9 +48,11 @@ std::vector<double> numquad(Function& F, const double& a, const double& b, const
       for (int j = 0; j <= n; ++j) {
         x(j) =  a + (b - a)/2*( std::cos( (2.*j + 1)/(2.*n + 2)*M_PI ) + 1 );
       }
+      std::cout << "x: " << x.transpose() << "\n";
     }
     else { // choose equidistant nodes on [a, b]
       x = Eigen::VectorXd::LinSpaced(n + 1, a, b);
+      std::cout << "x: " << x.transpose() << "\n";
     }
 
     // evaluate function at nodes
@@ -61,10 +63,11 @@ std::vector<double> numquad(Function& F, const double& a, const double& b, const
 
     // get monom basis coefficients using polyfit
     Eigen::VectorXd coeffs = polyfit(x, y, n);
+    std::cout << "c: " << coeffs.transpose() << "\n";
 
     // compute integral
     std::cout << n + 1 << " : " << coeffs.dot(w.tail(n + 1)) << "\n";
-    res.push_back( y.dot(w.tail(n + 1)) );
+    res.push_back( coeffs.dot(w.tail(n + 1)) );
   }
   return res;
 }
