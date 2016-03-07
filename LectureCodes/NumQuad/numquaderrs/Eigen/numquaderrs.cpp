@@ -24,37 +24,42 @@ void errs () {
                       err_gauss_f(N), err_gauss_g(N);
 
   for (unsigned i = 0; i < N; ++i) {
-    err_equi_f(i) = std::abs(equi_f(i) - I_ex_f);
-    err_cheb_f(i) = std::abs(cheb_f(i) - I_ex_f);
-    err_gauss_f(i) = std::abs(gauss_f(i) - I_ex_f);
-    err_equi_g(i) = std::abs(equi_g(i) - I_ex_g);
-    err_cheb_g(i) = std::abs(cheb_g(i) - I_ex_g);
-    err_gauss_g(i) = std::abs(gauss_g(i) - I_ex_g);
+    err_equi_f[i] = std::abs(equi_f[i] - I_ex_f);
+    err_cheb_f[i] = std::abs(cheb_f[i] - I_ex_f);
+    err_gauss_f[i] = std::abs(gauss_f[i] - I_ex_f);
+    err_equi_g[i] = std::abs(equi_g[i] - I_ex_g);
+    std::cout << "equi: " << equi_g[i] << "\n";
+    std::cout << "err equi: " << err_equi_g[i] << "\n";
+    err_cheb_g[i] = std::abs(cheb_g[i] - I_ex_g);
+    err_gauss_g[i] = std::abs(gauss_g[i] - I_ex_g);
+    std::cout << "err gauss: " << err_gauss_g[i] << "\n";
   }
 
   // convergence plot for f
   mgl::Figure fig_f;
-  fig_f.title("\\frac{1}{1 + (5t)^2");
+  fig_f.title("f(x) = \\frac{1}{1 + \\ (5t)^2}");
   fig_f.setlog(true, true);
-  fig_f.plot(err_equi_f).label("Equidistant");
-  fig_f.plot(err_cheb_f).label("Chebychev");
-  fig_f.plot(err_gauss_f).label("Gauss");
+  fig_f.plot(err_equi_f, "+b").label("Equidistant");
+  fig_f.plot(err_cheb_f, "+r").label("Chebychev");
+  fig_f.plot(err_gauss_f, "+g").label("Gauss");
+  fig_f.legend();
   fig_f.save("numquaderr1");
 
 
   // convergence plot for g
   mgl::Figure fig_g;
-  fig_g.title("\\sqrt{x}");
+  fig_g.title("f(x) = \\sqrt{x}");
   fig_g.setlog(true, true);
-  fig_g.plot(err_equi_g).label("Equidistant");
-  fig_g.plot(err_cheb_g).label("Chebychev");
-  fig_g.plot(err_gauss_g).label("Gauss");
+  fig_g.plot(err_equi_g, "+b").label("Equidistant");
+  fig_g.plot(err_cheb_g, "+r").label("Chebychev");
+  fig_g.plot(err_gauss_g, "+g").label("Gauss");
+  fig_g.legend();
   fig_g.save("numquaderr2");
 
   return;
 }
 
 int main () {
-  cvg();
+  errs();
   return 0;
 }
