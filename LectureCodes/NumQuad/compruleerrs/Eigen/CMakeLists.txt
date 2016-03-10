@@ -5,5 +5,5 @@ include(../../../GetModules.cmake)
 get_modules("Eigen Figure")
 
 include_directories(${DIRS})
-add_executable(main compruleerrs.cpp)
+add_executable(main compquaderrs.cpp)
 target_link_libraries(main ${LIBS})
