@@ -13,7 +13,23 @@ project(GetModules)
 ## set path to the Find<LIB>.cmake files ##
 set(LECTURE_CODES_DIR ${CMAKE_CURRENT_LIST_DIR}) # paths to Figure will be relative to this path
 set(CMAKE_MODULE_PATH ${LECTURE_CODES_DIR}/../CMake/Modules)
+set(LIBS_PATH ${LECTURE_CODES_DIR}/../third_party)
+
+# create libs folder
+file(MAKE_DIRECTORY ${LIBS_PATH})
+
+# external lib module
+include(ExternalProject)
+
 message(STATUS "Current module path: ${CMAKE_MODULE_PATH}")
+
+## include flags
+# include(${LECTURE_CODES_DIR}/../CMake/cxx_flags/CMakeLists.txt)
+
+function(link_modules includes)
+
+
+endfunction(link_modules)
 
 ## to find Eigen, MathGL and Figure: ##
 # PRE: valid variable 
@@ -36,6 +52,8 @@ function(get_modules includes)
   if (include_figure)
   
     set(include_mathgl true) # Figure needs MathGL
+    set(include_eigen true) # Figure needs Eigen
+
     add_definitions(-lmgl) # compiler definitions
 
     # try to find Figure with FindFigure.cmake
@@ -59,23 +77,16 @@ function(get_modules includes)
       endforeach()
       message(STATUS "Found necessary Figure files: ${FIGURE_INCLUDE_DIR}")
 
-      # mark Figure library to be built in 'make' stage: we need Eigen and MathGL so fnd the packages and libraries and include them
-      unset(inlude_eigen) # we're already getting those packages here, so we don't need to do it again later
-      unset(include_mathgl)
-      find_package(Eigen3 REQUIRED)
-      find_package(MathGL2 2.0.0 REQUIRED)
-      include_directories(${EIGEN3_INCLUDE_DIR} ${MATHGL2_INCLUDE_DIRS})
-
+   
       add_library(Figure STATIC ${FIGURE_INCLUDE_DIR}/figure.cpp)
-      target_link_libraries(Figure ${MATHGL2_LIBRARIES})
+      
+      add_dependencies(Figure Eigen)
+      add_dependencies(Figure MathGL) 
 
       # as libFigure.a was not built yet (this happens when '$ make' is executed) we need to call
       # target_link_libraries(main Figure) and *not* target_link_libraries(main libFigure.a)
-      set(DIRS ${DIRS} ${EIGEN3_INCLUDE_DIR} ${MATHGL2_INCLUDE_DIRS} ${FIGURE_INCLUDE_DIR})
-      set(LIBS ${LIBS} ${MATHGL2_LIBRARIES} Figure)
-      message(STATUS "Function GET_MODULES: Included Eigen3, MathGL2 and Figure directories in variable DIRS")
-      message(STATUS "Function GET_MODULES: Included MathGL2 library in variable LIBS")
-      message(STATUS "Function GET_MODULES: Figure library marked to be built in build stage")
+      set(DIRS ${DIRS} ${FIGURE_INCLUDE_DIR})
+      set(LIBS ${LIBS} Figure)
 
     endif()
     
@@ -84,7 +95,26 @@ function(get_modules includes)
   # ---------------------------- EIGEN --------------------------------- #
   # if "eigen" was in the input then find it and add the directory to DIRS
   if (include_eigen)
-    find_package(Eigen3 REQUIRED)
+    find_package(Eigen3)
+
+    if (NOT EIGEN3_FOUND)
+
+	#  download if not on the local system
+	message("-- Download Eigen3 to ${LIBS_PATH}/Eigen")
+	ExternalProject_Add(
+	    Eigen
+	    URL http://bitbucket.org/eigen/eigen/get/3.2.7.zip
+ 	    URL_MD5 724e02b1b80c4b1c3b455384e8a96e90 #prevents re-downloading
+	    SOURCE_DIR ${LIBS_PATH}/Eigen
+	    DOWNLOAD_DIR ${LIBS_PATH}/temp
+	    CONFIGURE_COMMAND ""
+	    BUILD_COMMAND ""
+	    INSTALL_COMMAND "")
+	set(EIGEN3_INCLUDE_DIR ${LIBS_PATH}/Eigen)
+
+    endif()
+
+
     set(DIRS ${DIRS} ${EIGEN3_INCLUDE_DIR})
     message(STATUS "Function GET_MODULES: Included Eigen3 directory in variable DIRS")
   endif()
@@ -94,11 +124,32 @@ function(get_modules includes)
   # and the libraries to LIBS
   if (include_mathgl)
     add_definitions(-lmgl)  # MathGL needs the GNU compiler 
-    find_package(MathGL2 2.0.0 REQUIRED)
+    find_package(MathGL2 2.0.0)
+
+    if (NOT MATHGL2_FOUND)
+
+	#  download if not on the local system
+	message("-- Download MathGl to ${LIBS_PATH}/mathgl_install")
+	ExternalProject_Add(
+	    MathGL
+	    URL http://downloads.sourceforge.net/mathgl/mathgl-2.3.3.tar.gz
+	    URL_MD5  c37d6f42d4897675bf89fae635aa6868 #prevents re-downloading
+	    SOURCE_DIR ${LIBS_PATH}/mathgl_source
+	    BINARY_DIR ${LIBS_PATH}/mathgl_binary
+	    CMAKE_ARGS -DCMAKE_CXX_STANDARD=11 -Denable-openmp=OFF -DMGL_HAVE_TYPEOF=0 -DMGL_HAVE_C99_COMPLEX=0 -DMGL_LIB_INSTALL_DIR=${LIBS_PATH}/mathgl_install/lib/ -DMGL_CGI_PATH=${LIBS_PATH}/mathgl_install/share/mathgl -DCMAKE_INSTALL_PREFIX=${LIBS_PATH}/mathgl_install
+	    INSTALL_DIR ${LIBS_PATH}/mathgl_install
+	    DOWNLOAD_DIR ${LIBS_PATH}/temp
+	    )
+	set(MATHGL2_INCLUDE_DIRS ${LIBS_PATH}/mathgl_install/include)
+	set(MATHGL2_LIBRARIES "mgl")
+    endif()
+
     set(DIRS ${DIRS} ${MATHGL2_INCLUDE_DIRS})
     message(STATUS "Function GET_MODULES: Included MathGL2 directory in variable DIRS")
     set(LIBS ${LIBS} ${MATHGL2_LIBRARIES})
     message(STATUS "Function GET_MODULES: Included MathGL2 library in variable LIBS")
+
+ 
   endif()
 
   # make variables DIRS and LIBS available for files which include this CMakeLists
@@ -106,3 +157,4 @@ function(get_modules includes)
   set(LIBS ${LIBS} PARENT_SCOPE)
 
 endfunction(get_modules)
+
