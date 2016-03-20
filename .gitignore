@@ -45,6 +45,9 @@ main
 *.log
 *.out
 
+# Python
+*.pyc
+
 # temporary files
 *~
 *.swp
