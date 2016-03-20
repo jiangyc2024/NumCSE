@@ -1,7 +1,3 @@
-#include <iostream>
-#include <Eigen/Dense>
-using namespace std;
-using namespace Eigen;
 template<typename MatType>
 void blockAccess(Eigen::MatrixBase<MatType> &M)
 {
