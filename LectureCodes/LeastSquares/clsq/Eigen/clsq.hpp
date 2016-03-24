@@ -1,7 +1,8 @@
+// Solves constrained linear least squares problem \eqref{clsq} with \texttt{dim} passing \Blue{$d$}
+
 #include <Eigen/Dense>
 #include <iostream>
 
-// Solves constrained linear least squares problem \eqref{clsq} with \texttt{dim} passing \Blue{$d$}
 template<typename VecType, typename MatType, typename Index, typename Scalar>
 int clsq(const Eigen::MatrixBase<MatType> &A, const Index dim, Scalar &c, VecType &n)
 {
