@@ -62,6 +62,8 @@ void hermintp1(Function& f, const VectorXd& t) {
   fig.plot(t_sl_0, y_sl_0, "k");
   fig.plot(t_sl_n, y_sl_n, "k");
 
+  fig.addlabel("Averaged slopes", "k");
+
   // save figure
   fig.save("hermintp1");
 }
