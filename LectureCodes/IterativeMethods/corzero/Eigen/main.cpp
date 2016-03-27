@@ -10,5 +10,11 @@ int main()
 	
 	corzero(0.4, rates, err);
 
+	Eigen::VectorXd x = Eigen::VectorXd::LinSpaced(err.size(), 0, err.size()-1);
+
+	std::cout << rates << std::endl;
+	std::cout << err << std::endl;
+	std::cout << x << std::endl;
+
 	return 0;
 }
