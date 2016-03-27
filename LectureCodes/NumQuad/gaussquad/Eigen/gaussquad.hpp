@@ -23,5 +23,5 @@ void gaussquad (const unsigned& n, QuadRule& qr)
   Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eig(M);
 
   qr.nodes = eig.eigenvalues();
-  qr.weights = 2*eig.eigenvectors().topRows<1>().pow(2);
+  qr.weights = 2*eig.eigenvectors().topRows<1>().array().pow(2);
 }
