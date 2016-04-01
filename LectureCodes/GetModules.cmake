@@ -133,7 +133,7 @@ function(get_modules includes)
 	ExternalProject_Add(
 	    MathGL
 	    URL http://downloads.sourceforge.net/mathgl/mathgl-2.3.3.tar.gz
-	    URL_MD5  c37d6f42d4897675bf89fae635aa6868 #prevents re-downloading
+	    URL_MD5 c37d6f42d4897675bf89fae635aa6868  #prevents re-downloading
 	    SOURCE_DIR ${LIBS_PATH}/mathgl_source
 	    BINARY_DIR ${LIBS_PATH}/mathgl_binary
 	    CMAKE_ARGS -DCMAKE_CXX_STANDARD=11 -Denable-openmp=OFF -DMGL_HAVE_TYPEOF=0 -DMGL_HAVE_C99_COMPLEX=0 -DMGL_LIB_INSTALL_DIR=${LIBS_PATH}/mathgl_install/lib/ -DMGL_CGI_PATH=${LIBS_PATH}/mathgl_install/share/mathgl -DCMAKE_INSTALL_PREFIX=${LIBS_PATH}/mathgl_install
