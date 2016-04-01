@@ -9,5 +9,9 @@ void gsroundoff(MatrixXd& A){
 	// Eigens's internal Gram-Schmidt orthogonalization by \cor{QR-decomposition}
 	HouseholderQR<MatrixXd> qr(A.rows(),A.cols());
 	qr.compute(A); MatrixXd Q1 = qr.householderQ();
-	std::cout << "I1 = " << std::endl << Q1*Q1.transpose() << std::endl; // Is identity matrix
+	// Test orthonormality
+	std::cout << "I1 = " << std::endl << Q1*Q1.transpose() << std::endl;
+	// Check wheter we get the expected result
+	MatrixXd R1 = qr.matrixQR().triangularView<Upper>();
+	std::cout << std::scientific << "D = " << std::endl << A - Q1*R1 << std::endl;
 }
