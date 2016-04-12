@@ -19,7 +19,7 @@ void intpolyval(const VectorXd& t, const VectorXd& y, const VectorXd& x, VectorX
     lambda(k) = 1./( (t(k)*VectorXd::Ones(k) - t.head(k)).prod() * 
                      (t(k)*VectorXd::Ones(n - k - 1) - t.tail(n - k - 1)).prod() );
   }
-  // Compute quotient of weighted sums  of \Blue{$\frac{\lambda_i}{t - t_i}$}, effort \Blue{O(n)}
+  // Compute quotient of weighted sums  of \Blue{$\frac{\lambda_i}{t - t_i}$}, effort \Blue{$O(n)$}
   for (unsigned i = 0; i < N; ++i) {
     VectorXd z = (x(i)*VectorXd::Ones(n) - t);
 
