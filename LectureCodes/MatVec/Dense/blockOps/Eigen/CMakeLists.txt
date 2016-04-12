@@ -1,5 +1,5 @@
-project(blockOps)
 cmake_minimum_required(VERSION 2.8)
+project(blockOps)
 
 include(../../../../GetModules.cmake)
 get_modules("Eigen")
