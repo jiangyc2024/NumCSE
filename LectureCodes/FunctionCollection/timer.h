@@ -4,9 +4,23 @@
 # include <chrono>
 # include <vector>
 
-/* USAGE: Timer t;
- *        t.start(); ... thing to measure ...; t.end();
- *        double duration = t.duration();                */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * USAGE: Timer t;                                           *
+ *        t.start();                                         *
+ *        for (bla) { ... stuff happening ...; t.lap(); }    *
+ *        double min = t.min(),                              *
+ *               mean = t.mean(),                            *
+ *               total_duration = t.duration();              *
+ *                                                           *
+ *        OR                                                 *
+ *                                                           *
+ *        Timer t;                                           *
+ *        t.start();                                         *
+ *        ...  stuff happening ...                           *
+ *        t.stop();                                          *  
+ *                                                           *
+ *        NOTE: stop() and lap() are equivalent!             *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 class Timer{
   typedef std::chrono::nanoseconds prec;
