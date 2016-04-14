@@ -9,8 +9,8 @@ include_directories(${DIRS}
   ${LOCDIR}/../../barycentricformula/Eigen/ # intpolval
   ${LOCDIR}/../../intpolyval_lag/Eigen/ # intpolval_lag
   ${LOCDIR}/../../ipoleval/Eigen/ # ipoleval
-  #  ${LOCDIR}/../../../FunctionCollection/ # timer
+  ${LOCDIR}/../../../FunctionCollection/ # timer
    )
-add_definitions(-O0)
+add_definitions(-O3)
 add_executable(main polytiming.cpp)
 target_link_libraries(main ${LIBS} Timer)
