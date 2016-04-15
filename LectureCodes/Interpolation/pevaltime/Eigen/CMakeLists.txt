@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.8)
 
 set(LOCDIR ${CMAKE_CURRENT_SOURCE_DIR})
 include(../../../GetModules.cmake)
-get_modules("Eigen Figure")
+get_modules("Eigen Figure MathGL")
 include_directories(${DIRS} 
   ${LOCDIR}/../../AitkenNeville/Eigen/ # ANipoleval
   ${LOCDIR}/../../barycentricformula/Eigen/ # intpolval
@@ -13,4 +13,4 @@ include_directories(${DIRS}
    )
 add_definitions(-O3)
 add_executable(main polytiming.cpp)
-target_link_libraries(main ${LIBS} Timer)
+target_link_libraries(main ${LIBS})
