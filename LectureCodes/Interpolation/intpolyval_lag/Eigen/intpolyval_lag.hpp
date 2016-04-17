@@ -1,8 +1,7 @@
 # include <Eigen/Dense>
-# include "../../lagrangepoly/Eigen/lagrangepoly.hpp"
+# include "lagrangepoly.hpp"
 
 using Eigen::VectorXd;
-
 /* Evaluation of the interpolation polynomials with Lagrange polynomials
  * IN:  t = nodes
  *      y = values in t
