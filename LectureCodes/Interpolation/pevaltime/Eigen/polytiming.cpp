@@ -20,7 +20,6 @@ int main() {
   // n = increasing polynomial degree
   for (unsigned n = min_deg; n <= max_deg; n++) {
 
-    double checksum;
     const Eigen::VectorXd t = Eigen::VectorXd::LinSpaced(n, 1, n),
                           y = f(t);
 
@@ -35,26 +34,25 @@ int main() {
     // do the same many times and choose the best result
     aitken.start();
     for (unsigned i = 0; i < 100; ++i){
-      checksum += ANipoleval(t, y, x);                         aitken.lap();
+      ANipoleval(t, y, x); aitken.lap();
     }
-    aitken.stop(); 
     t1.push_back(aitken.min());
 
     ipol.start();
     for (unsigned i = 0; i < 100; ++i) {
-      ipoleval(t, y, xv, buffer); checksum += buffer(0);       ipol.lap(); 
+      ipoleval(t, y, xv, buffer); ipol.lap(); 
     }
     t2.push_back(ipol.min());
 
     intpol.start();
     for (unsigned i = 0; i < 100; ++i) {
-      intpolyval(t, y, xv, buffer); checksum += buffer(0);     intpol.lap();
+      intpolyval(t, y, xv, buffer); intpol.lap();
     }
     t3.push_back(intpol.min()); 
 
     intpol_lag.start();
     for (unsigned i = 0; i < 100; ++i) {
-      intpolyval_lag(t, y, xv, buffer); checksum += buffer(0); intpol_lag.lap();
+      intpolyval_lag(t, y, xv, buffer); intpol_lag.lap();
     }
     t4.push_back(intpol_lag.min());
 
