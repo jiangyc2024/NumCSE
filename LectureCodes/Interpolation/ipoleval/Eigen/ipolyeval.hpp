@@ -1,9 +1,8 @@
 # include <Eigen/Dense>
-# include "../../../FunctionCollection/polyfit.hpp"
-# include "../../../FunctionCollection/polyval.hpp"
+# include "polyfit.hpp"
+# include "polyval.hpp"
 
 using Eigen::VectorXd;
-
 /* Evaluation of the interpolation polynomials with polyfit+polyval
  * IN:  t = nodes
  *      y = values in t
