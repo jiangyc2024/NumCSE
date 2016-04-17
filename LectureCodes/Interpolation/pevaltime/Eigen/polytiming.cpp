@@ -1,7 +1,7 @@
 # include <cmath>
 # include <vector>
 # include <Eigen/Dense>
-# include <figure/figure.hpp>
+# include <figure.hpp>
 # include "timer.h"
 # include "ANipoleval.hpp"
 # include "ipolyeval.hpp"
@@ -16,6 +16,9 @@ int main() {
 
   Eigen::VectorXd buffer;
   std::vector<double> t1, t2, t3, t4, N;
+  
+  // Number of repeats for each eval
+  const int repeats = 100;
 
   // n = increasing polynomial degree
   for (unsigned n = min_deg; n <= max_deg; n++) {
@@ -33,27 +36,23 @@ int main() {
 
     // do the same many times and choose the best result
     aitken.start();
-    for (unsigned i = 0; i < 100; ++i){
-      ANipoleval(t, y, x); aitken.lap();
-    }
+    for (unsigned i = 0; i < repeats; ++i){
+      ANipoleval(t, y, x); aitken.lap(); }
     t1.push_back(aitken.min());
 
     ipol.start();
-    for (unsigned i = 0; i < 100; ++i) {
-      ipoleval(t, y, xv, buffer); ipol.lap(); 
-    }
+    for (unsigned i = 0; i < repeats; ++i) {
+      ipoleval(t, y, xv, buffer); ipol.lap(); }
     t2.push_back(ipol.min());
 
     intpol.start();
-    for (unsigned i = 0; i < 100; ++i) {
-      intpolyval(t, y, xv, buffer); intpol.lap();
-    }
+    for (unsigned i = 0; i < repeats; ++i) {
+      intpolyval(t, y, xv, buffer); intpol.lap(); }
     t3.push_back(intpol.min()); 
 
     intpol_lag.start();
-    for (unsigned i = 0; i < 100; ++i) {
-      intpolyval_lag(t, y, xv, buffer); intpol_lag.lap();
-    }
+    for (unsigned i = 0; i < repeats; ++i) {
+      intpolyval_lag(t, y, xv, buffer); intpol_lag.lap(); }
     t4.push_back(intpol_lag.min());
 
     N.push_back(n);

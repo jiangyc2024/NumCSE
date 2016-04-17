@@ -17,7 +17,7 @@ f=@(x) sqrt(x);
 warning off;
 
 % do the same many times and choose the best result:
-for k=1:100     %100
+for k=1:10     %100
   res = [];
   
   % n = increasing polynomial degree
