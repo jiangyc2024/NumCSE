@@ -4,11 +4,10 @@
 
 using Eigen::VectorXd;
 
-/* Computation of \Hyperlink{LEBESGUE}{Lebesgue constant} of polynomial interpolation with
- * knots \Blue{$t_i$} passed in the vector \texttt{t} based on
- * \eqref{eq:IPN1}. \texttt{N} specifies the number of sampling points for the approximate
- * computation of the maximum norm of the Lagrange polynimial on the interval
- * \Blue{$[-1,1]$}. */
+// Computation of \Hyperlink{LEBESGUE}{Lebesgue constant} of polynomial interpolation 
+// with knots \Blue{$t_i$} passed in the vector \texttt{t} based on \eqref{eq:IPN1}. 
+// \texttt{N} specifies the number of sampling points for the approximate 
+// computation of the maximum norm of the Lagrange polynimial on the interval \Blue{$[-1,1]$}.
 double lebesgue(const VectorXd& t, const unsigned& N) {
   const unsigned n = t.size();
 
