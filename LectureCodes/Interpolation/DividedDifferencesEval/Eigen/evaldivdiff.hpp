@@ -1,7 +1,6 @@
-# include "../../DividedDifferences/Eigen/divdiff.hpp"
+# include "divdiff.hpp"
 
 using Eigen::VectorXd;
-
 /* Evaluation of polynomial in Newton basis (divided differences)
  * IN:  t = nodes (mutually different)
  *      y = values in t
@@ -11,8 +10,7 @@ void evaldivdiff(const VectorXd& t, const VectorXd& y, const VectorXd& x, Vector
   const unsigned n = y.size() - 1;
 
   // get coefficients of polynomial
-  VectorXd coeffs;
-  divdiff(t, y, coeffs);
+  VectorXd coeffs; divdiff(t, y, coeffs);
 
   // evaluate
   VectorXd ones = VectorXd::Ones(x.size());
