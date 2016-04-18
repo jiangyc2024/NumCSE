@@ -10,6 +10,7 @@ include_directories(${DIRS}
   ${LOCDIR}/../../intpolyval_lag/Eigen/ # intpolval_lag
   ${LOCDIR}/../../ipoleval/Eigen/ # ipoleval
   ${LOCDIR}/../../../FunctionCollection/ # timer
+  ${LOCDIR}/../../lagrangepoly/Eigen/ # needed by intpolval_lag.hpp
    )
 add_definitions(-O3)
 add_executable(main polytiming.cpp)
