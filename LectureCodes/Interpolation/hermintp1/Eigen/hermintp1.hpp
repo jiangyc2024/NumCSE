@@ -1,6 +1,6 @@
 # include <Eigen/Dense>
 # include <figure/figure.hpp>
-# include "../../hermloceval/Eigen/hermloceval.hpp"
+# include "hermloceval.hpp"
 
 using Eigen::VectorXd;
 
