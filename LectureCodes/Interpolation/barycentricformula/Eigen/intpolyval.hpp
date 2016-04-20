@@ -1,10 +1,10 @@
 # include <Eigen/Dense>
 
 using Eigen::VectorXd;
-// \texttt{t}: vector of nodes \Blue{$t_0, \ldots, t_n$}
-// \texttt{y}: vector of data \Blue{$y_0, \ldots, y_n$}
-// \texttt{x}: vector of evaluation points \Blue{$x_1, \ldots, x_N$}
-// \texttt{p}: interpolant evaluated at x
+// IN:  \texttt{t}: vector of nodes \Blue{$t_0, \ldots, t_n$}
+//      \texttt{y}: vector of data \Blue{$y_0, \ldots, y_n$}
+//      \texttt{x}: vector of evaluation points \Blue{$x_1, \ldots, x_N$}
+// OUT: \texttt{p}: interpolant evaluated at x 
 void intpolyval(const VectorXd& t, const VectorXd& y, const VectorXd& x, VectorXd& p) {
   const unsigned n = t.size(), // no. of interpolation nodes = deg. of polynomial $-1$
                  N = x.size(); // no. of evaluation points
