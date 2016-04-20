@@ -4,8 +4,8 @@
 
 using Eigen::VectorXd;
 
-/* Compute and plot the cubic Hermite interpolant of the function \texttt{f} in the nodes \texttt{t}
- * using weighted averages according to \eqref{pwintp:AverageSlopes} as local slopes */
+// Compute and plot the cubic Hermite interpolant of the function \texttt{f} in the nodes \texttt{t}
+// using weighted averages according to \eqref{pwintp:AverageSlopes} as local slopes 
 template <class Function>
 void hermintp1(Function& f, const VectorXd& t) {
   const unsigned n = t.size();
