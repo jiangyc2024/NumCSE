@@ -5,6 +5,12 @@
 
 # define SCALAR long double
 
+// numerical differentiation using difference quotient \Blue{$f'(x) = \lim_{h\rightarrow 0} \frac{f(x + h) - f(x)}{h}
+// IN: f = function to derive, 
+//     df = exact derivative (to compare results),
+//     name = string of function name (for plot filename)
+// OUT: plot of error will be saved as "<name>numdiff.eps"
+
 template <class Function, class Derivative>
 void diff(const double& x, Function& f, Derivative& df, const std::string& name) {
   std::vector<SCALAR> error, h;
