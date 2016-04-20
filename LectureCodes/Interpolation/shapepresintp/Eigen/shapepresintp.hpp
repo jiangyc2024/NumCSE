@@ -63,7 +63,8 @@ void shapepresintp(const VectorXd& t, const VectorXd& y) {
   segs.plot(t, y, " #m^");
   
   // save plot
-  segs.grid(off);
+  segs.title("Data and slopes");
+  segs.grid(false);
   segs.save("segments");
 
 
@@ -119,6 +120,7 @@ void shapepresintp(const VectorXd& t, const VectorXd& y) {
   lin.addlabel("Additional points", " r^");
   lin.addlabel("Linear splines", "r");
   // lin.legend(0, 0.3);
+  lin.title("Linear auxiliary spline l");
   lin.grid(false);
   lin.save("linearsplines");
 
@@ -157,6 +159,7 @@ void shapepresintp(const VectorXd& t, const VectorXd& y) {
   
   // plot data points
   quad.plot(t, y, " #mo");
+  quad.title("Quadratic spline");
   quad.grid(false);
   quad.save("quadraticspline");
   
