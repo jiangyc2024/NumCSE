@@ -1,7 +1,7 @@
 # include <Eigen/Dense>
 using Eigen::VectorXd;
 
-// choice of extra knots \Blue{$p_i \in \left]t_{i-1}, t_i\right[
+// choice of extra knots \Blue{$p_i \in \left]t_{i-1}, t_i\right[$}
 // for given nodeset \texttt{t} and coefficients \texttt{c}
 void extra_knots(const VectorXd& t, const VectorXd& c, VectorXd& p) {
   const unsigned n = t.size();
