@@ -1,13 +1,21 @@
 # include <cmath>
 # include <vector>
 # include <Eigen/Dense>
-# include <figure.hpp>
+# include <figure/figure.hpp>
+// ------- include timer library
 # include "timer.h"
+// ------- includes for Interpolation functions
 # include "ANipoleval.hpp"
 # include "ipolyeval.hpp"
 # include "intpolyval.hpp"
 # include "intpolyval_lag.hpp"
 
+
+/**
+ * Benchmarking 4 different interpolation attempts:
+ *  - Aitken Neville      - Barycentric formula 
+ *  - Polyfit + Polyval   - Lagrange polynomials
+ **/
 int main() {
   // function to interpolate
   auto f = [](const Eigen::VectorXd& x){ return x.cwiseSqrt(); };
@@ -35,21 +43,25 @@ int main() {
     Timer aitken, ipol, intpol, intpol_lag;
 
     // do the same many times and choose the best result
+    // Aitken-Neville ----------------------------------
     aitken.start();
     for (unsigned i = 0; i < repeats; ++i){
       ANipoleval(t, y, x); aitken.lap(); }
     t1.push_back(aitken.min());
 
+    // Polyfit + Polyval -------------------------------
     ipol.start();
     for (unsigned i = 0; i < repeats; ++i) {
       ipoleval(t, y, xv, buffer); ipol.lap(); }
     t2.push_back(ipol.min());
 
+    // Barycentric formula -----------------------------
     intpol.start();
     for (unsigned i = 0; i < repeats; ++i) {
       intpolyval(t, y, xv, buffer); intpol.lap(); }
     t3.push_back(intpol.min()); 
 
+    // Lagrange polynomials ----------------------------
     intpol_lag.start();
     for (unsigned i = 0; i < repeats; ++i) {
       intpolyval_lag(t, y, xv, buffer); intpol_lag.lap(); }
@@ -72,7 +84,3 @@ int main() {
 
   return 0;
 }
-
-
-      
-      
