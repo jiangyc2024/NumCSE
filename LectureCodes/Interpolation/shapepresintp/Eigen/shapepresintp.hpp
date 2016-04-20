@@ -8,11 +8,7 @@
 using Eigen::VectorXd;
 using Eigen::ArrayXd;
 
-// wait function (implemented below) to pause after each step
-void wait(); 
-
 void shapepresintp(const VectorXd& t, const VectorXd& y) {
-
   const long n = t.size() - 1;
 
   // ======= Step 1: choice of slopes ========
@@ -38,29 +34,26 @@ void shapepresintp(const VectorXd& t, const VectorXd& y) {
   c(0) = 2*delta(0) - c(1);
   c(n) = 2*delta(n - 1) - c(n - 1);
 
-  std::cout << c.transpose() << "\n";
-
   // plot segments indicating the slopes c(i)
   mgl::Figure segs;
-  std::string seg_style = "c";
   std::vector<double> x(2), s(2);
   for (long j = 1; j < n; ++j) {
     x[0] = t(j) - 0.3*h(j - 1); x[1] = t(j) + 0.3*h(j);
     s[0] = y(j) - 0.3*h(j - 1)*c(j); s[1] = y(j) + 0.3*h(j)*c(j); 
-    segs.plot(x, s, seg_style);
+    segs.plot(x, s, "c");
   }
   // plot first segment
   x[0] = t(0); x[1] = t(0) + 0.3*h(0);
   s[0] = y(0); s[1] = y(0) + 0.3*h(0)*c(0);
-  segs.plot(x, s, seg_style);
+  segs.plot(x, s, "c");
 
   // plot last segment
   x[0] = t(n) - 0.3*h(n - 1); x[1] = t(n);
   s[0] = y(n) - 0.3*h(n - 1)*c(n); s[1] = y(n);
-  segs.plot(x, s, seg_style);
+  segs.plot(x, s, "c");
 
   // plot data points
-  segs.plot(t, y, " #m^");
+  segs.plot(t, y, " #mo");
   
   // save plot
   segs.title("Data and slopes");
@@ -70,7 +63,7 @@ void shapepresintp(const VectorXd& t, const VectorXd& y) {
 
   
   // ==== Step 2: choice of middle points ====
-  // fix point \Blue{$p_j$} in \Blue{$t_j, t_{j+1}$} depending on the slopes \Blue{$c_j, c_{j+1}$}
+  // fix point \Blue{$p_j$} in \Blue{$[t_j, t_{j+1}]$} depending on the slopes \Blue{$c_j, c_{j+1}$}
   
   std::cout << "Step 2 - Middle points ...\n";
 
@@ -127,7 +120,7 @@ void shapepresintp(const VectorXd& t, const VectorXd& y) {
   
   // ======= Step 4: quadratic spline ========
   // final quadratic shape preserving spline
-  // quadratic polynomial in the intervals \Blue{$[t_j, p_j]$} and \Blue{$[p_j, t_{j+1}}$}
+  // quadratic polynomial in the intervals \Blue{$[t_j, p_j]$} and \Blue{$[p_j, t_{j+1}]$}
   // tangent in \Blue{$t_j$} and \Blue{$p_j$} to the linear spline of step 3
   
   std::cout << "Step 4 - Quadratic spline ...\n";
@@ -142,19 +135,21 @@ void shapepresintp(const VectorXd& t, const VectorXd& y) {
            w = y(j) + 0.5*c(j)*(p(j) - t(j)),
            yb = ( (t(j+1) - p(j))*(y(j) + 0.5*c(j)*(p(j) - t(j))) +
                   (p(j) - t(j))*(y(j+1) + 0.5*c(j+1)*(p(j) - t(j+1))) ) / (t(j+1) - t(j));
+  
+    // te = points in which we evaluate the interpolant, 
+    // pe = values in te
+    ArrayXd te = ArrayXd::LinSpaced(100, a, b),
+            pe = (ya*(b - te).pow(2) + 2*w*(te - a)*(b - te) + yb*(te - a).pow(2))/std::pow(b - a, 2);
 
-    ArrayXd eval = ArrayXd::LinSpaced(100, a, b),
-            pb = (ya*(b - eval).pow(2) + 2*w*(eval - a)*(b - eval) + yb*(eval - a).pow(2))/std::pow(b - a, 2);
+    quad.plot(te.matrix(), pe.matrix(), "r");
 
-    quad.plot(eval.matrix(), pb.matrix(), "r");
-
-    // now the same for interval \Blue{$p_j, t_{j+1}]$}
+    // now the same for interval \Blue{$[p_j, t_{j+1}]$}
     a = b; b = t(j+1); ya = yb; yb = y(j+1);
     w = y(j+1) + 0.5*c(j+1)*(p(j) - t(j + 1));
-    eval = ArrayXd::LinSpaced(100, a, b);
-    pb = (ya*(b - eval).pow(2) + 2*w*(eval - a)*(b - eval) + yb*(eval - a).pow(2))/std::pow(b - a, 2);
+    te = ArrayXd::LinSpaced(100, a, b);
+    pe = (ya*(b - te).pow(2) + 2*w*(te - a)*(b - te) + yb*(te - a).pow(2))/std::pow(b - a, 2);
 
-    quad.plot(eval.matrix(), pb.matrix(), "r");
+    quad.plot(te.matrix(), pe.matrix(), "r");
   }
   
   // plot data points
