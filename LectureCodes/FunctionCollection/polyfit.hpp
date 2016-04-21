@@ -1,3 +1,6 @@
+# ifndef POLYFIT_HPP
+# define POLYFIT_HPP
+
 # include <Eigen/Dense>
 # include <Eigen/QR>
 
@@ -18,3 +21,5 @@ Eigen::VectorXd polyfit(const Eigen::VectorXd& x, const Eigen::VectorXd& y, cons
   }
   return coeffs_switched;
 }
+
+# endif

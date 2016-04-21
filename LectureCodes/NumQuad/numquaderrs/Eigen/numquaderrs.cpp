@@ -5,8 +5,8 @@
 void errs () {
   const unsigned N = 20;
   
-  // f(x) = 1/(1 + 25x^2) on [0, 1]
-  // g(x) = sqrt(x)
+  // \Blue{$f(x) = 1/(1 + 25x^2)$} on \Blue{$[0, 1]$}
+  // \Blue{$g(x) = sqrt(x)$} on \Blue{$[0,1]$}
   auto f = [](double x){ return 1./(1 + 25*x*x); };
   auto g = [](double x){ return std::sqrt(x); };
   const double I_ex_f = std::atan(5)/5,

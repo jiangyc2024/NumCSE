@@ -1,10 +1,10 @@
 # include <Eigen/Dense>
 
 using Eigen::VectorXd;
-// \texttt{t}: vector of nodes \Blue{$t_0, \ldots, t_n$}
-// \texttt{y}: vector of data \Blue{$y_0, \ldots, y_n$}
-// \texttt{x}: vector of evaluation points \Blue{$x_1, \ldots, x_N$}
-// \texttt{p}: interpolant evaluated at x
+// IN:  \texttt{t}: vector of nodes \Blue{$t_0, \ldots, t_n$}
+//      \texttt{y}: vector of data \Blue{$y_0, \ldots, y_n$}
+//      \texttt{x}: vector of evaluation points \Blue{$x_1, \ldots, x_N$}
+// OUT: \texttt{p}: interpolant evaluated at x 
 void intpolyval(const VectorXd& t, const VectorXd& y, const VectorXd& x, VectorXd& p) {
   const unsigned n = t.size(), // no. of interpolation nodes = deg. of polynomial $-1$
                  N = x.size(); // no. of evaluation points
@@ -19,7 +19,7 @@ void intpolyval(const VectorXd& t, const VectorXd& y, const VectorXd& x, VectorX
     lambda(k) = 1./( (t(k)*VectorXd::Ones(k) - t.head(k)).prod() * 
                      (t(k)*VectorXd::Ones(n - k - 1) - t.tail(n - k - 1)).prod() );
   }
-  // Compute quotient of weighted sums  of \Blue{$\frac{\lambda_i}{t - t_i}$}, effort \Blue{O(n)}
+  // Compute quotient of weighted sums  of \Blue{$\frac{\lambda_i}{t - t_i}$}, effort \Blue{$O(n)$}
   for (unsigned i = 0; i < N; ++i) {
     VectorXd z = (x(i)*VectorXd::Ones(n) - t);
 
