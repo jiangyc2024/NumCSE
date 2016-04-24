@@ -1,4 +1,5 @@
 #include "rungekutta.hpp"
+#include "figure.hpp"
 #include <iostream> 
 #include <Eigen/Dense> 
 
@@ -17,8 +18,20 @@ int main()
 
 
 	auto f = [](double x){ return 5*x*(1-x); };
-	double y0 = 10;
-	std::vector<double> states = rungekutta(f, A, b, y0, 1, 100);
 
-	std::cout << states.back() << std::endl;
+	mgl::Figure lin;
+
+	for (int i=0; i<10; ++i)
+	{
+		double y0 = i/3.;
+		std::vector<double> states = rungekutta(f, A, b, y0, 1, 100);
+		Eigen::VectorXd t = Eigen::VectorXd::LinSpaced(101, 0., 1.);
+		lin.plot(t, states, "#r-");
+	}	
+
+	lin.addlabel("y' = 5*y*(1-y)", "r");
+	lin.legend(1,1);
+	lin.title("Runge-Kutta");
+	lin.save("rungekutta");
+
 }
