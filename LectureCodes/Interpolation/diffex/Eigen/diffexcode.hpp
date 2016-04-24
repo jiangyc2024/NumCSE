@@ -8,7 +8,7 @@ template <class Function>
 // \texttt{x}: point at which approximate derivative is desired
 // \texttt{h0}: initial distance from \texttt{x}
 // \texttt{rtol}: relative target tolerance, \texttt{atol}: absolute tolerance
-double diffex(Function& f, const double& x, const double& h0, const double& rtol, const double& atol) {
+double diffex(Function& f, const double x, const double h0, const double rtol, const double atol) {
   const unsigned nit = 10;
   VectorXd h(nit), y(nit);
   h(0) = h0;

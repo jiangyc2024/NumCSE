@@ -12,7 +12,7 @@
 // OUT: plot of error will be saved as "<name>numdiff.eps"
 
 template <class Function, class Derivative>
-void diff(const double& x, Function& f, Derivative& df, const std::string& name) {
+void diff(const double x, Function& f, Derivative& df, const std::string name) {
   std::vector<SCALAR> error, h;
   // build vector of difference quotient width
   for (int i = -1; i >= -61; i -= 5) {

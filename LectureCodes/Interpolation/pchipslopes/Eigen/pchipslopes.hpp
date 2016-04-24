@@ -3,7 +3,7 @@
 using Eigen::VectorXd;
 
 // using forward declaration of the function pchipend, implementation below
-double pchipend(const double&, const double&, const double&, const double&);
+double pchipend(const double, const double, const double, const double);
 
 void pchipslopes(const VectorXd& t, const VectorXd& y, VectorXd& c) {
   // Calculation of local slopes \Blue{$c_i$} for shape preserving cubic Hermite interpolation, see \eqref{mteq:lim}, \eqref{mteq:hm}
@@ -26,7 +26,7 @@ void pchipslopes(const VectorXd& t, const VectorXd& y, VectorXd& c) {
   c(n - 1) = pchipend(h(n - 2), h(n - 3), delta(n - 2), delta(n - 3));
 }
 
-double pchipend(const double& h1, const double& h2, const double& del1, const double& del2) {
+double pchipend(const double h1, const double h2, const double del1, const double del2) {
   // Non-centered, shape-preserving, three-point formula
   double d = ((2*h1 + h2)*del1 - h1*del2)/(h1 + h2);
   if (d*del1 < 0) {
