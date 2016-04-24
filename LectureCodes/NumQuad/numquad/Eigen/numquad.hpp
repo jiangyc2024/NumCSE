@@ -1,11 +1,11 @@
 # include <iostream>
 # include <vector>
 # include <Eigen/Dense>
-# include "../../../FunctionCollection/polyfit.hpp"
-# include "../../gaussquad/Eigen/gaussquad.hpp"
+# include "polyfit.hpp"
+# include "gaussquad.hpp"
 
 template <class Function>
-std::vector<double> numquad(Function& F, const double& a, const double& b, const unsigned& N, const std::string & mode) {
+std::vector<double> numquad(Function& F, const double a, const double b, const unsigned N, const std::string mode) {
   // saving the results in this vector
   std::vector<double> res;
   res.reserve(N);
@@ -30,7 +30,6 @@ std::vector<double> numquad(Function& F, const double& a, const double& b, const
       // the (b - a)/2 term comes from transforming the weights from
       // [-1, 1] to [a, b] (sum of weights == length of interval)
       res.push_back( (b - a)/2*y.dot(qr.weights) );
-      std::cout << n << " : " << (b - a)/2*y.dot(qr.weights) << "\n";
     }
     return res;
   }
@@ -63,7 +62,6 @@ std::vector<double> numquad(Function& F, const double& a, const double& b, const
     Eigen::VectorXd coeffs = polyfit(x, y, n);
 
     // compute integral
-    std::cout << n + 1 << " : " << coeffs.dot(w.tail(n + 1)) << "\n";
     res.push_back( coeffs.dot(w.tail(n + 1)) );
   }
   return res;
