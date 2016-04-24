@@ -5,7 +5,7 @@ using vec_t = Eigen::VectorXd;
 
 // returns the values of the first n - 1 legendre polynomials in x
 // as columns of the matrix L 
-void legendre(const unsigned& n, const vec_t& x, mat_t& L) {
+void legendre(const unsigned n, const vec_t& x, mat_t& L) {
   L = mat_t::Ones(n,n); // \Blue{$p_0(x) = 1$}
   L.col(1) = x; // \Blue{$p_1(x) = x$}
   for (unsigned j = 1; j < n - 1; ++j) {

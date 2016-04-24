@@ -4,7 +4,7 @@
 # include <unsupported/Eigen/FFT>
 
 template <class Function>
-void fourcoeffcomp(std::vector<std::complex<double>>& y, Function& c, const unsigned& m, const unsigned& ovsmpl = 2) {
+void fourcoeffcomp(std::vector<std::complex<double>>& y, Function& c, const unsigned m, const unsigned ovsmpl = 2) {
   // Compute the Fourier coefficients \Blue{$y_{-m}, \ldots, y_{m}$} of the function
   // \Blue{$c:[0,1[ \mapsto \bbC$} using an \Magenta{oversampling factor} \texttt{ovsmpl}.
   // \texttt{c} must be a handle to a function \texttt{\symbol{64}(t)}, e.g. a lambda function

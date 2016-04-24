@@ -1,5 +1,5 @@
 # include <cmath>
-# include "../../numquad/Eigen/numquad.hpp"
+# include "numquad.hpp"
 # include <figure/figure.hpp>
 
 void errs () {
@@ -28,11 +28,8 @@ void errs () {
     err_cheb_f[i] = std::abs(cheb_f[i] - I_ex_f);
     err_gauss_f[i] = std::abs(gauss_f[i] - I_ex_f);
     err_equi_g[i] = std::abs(equi_g[i] - I_ex_g);
-    std::cout << "equi: " << equi_g[i] << "\n";
-    std::cout << "err equi: " << err_equi_g[i] << "\n";
     err_cheb_g[i] = std::abs(cheb_g[i] - I_ex_g);
     err_gauss_g[i] = std::abs(gauss_g[i] - I_ex_g);
-    std::cout << "err gauss: " << err_gauss_g[i] << "\n";
   }
 
   // convergence plot for f

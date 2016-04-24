@@ -4,6 +4,9 @@ cmake_minimum_required(VERSION 2.8)
 include(../../../GetModules.cmake)
 get_modules("Eigen Figure")
 
-include_directories(${DIRS})
+include_directories(${DIRS}
+                    ../../../FunctionCollection/
+                    ../../gaussquad/Eigen/
+                    ../../numquad/Eigen/ )
 add_executable(main numquaderrs.cpp)
 target_link_libraries(main ${LIBS})
