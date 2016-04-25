@@ -1,3 +1,4 @@
+#include "figure.hpp"
 #include "odeintadapt.hpp"
 #include <iostream>
 #include <math.h>
@@ -21,9 +22,30 @@ int main()
 		return y + (h/2.)*(k1+k2);
 	};
 
+	mgl::Figure lin;
+
 	double y0 = 0.5;
-	std::vector<std::pair<double, double>> states = odeintadapt(psilow, psihigh, norm, y0, 2., 0.1, 1e-6, 1e-6, 1e-8);
+	std::vector<std::pair<double, double>> states = odeintadapt(psilow, psihigh, norm, y0, 1.9, 0.2, 1e-2, 1e-2, 1e-4);
+
+	Eigen::VectorXd y(states.size());
+	Eigen::VectorXd t(states.size());
+	for (int i=0; i<states.size(); ++i)
+	{
+		t(i) = states[i].first;
+		y(i) = states[i].second;
+	}
+
+	lin.plot(t, y, "#r^");
+	lin.fplot("1/(2-x)").label("1/(2-x)").style("b-");
 
 	std::cout << "Last state at t="<< states.back().first << " with y=" << states.back().second << std::endl;
+
+	lin.addlabel("y' = y^2", "r");
+	lin.legend(1,1);
+	lin.xlabel("x");
+	lin.ylabel("y");
+	lin.title("Simple local stepsize control");
+	lin.setFontSize(3);
+	lin.save("odeintadapt");
 	
 }
