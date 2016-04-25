@@ -4,8 +4,6 @@
 
 int main()
 {
-	auto normFunc = [](double x){ return fabs(x); };
-
 	auto f = [](double x){ return pow(x,2); };
 	double y0 = 1;
 	double T = 2;

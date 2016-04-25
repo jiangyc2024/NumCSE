@@ -30,6 +30,8 @@ int main()
 	}	
 
 	lin.addlabel("y' = 5*y*(1-y)", "r");
+	lin.xlabel("x");
+	lin.ylabel("y");
 	lin.legend(1,1);
 	lin.title("Runge-Kutta");
 	lin.save("rungekutta");

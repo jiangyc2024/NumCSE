@@ -42,6 +42,8 @@ int main()
 	std::cout << "Last state at t="<< states.back().first << " with y=" << states.back().second << std::endl;
 
 	lin.addlabel("y' = y^2", "r");
+	lin.xlabel("x");
+	lin.ylabel("y");
 	lin.legend(1,1);
 	lin.title("Refined local stepsize control");
 	lin.save("odeintssctrl");

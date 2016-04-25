@@ -42,6 +42,8 @@ int main()
 
 	lin.addlabel("y' = y^2", "r");
 	lin.legend(1,1);
+	lin.xlabel("x");
+	lin.ylabel("y");
 	lin.title("Simple local stepsize control");
 	lin.setFontSize(3);
 	lin.save("odeintadapt");
