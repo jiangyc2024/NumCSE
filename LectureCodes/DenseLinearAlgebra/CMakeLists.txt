@@ -1,23 +1,20 @@
-# define the executable name
-set (EXECNAME ncse_denselinalg)
-message(STATUS "Executable ${EXECNAME}")
+option(WITH_MKL "Build with MKL" ON)
 
-# create betl executable
-add_executable (${EXECNAME}
-  ${NCSE_EIGEN_LECTURECODE_PATH}/DenseLinearAlgebra/main.cpp
-  )
+if(WITH_MKL)
+	# define the executable name
+	set (EXECNAME ncse_denselinalg)
 
-######################################################################
-# Dynamic linker has to be told where to find libraries
-# setenv DYLD_LIBRARY_PATH "/opt/intel/mkl/lib:/opt/intel/lib"
-######################################################################
+	# create betl executable
+	add_executable_numcse(${EXECNAME} main.cpp)
 
-# Specify libraries to link with
-target_link_libraries (${EXECNAME} ${ALL_LIBS} ${MKL_LIBRARIES})
+	######################################################################
+	# Dynamic linker has to be told where to find libraries
+	# setenv DYLD_LIBRARY_PATH "/opt/intel/mkl/lib:/opt/intel/lib"
+	######################################################################
 
-# Specify defines for MKL
-ADD_DEFINITIONS(-DEIGEN_USE_MKL_ALL)
+	# Specify libraries to link with
+	target_link_libraries (${EXECNAME} ${MKL_LIBRARIES})
 
-# No idea what this is good for
-set_target_properties (${EXECNAME}
- PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_PATH})
+	# Specify defines for MKL
+	ADD_DEFINITIONS(-DEIGEN_USE_MKL_ALL)
+endif(WITH_MKL)
