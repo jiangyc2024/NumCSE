@@ -3,7 +3,7 @@
 using Eigen::VectorXd;
 
 template <class Function>
-double adaptquad(Function& f, VectorXd& M, const double& rtol, const double& atol) {
+double adaptquad(Function& f, VectorXd& M, const double rtol, const double atol) {
   const unsigned n = M.size(); // number of nodes
   VectorXd h = M.tail(n - 1) - M.head(n - 1), // distance of quadature nodes \label{aq:1}
            mp = 0.5*(M.head(n - 1) + M.tail(n - 1)); // midpoints of intervals \label{aq:2}

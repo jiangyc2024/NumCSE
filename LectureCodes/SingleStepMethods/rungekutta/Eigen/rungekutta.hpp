@@ -23,7 +23,7 @@ std::vector<State> rungekutta(Func &f, const Eigen::MatrixXd &A, const Eigen::Ve
 	for (unsigned int s=0; s < N; ++s)
 	{
 		rungekutta_step(f, h, *yOld, *yNew, A, b);
-		steps.push_back(y1);
+		steps.push_back(*yNew);
 		std::swap(yOld,yNew);
 	}
 

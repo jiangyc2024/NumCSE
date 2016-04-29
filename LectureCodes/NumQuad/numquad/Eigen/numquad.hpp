@@ -2,10 +2,10 @@
 # include <vector>
 # include <Eigen/Dense>
 # include "polyfit.hpp"
-# include "../../gaussquad/Eigen/gaussquad.hpp"
+# include "gaussquad.hpp"
 
 template <class Function>
-std::vector<double> numquad(Function& F, const double& a, const double& b, const unsigned& N, const std::string & mode) {
+std::vector<double> numquad(Function& F, const double a, const double b, const unsigned N, const std::string mode) {
   // saving the results in this vector
   std::vector<double> res;
   res.reserve(N);
@@ -30,7 +30,6 @@ std::vector<double> numquad(Function& F, const double& a, const double& b, const
       // the (b - a)/2 term comes from transforming the weights from
       // [-1, 1] to [a, b] (sum of weights == length of interval)
       res.push_back( (b - a)/2*y.dot(qr.weights) );
-      std::cout << n << " : " << (b - a)/2*y.dot(qr.weights) << "\n";
     }
     return res;
   }
@@ -48,11 +47,9 @@ std::vector<double> numquad(Function& F, const double& a, const double& b, const
       for (int j = 0; j <= n; ++j) {
         x(j) =  a + (b - a)/2*( std::cos( (2.*j + 1)/(2.*n + 2)*M_PI ) + 1 );
       }
-      std::cout << "x: " << x.transpose() << "\n";
     }
     else { // choose equidistant nodes on [a, b]
       x = Eigen::VectorXd::LinSpaced(n + 1, a, b);
-      std::cout << "x: " << x.transpose() << "\n";
     }
 
     // evaluate function at nodes
@@ -63,10 +60,8 @@ std::vector<double> numquad(Function& F, const double& a, const double& b, const
 
     // get monom basis coefficients using polyfit
     Eigen::VectorXd coeffs = polyfit(x, y, n);
-    std::cout << "c: " << coeffs.transpose() << "\n";
 
     // compute integral
-    std::cout << n + 1 << " : " << coeffs.dot(w.tail(n + 1)) << "\n";
     res.push_back( coeffs.dot(w.tail(n + 1)) );
   }
   return res;

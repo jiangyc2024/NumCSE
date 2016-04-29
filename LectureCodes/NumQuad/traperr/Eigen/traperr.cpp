@@ -2,9 +2,9 @@
 # include <cmath>
 # include <Eigen/Dense>
 # include <figure/figure.hpp>
-# include "../../trapezoidal/Eigen/trapezoidal.hpp"
+# include "trapezoidal.hpp"
 
-void cvg(const double& l, const double& r, const std::string& title, const std::string& saveas) {
+void cvg(const double l, const double r, const std::string title, const std::string saveas) {
   // function to test trapezoidal rule: periodic on [0, 1)
   auto issin = [](double x, double a) {
     // f(x) = 1/sqrt(1 - a*sin(2*pi*x + 1)

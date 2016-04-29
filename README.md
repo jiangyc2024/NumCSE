@@ -50,7 +50,22 @@ and following and comment the other chapters.
 However try to compile the whole script when your changes are working on the
 small scale to make sure everything still works as it should.</h6>
 
-# How to use
+### Embedding the C++-codes in the script
+As the codes are organised on Gitlab and the script on SVN we use a symlink
+from <code>ncse_new/../../</code>(the parent directory of the SVN-NCSE directory)
+to the LectureCodes Gitlab-directory.
+To set up the symlink access the parent directory of the SVN-NCSE directory and do:
+<pre><code>ln -s /path/to/Gitlabs/LectureCodes CppScriptCodes
+</code></pre>
+
+Place the codes in the <code>.tex</code> files as follows:
+<pre><code>\begin{lstlisting}
+  \lstinputlisting[style=cpp,&lt;optional arguments&gt;]{%
+    ./../../CppScriptCodes/Chapter/Eigen/code.cpp}
+\end{lstlisting}
+</pre></code>
+
+<h1>How to use</h1>
 In the LectureCodes you can find a folder for each code from the script. <br>
 There you can find different versions of the same code:
 <ul>
@@ -59,7 +74,9 @@ There you can find different versions of the same code:
   <li>a Python (most of the codes)</li>
 </ul>
 
-### Executing C++-codes:
+
+
+<h3>Executing C++-codes: </h3>
 Every C++-code that is supposed to be executed (i.e. to create plots) should
 contain a CMakeLists.txt.
 Then you can do:

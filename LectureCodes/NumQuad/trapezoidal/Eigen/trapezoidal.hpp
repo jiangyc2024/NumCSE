@@ -1,5 +1,5 @@
 template <class Function>
-double trapezoidal(Function& f, const double& a, const double& b, const unsigned& N) {
+double trapezoidal(Function& f, const double a, const double b, const unsigned N) {
   double I = 0;
   const double h = (b - a)/N; // intervall length
 
