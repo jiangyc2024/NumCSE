@@ -12,6 +12,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 
 # load macros
 include(CMake/Macros/subdirlist.cmake)
+include(CMake/Macros/add_all_subdirectories.cmake)
 include(CMake/Macros/add_executable_numcse.cmake)
 
 #
