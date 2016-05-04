@@ -1,0 +1,5 @@
+macro(LIST_REPLACE LIST INDEX NEWVALUE)
+    list(INSERT ${LIST} ${INDEX} ${NEWVALUE})
+    MATH(EXPR __INDEX "${INDEX} + 1")
+    list (REMOVE_AT ${LIST} ${__INDEX})
+endmacro(LIST_REPLACE)
