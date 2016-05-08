@@ -8,8 +8,7 @@
 int main() {
   // use C++ lambda functions to define runge function \Blue{$f(x) = \frac{1}{1 + x^2}$}
   auto f = [](const Eigen::VectorXd& x){ 
-    const Eigen::ArrayXd result = 1./(1 + x.array()*x.array());
-    return result.matrix(); 
+    return ( 1./(1 + x.array()*x.array()) ).matrix();
   };
 
   const unsigned d = 10; // Polynomial degree
@@ -21,16 +20,18 @@ int main() {
   for (unsigned i = 0; i <= 3*d; ++i) 
     tft(i) = -5 + i*10./(3*d);
 
+  Eigen::VectorXd ftip = f(Eigen::VectorXd::Ones(2));
   Eigen::VectorXd pip = polyfit(tip, f(tip), d),  // Interpolating polynomial (deg = \Blue{$d$})
                   pft = polyfit(tft, f(tft), d); // Fitting polynomial (deg = \Blue{$d$})
 
   Eigen::VectorXd x = Eigen::VectorXd::LinSpaced(1000,-5,5);
   mgl::Figure fig;
-  fig.plot(x, f(x), "g--").label("Function f");
-  fig.plot(x, polyval(pip, x), "b-").label("Interpolating polynomial");
-  fig.plot(x, polyval(pft, x), "r-").label("Fitting polynomial");
-  fig.plot(tip, f(tip), "b*");
+  fig.plot(x, f(x), "g|").label("Function f");
+  fig.plot(x, polyval(pip, x), "b").label("Interpolating polynomial");
+  fig.plot(x, polyval(pft, x), "r").label("Fitting polynomial");
+  fig.plot(tip, f(tip), " b*");
   fig.save("interpfit");
+
 
   return 0;
 }
