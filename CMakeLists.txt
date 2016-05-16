@@ -30,32 +30,82 @@ else()
     endif()
 endif()
 
+# disable some warnings
+if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+    # (this is only applicable on clang)            
+    # ignore some mathgl warnings
+    add_definitions(-Wno-return-type-c-linkage)
+endif()
+
+if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+    add_definitions(-Wno-deprecated-declarations)
+endif()
+
 #
 # include external libraries
 #
-# mathgl
-# todo: download
-find_package(MathGL2)
-if (${MATHGL2_FOUND})
-	# patch mgl2/config.h
-	file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/mathgl_patched_headers/mgl2)
-	file(READ ${MATHGL2_INCLUDE_DIRS}/mgl2/config.h MATHGL_PATCHED_CONFIG_H)
-	STRING(REGEX REPLACE "#define MGL_HAVE_TYPEOF[ \t]+1" "#define MGL_HAVE_TYPEOF 0 // patched"
-	                     MATHGL_PATCHED_CONFIG_H ${MATHGL_PATCHED_CONFIG_H})
-	STRING(REGEX REPLACE "#define MGL_HAVE_C99_COMPLEX[ \t]+1" "#define MGL_HAVE_C99_COMPLEX 0 // patched"
-	                     MATHGL_PATCHED_CONFIG_H ${MATHGL_PATCHED_CONFIG_H})
-
-	file(WRITE ${PROJECT_BINARY_DIR}/mathgl_patched_headers/mgl2/config.h ${MATHGL_PATCHED_CONFIG_H} )
-	include_directories(${PROJECT_BINARY_DIR}/mathgl_patched_headers/) # use patched config.h for mathgl
-endif()
-#  include mathgl headers
-include_directories(${MATHGL2_INCLUDE_DIRS})
+include(ExternalProject)
 
 # eigen
 find_package(Eigen3)
+
 if (${EIGEN3_FOUND})
-	include_directories(${EIGEN3_INCLUDE_DIR})
+  include_directories(${EIGEN3_INCLUDE_DIR})
+
+  add_custom_target(Eigen) # dependency dummy
+else()
+  SET(DOWNLOADING_EIGEN ON)
+  #  if not found system wide download
+  message("-- Downloading Eigen3")
+  ExternalProject_Add(
+      Eigen
+      URL http://bitbucket.org/eigen/eigen/get/3.2.7.zip
+      SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/Eigen
+      INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/Eigen_install
+      DOWNLOAD_NO_PROGRESS 1
+      CMAKE_ARGS ${EXTERNAL_PROJECT_CMAKE_ARGS_PREFIX} -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/Eigen_install)
+  include_directories(${CMAKE_CURRENT_BINARY_DIR}/Eigen_install/include/eigen3)
 endif()
+
+# mathgl
+if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+   if (${NUMPDE_BUILD_MATHGL_CLANG})
+       # If mathgl is installed, we do not trust that it is build using clang (in 99% of the cases,
+       # it is not). Therefore, we *always* build mathgl when we use clang
+       set(MATHGL2_FOUND OFF)
+    endif()
+endif()
+if (${MATHGL2_FOUND})
+  add_custom_target(MathGL) # dependency dummy
+
+  # patch mgl2/config.h
+  file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/mathgl_patched_headers/mgl2)
+  file(READ ${MATHGL2_INCLUDE_DIRS}/mgl2/config.h MATHGL_PATCHED_CONFIG_H)
+  STRING(REGEX REPLACE "#define MGL_HAVE_TYPEOF[ \t]+1" "#define MGL_HAVE_TYPEOF 0 // patched"
+                       MATHGL_PATCHED_CONFIG_H ${MATHGL_PATCHED_CONFIG_H})
+  STRING(REGEX REPLACE "#define MGL_HAVE_C99_COMPLEX[ \t]+1" "#define MGL_HAVE_C99_COMPLEX 0 // patched"
+                       MATHGL_PATCHED_CONFIG_H ${MATHGL_PATCHED_CONFIG_H})
+
+  file(WRITE ${PROJECT_BINARY_DIR}/mathgl_patched_headers/mgl2/config.h ${MATHGL_PATCHED_CONFIG_H} )
+  include_directories(${PROJECT_BINARY_DIR}/mathgl_patched_headers/) # use patched config.h for mathgl
+ else()
+  set(DOWNLOADING_MGL ON)
+  message("-- Downloading MathGl")
+  ExternalProject_Add(
+      MathGL
+      URL http://downloads.sourceforge.net/mathgl/mathgl-2.3.3.tar.gz
+      SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/mathgl_source
+      BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/mathgl_binary
+      DOWNLOAD_NO_PROGRESS 1
+      CMAKE_ARGS ${EXTERNAL_PROJECT_CMAKE_ARGS_PREFIX} -DCMAKE_CXX_STANDARD=11 -Denable-openmp=OFF -DMGL_HAVE_TYPEOF=0 -DMGL_HAVE_C99_COMPLEX=0 -DMGL_LIB_INSTALL_DIR=${CMAKE_CURRENT_BINARY_DIR}/mathgl_install/lib/ -DMGL_CGI_PATH=${CMAKE_CURRENT_BINARY_DIR}/mathgl_install/share/mathgl -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/mathgl_install
+      INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/mathgl_install
+      )
+  set(MATHGL2_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/mathgl_install/include)
+  set(MATHGL2_LIBRARY_NAME ${CMAKE_SHARED_LIBRARY_PREFIX}mgl${CMAKE_SHARED_LIBRARY_SUFFIX})
+  set(MATHGL2_LIBRARIES ${CMAKE_CURRENT_BINARY_DIR}/mathgl_install/lib/${MATHGL2_LIBRARY_NAME})
+endif()
+# include mathgl
+include_directories(${MATHGL2_INCLUDE_DIRS})
 
 # mathgl figure
 # try to find Figure with FindFigure.cmake
