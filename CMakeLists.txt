@@ -68,6 +68,7 @@ else()
 endif()
 
 # mathgl
+find_package(MathGL2)
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
    if (${NUMPDE_BUILD_MATHGL_CLANG})
        # If mathgl is installed, we do not trust that it is build using clang (in 99% of the cases,
