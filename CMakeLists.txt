@@ -4,6 +4,14 @@ cmake_minimum_required(VERSION 2.8)
 #
 # setup cmake
 #
+# enforce policy that target_link_libraries must refer 
+# to a valid target. This avoids misconception of the
+# add_executable_numcse command in combination with a 
+# manual call to target_link_libraries
+if(POLICY CMP0016)
+  cmake_policy(SET CMP0016 NEW)
+endif()
+
 # set cmake module path
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMake/Modules/")
 
@@ -13,7 +21,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 # load macros
 include(CMake/Macros/subdirlist.cmake)
 include(CMake/Macros/add_all_subdirectories.cmake)
+include(CMake/Macros/get_target_name_numcse.cmake)
 include(CMake/Macros/add_executable_numcse.cmake)
+
+
+
 
 #
 # setup compiler
@@ -70,11 +82,9 @@ endif()
 # mathgl
 find_package(MathGL2)
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-   if (${NUMPDE_BUILD_MATHGL_CLANG})
-       # If mathgl is installed, we do not trust that it is build using clang (in 99% of the cases,
-       # it is not). Therefore, we *always* build mathgl when we use clang
-       set(MATHGL2_FOUND OFF)
-    endif()
+  # If mathgl is installed, we do not trust that it is build using clang (in 99% of the cases,
+  # it is not). Therefore, we *always* build mathgl when we use clang
+  set(MATHGL2_FOUND OFF)
 endif()
 if (${MATHGL2_FOUND})
   add_custom_target(MathGL) # dependency dummy
@@ -89,7 +99,7 @@ if (${MATHGL2_FOUND})
 
   file(WRITE ${PROJECT_BINARY_DIR}/mathgl_patched_headers/mgl2/config.h ${MATHGL_PATCHED_CONFIG_H} )
   include_directories(${PROJECT_BINARY_DIR}/mathgl_patched_headers/) # use patched config.h for mathgl
- else()
+else()
   set(DOWNLOADING_MGL ON)
   message("-- Downloading MathGl")
   ExternalProject_Add(
@@ -98,6 +108,7 @@ if (${MATHGL2_FOUND})
       SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/mathgl_source
       BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/mathgl_binary
       DOWNLOAD_NO_PROGRESS 1
+      CMAKE_COMMAND CXXFLAGS=-Wno-return-type-c-linkage $(CMAKE_COMMAND)
       CMAKE_ARGS ${EXTERNAL_PROJECT_CMAKE_ARGS_PREFIX} -DCMAKE_CXX_STANDARD=11 -Denable-openmp=OFF -DMGL_HAVE_TYPEOF=0 -DMGL_HAVE_C99_COMPLEX=0 -DMGL_LIB_INSTALL_DIR=${CMAKE_CURRENT_BINARY_DIR}/mathgl_install/lib/ -DMGL_CGI_PATH=${CMAKE_CURRENT_BINARY_DIR}/mathgl_install/share/mathgl -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/mathgl_install
       INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/mathgl_install
       )
