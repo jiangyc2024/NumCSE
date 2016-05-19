@@ -39,6 +39,9 @@ else()
     endif()
 endif()
 
+# enable some warnings
+add_definitions(-pedantic -Wall)
+
 # disable some warnings
 if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
     # (this is only applicable on clang)            
