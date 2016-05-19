@@ -24,9 +24,6 @@ include(CMake/Macros/add_all_subdirectories.cmake)
 include(CMake/Macros/get_target_name_numcse.cmake)
 include(CMake/Macros/add_executable_numcse.cmake)
 
-
-
-
 #
 # setup compiler
 #

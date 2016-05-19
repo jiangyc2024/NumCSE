@@ -1,15 +1,16 @@
 #
-# get a unique target (executable) name
-#  the target name is build by
+# get_target_name_numcse(<base_name> <output_variable>)
+#
+# Assembles a unique target (executable) name from `base_name` and `CMAKE_CURRENT_SOURCE_DIR` and stores the result in `output_variable`.
+# 
+# The target name is assembled by
 #  1. splitting the current source directory into chunks
 #  2. where each chunk is converted 
 #     from CamelCase to hyphen-seperated-lower-case
-#  3. dropping Eigen suffix
+#  3. dropping Eigen suffix (if present)
 #  4. afterwards all chunks are concatinated by underscores.
-#
-#  e.g. calling get_executable_name_numcse(main) in 
-#  LectureCodes/NumQuad/numquaderrs/Eigen/CMakeLists.txt
-#  will return lecture-codes_num-quad_traperr_main
+# 
+# E.g. calling `get_executable_name_numcse(main)` in `LectureCodes/NumQuad/numquaderrs/Eigen/CMakeLists.txt` will return `lecture-codes_num-quad_main`
 macro(get_target_name_numcse base_name output_variable)
     #  convert to relative path
     string(REGEX REPLACE "${CMAKE_SOURCE_DIR}/+" "" target_prefix "${CMAKE_CURRENT_SOURCE_DIR}")
