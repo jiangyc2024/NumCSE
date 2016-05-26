@@ -13,11 +13,10 @@ void append(VectorXd&, const VectorXd&);
 // Investigation of interpolation error norms for cubic Hermite interpolation of \Blue{$f$} (handle \texttt{f})
 // on \Blue{$[a,b]$} with linearly averaged slopes according to \eqref{pwintp:AverageSlopes}.
 // \texttt{N} gives the maximum number of mesh intervals
-
 template <class Function>
 void hermiteapprox(const Function& f, const double a, const double b, const unsigned N) {
 
-  std::vector<double> l2err, linferr, h;
+  std::vector<double> l2err, linferr, h; // save error and stepwidth in these vectors
   for (unsigned j = 2; j <= N; ++j) {
     // \texttŧ{xx} is the fine mesh on which the error norms are computed
     VectorXd xx(1); xx << a;     
@@ -28,9 +27,8 @@ void hermiteapprox(const Function& f, const double a, const double b, const unsi
     VectorXd y = feval(f, t); // feval returns f evaluated at t
     VectorXd c = slopes(t, y); // coefficients for Hermit polynomial representation
 
-    append(t, y);
-
     for (unsigned k = 0; k < j - 1; ++k) {
+      // local evaluation nodes
       VectorXd vx = VectorXd::LinSpaced(100, t(k), t(k+1)),
                locval;
       // evaluate the hermite interpolant at the vx
@@ -58,6 +56,7 @@ void hermiteapprox(const Function& f, const double a, const double b, const unsi
   const unsigned M = unsigned( N / 2 );
   VectorXd L2Log(M), LinfLog(M), hLog(M);
   for (unsigned n = 0; n < M; ++n) {
+    // *(h.end() - n - 1) = h[end - n]
     L2Log(M - n - 1) = std::log( *(l2err.end() - n - 1) );
     LinfLog(M - n - 1) = std::log( *(linferr.end() - n - 1) );
     hLog(M - n - 1) = std::log( *(h.end() - n - 1) );
