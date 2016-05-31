@@ -46,12 +46,24 @@ add_definitions(-pedantic -Wall)
 if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
     # (this is only applicable on clang)            
     # ignore some mathgl warnings
-    add_definitions(-Wno-return-type-c-linkage)
+    add_definitions(-Wno-return-type-c-linkage -Wno-keyword-macro)
+    #set(EXTERNAL_PROJECT_CXX_FLAGS ${EXTERNAL_PROJECT_CXX_FLAGS} -Wno-return-type-c-linkage)
 endif()
 
-if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
-    add_definitions(-Wno-deprecated-declarations)
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    # disable some warnings on gcc
+    if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 6)
+        add_definitions(-Wno-ignored-attributes -Wno-misleading-indentation)
+        #set(EXTERNAL_PROJECT_CXX_FLAGS ${EXTERNAL_PROJECT_CXX_FLAGS} -Wno-ignored-attributes -Wno-misleading-indentation)
+    endif()
 endif()
+
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    add_definitions(-Wno-deprecated-declarations)
+    #set(EXTERNAL_PROJECT_CXX_FLAGS ${EXTERNAL_PROJECT_CXX_FLAGS} -Wno-deprecated-declarations)
+endif()
+
+#set(EXTERNAL_PROJECT_CMAKE_ARGS_PREFIX ${EXTERNAL_PROJECT_CMAKE_ARGS_PREFIX} -DCMAKE_CXX_FLAGS="${EXTERNAL_PROJECT_CXX_FLAGS}")
 
 #
 # include external libraries
@@ -102,16 +114,20 @@ if (${MATHGL2_FOUND})
 else()
   set(DOWNLOADING_MGL ON)
   message("-- Downloading MathGl")
-  ExternalProject_Add(
-      MathGL
-      URL http://downloads.sourceforge.net/mathgl/mathgl-2.3.3.tar.gz
-      SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/mathgl_source
-      BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/mathgl_binary
-      DOWNLOAD_NO_PROGRESS 1
-      CMAKE_COMMAND CXXFLAGS=-Wno-return-type-c-linkage $(CMAKE_COMMAND)
-      CMAKE_ARGS ${EXTERNAL_PROJECT_CMAKE_ARGS_PREFIX} -DCMAKE_CXX_STANDARD=11 -Denable-openmp=OFF -DMGL_HAVE_TYPEOF=0 -DMGL_HAVE_C99_COMPLEX=0 -DMGL_LIB_INSTALL_DIR=${CMAKE_CURRENT_BINARY_DIR}/mathgl_install/lib/ -DMGL_CGI_PATH=${CMAKE_CURRENT_BINARY_DIR}/mathgl_install/share/mathgl -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/mathgl_install
-      INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/mathgl_install
-      )
+  if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/mathgl_binary)
+    ExternalProject_Add(
+        MathGL
+        URL http://downloads.sourceforge.net/mathgl/mathgl-2.3.3.tar.gz
+        SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/mathgl_source
+        BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/mathgl_binary
+        DOWNLOAD_NO_PROGRESS 1
+        CMAKE_ARGS ${EXTERNAL_PROJECT_CMAKE_ARGS_PREFIX} -DCMAKE_CXX_STANDARD=11 -Denable-openmp=OFF -DMGL_HAVE_TYPEOF=0 -DMGL_HAVE_C99_COMPLEX=0 -DMGL_LIB_INSTALL_DIR=${CMAKE_CURRENT_BINARY_DIR}/mathgl_install/lib/ -DMGL_CGI_PATH=${CMAKE_CURRENT_BINARY_DIR}/mathgl_install/share/mathgl -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/mathgl_install
+        INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/mathgl_install
+        )
+  else()
+    add_custom_target(MathGL)
+    message("Skipped download of mathgl because its already present. Delete `${CMAKE_CURRENT_BINARY_DIR}/mathgl_binary` to redownload it.")
+  endif()
   set(MATHGL2_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/mathgl_install/include)
   set(MATHGL2_LIBRARY_NAME ${CMAKE_SHARED_LIBRARY_PREFIX}mgl${CMAKE_SHARED_LIBRARY_SUFFIX})
   set(MATHGL2_LIBRARIES ${CMAKE_CURRENT_BINARY_DIR}/mathgl_install/lib/${MATHGL2_LIBRARY_NAME})

@@ -24,7 +24,7 @@ macro (add_executable_numcse _name)
         RUNTIME_OUTPUT_DIRECTORY "${TARGET_RUNTIME_OUTPUT_DIRECTORY}"
         OUTPUT_NAME "${_name}")
 
-        target_link_libraries(${target_name} ${MATHGL2_LIBRARIES} Figure)
+        target_link_libraries(${target_name} Figure ${MATHGL2_LIBRARIES})
     	#add_dependencies(${target_name} Eigen)
     	#add_dependencies(${target_name} MathGL)
     endif()

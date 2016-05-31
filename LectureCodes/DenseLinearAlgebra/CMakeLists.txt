@@ -1,8 +1,8 @@
-option(WITH_MKL "Build with MKL" ON)
+find_package(MKL)
 
-if(WITH_MKL)
-	get_target_name_numcse(ncse_denselinalg target_name)
+get_target_name_numcse(ncse_denselinalg target_name)
 
+if(MKL_FOUND)
 	# create betl executable
 	add_executable_numcse(ncse_denselinalg main.cpp)
 
@@ -16,4 +16,6 @@ if(WITH_MKL)
 
 	# Specify defines for MKL
 	ADD_DEFINITIONS(-DEIGEN_USE_MKL_ALL)
-endif(WITH_MKL)
+else()
+	message("Skipped ${target_name} because MKL was not found.")
+endif(MKL_FOUND)
