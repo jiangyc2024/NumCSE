@@ -4,6 +4,7 @@ This repository will host all the codes used in the lecture notes, and assignmen
 
 **Additional links**
 
+- [Debugger tutorial](https://gitlab.math.ethz.ch/tille/debugging-cpp-code-with-lldb)
 - [Developer notes](Documentation/developer_notes.md)
 - [Project specific cmake documentation](Documentation/cmake.md)
 
