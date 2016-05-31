@@ -5,6 +5,7 @@ This repository will host all the codes used in the lecture notes, and assignmen
 **Additional links**
 
 - [Developer notes](Documentation/developer_notes.md)
+- [Project specific cmake documentation](Documentation/cmake.md)
 
 ## Project Structure
 
