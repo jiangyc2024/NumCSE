@@ -1,12 +1,11 @@
 ## Numerical Methods for CSE
 
 # Project Structure
-<ul>
-  <li>The codes used in the script are in <i>LectureCodes</i>.</li>
-  <li><i>MathGL</i> contains a documentation and example codes for MathGL,
-      as well as the Figure library.</li>
-  <li>The Find&lt;Package&gt;.cmake are located in <i>CMake</i></li>
-</ul>
+
+- `LectureCodes` - all codes used in the lecture notes / script sorted by their subject
+- `Documentation` - enhanced documentation for developers
+- `MathGL` - documentation and example codes for MathGL
+- `CMake` - macros, modules used by CMake
 
 ### Organization of the porting
 If you want to port a chapter or a part of it first check if it hasn't 
@@ -24,86 +23,82 @@ C++ version.<br>
 For now the codes appearing in the script are the priority (and not
 codes that only create plots, we're keeping the old ones).
 
-### Editing the <code>.tex</code> files
-The <code>.tex</code> files for the script are organized on SVN. <br><br>
-<i>Be very careful when editing the Latex code!</i> <br><br>
+### Editing the `.tex` files
+The `.tex` files for the script are organized on SVN.
+
+*Be very careful when editing the Latex code!*
+
 To find the place where to put your code in the script open the 
-<code>NCSENEW_Ch_&lt;yourChapter&gt;.tex</code> and then use text-search
+`NCSENEW_Ch_<yourChapter>.tex` and then use text-search
 for the name of the directory of your code, as the directory names
-are chosen after the Latex label of the code. <br>
-Note: The code environment that's being used is called <i>samcode</i>.
+are chosen after the Latex label of the code.
 
-### Compiling the <code>.tex</code> files
-All <code>.tex</code> files are included in <code>NCSENEW.tex</code>.
-So if you changed something in e.g. <code>NCSENEW_Ch_Evp.tex</code> you 
+Note: The code environment that's being used is called *samcode*.
+
+### Compiling the `.tex` files
+
+All `.tex` files are included in `NCSENEW.tex`.
+So if you changed something in e.g. `NCSENEW_Ch_Evp.tex` you 
 can simply compile the whole script to see the changes(*):
-<pre><code>$ latex -interaction=scrollmode -shell-escape NCSENEW.tex</code></pre>
-You will be prompted for the 'slidemode', explanations of the modes are given
-on the screen just above the question. <br>
-In the output <code>NCSENEW.dvi</code> the formatting doesn't work very well
-so you have to convert it to a <code>pdf</code> version with:
-<pre><code>$ dvipdf NCSENEW.dvi NCSENEW.pdf</code></pre> 
 
-<h6>(*) you can also compile only your chapter by choosing slidemode 4 and
-uncomment the name of the chapter in <code>NCSENEW.tex</code> in line 100
+	$ latex -interaction=scrollmode -shell-escape NCSENEW.tex
+
+You will be prompted for the 'slidemode', explanations of the modes are given
+on the screen just above the question.
+
+In the output `NCSENEW.dvi` the formatting doesn't work very well
+so you have to convert it to a `pdf` version with:
+
+	$ dvipdf NCSENEW.dvi NCSENEW.pdf
+
+**(*) you can also compile only your chapter by choosing slidemode 4 and
+uncomment the name of the chapter in `NCSENEW.tex` in line 100
 and following and comment the other chapters.
 However try to compile the whole script when your changes are working on the
-small scale to make sure everything still works as it should.</h6>
+small scale to make sure everything still works as it should.**
 
 ### Embedding the C++-codes in the script
+
 As the codes are organised on Gitlab and the script on SVN we use a symlink
-from <code>ncse_new/../../</code>(the parent directory of the SVN-NCSE directory)
+from `ncse_new/../../`(the parent directory of the SVN-NCSE directory)
 to the LectureCodes Gitlab-directory.
 To set up the symlink access the parent directory of the SVN-NCSE directory and do:
-<pre><code>ln -s /path/to/Gitlabs/LectureCodes CppScriptCodes
-</code></pre>
 
-Place the codes in the <code>.tex</code> files as follows:
-<pre><code>\begin{lstlisting}
-  \lstinputlisting[style=cpp,&lt;optional arguments&gt;]{%
-    ./../../CppScriptCodes/Chapter/Eigen/code.cpp}
-\end{lstlisting}
-</pre></code>
+	ln -s /path/to/Gitlabs/LectureCodes CppScriptCodes
 
-<h1>How to use</h1>
+Place the codes in the `.tex` files as follows:
+
+	\begin{lstlisting}
+	  \lstinputlisting[style=cpp,&lt;optional arguments&gt;]{%
+	    ./../../CppScriptCodes/Chapter/Eigen/code.cpp}
+	\end{lstlisting}
+
+## How to use
 In the LectureCodes you can find a folder for each code from the script. <br>
 There you can find different versions of the same code:
-<ul>
-  <li>a C++ version</li>
-  <li>a Matlab (most of the codes)</li>
-  <li>a Python (most of the codes)</li>
-</ul>
+- C++
+- Matlab (most of the codes)
+- Python (most of the codes)
 
-
-
-<h3>Executing C++-codes: </h3>
+### Executing C++-codes:
 Every C++-code that is supposed to be executed (i.e. to create plots) should
 contain a CMakeLists.txt.
 Then you can do:
-<pre><code>$ mkdir build && cd build 
-$ cmake ..
-$ make 
-$ ./exec_name 
-</code></pre>
 
+	$ mkdir build && cd build 
+	$ cmake ..
+	$ make 
+	$ ./bin/exec_name 
 
-### Building C++-codes & usage with Eigen and MathGL/Figure: <br>
-In the LectureCodes directory you can find <code>GetModules.cmake</code>. 
-That file defines a function you can use to find the packages 
-<code>Eigen</code>, <code>MathGL</code> or <code>Figure</code>.
-A typical example of a CMakeLists.txt would be:
-<pre><code>project(myProject)
-cmake_minimum_required(VERSION 2.8)
+### Building C++-codes & usage with Eigen and MathGL/Figure:
 
-# be sure to include the correct path!
-include(../GetModules.cmake) 
+All C++ codes should use the `add_executable_numcse` macro 
+that works similar to cmake built in `add_executable` command, but 
+automatically link with MathGL and places the binary in the correct folder.
+For further information see Documentation/cmake.md
 
-# this will include the Eigen and Figure directories in DIRS
-# and the libraries in LIBS
-get_modules("Eigen Figure") 
-include_directories(${DIRS})
-add_executable(main main.cpp)
-target_link_libraries(${LIBS})
-</code></pre>
+**Example CMakeLists.txt file**
 
-
+```
+add_executable_numcse(main main.cpp)
+```

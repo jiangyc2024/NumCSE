@@ -1,0 +1,14 @@
+before_script:
+  - sudo apt-get install --yes --force-yes -qq --no-install-recommends build-essential git cmake libmgl-dev libeigen3-dev libboost-all-dev
+NumCSE:
+#  only:
+#    - master
+#    - development
+  script:
+    - mkdir build
+    - pushd build
+    - cmake -DCMAKE_BUILD_TYPE=Release ..
+    - make -j3
+    - popd
+
+

@@ -47,7 +47,7 @@ FIND_PATH(MATHGL2_INCLUDE_DIR
 		NAMES mgl2/mgl.h
 		DOC "The MathGL2 v.2.* include directory")
 FIND_LIBRARY(MATHGL2_LIBRARY
-		NAMES mgl
+		NAMES mgl mgl2
 		PATHS ${MATHGL2_LIBRARY_DIR}
 		DOC "The MathGL v.2.* include directory")
 
