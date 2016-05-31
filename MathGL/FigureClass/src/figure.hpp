@@ -7,6 +7,7 @@
 # include <utility>
 # include <stdexcept>
 # include <cassert>
+# include <numeric>
 
 # include "FigureConfig.hpp"
 # if FIG_HAS_EIGEN
