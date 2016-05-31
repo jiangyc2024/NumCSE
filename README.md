@@ -39,7 +39,7 @@ All binaries can then be found in the `bin` folder.
 All C++ codes should use the `add_executable_numcse` macro 
 that works similar to cmake built in `add_executable` command, but 
 automatically links with MathGL and places the binary in the correct folder.
-For further information see Documentation/cmake.md
+For further information see [Documentation](Documentation/cmake.md)
 
 **Example CMakeLists.txt file**
 
