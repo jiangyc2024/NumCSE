@@ -1,6 +1,6 @@
 # include <cmath>
 # include "numquad.hpp"
-# include <figure/figure.hpp>
+# include "figure.hpp"
 
 void errs () {
   const unsigned N = 20;

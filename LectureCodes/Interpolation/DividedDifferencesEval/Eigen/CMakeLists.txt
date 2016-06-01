@@ -1,11 +1,5 @@
 project(divdiff)
 cmake_minimum_required(VERSION 2.8)
 
-include(../../../GetModules.cmake)
-get_modules("Eigen Figure")
-
-include_directories(${DIRS}
-                    ../../DividedDifferences/Eigen/
-                    )
-add_executable(main main.cpp)
-target_link_libraries(main ${LIBS})
+include_directories(../../DividedDifferences/Eigen/)
+add_executable_numcse(main main.cpp)

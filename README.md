@@ -1,109 +1,48 @@
-## Numerical Methods for CSE
+# Numerical Methods for CSE
 
-# Project Structure
-<ul>
-  <li>The codes used in the script are in <i>LectureCodes</i>.</li>
-  <li><i>MathGL</i> contains a documentation and example codes for MathGL,
-      as well as the Figure library.</li>
-  <li>The Find&lt;Package&gt;.cmake are located in <i>CMake</i></li>
-</ul>
+This repository will host all the codes used in the lecture notes, and assignments.
 
-### Organization of the porting
-If you want to port a chapter or a part of it first check if it hasn't 
-already been ported. Then see if there exists an 'Issue' for that part.
-If not then create a new Issue in which you exactely declare which codes
-you will be working on and close you Issue when you're done. <br>
+**Additional links**
 
-If you're working on a code of the script be sure to copy the Matlab file 
-(if it exists) from the SVN repository to the according directory of the code
-in the subdirectory 'Matlab', so we keep all in one place. 
-If your code is working replace the Matlab code in the script on SVN by your
-C++ version.<br>
+- [Debugger tutorial](https://gitlab.math.ethz.ch/tille/debugging-cpp-code-with-lldb)
+- [Developer notes](Documentation/developer_notes.md)
+- [Project specific cmake documentation](Documentation/cmake.md)
 
+## Project Structure
 
-For now the codes appearing in the script are the priority (and not
-codes that only create plots, we're keeping the old ones).
+- `LectureCodes` - all codes used in the lecture notes / script sorted by their subject
+- `Documentation` - enhanced documentation for developers
+- `MathGL` - documentation and example codes for MathGL
+- `CMake` - macros, modules used by CMake
 
-### Editing the <code>.tex</code> files
-The <code>.tex</code> files for the script are organized on SVN. <br><br>
-<i>Be very careful when editing the Latex code!</i> <br><br>
-To find the place where to put your code in the script open the 
-<code>NCSENEW_Ch_&lt;yourChapter&gt;.tex</code> and then use text-search
-for the name of the directory of your code, as the directory names
-are chosen after the Latex label of the code. <br>
-Note: The code environment that's being used is called <i>samcode</i>.
+## How to use
 
-### Compiling the <code>.tex</code> files
-All <code>.tex</code> files are included in <code>NCSENEW.tex</code>.
-So if you changed something in e.g. <code>NCSENEW_Ch_Evp.tex</code> you 
-can simply compile the whole script to see the changes(*):
-<pre><code>$ latex -interaction=scrollmode -shell-escape NCSENEW.tex</code></pre>
-You will be prompted for the 'slidemode', explanations of the modes are given
-on the screen just above the question. <br>
-In the output <code>NCSENEW.dvi</code> the formatting doesn't work very well
-so you have to convert it to a <code>pdf</code> version with:
-<pre><code>$ dvipdf NCSENEW.dvi NCSENEW.pdf</code></pre> 
+In the LectureCodes you can find a folder for each code from the script.
 
-<h6>(*) you can also compile only your chapter by choosing slidemode 4 and
-uncomment the name of the chapter in <code>NCSENEW.tex</code> in line 100
-and following and comment the other chapters.
-However try to compile the whole script when your changes are working on the
-small scale to make sure everything still works as it should.</h6>
-
-### Embedding the C++-codes in the script
-As the codes are organised on Gitlab and the script on SVN we use a symlink
-from <code>ncse_new/../../</code>(the parent directory of the SVN-NCSE directory)
-to the LectureCodes Gitlab-directory.
-To set up the symlink access the parent directory of the SVN-NCSE directory and do:
-<pre><code>ln -s /path/to/Gitlabs/LectureCodes CppScriptCodes
-</code></pre>
-
-Place the codes in the <code>.tex</code> files as follows:
-<pre><code>\begin{lstlisting}
-  \lstinputlisting[style=cpp,&lt;optional arguments&gt;]{%
-    ./../../CppScriptCodes/Chapter/Eigen/code.cpp}
-\end{lstlisting}
-</pre></code>
-
-<h1>How to use</h1>
-In the LectureCodes you can find a folder for each code from the script. <br>
 There you can find different versions of the same code:
-<ul>
-  <li>a C++ version</li>
-  <li>a Matlab (most of the codes)</li>
-  <li>a Python (most of the codes)</li>
-</ul>
 
+- C++
+- Matlab (most of the codes)
+- Python (most of the codes)
 
+### Source Download and Compilation
 
-<h3>Executing C++-codes: </h3>
-Every C++-code that is supposed to be executed (i.e. to create plots) should
-contain a CMakeLists.txt.
-Then you can do:
-<pre><code>$ mkdir build && cd build 
-$ cmake ..
-$ make 
-$ ./exec_name 
-</code></pre>
+	$ git clone git@gitlab.math.ethz.ch:NumCSE/NumCSE.git
+	$ mkdir build && cd build
+	$ cmake ..
+	$ make
 
+All binaries can then be found in the `bin` folder.
 
-### Building C++-codes & usage with Eigen and MathGL/Figure: <br>
-In the LectureCodes directory you can find <code>GetModules.cmake</code>. 
-That file defines a function you can use to find the packages 
-<code>Eigen</code>, <code>MathGL</code> or <code>Figure</code>.
-A typical example of a CMakeLists.txt would be:
-<pre><code>project(myProject)
-cmake_minimum_required(VERSION 2.8)
+### Building C++-codes & usage with Eigen and MathGL/Figure:
 
-# be sure to include the correct path!
-include(../GetModules.cmake) 
+All C++ codes should use the `add_executable_numcse` macro 
+that works similar to cmake built in `add_executable` command, but 
+automatically links with MathGL and places the binary in the correct folder.
+For further information see [Documentation](Documentation/cmake.md)
 
-# this will include the Eigen and Figure directories in DIRS
-# and the libraries in LIBS
-get_modules("Eigen Figure") 
-include_directories(${DIRS})
-add_executable(main main.cpp)
-target_link_libraries(${LIBS})
-</code></pre>
+**Example CMakeLists.txt file**
 
-
+```
+add_executable_numcse(main main.cpp)
+```
