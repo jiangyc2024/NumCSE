@@ -1,19 +1,20 @@
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
-#include <unsupported/Eigen/SparseExtra> // needed for Eigen::loadMarket
 #include <figure.hpp>
 #include <string>
 #include <stdlib.h>
 #include <time.h>
+#include "../../utils/graphMarketMatrixLoader.hpp"
+
 
 // simplified page rank algorithm: simulates Nhops link clicks of a surfer
 void prstochsim(int Nhops)
 {
-	srand(time(NULL)); // initialize random seed
 
 	// Load web graph data stored in \Blue{$N\times N$}-matrix \Blue{$\VG$}
-	Eigen::SparseMatrix<double> G;
-	if (!Eigen::loadMarket(G, "Harvard500.mtx"))
+	Eigen::SparseMatrix<int> G;
+	std::string path = "Harvard500.mtx";
+	if (!loadGraphMarketMatrix<int>(G, path))
 	{
 		std::cerr << "Matrix Hardvard500.mtx has not been found." << std::endl;
 		exit(EXIT_FAILURE);
@@ -25,13 +26,15 @@ void prstochsim(int Nhops)
 	int cp = 0; // current page index
 	Eigen::VectorXd count(N); // how often each page was visited
 
+	srand(time(NULL)); // initialize random seed
 
 	for (int i=0; i<Nhops; ++i)
 	{
 		// Find links from current page \texttt{cp}
 		Eigen::VectorXd col = Eigen::VectorXd(G.col(cp));
 		std::vector<int> indices;	
-		for (int j=0; j<N; ++j)	if (col(j) != 0) indices.push_back(j);
+		for (int j=0; j<N; ++j) if (col(j) != 0) indices.push_back(j);
+
 
 		double rn = ((double) rand() / (RAND_MAX)); // random value in [0,1]
 
@@ -46,7 +49,8 @@ void prstochsim(int Nhops)
 
 		count(cp)++;
 	}	
-
+	
+	// plot result
 	Eigen::VectorXd pages = Eigen::VectorXd::LinSpaced(N, 1, N);
 	mgl::Figure fig;
 	count /= Nhops; // normalize visits

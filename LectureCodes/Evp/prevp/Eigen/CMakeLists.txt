@@ -1,6 +1,15 @@
 project(prpowitsim)
 cmake_minimum_required(VERSION 2.8)
 
+find_package(MKL REQUIRED)
+include_directories(${MKL_INCLUDE_DIRS})
+link_directories(${MKL_LIBRARIES})
+target_link_libraries(<module>
+	mkl_intel_lp64
+	mkl_sequential
+	mkl_core
+)
+
 include(../../../GetModules.cmake)
 get_modules("Eigen Figure")
 include_directories(${DIRS})

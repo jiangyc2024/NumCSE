@@ -1,3 +1,5 @@
+// #define EIGEN_USE_MKL_ALL
+
 #include <Eigen/Dense>
 #include <Eigen/Eigenvalues>
 #include <complex>
