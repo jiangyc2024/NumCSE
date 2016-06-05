@@ -5,11 +5,6 @@
 # include "trapezoidal.hpp"
 
 void cvg(const double l, const double r, const std::string title, const std::string saveas) {
-  // function to test trapezoidal rule: periodic on [0, 1)
-  auto issin = [](double x, double a) {
-    // f(x) = 1/sqrt(1 - a*sin(2*pi*x + 1)
-    return 1/std::sqrt(1 - a*std::sin(2*M_PI*x + 1));
-  };
 
   // repeating the experiment for different parameters 'a'
   Eigen::VectorXd a(4); a << 0.5, 0.9, 0.95, 0.99;
