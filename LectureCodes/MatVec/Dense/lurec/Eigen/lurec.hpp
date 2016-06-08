@@ -6,8 +6,8 @@ MatrixXd lurec(const MatrixXd &A){
 		result.bottomRightCorner(n-1,n-1) = 
 					lurec( A.bottomRightCorner(n-1,n-1)
 							- fac * A.row(0).tail(n-1) );
-	result.row(0) = A.row(0); result.col(0).tail(n-1) = fac;
-	return result;
+		result.row(0) = A.row(0); result.col(0).tail(n-1) = fac;
+		return result;
 	}
 	return A;
 }
