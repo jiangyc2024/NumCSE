@@ -8,7 +8,6 @@ MatrixXd gausstiming(){
 	for(int i = 0; i < n.size(); ++i){
 		MatrixXd A = VectorXd::LinSpaced(n[i],1,n[i]).asDiagonal() ;
 		A += MatrixXd::Ones(n[i],n[i]).triangularView<Upper>();
-		
 		VectorXd b = VectorXd::Random(n[i]);
 		VectorXd x1(n[i]), x2(n[i]);
 		double t1 = std::numeric_limits<double>::max(); double t2 = t1;
