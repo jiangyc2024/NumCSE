@@ -1,5 +1,5 @@
 MatrixXd arrowsystiming(){
-	std::vector<int> n = {16,32,64,128,256,512,1024,2048,4096};
+	std::vector<int> n = {8,16,32,64,128,256,512,1024,2048,4096};
 	int nruns = 3;
 	MatrixXd times(n.size(),3);
 	Timer timer;	// timer class
