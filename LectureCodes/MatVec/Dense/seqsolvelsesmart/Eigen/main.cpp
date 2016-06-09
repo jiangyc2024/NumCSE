@@ -18,9 +18,9 @@ int main () {
 #pragma begin<0>
 // Setting: \Blue{$N \gg 1$}, 
 // large matrix \Blue{$\VA\in\bbK^{n,n}$}
-auto A_ludec = A.lu();
+auto A_lu_dec = A.lu();
 for(int j=0; j<N; ++j){
-	x = A_ludec.solve(b);
+	x = A_lu_dec.solve(b);
 	b = some_function(x);
 }
 #pragma end<0>

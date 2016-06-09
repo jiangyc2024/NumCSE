@@ -15,12 +15,12 @@ int main () {
 		A.triangularView<StrictlyLower>().setConstant(-1);
 		A.rightCols<1>().setOnes();
 		VectorXd x = VectorXd::Constant(n,-1).binaryExpr(
-		VectorXd::LinSpaced(n,1,n), 
-			[](double x, double y){return pow(x,y);});
-		double relerr = (A.colPivHouseholderQr().solve(A*x)-x).norm()/x.norm();
+				VectorXd::LinSpaced(n,1,n), 
+				[](double x, double y){return pow(x,y);});
+		double relerr = (A.lu().solve(A*x)-x).norm()/x.norm();
 		res(n/10-1,0) = n; res(n/10-1,1) = relerr;
 	}
-	// ... different solver, plotting
+	// ... different solver(e.g. colPivHouseholderQr()), plotting
 	#pragma end<0>
 	return 0;
 }
