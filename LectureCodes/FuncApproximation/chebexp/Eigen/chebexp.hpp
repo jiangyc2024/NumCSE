@@ -29,7 +29,7 @@ VectorXd chebexp(const VectorXd& y) {
   // recover \Blue{$\beta_j$}, see \eqref{eq:tpiplse}
   VectorXd b(c.size());
   k = M_PI_2/(n + 1)*i;
-  for (int j = 0; j < c.size(); ++j) {
+  for (unsigned j = 0; j < c.size(); ++j) {
     b(j) = ( std::exp(k*double(-n+j))*c[j] ).real();
   }
 
