@@ -24,12 +24,12 @@ void print(const mglData& d)
   std::cout << "\n";
 }
 
-/* constructor: set default style                                                                              *
- * PRE : pointer to mglGraph will not cease to exist until operations are performed on this Figure             *
- * POST: Axis is true -- Grid is true and in light grey -- Legend is false -- Ranges will be set automatically */
+/* constructor: set default style                                                                  *
+ * PRE : pointer to mglGraph will not cease to exist until operations are performed on this Figure *
+ * POST: default settings                                                                          */
 Figure::Figure()
   : axis_(true),
-    grid_(true),
+    grid_(false),
     legend_(false),
     legendPos_(1,1),
     gridType_("xy"),
@@ -38,10 +38,11 @@ Figure::Figure()
     ranges_({ std::numeric_limits<double>::max(), std::numeric_limits<double>::lowest(),
           std::numeric_limits<double>::max(), std::numeric_limits<double>::lowest()}),
     zranges_({std::numeric_limits<double>::max(), std::numeric_limits<double>::lowest()}),
+    aspects_({1, 1, 1}), // normal axis
     autoRanges_(true),
     styles_(MglStyle()),
-    fontSizePT_(6),
-    figHeight_(800),
+    fontSizePT_(6), // small font size
+    figHeight_(800), // quadratic window
     figWidth_(800)
 {}
 
@@ -281,7 +282,7 @@ void Figure::setlog(bool logx, bool logy, bool logz)
 
 /* setting title                                                    *
  * PRE : -                                                          *
- * POST: title_ variable set to 'text' with small-font option ("@") */
+ * POST: title_ variable set to 'text'                              */
 void Figure::title(const std::string& text)
 {
   title_ = text;
@@ -297,14 +298,19 @@ void Figure::save(const std::string& file) {
   // Set size. This *must* be the first function called on the mglGraph
   gr_.SetSize(figWidth_, figHeight_);
 
+
   // Set position of scale annotations
   gr_.SetTuneTicks(true, 1.04);
+  // Shorten tick marks (factor 0.01) and make subticks so small that they do not appear (factor 1000)
+  gr_.SetTickLen(0.01, 1000); 
+
 
   // find out which subplot type to use
   std::string subPlotType = "";
   if (yMglLabel_.str_.size() != 0){
     // if there is a ylabel leave a margin on the left
     subPlotType += "<";
+    subPlotType += ">"; // to make it look nice and symmetric also add margin on the right
   }
   if (xMglLabel_.str_.size() != 0){
     // if there is a xlabel leave a margin on the bottom
@@ -333,6 +339,11 @@ void Figure::save(const std::string& file) {
     gr_.SetRanges(ranges_[0], ranges_[1], ranges_[2], ranges_[3]);
   }
 
+  // Set aspects: 1, 1, 1 will give a normal plot. (default)
+  //              1,-1, 1 will invert the y axis. (used for spy plots)
+  // Note: This *has* to be called after SubPlot, otherwise the axis labels will be in 1,1,1 manner
+  gr_.Aspect(aspects_[0], aspects_[1], aspects_[2]);
+
   // Set label - before setting curvilinear because MathGL is vulnerable to errors otherwise
   gr_.Label('x', xMglLabel_.str_.c_str(), xMglLabel_.pos_);
   gr_.Label('y', yMglLabel_.str_.c_str(), yMglLabel_.pos_);
@@ -347,12 +358,7 @@ void Figure::save(const std::string& file) {
 
   // Add axis
   if (axis_){
-# if 0
-    gr_.Axis("y","value 90"); // rotate y axis ticks by 90 degrees
-    gr_.Axis("xz"); // set x (and z) axis
-# else
     gr_.Axis();
-# endif
   }
 
   gr_.Box();
