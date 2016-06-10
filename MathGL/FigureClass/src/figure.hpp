@@ -12,6 +12,7 @@
 # include "FigureConfig.hpp"
 # if FIG_HAS_EIGEN
   # include <Eigen/Dense>
+  # include <Eigen/Sparse>
 # endif
 
 # include "MglPlot.hpp"
@@ -94,8 +95,13 @@ public:
 
   void setFontSize(int size);
 
-  template <typename Matrix>
+  template <typename Matrix> // dense version
   MglPlot& spy(const Matrix& A, const std::string& style = "b");
+
+# if FIG_HAS_EIGEN // only enable if Eigen is available, otherwise Eigen::SparseMatrix will not be defined
+  template <typename Scalar> // sparse version
+  MglPlot& spy(const Eigen::SparseMatrix<Scalar>& A, const std::string& style = "b");
+# endif
 
   void title(const std::string& text);
 
@@ -228,15 +234,17 @@ MglPlot& Figure::spy(const Matrix& A, const std::string& style) {
   // counting nonzero entries
   unsigned long counter = 0;
   // save positions of entries in these vectors
+  // x for the col-index and y for the row-index
   std::vector<double> x, y;
 
   ranges_ = {0, A.cols() - 1, 0, A.rows() - 1};
-  for (unsigned i = 0; i < A.cols(); ++i) {
-    for (unsigned j = 0; j < A.rows(); ++j) {
+  for (unsigned i = 0; i < A.rows(); ++i) {
+    for (unsigned j = 0; j < A.cols(); ++j) {
       if (A(i,j) != 0) {
         ++counter;
-        x.push_back(i);
-        y.push_back(A.rows() - j - 1);
+        x.push_back(j);
+        // if the row is zero plot at the top, not bottom
+        y.push_back(A.rows() - i - 1);
       }
     }
   }
@@ -252,6 +260,49 @@ MglPlot& Figure::spy(const Matrix& A, const std::string& style) {
   return *plots_.back().get();
 }
 
+# if FIG_HAS_EIGEN
+template <typename Scalar> 
+MglPlot& Figure::spy(const Eigen::SparseMatrix<Scalar>& A, const std::string& style) {
+   has_3d_ = false;
+
+  // determine radius of dots
+  std::string radius = "8";
+  if (std::max(A.cols(), A.rows()) > 99) {
+    radius = "5";
+  }
+  if (std::max(A.cols(), A.rows()) > 999) {
+    radius = "3";
+  }
+  if (std::max(A.cols(), A.rows()) > 9999) {
+    radius = "1";
+  }
+  
+  // counting nonzero entries
+  unsigned long counter = 0;
+  // save positions of entries in these vectors
+  std::vector<double> x, y;
+
+  ranges_ = {0, A.cols() - 1, 0, A.rows() - 1};
+  // iterate over nonzero entries, using method suggested in Eigen::Sparse documentation
+  for (unsigned k = 0; k < A.outerSize(); ++k) {
+    for (typename Eigen::SparseMatrix<Scalar>::InnerIterator it(A, k); it; ++it) {
+      ++counter;
+      x.push_back( it.col() );
+      y.push_back( A.rows() - it.row() - 1 );
+    }
+  }
+  mglData xd(x.data(), x.size()),
+          yd(y.data(), y.size());
+
+  std::stringstream label;
+  label << "nnz = ";
+  label << counter;
+  xMglLabel_ = MglLabel(label.str());
+
+  plots_.emplace_back(std::unique_ptr<MglSpy>(new MglSpy(xd, yd, style + radius)));
+  return *plots_.back().get();
+}
+# endif
 
 } // end namespace
 
