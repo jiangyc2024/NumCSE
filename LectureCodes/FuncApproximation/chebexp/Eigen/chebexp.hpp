@@ -13,11 +13,12 @@ using Eigen::VectorXd;
 // OUT: coefficients \Blue{$\alpha_j$}
 VectorXd chebexp(const VectorXd& y) {
   const int n = y.size() - 1; // degree of polynomial
+  const std::complex<double> i(0, 1); // imaginary unit
   // create vector \Blue{$\Vz$} 
   std::vector<std::complex<double>> z(2*(n + 1));
-  std::complex<double> k = -1i*(M_PI*n)/(n+1.); // just a constant, no meaning
+  std::complex<double> k = -i*(M_PI*n)/(n+1.); // just a constant, no meaning
   for (int j = 0; j <= n; ++j) {
-    z[j] = std::exp(k*double(j))*y(j);
+    z[j] = std::exp(k*double(j))*y(j); // this cast to double is necessary!!
     z[2*n+1-j] = std::exp(k*double(2*n+1-j))*y(j);
   }
   
@@ -27,7 +28,7 @@ VectorXd chebexp(const VectorXd& y) {
   fft.inv(c, z); // -> c = ifft(z), inverse fourier transform 
   // recover \Blue{$\beta_j$}, see \eqref{eq:tpiplse}
   VectorXd b(c.size());
-  k = M_PI_2/(n + 1)*1i;
+  k = M_PI_2/(n + 1)*i;
   for (int j = 0; j < c.size(); ++j) {
     b(j) = ( std::exp(k*double(-n+j))*c[j] ).real();
   }
