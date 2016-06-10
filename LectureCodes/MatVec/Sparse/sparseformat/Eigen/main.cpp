@@ -5,31 +5,14 @@
 #include <vector>
 #include <limits>
 #include <figure/figure.hpp>
-#include "timer.hpp"
+#include "timer.h"
 #include "spdiags.hpp"
 using namespace std;
 using namespace Eigen;
 
 int main () {
-	/*
-	// Test
-	/// Matlab example 5A
-	VectorXi diag_no(3);
-	diag_no << -2,0,2;
-	MatrixXd B(5,3);
-	B << 	1,	6,	11,
-			2,	7,	12,
-			3,	8,	13,
-			4,	9,	14,
-			5,	10,	15;
-	std::cout << B << std::endl;
-	std::cout << spdiags(B, diag_no, 5,5) << std::endl;
-	std::cout << spdiags(B, diag_no, 5,4) << std::endl;
-	std::cout << spdiags(B, diag_no, 4,5) << std::endl;
-	*/
 	#pragma begin<0>
-	RowVectorXd diag_el(3);
-	diag_el << -1, 2, 5;
+	RowVectorXd diag_el(3);		diag_el << -1, 2, 5;
 	auto sparseM = [&](double n){	// lambda function for
 		VectorXi diag_no(3);		// generation of matrix
 		diag_no << -n/2, 0, n/2;
@@ -41,30 +24,26 @@ int main () {
 	fig1.title("Pattern for matrix {\\bf A} for n = 16");
 	fig1.save("spdiagsmatspy_cpp");
 	// Timing
-	int nruns = 3;
-	double t1, t2; int min_i = 1, max_i = 20;
+	int nruns = 3; int min_i = 1, max_i = 20;
 	MatrixXd times(max_i-min_i+1,3); 
-	Timer timer;	// timer class
+	Timer t1,t2;	// timer class
 	double tmp = 0; // prevent optimization
 	for(int i = min_i; i <= max_i ; ++i){
 		int n = std::pow(2,i), m = n/2;
 		SparseMatrix<double> A = sparseM(n);
-		RowVectorXd v1(n); VectorXd v2(n);
-		double t1 = std::numeric_limits<double>::max(); double t2 = t1;
+		RowVectorXd v1(n); VectorXd v2(n); v1.setZero(); v2.setZero();
 		for(int k = 0; k < nruns; ++k){
-			timer.start();
+			t1.start();
 			for(int j = 1; j <= 5; ++j)
 				v1 += A.row(m);
-			timer.stop();
-			t1 = std::min(t1, timer.duration());
-			timer.start();
+			t1.stop();
+			t2.start();
 			for(int j = 1; j <= 5; ++j)
 				v2 += A.col(m);
-			timer.stop();
-			t2 = std::min(t2, timer.duration());
+			t2.stop();
 		}
-		times(i-min_i,0) = n; times(i-min_i,1) = t1;
-		times(i-min_i,2) = t2;
+		times(i-min_i,0) = n; times(i-min_i,1) = t1.min();
+		times(i-min_i,2) = t2.min(); t1.reset(); t2.reset();
 		tmp += v1*v2; // prevent optimization
 	}
 	// plotting ...
@@ -72,7 +51,7 @@ int main () {
 	
 	
 	std::cout << tmp << std::endl;
-	//std::cout << times << std::endl;
+	std::cout << times << std::endl;
 	mgl::Figure fig2;
 	fig2.setlog(true,true);
 	fig2.setFontSize(5);

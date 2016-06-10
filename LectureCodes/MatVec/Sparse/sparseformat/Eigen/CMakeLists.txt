@@ -4,6 +4,7 @@ project(sparseformat)
 include(../../../../GetModules.cmake)
 get_modules("Eigen Figure")
 
-include_directories(${DIRS})
+include_directories(${DIRS}  
+		../../../../../Utils/) # spdiags
 add_executable(main main.cpp)
 target_link_libraries(main ${LIBS})

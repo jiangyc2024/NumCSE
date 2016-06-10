@@ -4,9 +4,16 @@
 #include <algorithm>
 using namespace Eigen;
 #pragma begin<0>
-//! similar to matlab function A = spdiags(B,d,m,n)
-//! spdiags(B,d,m,n) creates an m-by-n sparse matrix by taking the 
-//! columns of B and placing them along the diagonals specified by d.
+/**
+ * @brief Equvalent to MATLAB function A = spdiags(B,d,m,n)
+ * spdiags(B,d,m,n) creates an m-by-n sparse matrix by taking the 
+ * columns of B and placing them along the diagonals specified by d. see MATLAB doc
+ * @param B A min(m,n)-by-p matrix, usually (but not necessarily) full, whose columns are the diagonals of A.
+ * @param d A vector of length p whose integer components specify the diagonals in A.
+ * @param m number of rows of output
+ * @param n number of columnss of output
+ * @return m x n SparseMatrix by taking the columns of B and placing them along the diagonals specified by d.
+ */
 template <class numeric_t> 
 SparseMatrix<numeric_t> spdiags(const Matrix<numeric_t,-1,-1> &B, 
 					const VectorXi &d, const int m, const int n) {					
@@ -29,6 +36,25 @@ SparseMatrix<numeric_t> spdiags(const Matrix<numeric_t,-1,-1> &B,
 	}
 	SparseMatrix<numeric_t> A(m,n);
 	A.setFromTriplets(triplets.begin(), triplets.end());
+	A.makeCompressed();
 	return A;
 }
 #pragma end<0>
+
+
+/*
+// Testcase
+/// Matlab example 5A
+VectorXi diag_no(3);
+diag_no << -2,0,2;
+MatrixXd B(5,3);
+B << 	1,	6,	11,
+		2,	7,	12,
+		3,	8,	13,
+		4,	9,	14,
+		5,	10,	15;
+std::cout << B << std::endl;
+std::cout << spdiags(B, diag_no, 5,5) << std::endl;
+std::cout << spdiags(B, diag_no, 5,4) << std::endl;
+std::cout << spdiags(B, diag_no, 4,5) << std::endl;
+*/

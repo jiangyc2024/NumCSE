@@ -1,1 +1,0 @@
-spdiags --> utils?
