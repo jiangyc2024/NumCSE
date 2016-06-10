@@ -11,6 +11,7 @@ int main () {
 	// Build matrix
 	MatrixXd A(11,11); A.setIdentity();
 	A.col(10).setOnes(); A.row(10).setOnes();
+	// A.reverseInPlace(); // used in\cref{ex:arrowmatrixlu}
 	auto solver = A.lu();
 	MatrixXd L = MatrixXd::Identity(11,11);
 	L += solver.matrixLU().triangularView<StrictlyLower>();
