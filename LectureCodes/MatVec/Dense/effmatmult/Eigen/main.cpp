@@ -1,4 +1,3 @@
-#define NDEBUG true
 #include <Eigen/Dense>
 #include <figure/figure.hpp>
 #include <iostream>
