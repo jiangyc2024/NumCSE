@@ -2,7 +2,7 @@
 #include <Eigen/Dense>
 #include <cmath>
 #include <vector>
-#include "timer.hpp"
+#include "timer.h"
 using namespace std;
 using namespace Eigen;
 #include "linsolvetest.hpp"

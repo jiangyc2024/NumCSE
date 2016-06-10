@@ -3,7 +3,7 @@
 #include <iostream>
 #include <limits>
 #include <cmath>
-#include "timer.hpp"
+#include "timer.h"
 using namespace std::chrono;
 using namespace Eigen;
 #include "scaletiming.hpp"

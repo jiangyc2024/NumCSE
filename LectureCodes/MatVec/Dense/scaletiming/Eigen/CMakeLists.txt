@@ -4,6 +4,8 @@ project(scaletiming)
 include(../../../../GetModules.cmake)
 get_modules("Eigen Figure")
 
-include_directories(${DIRS})
+include_directories(${DIRS}
+	../../../../../Utils #timer
+	)
 add_executable(main main.cpp)
 target_link_libraries(main ${LIBS})
