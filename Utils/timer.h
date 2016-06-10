@@ -79,7 +79,7 @@ void Timer::lap(){
 }
 
 // idle constructor
-Timer::Timer() {};
+Timer::Timer() {}
 
 // resets all values
 void Timer::reset(){

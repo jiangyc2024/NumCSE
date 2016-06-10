@@ -6,7 +6,7 @@ include_directories(
   ../../barycentricformula/Eigen/ # intpolval
   ../../intpolyval_lag/Eigen/ # intpolval_lag
   ../../ipoleval/Eigen/ # ipoleval
-  ../../../FunctionCollection/ # timer
+  ../../../../Utils/ # timer
   ../../lagrangepoly/Eigen/ # needed by intpolval_lag.hpp
   )
 #add_definitions(-O3) # todo add warning if CMAKE_RELEASE_TYPE!=RELEASE instead of enforcing O3

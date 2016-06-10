@@ -44,7 +44,7 @@ std::vector<double> numquad(Function& F, const double a, const double b, const u
     Eigen::VectorXd x(n + 1);
     // choose chebychev nodes on [a, b]
     if (mode == "chebychev") {
-      for (int j = 0; j <= n; ++j) {
+      for (unsigned j = 0; j <= n; ++j) {
         x(j) =  a + (b - a)/2*( std::cos( (2.*j + 1)/(2.*n + 2)*M_PI ) + 1 );
       }
     }

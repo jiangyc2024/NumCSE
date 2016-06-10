@@ -18,7 +18,7 @@ void diff(const double x, Function& f, Derivative& df, const std::string name) {
   for (int i = -1; i >= -61; i -= 5) {
     h.push_back( std::pow(2, i) );
   }
-  for (int j = 0; j < h.size(); ++j) {
+  for (unsigned j = 0; j < h.size(); ++j) {
     // compute approximate solution using difference quotient
     const double df_approx = (f(x + h[j]) - f(x))/h[j],
     // compute relative error
