@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 2.8)
-project(arrowlu)
+project(arrowperm)
 
 include(../../../../GetModules.cmake)
 get_modules("Eigen Figure")
 
 include_directories(${DIRS}  
-		../../../../../Utils/)
+		../../../../../Utils/) # spdiags
 add_executable(main main.cpp)
 target_link_libraries(main ${LIBS})

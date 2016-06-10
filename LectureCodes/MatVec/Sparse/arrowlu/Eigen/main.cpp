@@ -2,7 +2,6 @@
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 #include <figure/figure.hpp>
-#include "spdiags.hpp"
 using namespace std;
 using namespace Eigen;
 
