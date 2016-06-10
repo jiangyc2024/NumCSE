@@ -22,11 +22,11 @@ int main () {
 	MatrixXd U = solver.matrixLU().triangularView<Upper>();
 	// Plotting
 	mgl::Figure fig1, fig2, fig3;
-	fig1.spy(A);	fig1.setFontSize(5); fig1.grid(false);
+	fig1.spy(A);	fig1.setFontSize(4); fig1.grid(false);
 	fig1.title("Sparse matrix");	fig1.save("sparseA_cpp");
-	fig2.spy(L);	fig2.setFontSize(5); fig2.grid(false);
+	fig2.spy(L);	fig2.setFontSize(4); fig2.grid(false);
 	fig2.title("Sparse matrix: L factor");	fig2.save("sparseL_cpp");
-	fig3.spy(U);	fig3.setFontSize(5); fig3.grid(false);
+	fig3.spy(U);	fig3.setFontSize(4); fig3.grid(false);
 	fig3.title("Sparse matrix: U factor");	fig3.save("sparseU_cpp");
 	#pragma end<0>
 	return 0;
