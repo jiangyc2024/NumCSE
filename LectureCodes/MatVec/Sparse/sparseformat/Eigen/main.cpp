@@ -37,7 +37,7 @@ int main () {
 		return spdiags(B, diag_no, n,n);
 	};
 	mgl::Figure fig1;
-	fig1.spy(MatrixXd(sparseM(16)));	fig1.setFontSize(5);
+	fig1.spy(sparseM(16));	fig1.setFontSize(5);
 	fig1.title("Pattern for matrix {\\bf A} for n = 16");
 	fig1.save("spdiagsmatspy_cpp");
 	// Timing
