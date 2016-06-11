@@ -8,12 +8,11 @@
 
 
 // simplified page rank algorithm: simulates Nhops link clicks of a surfer
-void prstochsim(int Nhops)
+void prstochsim(std::string path, int Nhops)
 {
 
 	// Load web graph data stored in \Blue{$N\times N$}-matrix \Blue{$\VG$}
 	Eigen::SparseMatrix<int> G;
-	std::string path = "Harvard500.mtx";
 	if (!loadGraphMarketMatrix<int>(G, path))
 	{
 		std::cerr << "Matrix Hardvard500.mtx has not been found." << std::endl;

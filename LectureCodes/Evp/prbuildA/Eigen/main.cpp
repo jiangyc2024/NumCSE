@@ -3,11 +3,14 @@
 #include <iostream>
 #include "prbuildA.hpp"
 #include "../../utils/graphMarketMatrixLoader.hpp"
+#include <libgen.h>
+#include <string.h>
 
-int main()
+int main(int argc, char** argv)
 {
 	Eigen::MatrixXi G;
-	loadGraphMarketMatrix(G, "Harvard500.mtx");
+	std::string path = std::string(dirname(argv[0])) +	"/Harvard500.mtx";
+	loadGraphMarketMatrix(G, path);
 
 	Eigen::MatrixXd M = prbuildA(G, 0.15);
 }

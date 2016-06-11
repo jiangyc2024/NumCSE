@@ -1,8 +1,9 @@
 #include "prstochsim.hpp"
+#include <libgen.h>
+#include <string.h>
 
-
-int main()
+int main(int argc, char** argv)
 {
-	prstochsim(100000);
-
+	std::string path = std::string(dirname(argv[0])) +	"/Harvard500.mtx";
+	prstochsim(path, 100000);
 }

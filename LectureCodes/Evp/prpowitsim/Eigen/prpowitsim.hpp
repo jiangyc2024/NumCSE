@@ -5,11 +5,11 @@
 #include "../../prbuildA/Eigen/prbuildA.hpp"
 
 // sime page rank calculation by tracking fractions of many surfers
-void prpowitsim(double d = 0.15, int Nsteps = 5)
+void prpowitsim(std::string path, double d = 0.15, int Nsteps = 5)
 {	
 	// load connectivity matrix and build transition matrix
 	Eigen::MatrixXi G;
-	loadGraphMarketMatrix(G, "Harvard500.mtx");
+	loadGraphMarketMatrix(G, path);
 	Eigen::MatrixXd A = prbuildA(G, 0.15);
 
 	// initial distribution
