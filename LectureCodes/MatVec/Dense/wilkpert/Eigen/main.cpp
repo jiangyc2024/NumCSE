@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <limits>
-#include <Random>
+#include <random>
 #include <Eigen/Dense>
 #include <Eigen/QR>
 #include <figure/figure.hpp>

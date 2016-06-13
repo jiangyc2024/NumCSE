@@ -6,20 +6,18 @@
 //! Numerical differentiation of exponential function with extended precision arithmetic
 //! Uses the unsupported Eigen MPFRC++ Support module
 void numericaldifferentiation(){
+	// declare numeric type
 	typedef mpfr::mpreal numeric_t;
-	// Declare matrix and vector types with multi-precision scalar type
-	typedef Matrix<numeric_t,Dynamic,Dynamic>  MatrixXmp;
-	typedef Matrix<numeric_t,Dynamic,1>        VectorXmp;
 	// bit number that should be evaluated
 	int n = 7, k = 13;
 	VectorXi bits(n); bits << 10,30,50,70,90,110,130;
 	MatrixXd experr(13, bits.size()+1);
 	for(int i = 0; i < n; ++i){
 		// set precision to bits(i) bits (double has 53 bits)
-		mpfr::mpreal::set_default_prec( bits(i) );
-		mpfr::mpreal x = "1.1";// Evaluation point in extended precision
+		numeric_t::set_default_prec( bits(i) );
+		numeric_t x = "1.1";// Evaluation point in extended precision
 		for(int j=0;j<k;++j) {
-			mpfr::mpreal h = mpfr::pow("2", -1-5*j);// width of difference quotient in extended precision
+			numeric_t h = mpfr::pow("2", -1-5*j);// width of difference quotient in extended precision
 			// compute (absolute) error
 			experr(j,i+1) = mpfr::abs(( mpfr::exp(x+h) - mpfr::exp(x) ) / h - mpfr::exp(x)).toDouble();
 			experr(j,0) = h.toDouble();

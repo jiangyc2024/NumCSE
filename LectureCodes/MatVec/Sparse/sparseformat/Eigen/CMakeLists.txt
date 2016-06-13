@@ -1,10 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
 project(sparseformat)
 
-include(../../../../GetModules.cmake)
-get_modules("Eigen Figure")
+add_executable_numcse(sparseformat_main main.cpp)
 
-include_directories(${DIRS}  
-		../../../../../Utils/) # spdiags
-add_executable(main main.cpp)
-target_link_libraries(main ${LIBS})

@@ -13,7 +13,6 @@ int main () {
 		* VectorXd::Constant(n,-1).binaryExpr( VectorXd::LinSpaced(n,1,n), 
 		[](double x, double y){return pow(x,y);} ).array();
 	VectorXd x = VectorXd::Ones(n);
-	double nx = x.lpNorm<Infinity>();
 	VectorXd expo = VectorXd::LinSpaced(19,-5,-14);
 	MatrixXd res(expo.size(),4);
 	for(int i = 0; i < expo.size(); ++i){

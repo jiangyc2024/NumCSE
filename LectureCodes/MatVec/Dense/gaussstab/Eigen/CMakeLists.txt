@@ -1,9 +1,4 @@
 cmake_minimum_required(VERSION 2.8)
 project(gaussstab)
 
-include(../../../../GetModules.cmake)
-get_modules("Eigen Figure")
-
-include_directories(${DIRS})
-add_executable(main main.cpp)
-target_link_libraries(main ${LIBS})
+add_executable_numcse(gaussstab_main main.cpp)
