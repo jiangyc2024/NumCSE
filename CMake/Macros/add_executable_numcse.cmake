@@ -15,6 +15,7 @@ macro (add_executable_numcse _name)
 
     # retrieve relative path of runtime output directory (e.g the directory to which the target is compiled to)
 	string(REPLACE "${CMAKE_SOURCE_DIR}" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" TARGET_RUNTIME_OUTPUT_DIRECTORY ${TARGET_RUNTIME_OUTPUT_DIRECTORY})
+	#	message(${TARGET_RUNTIME_OUTPUT_DIRECTORY})
 
     # invoke built-in add_executable
     add_executable(${argv_parsed})
