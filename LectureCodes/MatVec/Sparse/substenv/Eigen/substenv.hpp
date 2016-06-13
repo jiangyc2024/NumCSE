@@ -5,7 +5,7 @@ using namespace Eigen;
 #pragma begin<0>
 //! evelope aware forward substitution for \Blue{$\VL\Vx=\Vy$}
 //! (\Blue{$\VL$} = lower triangular matrix)
-//! argument \texttt{mc}: column bandwidth vector------------------------------------
+//! argument \texttt{mr}: row bandwidth vector
 VectorXd substenv(const MatrixXd &L, const VectorXd &y, const VectorXi &mr){
 	int n = L.cols(); VectorXd x(n);
 	x(0) = y(0)/L(0,0);
