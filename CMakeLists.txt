@@ -175,7 +175,7 @@ include_directories(${FIGURE_INCLUDE_DIR})
 
 include_directories(${FIGURE_INCLUDE_DIR}/../)
 
-include_directories(${CMAKE_SOURCE_DIR}/LectureCodes/FunctionCollection) # oh dear
+include_directories(${CMAKE_SOURCE_DIR}/LectureCodes/Utils) # oh dear
 
 #
 # include subdirectories
