@@ -3,8 +3,8 @@
 # include <Eigen/Dense>
 # include <figure/figure.hpp>
 # include "../../../Interpolation/hermloceval/Eigen/hermloceval.hpp"
-# include "../../../../Utils/polyfit.hpp"
-# include "../../../../Utils/feval.hpp"
+# include "polyfit.hpp"
+# include "feval.hpp"
 using Eigen::VectorXd;
 
 VectorXd slopes(const VectorXd&, const VectorXd&);
