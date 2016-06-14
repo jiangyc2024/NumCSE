@@ -2,10 +2,10 @@
 #include <Eigen/Dense>
 #include <cmath>
 #include <vector>
-#include "timer.hpp"
+#include "timer.h"
 using namespace std;
 using namespace Eigen;
-#include "../../gausselimsolve/Eigen/gausselimsolve.hpp"
+#include "gausselimsolve.hpp"
 #include "gausstiming.hpp"
 int main () {
 	std::cout << gausstiming() << std::endl;
