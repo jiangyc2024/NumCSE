@@ -1,4 +1,4 @@
-//! Eigen Function demonstrating the effect of roundoff on the result of Gram-Schmidt orthogonalization
+//! \eigen{} Function demonstrating the effect of roundoff on the result of Gram-Schmidt orthogonalization
 //! A is 10x10 special matrix the so-called Hilbert matrix: $\MAc{i}{j} = (i+j-1)^{-1}$
 void gsroundoff(MatrixXd& A){
 	MatrixXd Q = gramschmidt(A); // Gram-Schmidt orthogonalization of columns of A

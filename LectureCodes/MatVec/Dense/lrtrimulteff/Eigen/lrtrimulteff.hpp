@@ -1,6 +1,5 @@
-#pragma once
-//! Computation of \Vy = \operatorname{triu}(\VA\VB^{T})\Vx
-//! Efficient implementation with backward cumulative sum(partial_sum)
+//! Computation of $\Vy = \operatorname{triu}(\VA\VB^{T})\Vx$
+//! Efficient implementation with backward cumulative sum (partial\_sum)
 template<class Vec, class Mat>
 void lrtrimulteff(const Mat& A, const Mat& B, const Vec& x, Vec& y){
   int n = A.rows(), p = A.cols();

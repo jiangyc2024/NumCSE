@@ -11,7 +11,7 @@ Matrix gramschmidt( const Matrix & A ) {
         // Replace inner loop over each previous vector in Q with fast matrix-vector multiplication
         Q.col(j) -= Q.leftCols(j) * (Q.leftCols(j).transpose() * A.col(j));
         // Normalize vector if possible (othw. means colums of A almsost lin. dep.
-        if( Q.col(j).norm() <= 10e-14 * A.col(j).norm() ) {
+        if( Q.col(j).norm() <= 10e-14 * A.col(j).norm() ) {// \Label{gscpp:1}
             std::cerr << "Gram-Schmidt failed because A has lin. dep columns. Bye." << std::endl;
             break;
         } else {
