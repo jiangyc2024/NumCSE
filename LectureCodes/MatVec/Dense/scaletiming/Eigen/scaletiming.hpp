@@ -1,6 +1,5 @@
-#pragma once
-//! script for timing a smart and foolish way to carry out
-//! miltiplication with a scaling matrix
+//! Eigen script for timing a smart and foolish way to carry out
+//! multiplication with a scaling matrix
 void scaletiming(){
   int nruns = 3, minExp = 2, maxExp = 14;
   MatrixXd timings(maxExp-minExp+1,3);
@@ -11,7 +10,7 @@ void scaletiming(){
     for(int j = 0; j < nruns; ++j){
 		MatrixXd D = d.asDiagonal(); // d.asDiagonal()*x would be optimized
 		tbad.start(); y = D*x; 	tbad.stop();	// matrix vector multiplication
-		tgood.start();y=d.cwiseProduct(x);	tgood.stop(); // comp. wise mult.
+		tgood.start();y= d.cwiseProduct(x);	tgood.stop(); // comp. wise mult.
 	}
 	timings(i,0)=n; timings(i,1)=tgood.min(); timings(i,2)=tbad.min();
   }
@@ -21,8 +20,8 @@ void scaletiming(){
   fig.setFontSize(4);
   fig.title("Timings for different ways to do scaling");
   fig.setlog(true, true);
-  fig.plot(timings.col(0),timings.col(1), " +b").label("d.*x");
-  fig.plot(timings.col(0),timings.col(2)," ^r").label("asDiagonal()*x");
+  fig.plot(timings.col(0),timings.col(1), " *r").label("D.diagonal().cwiseProduct(x)");
+  fig.plot(timings.col(0),timings.col(2)," +b").label("D*x");
   fig.xlabel("vector length n");  fig.ylabel("time [s]");
   fig.legend(0.05,0.95);  fig.save("scaletiming");
 }
