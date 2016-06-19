@@ -17,7 +17,9 @@ void eigtiming()
 	Eigen::MatrixXd A = Eigen::MatrixXd::Random(N,N);
 	Eigen::MatrixXd B = A.transpose() * A; // symmetric matrix
 	Eigen::MatrixXd C = Eigen::MatrixXd::Zero(N,N); // tridiagonal matrix
-	for (int i=-1;i<=1;++i) C.diagonal(i) = A.diagonal(i);
+	C.diagonal(-1) = Eigen::VectorXd::Constant(N-1, 1);
+	C.diagonal(0) = Eigen::VectorXd::Constant(N, 3);
+	C.diagonal(1) = Eigen::VectorXd::Constant(N-1, 1);
 
 	std::vector<Eigen::MatrixXd> matrices = {A, B, C};
 
