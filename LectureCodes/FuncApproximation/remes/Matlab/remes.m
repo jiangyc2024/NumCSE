@@ -21,10 +21,8 @@ for k=1:maxit
  % Interpolation at \Blue{$d+2$} points xe with deviations \Blue{$\pm\delta$}
  % Algorithm uses monomial basis, which is not optimal
  V=vander(xe); A=[V(:,2:d+2), (-1).^[0:d+1]']; % \com{LSE}
- V
- c=A\fxe                    % Solve for coefficients of polynomial \Blue{$q$}
+ c=A\fxe;                    % Solve for coefficients of polynomial \Blue{$q$}
  c1=[d:-1:1]'.*c(1:d);       % Monomial doefficients of derivative \Blue{$q'$}
- A
  % Find initial guesses for the inner extremes by sampling; track sign
  % changes of the derivative of the approximation error
  deltab = (polyval(c1,xtab) - f1tab);
@@ -64,9 +62,9 @@ for k=1:maxit
    [dummy,ind] = sort(del);
    xe = xx0(ind(end-d-1:end));
  end
- 
+
  % Deviation in sampling points and approximate alternants
- fxe=feval(f,xe); 
+ fxe=feval(f,xe);
  del = [polyval(c(1:d+1),a) - ftab(1);...
 	polyval(c(1:d+1),xe) - fxe;...
 	polyval(c(1:d+1),b) - ftab(end)];
