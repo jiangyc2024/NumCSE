@@ -6,8 +6,8 @@
 
 COMPILER = g++
 #COMPILER = icc
-FLAGS_SEQUENTIAL = -std=c++11  -m64 -I${MKLROOT}/include -O3 -DNDEBUG
-FLAGS_PARALLEL = -std=c++11 -fopenmp -m64 -I${MKLROOT}/include -O3 -DNDEBUG
+FLAGS_SEQUENTIAL = -std=c++11  -m64 -I${MKLROOT}/include -I../../../../../Utils -I../../gausselimsolve/Eigen/ -O3 -DNDEBUG
+FLAGS_PARALLEL = -std=c++11 -fopenmp -m64 -I${MKLROOT}/include -I../../../../../Utils -I../../gausselimsolve/Eigen/ -O3 -DNDEBUG
 # Intel(R) MKL 11.3.2, Linux, None, GNU C/C++, Intel(R) 64, Static, LP64, Sequential)
 FLAGS_LINK_SEQUENTIAL = -Wl,--start-group ${MKLROOT}/lib/intel64/libmkl_intel_lp64.a ${MKLROOT}/lib/intel64/libmkl_core.a ${MKLROOT}/lib/intel64/libmkl_sequential.a -Wl,--end-group -lpthread -lm -ldl
 # Intel(R) MKL 11.3.2, Linux, None, GNU C/C++, Intel(R) 64, Static, LP64, OpenMP threading, GNU (libomp)
