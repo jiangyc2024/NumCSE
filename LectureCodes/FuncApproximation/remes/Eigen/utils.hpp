@@ -1,3 +1,5 @@
+// \emph{utils.hpp}
+
 # include <vector>
 # include <algorithm>
 # include <Eigen/Dense>
@@ -6,9 +8,9 @@ using Eigen::VectorXd;
 using Eigen::MatrixXd;
 
 // compute the Vander matrix to the vector x:
-// [x1^(n - 1) ...      x1^0]
-// [ .          .         . ]
-// [xn^(n - 1) ...      xn^0]
+// [$x_1^{n - 1}$ ...      $x_1^0$]
+// [ .           .          . ]
+// [$x_n^{n - 1}$ ...      $x_n^0$]
 MatrixXd vander(const VectorXd& x) {
   const int n = x.size();
   MatrixXd V(n,n);
@@ -49,7 +51,7 @@ VectorXd select(const VectorXd& x, const VectorXd& ind) {
 }
 
 // returns how the indices have changed after x has been sorted,
-// equivalent to Matlab's [x_sorted, ind] = sort(x)
+// equivalent to Matlab's [xSorted, ind] = sort(x)
 VectorXd sort_indices(const VectorXd& x) {
   VectorXd ind = VectorXd::LinSpaced(x.size(), 0, x.size() - 1);
   std::sort(ind.data(), ind.data() + ind.size(),
