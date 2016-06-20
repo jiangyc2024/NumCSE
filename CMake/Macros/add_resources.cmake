@@ -1,4 +1,5 @@
 
+# copies contents of _folder to the binary folder. Should be used after add_executable_numcse
 macro (add_resources _folder)
 
 	add_custom_command(TARGET ${target_name} 
