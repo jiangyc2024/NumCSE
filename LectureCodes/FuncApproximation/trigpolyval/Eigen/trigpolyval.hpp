@@ -21,14 +21,14 @@ void trigpolyval(const VectorXd& t, const VectorXd& y, const VectorXd& x, Vector
 
   const std::complex<double> i(0,1); // imaginary unit
   // interpolation nodes and evalutation points on unit circle
-  const VectorXcd tc = ( 2*M_PI*i*t ).array().exp().matrix(),
-                  xc = ( 2*M_PI*i*x ).array().exp().matrix();
+  VectorXcd tc = ( 2*M_PI*i*t ).array().exp().matrix(),
+            xc = ( 2*M_PI*i*x ).array().exp().matrix();
   // Rescaled values, according to \Blue{$q(t) = e^{-2\pi int}\cdot p(e^{2\pi it})$}
-  const VectorXcd z = ( ( 2*n*M_PI*i*t ).array().exp() * y.array() ).matrix();
+  VectorXcd z = ((2*n*M_PI*i*t).array().exp() * y.array()).matrix();
   // Evaluation of interpolating polynomial on unit circle, see Code~\ref{barycentricformula}
   VectorXcd p;
   intpolyval(tc, z, xc, p);
   // Undo the scaling, see \eqref{eq:scale} 
-  const VectorXcd qc = ( ( -2*n*M_PI*i*x ).array().exp() * p.array() ).matrix();
+  VectorXcd qc = ((-2*n*M_PI*i*x).array().exp() * p.array()).matrix();
   q = qc.real(); // imaginary part is zero, cut it off
 }
