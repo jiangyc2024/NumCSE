@@ -6,12 +6,9 @@ using Eigen::VectorXd;
 //      evaluation point x
 // OUT: Value at point x
 double recclenshaw(const VectorXd& a, const double x) {
-  const int n = a.size() - 1;
-  std::cout << n << "\n";
-  double y;
+  const int n = a.size() - 1; double y;
   if (n < 2) {
-    // \Blue{$y = a_2*x + a_1$}
-    y = x*a(1) + a(0); 
+    y = x*a(1) + a(0); // \Blue{$y = a_2*x + a_1$}
   }
   else {
     VectorXd new_a(n);

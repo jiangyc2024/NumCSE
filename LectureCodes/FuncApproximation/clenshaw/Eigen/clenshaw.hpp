@@ -4,8 +4,8 @@ using Eigen::VectorXd;
 using Eigen::MatrixXd;
 
 // Clenshaw algorithm for evaluating \Blue{$p = \sum_{j=1}^{n+1}a_j T_{j-1}$} at points passed in vector \texttt{x}
-// IN : \Blue{$\mathbf{a}$} in \Blue{$p = \sum_{j=1}^{n+1} a_j T_{j-1}
-//      x = evaluation points
+// IN : \Blue{$\mathbf{a}$} in \Blue{$p = \sum_{j=1}^{n+1} a_j T_{j-1}$}
+//      \texttt{x} = evaluation points
 // OUT: values $p(x)$
 VectorXd clenshaw(const VectorXd& a, const VectorXd& x) {
   const unsigned n = a.size() - 1; // degree of polynomial
