@@ -7,7 +7,6 @@
 // modfied version of http://stackoverflow.com/questions/9296059/read-pixel-value-in-bmp-file
 Eigen::MatrixXi readBMP(std::string filename)
 {
-    int i;
     FILE* f = fopen(filename.c_str(), "rb");
 
 	if (f == NULL)
@@ -27,7 +26,6 @@ Eigen::MatrixXi readBMP(std::string filename)
 
 	int row_padded = (width*3 + 3) & (~3);
 	unsigned char* data = new unsigned char[row_padded];
-	unsigned char tmp;
 
 	for(int i = 0; i < height; i++)
 	{
