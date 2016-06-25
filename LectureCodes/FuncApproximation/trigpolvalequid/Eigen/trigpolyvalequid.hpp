@@ -9,7 +9,7 @@ using Eigen::VectorXd;
 // in equidistant points \Blue{$\frac{k}{N}$}, \Blue{$k=0,N-1$}
 // IN : \texttt{y} = vector of values to be interpolated
 //      \texttt{q} (COMPLEX!) will be used to save the return values
-void trigpolyvalequid(const VectorXd y, VectorXcd& q) {
+void trigpolyvalequid(const VectorXd y, const int M, VectorXd& q) {
   const int N = y.size();
   if (N % 2 == 0) {
     std::cerr << "Number of points must be odd!\n";
@@ -27,8 +27,9 @@ void trigpolyvalequid(const VectorXd y, VectorXcd& q) {
     gamma(k) = 0.5*( a(n - k) + i*b(n - k - 1) );
     gamma(n + k + 1) = 0.5*( a(k + 1) - i*b(k) );
   }  
+
   // zero padding
-  VectorXcd ch(N); ch << gamma, VectorXcd::Zero(N - (2*n + 1));
+  VectorXcd ch(M); ch << gamma, VectorXcd::Zero(M - (2*n + 1));
 
   // build conjugate fourier matrix
   Eigen::FFT<double> fft;
@@ -36,8 +37,10 @@ void trigpolyvalequid(const VectorXd y, VectorXcd& q) {
   const VectorXcd v = fft.fwd(chCon).conjugate();
 
   // multiplicate with conjugate fourier matrix
-  q = VectorXcd(N);
-  for (int k = 0; k < N; ++k) {
-    q(k) = v(k) * std::exp( -2.*k*n*M_PI/N*i );
+  VectorXcd q_complex = VectorXcd(M);
+  for (int k = 0; k < M; ++k) {
+    q_complex(k) = v(k) * std::exp( -2.*k*n*M_PI/M*i );
   }
+  // complex part is zero up to machine precision, cut off!
+  q = q_complex.real();
 }
