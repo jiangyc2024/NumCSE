@@ -89,11 +89,19 @@ public:
 
   void setlog(bool logx = false, bool logy = false, bool logz = false);
 
-  void setHeight(int height);
+  void setPlotHeight(const int height);
 
-  void setWidth(int width);
+  void setPlotWidth(const int width);
 
-  void setFontSize(int size);
+  void setTopMargin(const int top);
+
+  void setLeftMargin(const int left);
+
+  void setHeight(const int height);
+
+  void setWidth(const int width);
+
+  void setFontSize(const int size);
 
   template <typename Matrix> // dense version
   MglPlot& spy(const Matrix& A, const std::string& style = "b");
@@ -122,7 +130,9 @@ private:
   MglLabel xMglLabel_, yMglLabel_; // x and y labels of the plot
   MglStyle styles_; // styles of the plots
   double fontSizePT_; // font size in PT
-  int figHeight_, figWidth_; // height and width of the graphic
+  int figHeight_, figWidth_; // height and width of the whole image
+  int plotHeight_, plotWidth_; // height and width of the plot
+  int leftMargin_, topMargin_; // left and top margin of plot inside the image
   std::vector<std::unique_ptr<MglPlot> > plots_; // x, y (and z) data for the plots
   std::vector<std::pair<std::string, std::string>> additionalLabels_; // manually added labels 
 };

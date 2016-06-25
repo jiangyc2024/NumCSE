@@ -38,32 +38,78 @@ Figure::Figure()
     ranges_({ std::numeric_limits<double>::max(), std::numeric_limits<double>::lowest(),
           std::numeric_limits<double>::max(), std::numeric_limits<double>::lowest()}),
     zranges_({std::numeric_limits<double>::max(), std::numeric_limits<double>::lowest()}),
-    aspects_({1, 1, 1}), // normal axis
+    aspects_({1, 1, 1}), // normal axis, no shearing
     autoRanges_(true),
     styles_(MglStyle()),
     fontSizePT_(6), // small font size
-    figHeight_(800), // quadratic window
-    figWidth_(800)
+    plotHeight_(800), // quadratic plot, window size depends on wheter there are labels or not!
+    plotWidth_(800),
+    figHeight_(-1), // set to -1: later we will check if they have been changed manually, -1 means no
+    figWidth_(-1),  //            any other value will mean that they've been changed
+    topMargin_(-1),
+    leftMargin_(-1)
+
 {}
+
+
+/* setting height of the plot                                    *
+ * leftMargin                                                    *
+ *  v                                                            * 
+ * +----------+                                                  *
+ * |          |  < topMargin                                     *  
+ * | +------+ |                                                  *
+ * | | plot | |                                                  *
+ * | +------+ |                                                  * 
+ * |          |                                                  *
+ * +----------+                                                  *
+ *    window                                                     *
+ *                                                               *
+ * PRE : height should be > 0                                    *
+ * POST: height of the plot will later be set to given height    */
+void Figure::setPlotHeight(const int height) {
+  plotHeight_ = height;
+}
+
+/* setting width of the plot                                   *
+ * PRE : width should be > 0                                   *
+ * POST: width of the plot will later be set to given width    */
+void Figure::setPlotWidth(const int width) {
+  plotWidth_ = width;
+}
+
+
+/* setting top margin                                            *
+ * PRE : > 0                                                     *
+ * POST: top margin will be set to top                           */
+void Figure::setTopMargin(const int top) {
+  topMargin_ = top;
+}
+
+/* setting left margin                                           *
+ * PRE : > 0                                                     *
+ * POST: left margin will be set to left                         */
+void Figure::setLeftMargin(const int left) {
+  leftMargin_ = left;
+}
 
 /* setting height of the graphic                                 *
  * PRE : height should be > 0                                    *
  * POST: height of the graphic will later be set to given height */
-void Figure::setHeight(int height) {
+void Figure::setHeight(const int height) {
   figHeight_ = height;
 }
 
 /* setting width of the graphic                                *
  * PRE : width should be > 0                                   *
  * POST: width of the graphic will later be set to given width */
-void Figure::setWidth(int width) {
+void Figure::setWidth(const int width) {
   figWidth_ = width;
 }
 
 /* setting the font size                                          *
  * PRE : size should be > 0                                       *
  * POST: font size of the graphic will later be set to given size */
-void Figure::setFontSize(int size) {
+void Figure::setFontSize(const int size) {
   fontSizePT_ = size;
 }
 
@@ -295,16 +341,32 @@ void Figure::title(const std::string& text)
 void Figure::save(const std::string& file) {
   mglGraph gr_; // graph in which the plots will be saved
 
+  // check if the plot, fig and top/left margins havent been set manually
+  if (figWidth_ == -1 || figHeight_ == -1 || topMargin_ == -1 || leftMargin_ == -1) {
+    // means there is a label
+    if (yMglLabel_.str_.size() != 0 || xMglLabel_.str_.size() != 0) {
+      figWidth_ = plotWidth_ + 300;
+      figHeight_ = plotHeight_ + 300;
+      topMargin_ = 150; // leave sufficient space for the labels
+      leftMargin_ = 150;
+    }
+    else {
+      figWidth_ = plotWidth_ + 100;
+      figHeight_ = plotHeight_ + 100;
+      topMargin_ = 50; // just a small margin, space for axis ticks
+      leftMargin_ = 50;
+    }
+  }
+
   // Set size. This *must* be the first function called on the mglGraph
   gr_.SetSize(figWidth_, figHeight_);
-
 
   // Set position of scale annotations
   gr_.SetTuneTicks(true, 1.04);
   // Shorten tick marks (factor 0.01) and make subticks so small that they do not appear (factor 1000)
   gr_.SetTickLen(0.01, 1000); 
 
-
+/*
   // find out which subplot type to use
   std::string subPlotType = "";
   if (yMglLabel_.str_.size() != 0){
@@ -320,6 +382,7 @@ void Figure::save(const std::string& file) {
     // if there is a title leave  margin on the top
     subPlotType += "^";
   }
+*/
 
   // set font to 'heros'. If the file is not available on the machine it will use the MathGL default (STIX)
   gr_.LoadFont("heros");
@@ -334,8 +397,11 @@ void Figure::save(const std::string& file) {
     gr_.Rotate(60, 30);
   }
   else {
-    // if we do not plot 3d we set our margins computed above
-    gr_.SubPlot(1, 1, 0, subPlotType.c_str()); 
+    gr_.SubPlot(1, 1, 0, "#"); 
+    gr_.InPlot( double(leftMargin_) / figWidth_, // margin from left
+                double(leftMargin_ + plotWidth_) / figWidth_, // how far to the right
+                double(figHeight_ - plotHeight_ - topMargin_) / figHeight_, // how far to the bottom
+                double(figHeight_ - topMargin_) / figHeight_ ); // how far up
     gr_.SetRanges(ranges_[0], ranges_[1], ranges_[2], ranges_[3]);
   }
 
@@ -373,7 +439,17 @@ void Figure::save(const std::string& file) {
 
   // Add legend
   if (legend_){
-    gr_.Legend(legendPos_.first, legendPos_.second);
+    if (!has_3d_) {
+      // scale legend input according to figHeight, figWidth, plotHeight, plotWidth, etc.
+      const double bx = leftMargin_/figWidth_, // helper variables
+                   by = topMargin_/fighHeight_;
+      const double newxPos = (1 - 2*bx) * legendPos_.first + bx,
+                   newyPos = (1 - 2*by) * legendPos_.first + by;
+      gr_.Legend(newxPos, newyPos);
+    }
+    else {
+      gr_.Legend(legendPos_.first, legendPos_.second);
+    }
   }
 
   // Add title
