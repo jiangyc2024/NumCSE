@@ -22,7 +22,6 @@ void trigpolycoeff(const VectorXd& t, const VectorXd& y, VectorXd& a, VectorXd& 
     M.col(c) = ( 2*M_PI*c*t ).array().cos().matrix();
     M.col(n + c) = ( 2*M_PI*c*t ).array().sin().matrix();
   }
-  std::cout << M << "\n";
 
   // solve LSE and extract coefficients \Blue{$\mathbf{\alpha}$} and \Blue{$\mathbf{\beta}$}
   VectorXd c = M.lu().solve(y);
