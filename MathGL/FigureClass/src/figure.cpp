@@ -328,10 +328,10 @@ void Figure::setlog(bool logx, bool logy, bool logz)
 
 /* setting title                                                    *
  * PRE : -                                                          *
- * POST: title_ variable set to 'text'                              */
+ * POST: title_ variable set to 'text' with small font option (@)   */
 void Figure::title(const std::string& text)
 {
-  title_ = text;
+  title_ = "@{" + text + "}";
 }
 
 /* save figure                                                              *
@@ -365,8 +365,8 @@ void Figure::save(const std::string& file) {
     // means there is a label
     if (yMglLabel_.str_.size() != 0 || xMglLabel_.str_.size() != 0) {
       figWidth_ = plotWidth_ + 300;
-      figHeight_ = plotHeight_ + 300;
-      topMargin_ = 150; // leave sufficient space for the labels
+      figHeight_ = plotHeight_ + 270;
+      topMargin_ = 100; // leave sufficient space for the labels
       leftMargin_ = 150;
     }
     else {
@@ -402,10 +402,6 @@ void Figure::save(const std::string& file) {
     gr_.SetRanges(ranges_[0], ranges_[1], ranges_[2], ranges_[3]);
   }
 
-  // Set aspects: 1, 1, 1 will give a normal plot. (default)
-  //              1,-1, 1 will invert the y axis. (used for spy plots)
-  // Note: This *has* to be called after SubPlot, otherwise the axis labels will be in 1,1,1 manner
-  gr_.Aspect(aspects_[0], aspects_[1], aspects_[2]);
 
   // Add title
   if (title_.size() != 0){
@@ -418,6 +414,10 @@ void Figure::save(const std::string& file) {
                 double(leftMargin_ + plotWidth_) / figWidth_, // how far to the right
                 double(figHeight_ - plotHeight_ - topMargin_) / figHeight_, // how far to the bottom
                 double(figHeight_ - topMargin_) / figHeight_ ); // how far up
+    // Set aspects: 1, 1, 1 will give a normal plot. (default)
+    //              1,-1, 1 will invert the y axis. (used for spy plots)
+    // Note: This *has* to be called after SubPlot and InPlot, otherwise the axis labels will be in 1,1,1 manner
+    gr_.Aspect(aspects_[0], aspects_[1], aspects_[2]);
   }
 
   // Set label - before setting curvilinear because MathGL is vulnerable to errors otherwise
@@ -451,10 +451,15 @@ void Figure::save(const std::string& file) {
   if (legend_){
     if (!has_3d_) {
       // scale legend input according to figHeight, figWidth, plotHeight, plotWidth, etc.
-      const double bx = 1.1*double(leftMargin_)/figWidth_, // helper variables
-                   by = 1.1*double(topMargin_)/figHeight_;
-      const double newxPos = (1 - 2*bx) * legendPos_.first + bx,
-                   newyPos = (1 - 2*by) * legendPos_.second + by;
+      double bx = 1.1*double(leftMargin_)/figWidth_, // helper variables
+             by = 1.1*double(topMargin_)/figHeight_;
+
+      if(xMglLabel_.str_.size() != 0) {
+        by *= 1.3;
+      }
+
+      double newxPos = (1 - 2*bx) * legendPos_.first + bx,
+             newyPos = (1 - 2*by) * legendPos_.second + by;
       gr_.Legend(newxPos, newyPos);
     }
     else {
