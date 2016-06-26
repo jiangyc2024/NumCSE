@@ -334,10 +334,29 @@ void Figure::title(const std::string& text)
   title_ = text;
 }
 
-/* save figure                                                       *
- * PRE : -                                                           *
- * POST: write figure to 'file' in png-format if 'file' end on .png, *
- *       and to eps-format otherwise                                 */
+/* save figure                                                              *
+ * PRE : -                                                                  *
+ * POST: write figure to 'file' in png-format if 'file' end on .png,        *
+ *       and to eps-format otherwise                                        *
+ * ! IMPORTANT NOTE !                                                       *
+ * The methods on gr_ have to be called in a particular order:              *
+ *  1. SetSize - first to be called as it deletes all content               *
+ *  2. Set Ticks & Font (SetTuneTicks, SetTickLen, LoadFont, SetFontSizePT) *
+ *              2d-plot                     3d-plot                         *
+ *  3. SubPlot                           3. SetRanges                       *
+ *  4. SetRanges                         4. Rotate                          *
+ *  4. Title                             5. Title & Label                   *
+ *  5. InPlot                            6. SetFunc                         *
+ *  6. Label                             7. Grid                            *
+ *  7. SetFunc                           8. Axis                            *
+ *  8. Grid                              9. Box                             *
+ *  9. Axis                              10. now do all kinds of plots      *
+ *  10. Box                              11. AddLegend                      *
+ *  11. now do all kinds of plots        12. Legend                         *
+ *  12. AddLegend                        finally: WriteEPS/PNG              *
+ *  13. Legend                                                              *
+ *  finally: WriteEPS/PNG                                                   *
+ * If this order is violated the layout may change drastically!             */
 void Figure::save(const std::string& file) {
   mglGraph gr_; // graph in which the plots will be saved
 
@@ -351,10 +370,10 @@ void Figure::save(const std::string& file) {
       leftMargin_ = 150;
     }
     else {
-      figWidth_ = plotWidth_ + 100;
-      figHeight_ = plotHeight_ + 100;
-      topMargin_ = 50; // just a small margin, space for axis ticks
-      leftMargin_ = 50;
+      figWidth_ = plotWidth_ + 200;
+      figHeight_ = plotHeight_ + 200;
+      topMargin_ = 100; // just a small margin, space for axis ticks
+      leftMargin_ = 100;
     }
   }
 
@@ -365,24 +384,6 @@ void Figure::save(const std::string& file) {
   gr_.SetTuneTicks(true, 1.04);
   // Shorten tick marks (factor 0.01) and make subticks so small that they do not appear (factor 1000)
   gr_.SetTickLen(0.01, 1000); 
-
-/*
-  // find out which subplot type to use
-  std::string subPlotType = "";
-  if (yMglLabel_.str_.size() != 0){
-    // if there is a ylabel leave a margin on the left
-    subPlotType += "<";
-    subPlotType += ">"; // to make it look nice and symmetric also add margin on the right
-  }
-  if (xMglLabel_.str_.size() != 0){
-    // if there is a xlabel leave a margin on the bottom
-    subPlotType += "_";
-  }
-  if (title_.size() != 0){
-    // if there is a title leave  margin on the top
-    subPlotType += "^";
-  }
-*/
 
   // set font to 'heros'. If the file is not available on the machine it will use the MathGL default (STIX)
   gr_.LoadFont("heros");
@@ -398,10 +399,6 @@ void Figure::save(const std::string& file) {
   }
   else {
     gr_.SubPlot(1, 1, 0, "#"); 
-    gr_.InPlot( double(leftMargin_) / figWidth_, // margin from left
-                double(leftMargin_ + plotWidth_) / figWidth_, // how far to the right
-                double(figHeight_ - plotHeight_ - topMargin_) / figHeight_, // how far to the bottom
-                double(figHeight_ - topMargin_) / figHeight_ ); // how far up
     gr_.SetRanges(ranges_[0], ranges_[1], ranges_[2], ranges_[3]);
   }
 
@@ -409,6 +406,19 @@ void Figure::save(const std::string& file) {
   //              1,-1, 1 will invert the y axis. (used for spy plots)
   // Note: This *has* to be called after SubPlot, otherwise the axis labels will be in 1,1,1 manner
   gr_.Aspect(aspects_[0], aspects_[1], aspects_[2]);
+
+  // Add title
+  if (title_.size() != 0){
+    gr_.Title(title_.c_str());
+  }
+
+  // use InPlot to force having a quadratic plot-window
+  if (!has_3d_) {
+    gr_.InPlot( double(leftMargin_) / figWidth_, // margin from left
+                double(leftMargin_ + plotWidth_) / figWidth_, // how far to the right
+                double(figHeight_ - plotHeight_ - topMargin_) / figHeight_, // how far to the bottom
+                double(figHeight_ - topMargin_) / figHeight_ ); // how far up
+  }
 
   // Set label - before setting curvilinear because MathGL is vulnerable to errors otherwise
   gr_.Label('x', xMglLabel_.str_.c_str(), xMglLabel_.pos_);
@@ -441,10 +451,10 @@ void Figure::save(const std::string& file) {
   if (legend_){
     if (!has_3d_) {
       // scale legend input according to figHeight, figWidth, plotHeight, plotWidth, etc.
-      const double bx = leftMargin_/figWidth_, // helper variables
-                   by = topMargin_/fighHeight_;
+      const double bx = 1.1*double(leftMargin_)/figWidth_, // helper variables
+                   by = 1.1*double(topMargin_)/figHeight_;
       const double newxPos = (1 - 2*bx) * legendPos_.first + bx,
-                   newyPos = (1 - 2*by) * legendPos_.first + by;
+                   newyPos = (1 - 2*by) * legendPos_.second + by;
       gr_.Legend(newxPos, newyPos);
     }
     else {
@@ -452,10 +462,6 @@ void Figure::save(const std::string& file) {
     }
   }
 
-  // Add title
-  if (title_.size() != 0){
-    gr_.Title(title_.c_str());
-  }
 
 #if NDEBUG
   std::cout << "Writing to file ... \n";
