@@ -451,7 +451,7 @@ void Figure::save(const std::string& file) {
   if (legend_){
     if (!has_3d_) {
       // scale legend input according to figHeight, figWidth, plotHeight, plotWidth, etc.
-      double bx = 1.1*double(leftMargin_)/figWidth_, // helper variables
+      double bx = 1.3*double(leftMargin_)/figWidth_, // helper variables
              by = 1.1*double(topMargin_)/figHeight_;
 
       if(xMglLabel_.str_.size() != 0) {
