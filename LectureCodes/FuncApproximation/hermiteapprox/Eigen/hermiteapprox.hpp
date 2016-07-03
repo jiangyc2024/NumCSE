@@ -96,7 +96,7 @@ VectorXd slopes(const VectorXd& t, const VectorXd& y) {
   c(0) = delta(0);
   c(n) = delta(n-1);
   for (unsigned i = 1; i < n; ++i) {
-    c(i) = ( h(i)*delta(i - 1) + h(i - 1)*delta(i) ) / ( t(i + 1) - t(i - 1) );
+    c(i) = (h(i)*delta(i - 1) + h(i - 1)*delta(i)) / (t(i + 1) - t(i - 1));
   }
   return c;
 }
