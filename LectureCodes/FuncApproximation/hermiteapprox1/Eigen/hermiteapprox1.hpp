@@ -7,6 +7,7 @@
 # include "feval.hpp"
 using Eigen::VectorXd;
 
+/*LSTBEGIN0*/
 void append(VectorXd&, const VectorXd&); // forward declaration of append()
 
 // Investigation of interpolation error norms for cubic Hermite interpolation of \Blue{$f$} (handle \texttt{f})
@@ -29,7 +30,7 @@ void hermiteapprox(const Function& f, const Derivative& df, const double a, cons
       // local evaluation nodes in interval \Blue{$[t_k, t_{k+1}]$}
       VectorXd vx = VectorXd::LinSpaced(100, t(k), t(k+1)),
                locval;
-      // evaluate the hermite interpolant at the \texttt{vx}
+      // evaluate the hermite interpolant at the \texttt{vx}, using \cref{hermloceval}
       hermloceval(vx, t(k), t(k+1), y(k), y(k+1), c(k), c(k+1), locval);
       // do not append the first value as that one is already in the vector
       append(xx, vx.tail(99));
@@ -85,3 +86,4 @@ void append(VectorXd& x, const VectorXd& y) {
   x.conservativeResize(x.size() + y.size());
   x.tail(y.size()) = y;
 }
+/*LSTEND0*/

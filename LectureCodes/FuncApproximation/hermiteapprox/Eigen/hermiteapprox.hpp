@@ -7,6 +7,7 @@
 # include "feval.hpp"
 using Eigen::VectorXd;
 
+/*LSTBEGIN0*/
 VectorXd slopes(const VectorXd&, const VectorXd&); // forward declaration
 void append(VectorXd&, const VectorXd&);
 
@@ -30,7 +31,7 @@ void hermiteapprox(const Function& f, const double a, const double b, const unsi
       // local evaluation nodes
       VectorXd vx = VectorXd::LinSpaced(100, t(k), t(k+1)),
                locval;
-      // evaluate the hermite interpolant at the vx
+      // evaluate the hermite interpolant at the vx, using \cref{hermloceval}
       hermloceval(vx, t(k), t(k+1), y(k), y(k+1), c(k), c(k+1), locval);
       // do not append the first value as that one is already in the vector
       append(xx, vx.tail(99));
@@ -105,3 +106,4 @@ void append(VectorXd& x, const VectorXd& y) {
   x.conservativeResize(x.size() + y.size());
   x.tail(y.size()) = y;
 }
+/*LSTEND0*/
