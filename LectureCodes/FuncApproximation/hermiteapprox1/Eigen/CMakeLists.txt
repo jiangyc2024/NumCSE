@@ -1,5 +1,6 @@
 project(hermiteapprox1)
 cmake_minimum_required(VERSION 2.8)
 
-include_directories(../../../../Utils)
+include_directories(../../../../Utils
+                    ../../../Interpolation/hermloceval/Eigen)
 add_executable_numcse(main main.cpp)
