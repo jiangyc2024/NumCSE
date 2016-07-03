@@ -1,15 +1,12 @@
-# include <cmath>
+# include <iostream>
+# include <cmath> // needed for std::log()
 # include <vector>
 # include <Eigen/Dense>
 # include <figure/figure.hpp>
-# include "./csintp.hpp"
-# include "polyfit.hpp"
-# include "feval.hpp"
-# include "completespline.hpp"
-# include <iostream>
-
+# include "polyfit.hpp" // provides polyfit(), see NumCSE/Utils
+# include "feval.hpp" // provides feval(), see NumCSE/Utils
+# include "completespline.hpp" // provides spline()
 using Eigen::VectorXd;
-
 
 // Study of interpolation error norms for \emph{complete} cubic spline interpolation of \Blue{$f$}
 // on equidistant knot set.
@@ -22,7 +19,6 @@ void splineapprox(Function& f, Derivative& df, const double a, const double b, c
   std::vector<double> errL2, errInf, h;
   VectorXd v, // save result of spline approximation here
            t; // spline knots
-  mgl::Figure plot;
   for (unsigned j = 3; j <= N; ++j) {
     t = VectorXd::LinSpaced(j, a, b); // spline knots
     VectorXd ft = feval(f, t);
@@ -31,11 +27,8 @@ void splineapprox(Function& f, Derivative& df, const double a, const double b, c
     // spline: takes set of interpolation data (t, y) and slopes at endpoints,
     //         and returns values at points x
     v = spline(t, ft, df(a), df(b), x);
-
     // compute error norms 
     h.push_back( (b - a)/j ); // save current mesh width
-    //errL2.push_back( 1 );
-    //errInf.push_back( 1 );
     errL2.push_back( (fv - v).lpNorm<2>() );
     errInf.push_back( (fv - v).lpNorm<Eigen::Infinity>() );
   }
@@ -53,7 +46,6 @@ void splineapprox(Function& f, Derivative& df, const double a, const double b, c
   std::cout << "L2 norm convergence rate: " << p(0) << "\n";
   p = polyfit(hLog, errInfLog, 1);
   std::cout << "Supremum norm convergence rate: " << p(0) << "\n";
-
 
   // plot interpolation
   mgl::Figure fig;

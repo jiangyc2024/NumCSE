@@ -1,10 +1,8 @@
 # include <Eigen/Dense>
 # include <Eigen/Sparse>
 # include <Eigen/SparseLU>
-
 using Eigen::VectorXd;
 using Eigen::SparseMatrix;
-
 
 // perform complete cubic spline interpolation of data \Blue{$(t, y)$} and evaluate at points \texttt{x}
 // implementation at the bottom
@@ -49,7 +47,6 @@ VectorXd coeffsCSI(const VectorXd& t, const VectorXd& y, const double c0, const 
   const VectorXd cpart = solver.solve(rhs);
   VectorXd c = Eigen::VectorXd(n + 1);
   c << c0, cpart, cn;
-
   return c;
 }
 
@@ -71,7 +68,6 @@ double eval(const double x, const VectorXd& t, const VectorXd& y, const VectorXd
 
   // vector of meshwidths
   const VectorXd h = t.tail(n) - t.head(n);
-
   // evaluate
   const double tau = (x - t(i))/h(i);
   const double tau2 = tau*tau,
@@ -96,5 +92,4 @@ VectorXd eval(const VectorXd& x, const VectorXd& t, const VectorXd& y, const Vec
 VectorXd spline(const VectorXd& t, const VectorXd& y, const double c0, const double cn, const VectorXd& x) {
   const VectorXd c = coeffsCSI(t, y, c0, cn);
   return eval(x, t, y, c);
-  return c;
 }
