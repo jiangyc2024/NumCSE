@@ -9,17 +9,15 @@ using Eigen::MatrixXd;
 //      \texttt{x} = evaluation points
 // OUT: values $p(x)$
 VectorXd clenshaw(const VectorXd& a, const VectorXd& x) {
-  const unsigned n = a.size() - 1; // degree of polynomial
+  const int n = a.size() - 1; // degree of polynomial
   MatrixXd d(n + 1, x.size());
   for (unsigned c = 0; c < x.size(); ++c) {
     d.col(c) = a;
   }
-
   for (int j = n - 1; j > 0; --j) {
     d.row(j) += 2*x.transpose().cwiseProduct( d.row(j + 1) ); // see \eqref{eq:cstr}
     d.row(j - 1) -= d.row(j + 1);
   }
-
   return d.row(0) + x.transpose().cwiseProduct( d.row(1) );
 }
 /*LSTEND0*/
