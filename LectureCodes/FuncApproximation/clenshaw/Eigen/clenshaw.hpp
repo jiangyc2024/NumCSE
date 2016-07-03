@@ -3,6 +3,7 @@
 using Eigen::VectorXd;
 using Eigen::MatrixXd;
 
+/*LSTBEGIN0*/
 // Clenshaw algorithm for evaluating \Blue{$p = \sum_{j=1}^{n+1}a_j T_{j-1}$} at points passed in vector \texttt{x}
 // IN : \Blue{$\mathbf{a}$} in \Blue{$p = \sum_{j=1}^{n+1} a_j T_{j-1}$}
 //      \texttt{x} = evaluation points
@@ -21,3 +22,4 @@ VectorXd clenshaw(const VectorXd& a, const VectorXd& x) {
 
   return d.row(0) + x.transpose().cwiseProduct( d.row(1) );
 }
+/*LSTEND0*/

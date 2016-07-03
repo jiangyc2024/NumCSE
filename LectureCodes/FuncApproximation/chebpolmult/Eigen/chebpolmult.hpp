@@ -1,8 +1,5 @@
-# include <iostream>
 # include <Eigen/Dense>
-
-using Eigen::RowVectorXd;
-using Eigen::MatrixXd;
+using Eigen::RowVectorXd; using Eigen::MatrixXd;
 
 // Computes the values of the Chebychev polynomials \Blue{$T_{0},\ldots,T_{d}$}, \Blue{$d\geq 2$}
 // at points passed in \texttt{x} using the 3-term recursion \eqref{eq:ChebychevRecursion}.

@@ -1,6 +1,6 @@
 # include <Eigen/Dense>
 using Eigen::VectorXd;
-
+/*LSTBEGIN0*/
 // Recursive evaluation of a polynomial \Blue{$p = \sum_{j=1}^{n+1}a_j T_{j-1}$} at point \texttt{x}, see \eqref{eq:cstr}
 // IN : Vector of coefficients a
 //      evaluation point x
@@ -17,3 +17,4 @@ double recclenshaw(const VectorXd& a, const double x) {
   }
   return y;
 }
+/*LSTEND0*/

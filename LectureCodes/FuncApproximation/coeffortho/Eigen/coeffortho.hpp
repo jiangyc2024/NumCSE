@@ -2,6 +2,7 @@
 # include <Eigen/Dense>
 using Eigen::VectorXd;
 
+/*LSTBEGIN0*/
 // Computation of coefficients \Blue{$\alpha$, $\beta$} from \ref{thm:onp:rec}
 // IN : \texttt{t} = points in the definition of the discrete $L^2$-inner product
 //      \texttt{n} = maximal index desired
@@ -28,3 +29,4 @@ void coeffortho(const VectorXd& t, const int n, VectorXd& alpha, VectorXd& beta)
     p2 = (t-alpha(k+1)*VectorXd::Ones(m)).cwiseProduct(p1)-beta(k)*p0;
   }
 }
+/*LSTEND0*/
