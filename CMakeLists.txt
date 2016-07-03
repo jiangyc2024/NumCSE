@@ -23,6 +23,7 @@ include(CMake/Macros/subdirlist.cmake)
 include(CMake/Macros/add_all_subdirectories.cmake)
 include(CMake/Macros/get_target_name_numcse.cmake)
 include(CMake/Macros/add_executable_numcse.cmake)
+include(CMake/Macros/add_resources.cmake)
 
 #
 # setup compiler
@@ -174,7 +175,7 @@ include_directories(${FIGURE_INCLUDE_DIR})
 
 include_directories(${FIGURE_INCLUDE_DIR}/../)
 
-include_directories(${CMAKE_SOURCE_DIR}/LectureCodes/FunctionCollection) # oh dear
+include_directories(${CMAKE_SOURCE_DIR}/Utils) # oh dear
 
 #
 # include subdirectories

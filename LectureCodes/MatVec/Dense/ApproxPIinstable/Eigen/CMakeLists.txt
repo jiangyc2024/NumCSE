@@ -1,8 +1,4 @@
 cmake_minimum_required(VERSION 2.8)
 project(ApproxPIinstable)
 
-include(../../../../GetModules.cmake)
-get_modules("Eigen")
-
-include_directories(${DIRS})
-add_executable(main main.cpp)
+add_executable_numcse(ApproxPIinstable_main main.cpp)

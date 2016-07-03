@@ -46,3 +46,15 @@ For further information see [Documentation](Documentation/cmake.md)
 ```
 add_executable_numcse(main main.cpp)
 ```
+
+### Third party libraries
+
+Dependencies / Requirements
+
+- C++ compiler (C++11 support required)
+- git
+- cmake
+- mathgl
+- eigen
+- [gmp]
+- [mpfr]
