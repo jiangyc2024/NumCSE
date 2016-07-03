@@ -5,6 +5,7 @@
 using Eigen::VectorXcd; 
 using Eigen::VectorXd;
 
+/*LSTBEGIN0*/
 // Evaluation of trigonometric interpolation polynomial through \Blue{$(\frac{j}{2n+1},y_j)$}, \Blue{$j=0,\ldots,2n$}
 // in equidistant points \Blue{$\frac{k}{N}$}, \Blue{$k=0,N-1$}
 // IN : \texttt{y} = vector of values to be interpolated
@@ -44,3 +45,4 @@ void trigpolyvalequid(const VectorXd y, const int M, VectorXd& q) {
   // complex part is zero up to machine precision, cut off!
   q = q_complex.real();
 }
+/*LSTEND0*/
