@@ -1,7 +1,7 @@
 # include <iostream>
 # include <complex>
-# include <cmath> // M_PI
-# include <limits> // numeric_limits<double>::max()
+# include <cmath> // M\_PI
+# include <limits> // numeric\_limits<double>::max()
 # include <vector>
 # include <Eigen/Dense>
 # include <figure/figure.hpp>
@@ -14,7 +14,7 @@ using Eigen::VectorXd;
 // ($\to$ Code~\ref{trigpolycoeff} of coefficients of trigonoetric interpolation polynomial in
 // equidistant points.
 void trigipequidtiming() {
-  const int Nruns = 3;
+  const int Nruns = 5;
   std::array< std::vector<double>, 3 > times; // times = [n, t1, t2]
 
   for (int n = 10; n <= 500; n += 10) {
