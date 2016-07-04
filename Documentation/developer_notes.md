@@ -62,9 +62,32 @@ To set up the symlink access the parent directory of the SVN-NCSE directory and 
 
 	ln -s /path/to/Gitlabs/LectureCodes CppScriptCodes
 
+### Full inclusion of the code 
+
 Place the codes in the `.tex` files as follows:
 
 	\begin{lstlisting}
-	  \lstinputlisting[style=cpp,&lt;optional arguments&gt;]{%
+	  \lstinputlisting[style=cpp, <optional arguments>]{%
 	    ./../../CppScriptCodes/Chapter/Eigen/code.cpp}
 	\end{lstlisting}
+	
+### Partial inclusion
+
+It is also possible to include only certain parts of the code in the script.
+To do so you can use the `lstincludecpp`-macro:
+
+    \begin{lstlisting}
+        \lstincludecpp[<optional arguments>]{%
+          ./../../CppScriptCodes/Chapter/Eigen/code.cpp}{<no>}
+    \end{lstlisting}
+
+To mark the parts in the `.*pp` file you can use:
+
+    /*LSTBEGIN<no>*/
+    some code happening here
+    /*LSTEND<no>*/
+    
+Be sure to replace `<no>` and with a number of your choice and not only `no`,
+so in the end you have something like
+
+    /*LSTBEGIN0*/ ... /*LSTEND0*/
