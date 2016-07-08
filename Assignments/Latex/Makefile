@@ -1,6 +1,7 @@
 all: setup NCSEProblems.pdf clean
 
 svn_url="https://svn.id.ethz.ch/sam/Numcourses/ncse/ncse_new"
+slidemode="4"
 
 #
 # Download packages, numcse_macro and aux file from svn
@@ -32,9 +33,13 @@ rev.tex:
 #
 # Compile latex
 #
+define LATEXCOMPILE
+latex -interaction=scrollmode -shell-escape "\newcommand{\slidemode}{$(slidemode)} \input{$1}"
+endef
+
 NCSEProblems.dvi: NCSEProblems.tex
-	latex -interaction=scrollmode -shell-escape $<
-	latex -interaction=scrollmode -shell-escape $<
+	$(call LATEXCOMPILE,$<)
+	$(call LATEXCOMPILE,$<)
 
 %.pdf: %.dvi
 	dvipdf $<
