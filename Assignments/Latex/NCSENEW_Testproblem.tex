@@ -1,0 +1,118 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Test problem for new environment 'samproblem'
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{samproblem}*{prb:test}{Test problem}[3](15){This problem tests the new \texttt{samproblem} \LaTeX environment.
+
+It is related to \cref{sec:cpp} and considers the following formula
+\begin{sammath}{gather}
+  \prblabel{eq:0}
+  s = \sum\limits_{k=0}^{n}f(k)\;\bdot
+ \end{sammath}%
+}
+
+\begin{samhint}
+  This is a lonely hint at the toplevel of \cref{prb:test}. 
+\end{samhint}
+
+\begin{subproblem}{sp:1}[3](3)
+  \par\begin{lstlisting}[style=cpp]
+template <typename Function>
+double proccess(Function &f,const std::vector<double> &x) {
+  double s = 0;
+  // Sum according to \prbeqref{eq:0}
+  for(auto i : x) { s += f(i); } 
+  return s; 
+}
+\end{lstlisting}
+
+We consider the integral 
+\begin{sammath}{gather}
+  \prblabel{eq:1}
+  \int\limits_{0}^{1}e^{x}\,\textrm{d}e = ?
+\end{sammath}%
+In \prbref{eq:1} we see the disturbing impact of alien notation, see also \cref{par:ops}.
+
+  % BEGIN ================ OUTPUT  ================   %
+  \begin{samwriteprbpart}{h1}
+    \begin{writeverbatim}{prbfile}
+      \begin{samhint}
+        Recall \prbcref{eq:1}!
+      \end{samhint}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+  
+  % BEGIN ================ OUTPUT  ================   %
+  \begin{samwriteprbpart}{h2}
+    \begin{writeverbatim}{prbfile}
+      \begin{samhint}
+        Take into account \cref{mc:sa3} and
+        \begin{sammath}{gather}
+          \prblabel{h:1}
+          a^{2} - b^{2} = (a+b)(a-b)\;\bdot
+        \end{sammath}%
+      \end{samhint}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+
+  % BEGIN ================ OUTPUT  ================   %
+  \begin{samwriteprbpart}{testsol}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        We make use of \prbeqref{h:1} and \prbeqref{eq:1} and conclude
+        \begin{sammath}{gather}
+          \prblabel{s:1}
+          1*1 = 1 !
+        \end{sammath}%
+      \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+
+\end{subproblem}
+
+This is text between \prbcref{sp:1} and \prbcref{sp:2}. 
+
+\begin{subproblem}{sp:2}<\prbref{sp:1}>
+  This subproblem continues \prbcref{sp:1} and looks at
+  \begin{sammath}{gather}
+    \prblabel{eq:2}
+    \btext{\prbeqref{eq:1}}\quad \Black{\Rightarrow}\quad
+    x^{2} = x-1\;\bdot
+  \end{sammath}%
+  The entire sub-problem is indented. 
+
+  
+  % BEGIN ================ OUTPUT  ================   %
+  \begin{samwriteprbpart}{sol}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        This is the solution of \prbcref{sp:2}!
+
+        \begin{minipage}[c]{0.5\textwidth}
+          This means
+          \begin{sammath}{gather}
+            \prblabel{pl:1}
+            1 + 1 = 2 !
+          \end{sammath}%
+          and this might be related to \prbeqref{h:1}, see
+          \cref{drawing}.
+        \end{minipage}%
+        \begin{minipage}[c]{0.5\textwidth}
+          \samplot{drawing}
+        \end{minipage}%
+      \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+\end{subproblem}
+
+\end{samproblem}
+
+\bigskip 
+
+Outside the problem we can reference equations: \eqref{prb:test:eq:0} or 
+\cref{prb:test:eq:1}.
+
+We can also referennce \cref{prb:test:sp:2} or \ref{prb:test:sp:2}.
+\bigskip
+
+

@@ -1,0 +1,133 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Numerical Methods for CSE, ETH Zuerich
+%
+% (C) Seminar for Applied Mathematics, D-MATH
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[12pt]{report}
+% Specific information for course
+\newcommand{\lectyear}{2015}
+\newcommand{\lectterm}{AT'15}
+\newcommand{\lecturer}{Prof. Ralf Hiptmair}
+\newcommand{\lecture}{NumCSE}
+
+% \newcommand{\slidemode}{4}
+\usepackage{samlecturenotes}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Version with Python programs (created by F. Thaler, AS 2015)
+% MATLAB programs ported to Python and included in lecture document.
+% Inclusion of python specific parts controlled by boolean switch
+\newboolean{withpython}
+\setboolean{withpython}{true}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Graphics input path
+\graphicspath{
+{./PICS/}
+{./p1_SystemsOfEquations/Triangulations/}
+{./p1_SystemsOfEquations/ch1_MatVec/PICTURES/}
+{./p1_SystemsOfEquations/ch2_DirectMethodsLSE/PICTURES/}
+{./p1_SystemsOfEquations/ch3_IterativeMethodsNonLinear/PICTURES/}
+{./p1_SystemsOfEquations/ch4_IterativeMethodsLSE/PICTURES/}
+{./p1_SystemsOfEquations/ch5_Eigenvalues/PICTURES/}
+{./p1_SystemsOfEquations/ch6_LeastSquares/PICTURES/}
+{./p1_SystemsOfEquations/ch7_Convolution/PICTURES/}
+{./p1_SystemsOfEquations/ch8_FFT/PICTURES/}
+{./p2_InterpolationApproximation/ch1_PolynomialInterpolation/PICTURES/}
+{./p2_InterpolationApproximation/ch2_PiecewisePolynomials/PICTURES/}
+{./p2_InterpolationApproximation/ch4_NumericalQuadrature/PICTURES/}
+{./p2_InterpolationApproximation/ch6_ClusteringTechniques/PICTURES/}
+{./p2_InterpolationApproximation/ch3_TrigonometricInterpolation/PICTURES/}
+{./p2_InterpolationApproximation/ch5_FilteringWavelets/PICTURES/}
+{./p3_ODE/ch1_SingleStepMethods/PICTURES/}
+{./p3_ODE/ch2_ConvergenceStability/PICTURES/}
+{./Maturandentag/PICTURES/}
+}
+
+\externaldocument{./NCSENEW}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Include macros
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{NCSENEW_macros}
+
+% Partial compilation when in editing mode (selective inclusion)
+\ifthenelse{\equal{4}{\slidemode}}
+{%
+  \includeonly{NCSENEW_Testproblem}{}
+}{}
+
+% Import SVN revision
+
+\input{rev}
+
+\begin{document}
+
+\begin{tcolorbox}[colframe=black]
+\begin{minipage}[t][0.6\textwidth][c]{\textwidth}
+  ETH Lecture 401-0663-00L  Numerical Methods for CSE 
+  \B\vspace{1.5cm}
+  
+  \begin{center}
+    \Red{\Huge Homework Problems}
+  \end{center}
+  \vspace{1.5cm}
+  
+  \begin{center}
+  \begin{large}
+    {\Large Prof. R. Hiptmair, SAM, ETH Zurich}\\[1.5ex]
+
+    Autumn Term 2016 %  draft version \svnToday, SVN rev. \svnInfoRevision
+
+    (C) Seminar f\"ur Angewandte Mathematik, ETH Z\"urich
+    \samskip
+
+    URL: \href{http://www.sam.math.ethz.ch/~hiptmair/tmp/NumCSE/NumCSE15.pdf}{%
+      http://www.sam.math.ethz.ch/\symbol{126}hiptmair/tmp/NumCSE/NumCSE15.pdf}
+  \end{large}
+\end{center}
+\end{minipage}
+\end{tcolorbox}
+\bigskip
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Selective inclusion of Problems
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Problems}
+\Label{cha:prb}
+
+\section{Test Problems}
+
+\include{NCSENEW_Testproblem}%
+
+\section{Inclusion of Codes}
+
+Parts of a C++ code can be included by means of the \verb|\lstincludecpp| command:
+
+Included with tag 2:
+
+\begin{samcode}[C++ code]{cpp:1}{A demo code}
+  \lstincludecpp[emph={NPDE},linebackgroundcolor={\lstcolorrange{2}{4}}]{test.cpp}{2}
+\end{samcode}
+
+Note \cref{l:1}! Included with tag 4, same file as \cref{cpp:1}.
+
+\lstincludecpp[emph={Constant},linebackgroundcolor={\lstcolorlines{1,3,5}}]{test.cpp}{4}
+
+\chapter{Summary}
+\Label{cha:sum}
+
+\cref{prb:test}: This is a test problem for demonstration only
+
+
+\bibliographystyle{plain} 
+\bibliography{lit}
+
+\end{document}
+
