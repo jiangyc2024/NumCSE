@@ -5,7 +5,7 @@ svn_url="https://svn.id.ethz.ch/sam/Numcourses/ncse/ncse_new"
 #
 # Download packages, numcse_macro and aux file from svn
 #
-setup: NCSENEW_macros.tex samlecture_macros.tex samlecturenotes.sty NCSENEW.aux
+setup: NCSENEW_macros.tex samlecture_macros.tex samlecturenotes.sty NCSENEW.aux rev.tex
 
 NCSENEW_macros.tex:
 	svn export $(svn_url)/$@
@@ -20,6 +20,10 @@ samlecturenotes.sty:
 	chmod 555 $@
 
 NCSENEW.aux:
+	svn export $(svn_url)/$@
+	chmod 555 $@
+
+rev.tex:
 	svn export $(svn_url)/$@
 	chmod 555 $@
 
@@ -42,7 +46,7 @@ clean:
 	rm -f *.bbl *.aux *.log *.blg *~ *.bak *.ps *.dvi *.out *.tmp *.mtc *.mtc0 *.mw *.maf *.edx *.idx *.ddx *.sdx
 
 cleanexternal:
-	rm -f NCSENEW_macros.tex samlecture_macros.tex samlecturenotes.sty
+	rm -f rev.tex NCSENEW_macros.tex samlecture_macros.tex samlecturenotes.sty
 
 cleanall: clean cleanexternal
 	rm -f NCSEProblems.pdf
