@@ -20,7 +20,9 @@
 \usepackage{psfrag}
 % \usepackage{subfig} 
 \usepackage{epsdice} 
-\usepackage{epstopdf} 
+\usepackage{epstopdf}
+\epstopdfsetup{outdir=./tmp_epstopdf/}
+\immediate\write18{mkdir tmp_epstopdf}
 \usepackage{environ}
 \usepackage{enumerate}
 \usepackage{tikz}
