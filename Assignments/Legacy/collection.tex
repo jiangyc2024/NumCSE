@@ -1,0 +1,46 @@
+\documentclass[12pt,oneside]{book}
+
+% Metadata
+\usepackage{titling}
+\author{G. Alberti, R. Hiptmair, F. Leonardi}
+\title{Collections of problems AS 15}
+\date{\today}
+
+% Folders variables
+\newcommand{\problems}{./Problems}
+\newcommand{\packages}{./packages}
+
+% Header/Footet
+\pagestyle{fancy}
+\lfoot{Chapter \arabic{chapter}}\cfoot{Page \thepage}\rfoot{\thesection}
+\lhead{}\chead{}\rhead{}
+\renewcommand{\headrulewidth}{0pt}\renewcommand{\footrulewidth}{0.4pt}
+
+\input{packages.tex}
+\input{definitions.tex}
+\input{config.tex}
+\input{../../slidesymbols.tex}
+\addbibresource{literature.bib}
+
+% Config what to display
+% \setboolean{withsolution}{false}
+\setboolean{withsolution}{true}
+
+\setcounter{tocdepth}{0}
+\renewcommand{\thechapter}{}
+
+\begin{document}
+
+\maketitle
+ 
+\tableofcontents
+
+\chapter{Dummy chapter}
+
+\input{\problems/dummy/ex_arrow_matvec_dummy.tex} % Dummy exercise
+
+\printbibliography
+
+\gray{Version compiled on: \today.}
+
+\end{document}

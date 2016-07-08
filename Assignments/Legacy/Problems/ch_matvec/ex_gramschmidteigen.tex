@@ -1,0 +1,36 @@
+% Required for hand-in: houserefl.cpp
+% Required for solution: houserefl.m, qr_houserefl.m
+\renewcommand{\chpt}{ch_matvec}
+
+\begin{problem}[Gram-Schmidt orthogonalization with \eigen{}]
+  \label{prb:gramschmidteigen} 
+  \lref{gramschmidt} presents a \matlab{} code that effects the Gram-Schmidt
+  orthogonalization of the columns of an argument matrix. 
+
+  \begin{subproblem}[2]
+    \label{sp:strassen:1}
+    Based on the
+    C++ linear algebra library \eigen{} implement a function
+\begin{lstlisting}[style=cppsimple]
+template <class Matrix>  
+Matrix gramschmidt(const Matrix &A);
+\end{lstlisting}
+    that performs the same computations as \lref{gramschmidt}. 
+
+    \begin{solution}
+     See \texttt{gramschmidt.cpp}.
+    \end{solution}
+  \end{subproblem}
+
+  \begin{subproblem}[2]
+    \label{sp:strassen:2}
+    Test your implementation by applying it to a small random matrix
+    and checking the orthonormality of the columns of the output
+    matrix. 
+
+    \begin{solution}
+     See \texttt{gramschmidt.cpp}.
+    \end{solution}
+
+  \end{subproblem}
+\end{problem}

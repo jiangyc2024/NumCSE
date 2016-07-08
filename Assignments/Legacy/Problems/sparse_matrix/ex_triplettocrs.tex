@@ -1,0 +1,157 @@
+\begin{problem}[\Cpp{} project: triplet format to CRS format \coreproblem]
+ 
+  This exercise deals with sparse matrices and their storage in memory. Before
+  beginning, make sure you are prepared on the subject by reading section
+  \ncsesect{sec:sparse} of the lecture notes. In particular, refresh yourself in
+  the various \emph{sparse storage formats} discussed in class
+  (cf. \ncsesect{sec:sparse-matr-stor}). This problem will test your knowledge of
+  algorithms and of advanced \Cpp{} features (i.e. structures and
+  classes\footnote{You may have a look at
+    \href{http://www.cplusplus.com/doc/tutorial/classes/}{http://www.cplusplus.com/doc/tutorial/classes/}.}). You
+  do not need to use \Eigen{} to solve this problem.
+ 
+  The ultimate goal of this exercise is to devise a function that allows the
+  conversion of a matrix given in \emph{triplet list format} (COO, $\to$
+  \lref{par:triplet}) to a matrix in \emph{compressed row storage} (CRSm $\to$
+  \lref{ex:CRS}) format. You do not have to follow the subproblems, provided you
+  can devise a suitable conversion function and suitable data structures for you
+  matrices.
+ 
+ \begin{subproblem}[2]
+  In section \ncseref{par:triplet} you saw how a matrix can be stored in triplet (or coordinate)  list format. This format stores a collection of triplets $(i,j,v)$ with $i,j \in \IN, i,j \geq 0$ (the indices) and $v \in \mathbb{K}$ (the value at $(i,j)$). Repetitions of $i,j$ are allowed, meaning that the values at the same indices $i,j$ must be \emph{summed} together in the final matrix.
+ 
+  Define a suitable structure:
+  \begin{verbatim}
+   template <class scalar>
+   struct TripletMatrix;
+  \end{verbatim}
+  that stores a matrix of type \verb|scalar| in COO format. You can store sizes
+  and indices in \verb|std::size_t| predefined type.
+  
+  \begin{hint}
+   Store the rows and columns of the matrix inside the structure.
+  \end{hint}
+  
+  \begin{hint}
+   You can use a \verb|std::vector<your_type>| to store the collection of triplets.
+  \end{hint}
+  
+  \begin{hint}
+   You can define an auxiliary structure \verb|Triplet| containing the values
+   $i,j,v$ (with the appropriate types), but you may also use the type
+   \verb|Eigen::Triplet<double>|. 
+  \end{hint}
+
+ \end{subproblem}
+
+ \begin{subproblem}[2]
+   Another format for storing a sparse matrix is the compressed row storage (CRS)
+   format (have a look at \ncseex{ex:CRS}). 
+
+   \textit{Remark}. Here, we are not particularly strict about the ``compressed''
+   attribute, meaning that you can store your data in \verb|std::vector|. This may
+   ``waste'' some memory, because the \texttt{std::vector} container adds a
+   padding at the end of is data that allows for \texttt{push\_back} with
+   amortized $O(1)$ complexity.
+ 
+   Devise a suitable structure:
+\begin{verbatim}
+   template <class scalar>
+   struct CRSMatrix;
+\end{verbatim}
+   holding the data of the matrix in CRS format.
+   
+  \begin{hint}
+   Store the rows and columns of the matrix inside the structure. To store the data, you can use \verb|std::vector|.
+  \end{hint}
+  
+  \begin{hint}
+   You can pair the column indices and value in a single structure \verb|ColValPair|. This will become handy later.
+  \end{hint}
+  
+  \begin{hint}
+   Equivalently to store the array of pointers to the column indices you can use a nested \verb|std::vector< std::vector<your_type> >|.
+  \end{hint}
+
+ \end{subproblem}
+ 
+ \begin{subproblem}[3]
+  Optional: write member functions
+  \begin{verbatim}
+Eigen::Matrix<scalar, Eigen::Dynamic, Eigen::Dynamic>
+    TripletMatrix<scalar>::densify();
+Eigen::Matrix<scalar, Eigen::Dynamic, Eigen::Dynamic>
+    CRSMatrix<scalar>::densify();
+  \end{verbatim}
+  for the structure \verb|TripletMatrix| and \verb|CRSMatrix| that convert your matrices structures to \Eigen{} dense matrices types. This can be helpful in debugging your code.
+ \end{subproblem}
+
+
+ \begin{subproblem}[5]
+  Write a function:
+  \begin{verbatim}
+template <class scalar>
+void tripletToCRS(const TripletMatrix<scalar> & T,
+		  CRSMatrix<scalar> & C);
+  \end{verbatim}
+  that converts a matrix $\vec{T}$ in COO format to a matrix $\vec{C}$ in CRS
+  format. Try to be as efficient as possible.
+  
+  \begin{hint}
+    The parts of the column indices vector in CRS format that correspond to
+    indicdual rows of the matrix must be ordered and without repetitions, whilst
+    the triplets in the input may be in arbitrary ordering and with
+    repetitions. Take care of those aspects in you function definition.
+  \end{hint}
+  
+  \begin{hint}
+   If you use a \verb|std::vector| container, have a look at the function
+   \href{http://www.cplusplus.com/reference/algorithm/sort/}{\texttt{std::sort}}
+   or at the functions
+   \href{http://www.cplusplus.com/reference/algorithm/lower_bound/}{\texttt{std::lower\_bound}}
+   and
+   \href{http://www.cplusplus.com/reference/vector/vector/insert/}{\texttt{std::insert}}
+   (both lead to a valid function with different complexities). Look up their
+   precise definition and specification in a C++11 reference. 
+  \end{hint}
+  
+  \begin{hint}
+   You may want to sort a vector containing a structure with multiple values using a particular ordering (i.e. define a custom ordering on your structure and sort according to this ordering). In \Cpp{}, the standard function \verb|std::sort| provides a way to sort a vector of type \verb|std::vector<your_type>| by defining a \verb|your_type| member operator:
+  \begin{verbatim}
+bool your_type::operator<(const your_type & other) const;
+  \end{verbatim}
+  that returns true if \verb|*this| is less than \verb|other| in your particular ordering. Sorting is then performed according to this ordering.
+  \end{hint}
+
+ \end{subproblem}
+
+ \begin{subproblem}[3]
+  What is the worse case complexity of your function (in the number of triplets)?
+  
+  \begin{hint}
+   Make appropriate assumptions.
+  \end{hint}
+  
+  \begin{hint}
+   If you use the \Cpp{} standard library functions, look at the documentation: there you can find the complexity of basic container operations.
+  \end{hint}
+  
+  \begin{solution}
+  In \texttt{tripletToCTS.cpp}, we present two alteratives: pushing back the column/value pairs to an unsorted vector and inserting into a sorted vector at the right position.
+  Let $k$ be the number of triplets. The first method has $k$ \texttt{push\_back} amortized $O(1)$ operations and a sort of a vector of at most $k$ entries (i.e. $O(k \log k)$ complexity). The second methods inserts $k$ triplets using two $O(k)$  operation, for a complexity of $O(k^2)$.
+  However, if there are many repeated triplets with the same index of if you are adding triplets to an already defined matrix, the second method could prove to be less expensive than the first one.
+  \end{solution}
+
+
+ \end{subproblem}
+
+ \begin{subproblem}[1]
+  Test the correctness and runtime of your function \verb|tripletToCRS|.
+ \end{subproblem}
+
+ \begin{solution}
+  See \texttt{tripletToCTS.cpp}.
+ \end{solution}
+ 
+\end{problem}
+ 

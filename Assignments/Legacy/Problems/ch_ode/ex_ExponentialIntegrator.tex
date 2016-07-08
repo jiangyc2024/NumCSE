@@ -1,0 +1,149 @@
+\begin{problem}[Exponential integrator]\label{prb:ExponentialIntegrator}
+
+A modern class of single step methods developed for special initial value
+problems that can be regarded as perturbed linear ODEs are the exponential
+integrators, see 
+\begin{quote}
+  {\sc M.~Hochbruck and A.~Ostermann}, {\em Exponential integrators}, Acta
+  Numerica, 19 (2010), pp.~209--286.
+\end{quote}
+These methods fit the concept of single step methods as introduced in 
+\ncsedef{def:esv} and, usually, converge algebraically according to
+\ncseeq{eq:ssmerrest}.
+
+A step with size $h$ of the so-called \textit{exponential Euler} single step
+method for the ODE $\dot\Vy=\Vf(\Vy)$ with continuously differentiable
+$\Vf:\IR^d\rightarrow\IR^d$ reads
+\begin{equation} \label{eq:ExponentialIntegrator_ExpEul} \Vy_1 =
+  \Vy_0+h\;\varphi\big(h\Derv\Vf(\Vy_0)\big)\:\Vf(\Vy_0), \end{equation} where
+$\Derv\Vf(\Vy)\in\bbR^{d,d}$ is the Jacobian of $\Vf$ at $\Vy\in\bbR^{d}$, and the
+matrix function $\varphi:\IR^{d,d}\rightarrow\IR^{d,d}$ is defined as
+$\varphi(\VZ) = (\mathrm{exp}(\VZ)-\Id)\:\VZ^{-1}$.  Here $\exp(\VZ)$ is the
+matrix exponential of $\VZ$, a special function
+$\exp:\IR^{d,d}\rightarrow\IR^{d,d}$, see \lref{eq:linodesolexp}. 
+
+The function $\varphi$ is implemented in the provided file
+\texttt{ExpEul\_template.cpp}. When plugging in the exponential series, it is
+clear that the function $z\mapsto \varphi(z):=\frac{\exp(z)-1}{z}$ is analytic on
+$\bbC$. Thus, $\varphi(\VZ)$ is well defined for all matrices $\VZ\in\bbR^{d,d}$. 
+%%%%%%%%%%%% SUBPROBLEM 0
+
+
+
+\begin{subproblem}[2] \label{subprb:ExponentialIntegrator_1}
+Is the exponential Euler single step method defined in
+\eqref{eq:ExponentialIntegrator_ExpEul} consistent with the ODE $\dot\Vy=\Vf(\Vy)$
+(see \lref{def:consssm})? Explain your answer. 
+\begin{solution}
+In view of \eqref{eq:ExponentialIntegrator_ExpEul}, consistency is equivalent to $\varphi\big(h\Derv\Vf(\Vy_0)\big)\:\Vf(\Vy_0)=\Vf(\Vy_0)$ for $h=0$. Since $\varphi$ is not defined for the zero matrix, this should be intended in the limit as $h\to 0$. By definition of the matrix exponential we have $e^{hZ}=\Id+ hZ +O(h^2)$ as $h\to 0$. Therefore
+\[
+\varphi(h\Derv\Vf(\Vy_0))= (\mathrm{exp}(h\Derv\Vf(\Vy_0))-\Id)(h\Derv\Vf(\Vy_0))^{-1}=
+ (\Derv\Vf(\Vy_0))+O(h))\Derv\Vf(\Vy_0)^{-1},
+\]
+whence
+\[
+\lim_{h\to 0}\, \varphi\big(h\Derv\Vf(\Vy_0)\big)\:\Vf(\Vy_0)=\Vf(\Vy_0),
+\]
+as desired.
+\end{solution}
+\end{subproblem}
+
+%%%%%%%%%%%% SUBPROBLEM 1
+
+
+\begin{subproblem}[2] 
+\label{subprb:ExponentialIntegrator_1}
+Show that the exponential Euler single step method defined in \eqref{eq:ExponentialIntegrator_ExpEul} solves the linear initial value problem 
+$$\dot\Vy = \VA\;\Vy\;,\quad \Vy(0) = \Vy_{0}\in\bbR^{d}\;,\qquad \VA\in\IR^{d,d}\;,$$
+exactly.
+
+\begin{hint}
+  Recall \ncseex{eq:linodesolexp}; the solution of the IVP is
+  $\Vy(t)= \mathrm{exp}(\VA t)\Vy_{0}$. To facilitate formal calculations, you may
+  assume that $\VA$ is regular.
+\end{hint}
+
+\begin{solution}
+Given $\Vy(0)$, a step of size $t$ of the method gives
+\begin{align*}
+\Vy_1 & = \Vy(0) + t\; \varphi\big(t\; \Derv\Vf(\Vy(0)) \big)\;\Vf(\Vy(0))
+\\&= \Vy(0) + t\; \varphi\big(t\; \VA \big)\;\VA\; \Vy(0) \\
+& = \Vy(0) + t\; \big(\mathrm{exp}(\VA t) - \Id\big) \;(t\VA)^{-1}\; \VA\; \Vy(0)
+\\& = \Vy(0) + \mathrm{exp}(\VA t)\;\Vy(0) - \Vy(0) \\
+& = \mathrm{exp}(\VA t)\; \Vy(0)
+\\ & = \Vy(t).
+\end{align*}
+\end{solution}
+\end{subproblem}
+
+%%%%%%%%%%%% SUBPROBLEM 1.5
+
+
+\begin{subproblem}[2] 
+Determine the region of stability of the exponential Euler single step method
+defined in \eqref{eq:ExponentialIntegrator_ExpEul} (see \lref{def:stabdom}).
+
+\begin{solution}
+The discrete evolution $\Psibf^h$ associated to \eqref{eq:ExponentialIntegrator_ExpEul} is given by
+\[
+\Psibf^h(y) = y+h\varphi(h\Derv\Vf(\Vy))\Vf(\Vy).
+\]
+Thus, for a scalar linear ODE of the form $\dot y=\lambda y$ for $\lambda\in\C$ we have ($f(y)=\lambda y$, $Df(y)=\lambda$)
+\[
+\Psibf^h(y)=y+h\frac{e^{h\lambda}-1}{h\lambda}\lambda y = e^{h\lambda} y.
+\]
+Thus, the stability function $S\colon \C\to\C$ is given by $S(z)=e^z$. Therefore, the region of stability of this method is
+\[
+\mathcal{S}_{\Psibf} =\{z\in\C:|e^z|<1\}=\{z\in\C:e^{\Re z}<1\}=\{z\in\C:\Re z < 0\}.
+\]
+It is useful to compare this with \lref{ex:stabdom}.
+
+Alternatively, one may simply appeal to \ref{subprb:ExponentialIntegrator_1}
+to see that the method has the ``ideal'' region of stability as introduced in 
+\lref{par:idealsd}.  
+\end{solution}
+\end{subproblem}
+
+%%%%%%%%%%%% SUBPROBLEM 2
+
+\begin{subproblem}[2] \label{subprb:ExponentialIntegrator_2}
+Write a C++ function
+\begin{lstlisting}
+template <class Function, class Function2>
+Eigen::VectorXd ExpEulStep(Eigen::VectorXd y0, Function f, Function2 df, double h)
+\end{lstlisting}
+that implements \eqref{eq:ExponentialIntegrator_ExpEul}.
+Here \texttt{f} and \texttt{df} are objects with evaluation operators representing the ODE right-hand side function $\Vf:\IR^d\rightarrow\IR^d$ and its Jacobian, respectively.
+
+\begin{hint}
+Use the supplied template \texttt{ExpEul\_template.cpp}.
+\end{hint}
+
+\begin{solution}
+See \texttt{ExpEul.cpp}.
+\end{solution}
+\end{subproblem}
+
+%%%%%%%%%%%% SUBPROBLEM 3
+
+%\andrea{fix who is column or row? I think this way works}
+
+\begin{subproblem}[3] \label{subprb:ExponentialIntegrator_3}
+What is the order of the single step method \eqref{eq:ExponentialIntegrator_ExpEul}?
+To investigate it, write a C++ routine
+that applies the method to the scalar logistic ODE
+$$  \dot y  = y\;(1-y)\;,\quad y(0) = 0.1\;, $$
+in the time interval $[0,1]$.  Show the error at the final time against the stepsize $h=T/N$, $N=2^k$ for $k=1,\dots,15$. As in \ref{prb:order-is-not-all} in \ref{PS12}, for each $k$ compute and show an approximate order of convergence.
+
+
+\begin{hint}
+The exact solution is
+$$ y(t) = \frac{y(0)}{y(0)+\big(1-y(0)\big)e^{-t}}.$$
+\end{hint}
+
+\begin{solution}
+Error $= O(h^2)$. See \texttt{ExpEul.cpp}.
+\end{solution}
+\end{subproblem}
+
+\end{problem}

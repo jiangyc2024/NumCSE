@@ -1,0 +1,79 @@
+% ncse_new/p1_SystemsOfEquations/ch3_IterativeMethodsNonLinear/ex_RecursionOrder.tex
+\renewcommand{\chpt}{ch_iterativenonlinear}
+
+\begin{problem}[Order of convergence from error recursion \coreproblem] \label{prb:RecursionOrder}
+
+In \lref{ex:sec} we have observed \emph{fractional} orders of convergence ($\to$
+\ncsedef{def:cvgord}) for both the secant method, see \ncseref[Code]{mc:secant},
+and the quadratic inverse interpolation method. This is fairly typical for 2-point
+methods in 1D and arises from the underlying recursions for error bounds. The
+analysis is elaborated for the secant method in \lref{rem:secfraccvg}, where a
+linearized error recursion is given in \lref{eq:secanterrprop}.
+
+Now we suppose the recursive bound for the norms of the iteration errors
+\begin{gather}    
+  \label{eq:prb:RecursionOrder}
+\|e^{(n+1)}\|\leq \|e^{(n)}\| \sqrt{\|e^{(n-1)}\|}\;,
+\end{gather}
+where $e^{(n)}=x^{(n)}-x^{*}$ is the error of $n$-th iterate. 
+
+\begin{subproblem}[1]\label{prb:RecursionOrder_1}
+Guess the maximal order of convergence of the method from a numerical experiment
+conducted in MATLAB. \\
+\hint \ncserem{rem:eoc}
+
+\begin{solution}
+See Listing~\ref{mc:recursionorder}.
+\lstinputlisting[caption={MATLAB script for Sub-problem
+    ~\ref{prb:RecursionOrder_1}}, label={mc:recursionorder}]{\problems/ch_iterativenonlinear/MATLAB/recursionorder.m}
+  \end{solution}
+  \end{subproblem}
+
+\begin{subproblem}[4]\label{prb:RecursionOrder_2}
+Find the maximal
+guaranteed order of convergence of this method through analytical considerations.
+
+\begin{hint}
+ First of all note that we may assume equality in both the error
+recursion \eqref{eq:prb:RecursionOrder} and the bound $\|e^{(n+1)}\|\leq C\|e^{(n)}\|^{p}$ that
+defines convergence of order $p>1$, because in both cases equality corresponds to a
+worst case scenario. Then plug the two equations into each other and obtain
+an equation of the type $\ldots = 1$, where the left hand side involves an 
+error norm that can become arbitrarily small. This implies a condition on
+$p$ and allows to determine $C>0$. A formal proof by induction (not required)
+can finally establish that these values provide a correct choice. 
+\end{hint}
+
+
+
+\begin{solution}
+Suppose $\|e^{(n)}\|=C \|e^{(n-1)}\|^{p}$ ($p$ is the largest convergence order and C is some constant).\\
+Then
+\begin{gather}
+  \label{RO:1}
+  \|e^{(n+1)}\|=C\|e^{(n)}\|^{p}
+  =C(C\|e^{(n-1)}\|^p)^{p}
+  =C^{p+1}\|e^{(n-1)}\|^{p^2}
+\end{gather}
+In \eqref{eq:prb:RecursionOrder} we may assume equality, because this is the worst case.
+Thus,
+\begin{gather}
+  \label{RO:2}
+\|e^{(n+1)}\| = \|e^{(n)}\|\cdot \|e^{(n-1)}\|^\frac{1}{2}
+=C\|e^{(n-1)}\|^{p+\frac{1}{2}}
+\end{gather}
+Combine \eqref{RO:1} and \eqref{RO:2},
+$$C^{p+1}\|e^{(n-1)}\|^{p^2} = C\|e^{(n-1)}\|^{p+\frac{1}{2}}$$
+i.e.
+ \begin{gather}
+   \label{RO:3}
+ C^{p}\|e^{(n-1)}\|^{p^2-p-\frac{1}{2}} = 1.
+ \end{gather}
+Since \eqref{RO:3} holds for each $n\geq 1$, we have \\
+$$p^2-p-\frac{1}{2}=0$$
+$$p=\frac{1+\sqrt{3}}{2} ~~~~~{\rm or}~~~~~~p=\frac{1-\sqrt{3}}{2}~
+{\rm(dropped)}.$$
+For $C$ we find the maximal value $1$.
+ \end{solution}
+  \end{subproblem}
+  \end{problem}

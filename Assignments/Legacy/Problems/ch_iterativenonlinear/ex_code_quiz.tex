@@ -1,0 +1,106 @@
+
+\begin{problem}[Code quiz]
+  A frequently encountered drudgery in scientific computing is
+  the use and modification of poorly documented code. This makes
+  it necessary to understand the ideas behind the code first. 
+  Now we practice this in the case of a simple iterative method. 
+
+  \begin{subproblem}[4]
+    What is the purpose of the following MATLAB code?
+    \begin{lstlisting}[style=mcode]
+     function y = myfn(x)
+     log2 = 0.693147180559945;
+     
+     y = 0;
+     while (x >   sqrt(2)), x = x/2; y = y + log2; end
+     while (x < 1/sqrt(2)), x = x*2; y = y - log2; end
+     z = x-1;
+     dz = x*exp(-z)-1;
+     while (abs(dz/z) > eps)
+         z = z+dz;
+        dz = x*exp(-z)-1;
+     end
+     y = y+z+dz;
+\end{lstlisting}
+\end{subproblem}
+\begin{solution}
+ The MATLAB code computes $y=\log{(x)}$, for a given $x$.
+    The program can be regarded as Newton iterations for finding the zero of
+    \begin{equation}\label{eq:func} f(z)=e^{z}-x\end{equation}
+    where $z$ is unknown and $x$ is given.
+\end{solution}
+
+\begin{subproblem}[3]
+  Explain the rationale behind the two \texttt{while} loops in
+  lines \#5, 6.
+  \begin{solution}
+ The purpose of the two while loops is to shift the function values of (\ref{eq:func}) and
+        modify the initial $z_0=x-1$ in such a way that good convergence is reached (according to the function derivative).
+\end{solution}
+\end{subproblem}
+\begin{subproblem}[2]
+  Explain the loop body of lines \#10, 11.
+  \begin{solution}
+The \texttt{while}-loop computes the zero of (\ref{eq:func}) using Newton iterations
+  $$\left\{\begin{array}{lcc}z^{(0)}=x-1, \\
+      z^{(n+1)}= z^{(n)}-\frac{e^{z^{(n)}}-x}{e^{z^{(n)}}},~~n\geq 1   \end{array}\right.
+  $$
+\end{solution}
+\end{subproblem}
+\begin{subproblem}[2]
+  Explain the conditional expression in line \#9. 
+  \begin{solution}
+This is a correction based termination criterium, see \lref{par:tcpract}.
+\end{solution}
+\end{subproblem}
+\begin{subproblem}[4]
+  Replace the \texttt{while}-loop of lines \#9 through \#12 with a fixed number of iterations that,
+  nevertheless, guarantee that the result has a relative accuracy $\mathtt{eps}$.
+  
+   \cprotEnv \begin{solution}
+Denote the zero of $f(z)$ with $z^*$, and $e^{(n)}=z^{(n)}-z^*$.
+Use Taylor expansion of $f(z),~f'(z)$:
+\begin{eqnarray*}
+f(z^{(n)})&=&e^{z^*}e^{(n)}+\frac{1}{2}e^{z^*}(e^{(n)})^2+O((e^{(n)})^3)\\
+&=&xe^{(n)}+\frac{1}{2}x(e^{(n)})^2+O((e^{(n)})^3),\\
+f'(z^{(n)})&=&e^{z^*}+e^{z^*}e^{(n)}+O((e^{(n)})^2)\\
+&=&x+xe^{(n)}+O((e^{(n)})^2)
+\end{eqnarray*}
+Considering Newton's Iteration
+$z^{(n+1)}=z^{(n)}-\frac{f(z^{(n)})}{f'(z^{(n)})}$,
+\begin{eqnarray*}
+e^{(n+1)}&=&e^{(n)}-\frac{f(z^{(n)}}{f'(z^{(n)}}\\
+&=&e^{(n)}-\frac{xe^{(n)}+\frac{1}{2}x(e^{(n)})^2+O((e^{(n)})^3)}{x+xe^{(n)}+O((e^{(n)})^2)}\\
+&\doteq&\frac{1}{2}(e^{(n)})^2\\
+&=&\cdots\\
+&\doteq&(\frac{1}{2})^{1+2+\cdots+2^n}(e^0)^{2^{n+1}}\\
+&=&2\cdot(\frac{1}{2})^{2^{n+1}}(e^0)^{2^{n+1}}\\
+&=&2\cdot(\frac{1}{2}e^0)^{2^{n+1}},
+\end{eqnarray*}
+where $e^0=z^0-z^*=x-1-\log{(x)}$. So it is enough for us to
+ determine the number $n$ of iteration steps by
+$|\frac{e^{(n+1)}}{\log{x}}|=\mathtt{eps}$. Thus
+\begin{eqnarray*}
+n&=&\frac{\log{(\log{(2)}-\log{(\log{(x)})}-\log{\mathtt{(eps)})}}-\log{(\log{(2)}-\log{(|e^0|)})}}{\log{(2)}}-1\\
+&\approx & \frac{\log{(-\log{\mathtt{(eps)})}}-\log{(-\log{(|e^0|)})}}{\log{(2)}}-1
+\end{eqnarray*}
+The following code is for your reference.
+\begin{lstlisting}[style=cppsimple]
+ function y = myfn(x)
+     log2 = 0.693147180559945;
+     y = 0;
+     while (x > sqrt(2)), x = x/2;  y = y + log2; end
+     while (x < 1/sqrt(2)), x = x*2; y = y - log2; end
+     z = x-1;
+     dz = x*exp(-z)-1;
+     e0=z-log(x);
+     k=(log(-log(eps))-log(-log(abs(e0))))/log(2);
+     for i=1:k
+         z = z+dz;
+         dz = x*exp(-z)-1;
+     end
+     y = y+z+dz;
+\end{lstlisting}
+\end{solution}
+\end{subproblem}
+\end{problem}

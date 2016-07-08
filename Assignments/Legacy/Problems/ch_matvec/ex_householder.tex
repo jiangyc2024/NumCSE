@@ -1,0 +1,129 @@
+% Required for hand-in: houserefl.cpp
+% Required for solution: houserefl.m, qr_houserefl.m
+\renewcommand{\chpt}{ch_matvec}
+
+\begin{problem}[Householder reflections] \label{prb:HouseRefl} This problem is a
+  supplement to \lref{sec:gs} and related to Gram-Schmidt orthogonalization, see
+  \lref{gramschmidt}.  Before you tackle this problem, please make sure that you
+  remember and understand the notion of a QR-decomposition of a matrix, see
+  \lref{thm:qr}. This problem will put to the test your advanced linear algebra
+  skills.
+
+
+  \begin{subproblem}[3]\label{subprb:HouseRefl_0}
+    \cref{mc:HouseRefl} implements a particular \matlab{} function.
+    
+
+    \lstinputlisting[language=matlab,caption={\Matlab~ implementation for
+      \ref{prb:HouseRefl} in file \func{houserefl.m}},label={mc:HouseRefl}]
+    {../Problems/ch_matvec/MATLAB/houserefl.m}
+
+    Write a \Cpp~ function with declaration:
+\begin{verbatim}
+ void houserefl(const VectorXd &v, MatrixXd &Z);
+\end{verbatim}
+    that is equivalent to the \matlab{} function \texttt{houserefl()}. 
+    Use data types from \eigen{}. 
+
+    \begin{solution}
+%
+\lstinputlisting[language=C++,caption={\Cpp implementation for \ref{prb:HouseRefl} in file \func{houserefl.cpp}},firstline=9,lastline=19,label={cppc:HouseRefl}]
+{../Problems/ch_matvec/CPP/houserefl.cpp}
+    \end{solution}
+  \end{subproblem}
+  
+%
+\begin{subproblem}[3] \label{subprb:HouseRefl_a}
+ Show that the matrix $\vec{X}$,  defined at line 10 in \autoref{mc:HouseRefl}, satisfies:
+ \[
+  \vec{X}^\top \vec{X} = \vec{I}_n
+ \]
+ \begin{hint}
+  $\norm{\vec{q}}^2 = 1$.
+ \end{hint}
+ 
+ \begin{solution}
+  \begin{align*}
+  \vec{X}^\top \vec{X} = (\vec{I}_n - 2 \vec{q}\vec{q}^\top)(\vec{I}_n - 2 \vec{q}\vec{q}^\top) \\
+   = \vec{I}_n - 4 \vec{q}\vec{q}^\top + 4 \vec{q} \underbrace{\vec{q}^\top\vec{q}}_{=\norm{\vec{q}}=1}\vec{q}^\top \\
+   = \vec{I}_n - 4 \vec{q}\vec{q}^\top + 4 \vec{q}\vec{q}^\top \\
+   = \vec{I}_n 
+  \end{align*}
+ \end{solution}
+\end{subproblem}
+%
+\begin{subproblem}[4] \label{subprb:HouseRefl_b}
+ Show that the first column of $\vec{X}$, after line 9 of the function \func{houserefl}, is a multiple of the vector $\vec{v}$.
+ 
+ \begin{hint}
+ Use the previous hint, and the facts that $\vec{u} = \vec{w} + \begin{bmatrix} 1 \\ 0 \\ \vdots \\ 0 \end{bmatrix}$ and $\norm{\vec{w}} = 1$.
+ \end{hint}
+ 
+ \begin{solution}
+  Let $\vec{X} = [\vec{X}_1, \cdots, \vec{X}_n]$ be the matrix of line 9 in \autoref{mc:HouseRefl}. In view of the identity $ \vec{X}_1 = \;  \vec{e}^{(1)} - 2 q_1 \vec{q} $ we have
+\[
+   \vec{X}_1 
+   =  \begin{bmatrix} 1 -2q_1^2 \\ -2q_1q_2 \\ \vdots \\ -2q_1q_n \end{bmatrix} 
+   =  \begin{bmatrix} 1 - 2 \frac{u_1^2}{\sum_{i = 1}^n u_i^2} \\ - 2 \frac{u_1 u_2}{\sum_{i = 1}^n u_i^2} \\ \vdots \\ - 2 \frac{u_1 u_n}{\sum_{i = 1}^n u_i^2} \end{bmatrix} 
+ \overset{\textsc{Hint}}{=}  \begin{bmatrix}
+      \frac{(w_1+1)^2 + w_2^2 + \cdots + w_n^2 - 2(w_1+1)^2}{(w_1+1)^2 + w_2^2 + \cdots + w_n^2} \\
+      - \frac{2(w_1+1)w_2}{(w_1+1)^2 + w_2^2 + \cdots + w_n^2} \\
+      \cdots \\
+      - \frac{2(w_1+1)w_n}{(w_1+1)^2 + w_2^2 + \cdots + w_n^2}
+   \end{bmatrix} 
+    \overset{\norm{\vec{w}} = 1}{=}  \begin{bmatrix} 
+      \frac{2w_1(w_1+1)}{2(w_1+1)} \\
+      \frac{2(w_1+1)w_2}{2(w_1+1)} \\
+      \cdots \\
+      \frac{2(w_1+1)w_n}{2(w_1+1)} \\
+    \end{bmatrix} 
+   =  - \vec{w},
+  \]
+  which is a multiple of $\vec{v}$, since $  \vec{w} =  \frac{\vec{v}}{\norm{\vec{v}}}$.
+ \end{solution}
+\end{subproblem}
+
+
+\begin{subproblem}[2]
+ What property does the set of columns of the matrix $\vec{Z}$ have? What is the purpose of the function \func{houserefl}?
+ 
+ \begin{hint}
+  Use \ref{subprb:HouseRefl_a} and \ref{subprb:HouseRefl_b}.
+ \end{hint}
+
+ \begin{solution}
+  The columns of $\vec{X} = [\vec{X}_1, \cdots, \vec{X}_n]$ are an orthonormal basis (ONB) of $\IR^n$ (cf. \ref{subprb:HouseRefl_a}). Thus, the columns of $\vec{Z} = [\vec{X}_2, \cdots, \vec{X}_n]$ are an ONB of the complement of $\mathrm{Span}(\vec{X}_1) \overset{\ref{subprb:HouseRefl_b}}{=} \mathrm{Span}(\vec{v})$. The function \func{houserefl} computes an ONB of the complement of $\vec{v}$.
+ \end{solution}
+\end{subproblem}
+
+\begin{subproblem}[1]
+ What is the asymptotic complexity of the function \func{houserefl}  as the length $n$ of the input vector $\vec{v}$ goes to $\infty$?
+ 
+ \begin{solution}
+  $O(n^2)$: this is the asymptotic complexity of the construction of the tensor product at line $9$ of \autoref{cppc:HouseRefl}.
+ \end{solution}
+
+\end{subproblem}
+
+
+\begin{subproblem}[3]
+ Rewrite the function as \Matlab~ function and use a \emph{standard function} of
+ \Matlab~ to achieve the same result of lines 5-9 with a single call to this
+ function.
+
+ \begin{hint}
+   It is worth reading \lref{rem:qrmatlab} before mulling over this problem. 
+ \end{hint}
+ 
+\begin{solution}
+ Check the code in \autoref{mc:HouseRefl} for the porting to \Matlab~ code. Using the QR-decomposition \func{qr} one can rewrite (cf. \autoref{mc:HouseRefl_qr}) the \Cpp~ code in \Matlab~ with a few lines.
+ 
+
+\lstinputlisting[language=matlab,caption={\Matlab~ implementation for \ref{prb:HouseRefl} in file \func{qr\_houserefl.m} using QR decomposition.},label={mc:HouseRefl_qr}]
+{\problems/\chpt/MATLAB/qr_houserefl.m}
+\end{solution}
+
+
+\end{subproblem}
+
+\end{problem}

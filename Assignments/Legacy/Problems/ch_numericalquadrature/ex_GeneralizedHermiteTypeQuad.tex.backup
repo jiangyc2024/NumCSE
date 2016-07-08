@@ -1,0 +1,65 @@
+
+\begin{problem}[Generalize ``Hermite-type'' quadrature formula]
+ 
+ \begin{subproblem}[4]
+ Determine $A,B,C, x_1 \in \IR$ such that the quadrature formula:
+ \begin{align} \label{eq:gen_hermite_quad}
+  \int_0^1 f(x) dx \approx A f(0) + B f'(0) + C f(x_1)
+ \end{align}
+ is exact for polynomials of highest possible degree.
+ 
+ \begin{solution}
+  The quadrature is exact for every polynomial $p(x) \in \mathcal{P}^n$, if and only if it is exact for $1,x,x^2,\dots,x^n$. If we apply the quadrature to the first monomials:
+  \begin{align}
+   1 = \int_0^1 1 dx & = A \cdot 1 + B \cdot 0 + C \cdot 0 = A \\
+   \frac{1}{2} = \int_0^1 x dx & = A \cdot 0 + B \cdot 1 + C \cdot x_1 = B + C x_1 \\
+   \frac{1}{3} = \int_0^1 x^2 dx & = A \cdot 0 + B \cdot 0 + C \cdot x_1^2 = C x_1^2 \\
+   \frac{1}{4} = \int_0^1 x^3 dx & = A \cdot 0 + B \cdot 0 + C \cdot x_1^3 = C x_1^3
+  \end{align}
+  $\Rightarrow A = 1, B = \frac{1}{2} - C x_1, C = \frac{1}{3 x_1^2} \Rightarrow \frac{1}{4} = \frac{1}{3 x_1^2} x_1^3 = \frac{1}{3} x_1 \Rightarrow x_1 = \frac{3}{4}, C = \frac{16}{27}, B = \frac{1}{18}, A = 1$.
+  Then
+  \begin{align}
+   \frac{1}{5} = \int_0^1 x^4 dx \neq A \cdot 0 + B \cdot 0 + C \cdot x_1^4 = C \cdot x_1^4 = \frac{16}{27} \frac{81}{256}.
+  \end{align}
+  Hence, the quadrature is exact for polynomials up to degree $3$.
+ \end{solution}
+ \end{subproblem}
+ 
+ 
+ \begin{subproblem}[4]
+ Compute an approximation of $z(2)$, where the function $z$ is defined as the solution of the initial value problem
+ \begin{align}
+  z'(x) = \frac{x}{1 + x^2}, \; z(1) = 1.
+ \end{align}
+ \begin{solution}
+  We know that
+ \begin{align}
+  z(2) - z(1) = \int_1^2 z'(x) dx,
+ \end{align}
+ hence, applying \eqref{eq:gen_hermite_quad} and the transformation $x \mapsto x + 1$, we obtain:
+ \begin{align}
+  z(2) = \int_0^1 z'(x + 1) dx + z(1) \approx 1 \cdot z'(1) + \frac{1}{18} \cdot z''(1) + \frac{16}{27} \cdot z'(\frac{7}{4}) + z(1).
+ \end{align}
+  with $Z''(X) = - \frac{2 \cdot x}{(1 + x^2)^2}$ and:
+ \begin{align*}
+  z(1) = 1 \\
+  z'(1) = \frac{1}{1 + 1^2} = \frac{1}{2} \\
+  z''(1) = - \frac{2 \cdot 1}{(1 + 1^2)^2} = -\frac{1}{2} \\
+  z'(\frac{7}{4}) = \frac{1}{1 + (\frac{7}{4})^2} = \frac{16}{65}
+ \end{align*}
+  we obtain
+  \begin{align*}
+   z(2) = \int_0^1 z'(x + 1) dx + z(1) \approx \frac{1}{2} - \frac{1}{18} \cdot \frac{1}{2} + \frac{16}{27} \cdot \frac{16}{65} + 1 = \frac{175}{108} \approx 
+  \end{align*}
+  For sake of completeness:
+  \begin{align*}
+  z(2) = \int_1^2 z'(x) dx + z(1) = \mathrm{atan}(2) - \mathrm{atan}(1) + 1 = 1.32 \dots
+  \end{align*}
+
+ \end{solution}
+
+ \end{subproblem}
+
+
+ 
+\end{problem}

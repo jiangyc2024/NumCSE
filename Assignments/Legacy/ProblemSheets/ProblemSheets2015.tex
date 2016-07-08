@@ -1,0 +1,230 @@
+\documentclass[12pt,oneside]{article}
+
+% Metadata
+\usepackage{titling}
+\author{R. Hiptmair, G. Alberti, F. Leonardi}
+\title{Homework Problems for Course\\
+  Numerical Methods for CSE}
+\date{Version of \today}
+
+\usepackage{amsthm}
+\newcommand{\problems}{../Problems}
+\newcommand{\packages}{../packages}
+\newcommand{\relpath}{../}
+
+\theoremstyle{definition}
+\newtheorem*{theorem}{Theorem}
+%\usepackage[draft]{showkeys}
+
+\input{\relpath/packages.tex}
+\input{\relpath/definitions.tex}
+\input{\relpath/config.tex}
+\input{\relpath/import_ncsenew/slidesymbols.tex}
+\addbibresource{\relpath/literature.bib}
+
+\newboolean{finv}
+\setboolean{finv}{true}
+
+\ifthenelse{\boolean{finv}}{}{\usepackage{showkeys}}
+
+\graphicspath{%
+{../Problems/ch_matvec/PICTURES/}%
+{../Problems/ch_directmethodslse/PICTURES/}%
+{../Problems/extra_triangulations/PICTURES/}
+}
+
+% Commenting macros
+% Comment by Ralf
+% \newcommand{\rhc}[1]{\ifthenelse{\boolean{finv}}{}{{\color{red}\textbf{R.H.: }#1}}}
+\newcommand{\rhc}[1]{{\color{red}\textbf{R.H.: }#1}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\K}{\mathbb{K}}
+\newcommand{\n}{\mathbb{N}}
+\newcommand{\Derv}{\operatorname{\sf D}}
+
+\setboolean{withsolution}{true}
+% \setboolean{withsolution}{false}
+% \setcounter{tocdepth}{0}
+% \renewcommand{\thechapter}{}
+
+\newcommand{\Blue}[1]{#1}
+\newcommand{\bcom}{,}
+\newcommand{\bdot}{.}
+\newcommand{\com}[1]{#1}
+
+\begin{document}
+
+\maketitle
+
+\fboxsep1ex
+\fbox{\parbox{0.95\textwidth}{
+    A steady and persistent effort spent on homework problems is essential for
+    success in the course.
+}}
+\bigskip
+
+You should expect to spend 4-6 hours per week on trying to solve the homework
+problems. Since many involve small coding projects, the time it will take an
+individual student to arrive at a solution is hard to predict.  
+\bigskip
+
+\begin{itemize}
+\item The assignment sheets will be uploaded on the course
+  \href{http://www2.math.ethz.ch/education/bachelor/lectures/hs2015/math/nummath_cse/index}{webpage}
+  on Thursday every week.
+\item Some or all of the problems of an assignment sheet will be discussed in the
+  tutorial classes on Monday 1$\frac{1}{2}$ weeks after the problem sheet has been
+  published.
+\item A few problems on each sheet will be marked as {\bf core problems}. 
+  Every participant of the course is strongly advised to try and solve \emph{at least}
+  the core problems. 
+\item If you want your tutor to examine your solution of the current problem
+  sheet, please put it into the plexiglass trays in front of HG G 53/54 by the
+  Thursday after the publication. You should submit your codes using the
+  \href{https://people.math.ethz.ch/~grsam/submit/}{online submission
+    interface}. This is voluntary, but feedback on your performance on homework
+  problems can be important.
+\item You are encouraged to hand-in incomplete and wrong solutions, since 
+  you can receive valuable feedback even on incomplete attempts.
+\item Please clearly mark the homework problems that you want your tutor to
+  examine.
+\end{itemize}
+
+% \renewcommand\cftsecindent{3em}
+\setcounter{tocdepth}{2}
+% \tableofcontents
+
+%%% PS0
+\begin{sheet}{0}{21.0.9.2015}{---}
+These problems are meant as an introduction to \eigen~ in the first
+tutorial classes of the new semester.
+\input{\problems/ch_matvec/ex_gramschmidteigen.tex}
+\input{\problems/ch_matvec/ex_fastmatmult.tex}
+\input{\problems/ch_matvec/ex_householder.tex}
+\end{sheet}
+
+%%% PS1
+\begin{sheet}{1}{17.09.2015}{24.09.2015}
+You should try to your best to do the core problems. If time permits, please try to do the rest as well.
+\input{\problems/ch_matvec/ex_ArrowMatrixVector} %
+\input{\problems/ch_matvec/ex_cancellation.tex} %
+\input{\problems/ch_matvec/ex_Kron.tex} %
+\input{\problems/ch_matvec/ex_StructuredMatrixVector.tex} %
+\input{\problems/ch_matvec/ex_Powers.tex} %
+\input{\problems/ch_matvec/ex_lineariter_terms.tex} %
+\end{sheet}
+
+%%% PS2
+\begin{sheet}{2}{24.09.2015}{01.10.2015}
+You should try to your best to do the core problems. If time permits, please try to do the rest as well.
+\input{\problems/ch_directmethodslse/ex_Lyapunov} %
+\input{\problems/ch_directmethodslse/ex_PartitionedMatrix} %
+\input{\problems/ch_directmethodslse/ex_efficientbandmult.tex} %
+\input{\problems/ch_directmethodslse/ex_solvepermb.tex} 
+\end{sheet}
+
+%%% PS3
+\begin{sheet}{3}{01.10.2015}{08.10.2015}
+\input{\problems/ch_directmethodslse/ex_rankoneinvit.tex}
+\input{\problems/ch_matvec/ex_sinh.tex}
+\input{\problems/sparse_matrix/ex_triplettocrs.tex} 
+\input{\problems/extra_triangulations/ex_meshsmoothing.tex} 
+\input{\problems/ch_directmethodslse/ex_circuitimpedance.tex}
+\end{sheet}
+
+%%% PS4
+\begin{sheet}{4}{08.10.2015}{15.10.2015}
+\input{\problems/ch_iterativenonlinear/ex_RecursionOrder.tex}
+\input{\problems/ch_iterativenonlinear/ex_conv_newt_iter.tex}
+\input{\problems/ch_iterativenonlinear/ex_QuadraticConvergence.tex}
+\input{\problems/ch_iterativenonlinear/ex_NewtonArctan.tex}
+\input{\problems/ch_iterativenonlinear/ex_orderp_conv_iter.tex}
+\input{\problems/ch_iterativenonlinear/ex_code_quiz.tex}
+\end{sheet}
+
+%%% PS5
+\begin{sheet}{5}{15.10.2015}{22.10.2015}
+\input{\problems/ch_iterativenonlinear/ex_ModifiedNewton.tex}
+\input{\problems/ch_iterativenonlinear/ex_quasilinear.tex}
+ \input{\problems/ch_iterativenonlinear/ex_nonlinear_electric.tex}
+ \input{\problems/ch_iterativenonlinear/ex_JuliaSet.tex}
+\end{sheet}
+
+%%% PS6
+\begin{sheet}{6}{22.10.2015}{29.10.2015}
+\input{\problems/ch_polynomialinterpolation/ex_EvaluatingDerivatives.tex}
+\input{\problems/ch_polynomialinterpolation/ex_linearinterpolant.tex}
+\input{\problems/ch_polynomialinterpolation/ex_horner.tex}
+\input{\problems/ch_polynomialinterpolation/ex_lagrange_poly.tex}
+\end{sheet}
+
+%%% PS7
+\begin{sheet}{7}{29.10.2015}{05.11.2015}
+\input{\problems/ch_piecewisepolynomials/ex_CubicSplines.tex}	
+\input{\problems/ch_piecewisepolynomials/ex_QuadraticSplines.tex}
+\input{\problems/ch_piecewisepolynomials/ex_CurveInterp.tex}
+\input{\problems/ch_polynomialinterpolation/ex_pi_extrapolation.tex}
+\end{sheet}
+
+%%% PS8
+\begin{sheet}{8}{05.11.2015}{12.11.2015}
+\input{\problems/ch_piecewisepolynomials/ex_nat_cub_spli.tex}
+\input{\problems/ch_polynomialinterpolation/ex_MonotonInterp.tex}
+\input{\problems/ch_piecewisepolynomials/ex_cubic_interpol.tex}
+\input{\problems/ch_polynomialinterpolation/ex_ChebIntp2.tex}
+\end{sheet}
+
+%%% PS9
+\begin{sheet}{9}{12.11.2015}{19.11.2015}\label{PS9}
+\input{\problems/ch_polynomialinterpolation/ex_cheb_analytic.tex}
+\input{\problems/ch_piecewisepolynomials/ex_GradedMeshes.tex}
+\input{\problems/ch_polynomialinterpolation/ex_ChebPolyProperties.tex}
+\input{\problems/ch_piecewisepolynomials/ex_piecewise_cubic_hermite_interpolation.tex}
+\end{sheet}
+
+%%% PS10
+\begin{sheet}{10}{19.11.2015}{26.11.2015}
+\input{\problems/ch_numericalquadrature/ex_ZerosLegendre.tex}
+\input{\problems/ch_numericalquadrature/ex_GaussianQuadrature.tex}
+\input{\problems/ch_numericalquadrature/ex_improper_integrals.tex}
+\input{\problems/ch_numericalquadrature/ex_QuadraturePlots.tex}
+\end{sheet}
+
+%%% PS11
+\begin{sheet}{11}{26.11.2015}{03.12.2015}
+\input{\problems/ch_numericalquadrature/ex_EffQuadSingInt.tex}
+\input{\problems/ch_numericalquadrature/ex_NestedQuad.tex}
+\input{\problems/ch_numericalquadrature/ex_WeightedGaussQuadrature.tex}
+\input{\problems/ch_numericalquadrature/ex_GeneralizedHermiteTypeQuad.tex}
+\end{sheet}
+
+%%% PS12
+\begin{sheet}{12}{03.12.2015}{10.12.2015}\label{PS12}
+\input{\problems/ch_ode/ex_rk3prey.tex}
+\input{\problems/ch_ode/ex_order-is-not-all.tex}
+\input{\problems/ch_ode/ex_TaylorODE.tex}
+\input{\problems/ch_ode/ex_SystemODEs.tex}
+\end{sheet}
+
+%%% PS13
+\begin{sheet}{13}{10.12.2015}{--}
+\input{\problems/ch_ode/ex_matrix-ODE.tex}
+\input{\problems/ch_ode/ex_stabRK3.tex}
+\input{\problems/ch_ode/ex_init-cond-LV.tex}
+\input{\problems/ch_ode/ex_ExponentialIntegrator.tex}
+\end{sheet}
+
+%%% PS14
+\begin{sheet}{14}{17.12.2015}{--}
+ \input{\problems/ch_ode/ex_implicit_rk3prey.tex}
+ \input{\problems/ch_ode/ex_cross-prod.tex}
+ \input{\problems/ch_ode/ex_semi_imp_RK.tex}
+ \input{\problems/ch_ode/ex_sdirk.tex}
+\end{sheet}
+
+
+\printbibliography
+
+\end{document}

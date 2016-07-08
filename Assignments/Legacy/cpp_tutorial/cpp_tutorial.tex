@@ -1,0 +1,910 @@
+\documentclass{beamer}
+
+\usetheme{Warsaw}
+\usecolortheme{spruce}
+\setbeamertemplate{itemize items}[default]
+\setbeamertemplate{enumerate items}[default]
+
+\setbeamercolor{math text}{fg=black}
+\setbeamercolor{math text inlined}{parent=math text}
+\setbeamercolor{math text displayed}{parent=math text}
+\setbeamercolor{normal text in math text}{}
+
+\usepackage[utf8]{inputenc}
+\usepackage{default}
+
+\usepackage{listings}
+
+\definecolor{morange}{HTML}{e67e22}
+\definecolor{mblue}{HTML}{3498db}
+\definecolor{mgreen}{HTML}{1abc9c}
+\definecolor{mgray}{HTML}{34495e}
+\definecolor{myell}{HTML}{F1C4F0}
+\definecolor{mred}{HTML}{e74c3c}
+
+\lstdefinestyle{cpp}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+%   frame=L,
+%   xleftmargin=\parindent,
+  escapechar=\%,
+  language=C++,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{mblue},
+  commentstyle=\itshape\color{mgreen!40!black},
+  identifierstyle=\color{mgray},
+  stringstyle=\color{morange},
+  frame=single
+}
+\definecolor{cgreen}{HTML}{27ae60}
+\newcommand{\code}[1]{{\color{cgreen}\texttt{#1}}}
+
+\title{C++ tutorial}
+
+\lstset{style=cpp}
+
+\begin{document}
+
+\begin{frame}
+ \begin{center}
+  \Huge C++ tutorial
+ \end{center}
+\end{frame}
+
+\section{C++}
+
+\begin{frame}[fragile,allowframebreaks]
+ \frametitle{Introduction}
+ I will assume that you know some basics of C++:
+ \begin{lstlisting}
+#include <iostream>
+
+int main(void) {
+    std::cout << "Hello world!" << std::endl;
+}
+ \end{lstlisting}
+ \framebreak
+ I hope that, by the end, you can tell what this does:
+ \begin{lstlisting}
+#include <iostream>
+#include <vector>
+template <typename T> struct hello {
+    T operator*() { return "Hello"; }
+    static const char e = '!';
+    template <char c> char put_char() { return c; }
+};
+int main(void) {
+    std::vector<char>  world = {'w','o','r','l','d'};
+    hello<std::string> h;
+    std::cout << *h << h.put_char<' '>();
+    for(auto & word : world) { std::cout << word; }
+    std::cout << hello<std::string>::e << "\n";
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Contents}
+  \begin{itemize}
+  \item Terminology
+  \item Object Oriented Programming
+  \item Template metaprogramming
+  \item STL containers
+  \item C++11
+  \item Eigen
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Some terminology}
+ \begin{itemize}
+  \item Keywords: reserved syntactical elements \\
+  e.g. \code{template}, \code{class}, \code{return} ... 
+  \item Build-in types: reserved for basic types \\
+  e.g. \code{int}, \code{char}, \code{double}, ...
+  \item Operators: basically functions but ``better looking'' \\
+  *, +, \&, :: , ?:, ... 
+ \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Terminology: \code{lvalue} and \code{rvalue}}
+ Variables can be placed in two categories. \\
+ We differentiate\footnote{Actually things are a bit more complicated than this...} between a \code{lvalue} and a \code{rvalue}:
+ \begin{itemize}
+  \item \code{lvalue} can be seen as a physical memory object;
+  \item \code{rvalue} is just a temporary value.
+ \end{itemize}
+ \textbf{Rule of thumb:} can be put it on the left of \code{=} ? \\
+ Then \code{lvalue}, otherwise \code{rvalue}.
+ \begin{lstlisting}
+  int incr(int a) { return a+1; }
+  int a;
+  a = 9; // a is lvalue, 9 is rvalue
+  9 = a; // invalid!
+  incr(a) = 3; // invalid, f(a) is rvalue
+  a = incr(a); // valid
+ \end{lstlisting}
+\end{frame}
+ 
+\begin{frame}[fragile]
+ \frametitle{Passing by value and by reference}
+ Consider a generic function:
+ \begin{lstlisting}
+void function(%\only<3>{\color{mred}const }%MatrixXd %\only<2->{\color{mred}\& }%A);
+ \end{lstlisting}
+ \only<1>{All data from \code{A} copied to a new temporary. \\ We say that \code{A} is \textbf{passed by value}. \\}
+ \only<2>{Now, \code{A} can be modified inside \code{function}. \\ We say that \code{A} is \textbf{passed by reference}. \\ We do not want that. \\}
+ \only<3>{Now, \code{A} cannot be modified inside \code{function}. \\ No copy is performed. \\ We say that \code{A} is \textbf{passed by constant reference}. \\ Passing by const. reference is very common in C++. \\}
+ \only<3>{\textbf{Remark:} not needed for built-ins (e.g. \code{int}, \code{double}, ...). \\}
+ \only<3>{\textbf{Remark:} can also return by reference, but it is dangerous.}
+\end{frame}
+ 
+\begin{frame}[fragile, allowframebreaks]
+ \frametitle{Function and operator overload}
+  Let's say that I have functions:
+  \begin{lstlisting}
+int Id(int a) { std::cout << "int"; return a; }
+int Id(double a) { std::cout << "double"; return a; }
+int Id() { std::cout << "void"; return 1; }
+  \end{lstlisting}
+  This is valid in C++ and called \textbf{function overloading}. \\
+  \begin{lstlisting}
+Id(1); // prints "int"
+Id(1.); // prints "double"
+Id(); // prints "void"
+  \end{lstlisting}
+  Compiler must be able to pick the ``best fit'': \\
+  \begin{lstlisting}
+// error: ambiguating new declaration:
+double Id() { return 1; } 
+double Id(int a = 1) { return a; }
+  \end{lstlisting}
+  \framebreak
+  Most commonly used with operators. \\
+  Assume \code{Complex} is a type for complex numbers\footnote{Here define \code{Complex} to be \code{std::complex<double>}, cf. later.}:
+  \begin{lstlisting}
+bool operator<(Complex a, Complex b) {
+  return a.real() < b.real();
+}
+  \end{lstlisting}
+  overloads a lot of built-in \code{operator<} (undefined for $\mathbb{C}$).
+  \begin{lstlisting}
+Complex(3,4) < Complex(3,4); // now makes sense
+  \end{lstlisting}
+  Could also define a weird \code{operator<}:
+  \begin{lstlisting}
+   std::string operator<(Complex a, bool b);
+  \end{lstlisting}
+ $\Rightarrow$ completely new syntactical constructs.
+\end{frame}
+ 
+\begin{frame}[fragile]
+ \frametitle{Pointers}
+ \emph{Pointers} refer to a specific memory location:
+ \begin{lstlisting}
+  int * a; // ptr. to int, undefined memory location
+  int * b = new int; // ptr. to allocated int
+  a = b; // a points to the same as b
+  *a = 9; // value at the memory pointed by a is 9
+  std::cout << *b; // *b = 9
+  int c;
+  a = &c; // a points to the address of c
+  delete b;
+ \end{lstlisting}
+ Four important operators:
+ \begin{itemize}
+  \item \code{*} (unary) return value of pointer (dereference);
+  \item \code{\&} (unary) return address of variable (reference);
+  \item \code{new} and \code{delete} allocate/deallocate memory for pointers.
+ \end{itemize}
+ \textbf{Rule:} for each \code{new} there must be a \code{delete}. \\
+ \textbf{Remark:} use pointers with extreme care.
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Casting}
+ Why does this make sense?
+ \begin{lstlisting}
+  double i = 9; // <=> double i = (double) 9.
+ \end{lstlisting}
+ The \code{int 9} is \emph{casted} implicitly to a \code{double}. \\
+ Most of the times you do not have to worry about it. \\
+ If you \textbf{really need} you can use the operators: \\
+  \code{static\_cast}, \code{dynamic\_cast}, \code{reinterpret\_cast}, \code{const\_cast}.
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Namespaces}
+ \emph{Namespaces} are like boxes with labels. \\
+ \begin{itemize}
+  \item Access with \code{::} \emph{operator}
+  \item or import them with the \emph{keyword} \code{using}.
+ \end{itemize}
+ \begin{lstlisting}
+namespace MySpace {
+  int i = 9;
+}
+std::cout << i; // error: 'i' was not declared ...
+std::cout << MySpace::i << "\n"; // ok
+using namespace MySpace;
+std::cout << i << "\n"; // now it works ok
+int i = 7;
+std::cout << i << "\n"; // i = 7 here
+ \end{lstlisting}
+ \code{Eigen} and \code{std} are examples of namespaces. \\
+%  \textbf{Remark:} what if I define \code{int cout;}? \\
+ \textbf{Terminology:} if it contains \code{::} is called \code{qualified}.
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Keyword: \code{typedef}}
+ This keyword allows to rename types for convenience:
+ \begin{lstlisting}
+  typedef std::vector<double> custom_vector;
+  custom_vector cv; // cv is std::vector<double>
+ \end{lstlisting}
+ or, with \code{using} (in C++11):
+ \begin{lstlisting}
+  using custom_vector = std::vector<double> ;
+  custom_vector cv1; // cv is std::vector<double>
+ \end{lstlisting}
+ \code{using} can be used with templates.
+%  we'll see that, in C++11, we can avoid this using \code{auto}.
+\end{frame}
+
+\subsection{OOP}
+
+\begin{frame}[fragile]
+ \frametitle{OOP: \code{struct} and \code{class} in short}
+ Both \code{struct} and \code{class} keywords to define an \emph{Object}. \\
+ Mainly, an Object is a collection of:
+ \begin{itemize}
+  \item other Objects or types (called members);
+  \item functions (methods).
+ \end{itemize}
+ \begin{lstlisting}
+struct myStruct {
+    int     some_int;
+    double  some_double;
+    void    incr() { some_int++; } // function
+};
+class myClass {
+    int        I;
+    myStruct   S; // contains a struct
+};
+ \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{OOP: constructors}
+ Constructors: called to build an Object
+ \begin{lstlisting}
+class myClass {
+  public:
+    myClass() { I = 9; }; // default constructor
+    myClass(int I_) : I(I_) {} // any constructor
+    myClass(const myClass & other) // copy constructor
+      : I(other.I) {} // special syntax I = other.I
+    int        I;
+};
+  \end{lstlisting}
+  The \code{: I(I\_)} is like writing \code{I = I\_;} in the first line. Usage:
+ \begin{lstlisting}
+myClass m; // default construct
+myClass n(1); // construct with ints
+myClass o(n); // copy m to o
+myClass p(); // NOT what you think
+int a(); // function declaration like this
+ \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{OOP: operators}
+ Operators: a fancier way to define special function
+  \begin{lstlisting}
+class myClass {
+  int operator*(const myClass & other) const {
+    return 5*I + other.I;
+  }
+  int weird_mult(const myClass & other) const {
+    return 5*I + other.I;
+  }
+}
+  \end{lstlisting}
+  Calling  sequence:
+ \begin{lstlisting}
+myClass m, n;
+int ret = m * n; // a custom uncommon operator
+int ret2 = m.weird_mult(n); // is exactly the same
+ \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{OOP Keyword: \code{this}}
+ Inside a class, \code{this} is a pointer to the class itself.
+ \begin{lstlisting}
+struct T {
+  int i = 9; // syntax sugar to initialize i = 9
+  T & operator=(const T & other) {
+    this->i = other.i; // this not required (implicit)
+    // this->i <=> *this.
+    return *this;
+  }
+};
+ \end{lstlisting}
+ Then I can write:
+ \begin{lstlisting}
+  T e1, e2, e3;
+  e1 = e2 = e3; // because (e2 = e3) returns e2
+ \end{lstlisting}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{OOP: class Namespaces}
+ Each \code{class} and \code{struct} comes with a ``free'' namespace. \\
+ Functions, other objects and statics members are included in it.
+ \begin{lstlisting}
+struct N {
+  class N_c { // nested class
+    // stuff ...
+  };
+  typedef double N_t;
+  static int N_i;
+  void N_f(); // function declaration
+};
+ \end{lstlisting}
+ They are accessed with \code{::}:
+ \begin{lstlisting}
+N::N_c n_c; // <=> n_c is a class N_c
+N::N_t n_d; // <=> double N_d
+N::N_i = 9; // variable of type int
+void N::N_f() { ++N_i; } // definition of function N_f
+ \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{OOP: \code{const}, some special syntax}
+ A \code{const} member function promises not to modify the class:
+ \begin{lstlisting}
+struct myClass {
+    int nonconst_function() {
+	// something
+	I = 8; // fine
+    }
+    int const_function() const {
+	// something
+	I = 8; // is illegal: modifies myClass
+    }
+};
+ \end{lstlisting}
+ Then you can use this function also on constant classes:
+ \begin{lstlisting}
+const myClass mc;
+mc.nonconst_function(); // illegal
+mc.const_function(); // legal
+ \end{lstlisting}
+\end{frame}
+ 
+\begin{frame}[fragile]
+ \frametitle{OOP: \code{static} members}
+ A \code{static} member is shared amongst all instances:
+ \begin{lstlisting}
+class myClass {
+  static int static_I;
+  void incr() { static_I++; }
+}
+ \end{lstlisting}
+ A \code{static} member is linked more to \code{myClass} than to \code{m} or \code{n}. \\
+ No need for an instance of \code{myClass} to access \code{static\_I}.
+ \begin{lstlisting}
+int myClass::static_I = 9;
+int main() {
+    myClass m,n;
+    std::cout << m.static_I << n.static_I; // 9  9
+    m.incr();
+    std::cout << m.static_I << n.static_I; // 10 10
+}
+ \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{OOP: \code{static} functions}
+ A \code{static} member function is shared amongst all instances:
+ \begin{lstlisting}
+class myClass {
+  static int function() {
+      int a = static_I; // valid
+      int b = I; // is illegal: cannot see non static
+      return 8;
+  }
+}
+ \end{lstlisting}
+ No need for an instance of \code{myClass} to use \code{function}:
+ \begin{lstlisting}
+int y = myClass::function();
+ \end{lstlisting}
+\end{frame}
+  
+\begin{frame}[fragile]
+ \frametitle{OOP: member access: \code{private}, \code{protected} and \code{public}}
+ Until now, we never worried about the ``privacy'' of class members. \\
+ Each member of an Object has a ``privacy setting'':
+ \begin{lstlisting}
+class C {
+  // Default: private, accessed only within class
+  int a; // C.a invalid outside
+public: // can be accessed only by derived class
+  int b; // C.b allowed only in child
+protected: // can be accessed by anyone
+  int c; // C.c always valid
+}
+ \end{lstlisting}
+ Finally, we can tell the difference between \code{struct} and \code{class}:
+ \begin{itemize}
+  \item \code{struct}: members are \code{public} by default;
+  \item \code{class}: members are \code{private} by default.
+ \end{itemize}
+\end{frame}
+
+\subsection{Template metaprogramming}
+
+\begin{frame}[fragile]
+ \frametitle{Template metaprogramming}
+ The idea behind templates is: let the compiler write code for you. \\
+ \textbf{Idea:} write function and classes with generic types. \\
+ Templates are resolved at compile time
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Function templates}
+ I want a function:
+ \begin{lstlisting}
+double AXPY(double X, double Y, double A)
+  { return A*X+Y; }
+ \end{lstlisting}
+ What if I want the same for \code{int}? \code{complex}? \code{MatrixXd}? \\
+ Define a ``skeleton'' function:
+ \begin{lstlisting}
+template <class whatever>
+whatever AXPY(const whatever & X,
+	      const whatever & Y, double A)
+	      { return A*X+Y; }
+ \end{lstlisting}
+ as long as \code{*} and \code{+} are well defined for \code{whatever}. \\
+ The compiler defines the functions for us. \\
+%  \textbf{Remark:} we pass by reference for efficiency (cf. prev. sect.). \\
+ \textbf{Remark:} \code{template <typename whatever>} exactly the same.
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]
+ \frametitle{Function templates: example}
+ We define the templated function \code{myMin}: \\
+ taking 2 arguments and returning the minimum.
+ \begin{lstlisting}
+template <class T1, class T2> // s.t. can mix T1/T2
+T1 myMin(const T1 & a, const T2 & b) {
+  return a < b ? a : b; // ternary operator
+}
+
+int a = myMin(8.,9.); // T1 = T2 = double
+double b = myMin(8,9); // T1 = T2 = int
+double c = myMin(8,9.); // T1 = int, T2 = double
+// a = b = c = 8
+\end{lstlisting}
+\textbf{Remark:} \code{myMin} uses \code{operator<} from \code{int} and \code{double}. \\
+\textbf{Remark:} operator \code{expr1 ? expr2 : expr3} returns: \\
+\code{expr2} if \code{expr1} otherwise returns \code{expr3}
+\framebreak
+
+This way, it can be used with custom types:
+ \begin{lstlisting}
+struct S {
+  int i;
+  S(int i) : i(i) { }; // constructor
+  operator int() const { return i; } // S to int
+  bool operator<(const S & other) const {
+    return i > other.i; // swap < for >
+  }
+};
+
+// Uses operator< for S, which is actually >
+double d = myMin(S(8),S(9)); // d = 9
+\end{lstlisting}
+\end{frame}
+ 
+\begin{frame}[fragile]
+ \frametitle{Class template}
+ Just as with functions, we can template any class:
+ \begin{lstlisting}
+template <class T>
+struct myComplex {
+  T Re, Im; // real and imaginary part
+  
+  myComplex(T Re, T Im) : Re(Re), Im(Im) {};
+};
+ \end{lstlisting}
+  Which has to be instantiated by specifying the type:
+ \begin{lstlisting}
+myComplex<int>  cmplx1(8,9); // cmplx = 8*i+9
+myComplex<double>  cmplx2(2.3,3); // cmplx = 2.3*i+3
+ \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Class template}
+ You can then go crazy and template everything:
+ \begin{lstlisting}
+template <class T1, class T2 = int> // T2 default int
+class myComplex2 {
+  T1 Re; // real part has type T1
+  T2 Im; // imaginary part part has type T2
+public:
+  template <class U>
+  U sum() { return Re + Im; }
+};
+ \end{lstlisting}
+ Usage involve lots of \code{<>}:
+ \begin{lstlisting}
+myComplex2<double> cmplx3; // Re = double, Im = int
+myComplex2<double, double> cmplx4; // Re = Im = double
+
+cmplx3.sum<int>(); // must specify U above
+double s1 = cmplx3.sum<double>(); // must specify U
+ \end{lstlisting}
+\end{frame}
+ 
+\begin{frame}[fragile]
+ \frametitle{Keyword: \code{typename} alternative meaning}
+ \begin{lstlisting}
+template <class T>
+void templated_function() {
+   %\only<4>{{\color{mred}typename }}%T::t * x; // %\only<1>{multiplication or pointer def.?}\only<2-3>{C++: multiplication}\only<4>{now is a pointer def.} \only<3>{{\color{mred}illegal!}}%
+}
+ \end{lstlisting}
+ \only<1>{What does this mean? \\}
+ \only<1>{Is \code{T::t} a type or a (static) variable? \\}
+ \only<2>{C++ interprets \code{T::t} and \code{x} as variables, \code{*} as multiplication, as if:}
+ 
+\defverbatim{\Lst}{
+ \begin{lstlisting}
+struct T {
+  static int t; // t is a variable
+};
+ \end{lstlisting}
+ }
+ \only<2>{\Lst}
+ \only<3>{But what if we meant \code{x} to be a pointer of type \code{T::t} instead?}
+ \only<4>{Keyword \code{typename} declares that a qualified name is a type.}
+\defverbatim{\Lst}{
+ \begin{lstlisting}
+struct T {
+  class t { // t is a class name
+    // stuff...
+  };
+};
+ \end{lstlisting}
+ }
+ \only<3-4>{\Lst}
+\end{frame}
+ 
+\begin{frame}[fragile]
+ \frametitle{Keyword: \code{template} alternative meaning}
+ \only<1>{Besides the normal use \code{template <class T> ...}, there is a uncommon usage of the keyword template:}
+ \only<2>{You must tell the compiler that \code{myMemberFunc} is a template function and not something to compare $<$ with \code{int}?}
+ \begin{lstlisting}
+template <typename T>
+struct tStruct {
+    template <typename U>
+    U tMemberFunc(void) { return U(); }
+};
+
+template <typename T>
+void tFunc() {
+    T s;
+    int a = %\only<1>{s.}\only<2>{{\color{mred}s.template }}%tMemberFunc<int>(); // %\only<1>{error}\only<2>{OK}%
+}
+
+int main() {
+    tFunc<tStruct<int>>();
+}
+ \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Recap on templates}
+ Templates are very useful:
+ \begin{itemize}
+  \item allow focusing on algorithms rather than types;
+  \item allow writing efficient programs;
+  \item reduce code duplication.
+ \end{itemize}
+ However, when using templates:
+ \begin{itemize}
+  \item your program may become unreadable;
+  \item you could get very complicated errors;
+  \item in general, it takes longer to compile.
+ \end{itemize}
+\end{frame}
+
+\subsection{STL}
+ 
+\begin{frame}[fragile]
+ \frametitle{STL containers}
+ \textbf{Containers} let you store collections of elements (objects). \\
+ All have different underlying data structure and complexities.
+ \begin{center}
+ \begin{tabular}{l|lccc}
+  \hline
+  name	 & descr.		& push back 	& iterator insert	& lookup \\
+  \hline
+  vector & dyn. array 		& O(1)\footnote{amortized amongst many \code{push\_back}.}	      	& O(n)		& O(1) \\
+  list	 & linked list 		& O(1)		& O(1)		& O(n) \\
+  map	 & hash map		& N/A		& O(log(n))	& O(log(n))
+ \end{tabular}
+ \end{center}
+ For instance: 
+ \begin{itemize}
+  \item vector\footnote{\code{std::vector} $\neq$ \code{Eigen::VectorXd}.} is good for lookup;
+  \item list is good for inserts;
+  \item maps allows different type of indices.
+ \end{itemize}
+ $\Rightarrow$ choose the appropriate container for your needs
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Example: \code{std::vector}}
+ A \code{std::vector} is a dynamic array like
+ \begin{itemize}
+  \item a C like \code{array} with variable size or
+  \item a Java \code{ArrayList}
+ \end{itemize}
+ Needs (at least) a template argument: type of item contained. \\
+ Usage:
+ \begin{lstlisting}
+  #include <vector>
+  #include <complex>
+  std::vector<int> vec; // int vec., similar to int *
+  std::vector< std::complex<double> > cmplx_vec;
+ \end{lstlisting}
+
+ Guarantees data is sequential in memory (i.e. array), hence:
+ \begin{itemize}
+  \item changing size is expensive (reallocate everything);
+  \item looking up an element is cheap.
+ \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]
+ \frametitle{Iterators}
+ \textbf{Iterators} are something that facilitates the iteration over a loop. \\
+ A container \code{c} of type \code{C} has:
+ \begin{itemize}
+  \item an iterator type \code{C::iterator}, pointing at an element of \code{C}:
+  \begin{itemize}
+   \item \code{*it} return the element pointed by \code{it};
+   \item \code{++it} return the iterator pointing to the next element of \code{c};
+  \end{itemize}
+  \item a \code{begin()} and an \code{end()} (both are interators \code{C::iterator}).
+ \end{itemize}
+ Instead of:
+ \begin{lstlisting}
+std::vector<int> v;
+// ... fill v
+for(int i = 0; i < v.size(); ++i) {
+    v.at(i) = i+1;
+    // loop over all v
+}
+ \end{lstlisting}
+ Used to loop easily (and efficiently):
+ \begin{lstlisting}
+for(std::vector<int>::iterator it = v.begin(); it  != v.end(); ++it) {
+    *it = i+1;
+    // loop over all v, *it is like v.at(i)
+}
+// range based alternative:
+for(int & c: v) {
+    c = i+1;
+    // loop over all v, c is like v.at(i)
+}
+ \end{lstlisting}
+
+\end{frame}
+
+\subsection{C++11 features}
+
+\begin{frame}[fragile]
+ \frametitle{Keyword: \code{decltype} (C++11)}
+ Copy and paste the type of a variable:
+ \begin{lstlisting}
+template <typename T>
+struct declClass {
+    T val;
+};
+
+declClass<int> m_i;
+declClass<double> m_d;
+decltype(m_i.val) i_type; // <=> int i_type;
+decltype(m_d.val) d_type; // <=> double d_type;
+\end{lstlisting}
+Useful to infer the type of a variable automatically.
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Keyword: \code{auto} (C++11)}
+ In short: avoid specifying the type (let the \textbf{compiler decide})
+\begin{lstlisting}
+std::vector< Eigen::MatrixXd > some_function(int a);
+\end{lstlisting}
+\only<1>{instead of calling:}\only<2>{just call:}
+\begin{lstlisting}
+%\only<1>{%std::vector< Eigen::MatrixXd >%}\only<2>{{\color{mred}auto}}% v = some_function(8);
+for(%\only<1>{%std::vector< Eigen::MatrixXd >::iterator%}\only<2>{{\color{mred}auto}}% it = v.begin();
+    it < v.end(); ++it) {
+  // some code
+}
+\end{lstlisting}
+ \textbf{Remark:} \code{auto} cannot be used everywhere. \\
+ Very useful, but do not abuse this feature.
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Lambda functions (C++11)}
+ Lambda functions are syntax sugar for C++. \\
+ Are unnamed functions similar to Matlab function handles. \\
+ Syntax: \\
+ \begin{lstlisting}
+[] (arguments) { function_body; }
+ \end{lstlisting}
+ return value is deducted by the compiler. If it can't:
+ \begin{lstlisting}
+[] (arguments) -> return_type { function_body; }
+ \end{lstlisting}
+ You can also store the lambda function in a variable:
+\begin{lstlisting}
+#include <functional>
+auto f = [] (int i) { return i++; }; // using auto
+std::function<int (int)> g = [] (int i)
+	{ return i++; }; // manual type
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Lambda functions (C++11): variable capture}
+ Lambda functions can capture the outer scope:
+ \begin{lstlisting}
+int j = 9, i = 8;
+[] () { std::cout << j; }; // illegal!
+// legal, j captured by reference:
+auto f = [&] () { std::cout << j; };
+f();
+[i,&j] () { i++; j++ }; // illegal for i, legal for j
+ \end{lstlisting}
+ Inside \code{[]} you can put many ``capture modes'':
+ \begin{itemize}
+  \item \code{[]}: doesn't perform any capture;
+  \item \code{[\&]}: captures any variable by reference;
+  \item \code{[=]}: captures any variable by making a copy;
+  \item \code{[a,\&b]}: captures \code{a} by copy, \code{b} by reference;
+  \item \code{[this]} captures pointer to \code{this};
+ \end{itemize}
+\end{frame}
+ 
+\section{Eigen}
+
+\begin{frame}[fragile]
+\frametitle{Aliasing}
+
+What is wrong with the following code?
+\begin{lstlisting}
+    Eigen::VectorXd A(4);
+    A << 1,2,3,4;
+    %\only<1>{A.tail(2) = A.head(2);}\only<2>{A[3] = A[2]; A[1] = A[0]; A[2] = A[1]; }%
+    std::cout << A;
+\end{lstlisting}
+Should print:
+\begin{verbatim}
+ 1,1,2,3
+\end{verbatim}
+instead prints
+\begin{verbatim}
+ 1,1,1,3
+\end{verbatim}
+\only<2>{\textbf{Answer:} \emph{aliasing}, Eigen overrides the values before it used them.}
+Sometimes Eigen warns you about that, but not always:
+\begin{lstlisting}
+ A = A.transpose(); // aborts during execution
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Alignment issues in Eigen}
+ A word of notice if you use \textbf{fixed size} Eigen Matrix or Vectors inside:
+ \begin{itemize}
+  \item structs;
+  \item STL containers.
+ \end{itemize}
+ Alignment issues in Eigen mean that you could get \textbf{wrong} code. \\
+ \textbf{Read:} \verb|http://eigen.tuxfamily.org/dox/|
+ \verb|group__DenseMatrixManipulation__Alignement.html|.
+\end{frame}
+
+\section{Debugging your code}
+
+\begin{frame}[fragile]
+\frametitle{Debugging C++}
+ To debug your cose you can use two tools:
+ \begin{itemize}
+  \item \code{std::cout} is always fine;
+  \item \code{gdb} (or any other debugger): run a program with
+  \begin{lstlisting}[language=bash]
+   gdb ./myprogram
+  \end{lstlisting}
+  and you have step by step execution.
+ \end{itemize}
+ \textbf{Remark:} you should always test your code for correctness.
+\end{frame}
+
+
+\section{Efficiency}
+
+\begin{frame}[fragile,allowframebreaks]
+ \frametitle{Efficient loops}
+ What is the difference between:
+\begin{lstlisting}
+Eigen::MatrixXd A(n,n); // A is Col. Major format
+for(int i = 0; i < n; ++i) {
+  for(int j = 0; j < n; ++j) {
+    A(i,j) = i*j;
+  }
+}
+\end{lstlisting}
+and
+\begin{lstlisting}
+for(int j = 0; j < n; ++j) {
+  for(int i = 0; i < n; ++i) {
+    A(i,j) = i*j;
+  }
+}
+\end{lstlisting}
+\framebreak
+The second: it is \textbf{not jumping} all over the memory. \\
+i.e. it has better memory locality \\
+$\Rightarrow$ better use of the cache \\
+$\Rightarrow$ faster execution
+
+
+\textbf{Rule:} fastest index should loop over the closest memory locations.
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Final remarks}
+ Some final remark:
+ \begin{itemize}
+  \item The compiler is smarter than you think.
+  \item Most of the time is also smarter than you.
+  \item Think of cleanliness and correctness before efficiency.
+  \item Do not avoid for loops: they are not evil as in Matlab.
+ \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Further help}
+ \begin{itemize}
+  \item Eigen doc: \\
+  http://eigen.tuxfamily.org/
+  \item Matlab/Eigen dictionary: \\
+  http://eigen.tuxfamily.org/dox/AsciiQuickReference.txt
+  \item C++ reference:
+  \begin{itemize}
+   \item http://www.cplusplus.com/
+   \item http://en.cppreference.com/
+  \end{itemize}
+ \end{itemize}
+\end{frame}
+
+\end{document}
