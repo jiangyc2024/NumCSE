@@ -12,7 +12,7 @@
 \newcommand{\lecturer}{Prof. Ralf Hiptmair}
 \newcommand{\lecture}{NumCSE}
 
-% \newcommand{\slidemode}{4}
+%\providecommand{\slidemode}{4}
 \usepackage{samlecturenotes}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -56,10 +56,10 @@
 \input{NCSENEW_macros}
 
 % Partial compilation when in editing mode (selective inclusion)
-\ifthenelse{\equal{4}{\slidemode}}
-{%
-  \includeonly{NCSENEW_Testproblem}{}
-}{}
+%\ifthenelse{\equal{4}{\slidemode}}
+%{%
+%  \includeonly{NCSENEW_Testproblem}{}
+%}{}
 
 % Import SVN revision
 
@@ -135,12 +135,9 @@ individual student to arrive at a solution is hard to predict.
 % Selective inclusion of Problems
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\chapter{Problems}
-\Label{cha:prb}
+\include{Chapters/MatrixVector/gramschmidteigen}
 
-\section{Test Problems}
-
-\input{NCSENEW_Testproblem}%
+\include{NCSENEW_Testproblem}%
 
 \section{Inclusion of Codes}
 
