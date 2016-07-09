@@ -48,10 +48,11 @@ NCSEProblems.dvi: NCSEProblems.tex
 # Cleanup
 #
 clean:
-	rm -f *.bbl *.aux *.log *.blg *~ *.bak *.ps *.dvi *.out *.tmp *.mtc *.mtc0 *.mw *.maf *.edx *.idx *.ddx *.sdx
+	find *.aux ! -name 'NCSENEW.aux' -type f -exec rm -f {} +
+	rm -f *.bbl *.log *.blg *~ *.bak *.ps *.dvi *.out *.tmp *.mtc *.mtc0 *.mw *.maf *.edx *.idx *.ddx *.sdx
 
 cleanexternal:
-	rm -f rev.tex NCSENEW_macros.tex samlecture_macros.tex samlecturenotes.sty
+	rm -f NCSENEW_macros.tex samlecture_macros.tex samlecturenotes.sty NCSENEW.aux rev.tex
 
 cleanall: clean cleanexternal
 	rm -f NCSEProblems.pdf
