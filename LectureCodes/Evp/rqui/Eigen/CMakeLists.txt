@@ -1,9 +1,6 @@
 project(rqui)
 cmake_minimum_required(VERSION 2.8)
 
-include_directories(../../imread/Eigen)
-include_directories(../../imgsegmat/Eigen)
 include_directories(../../../../Utils)
 
 add_executable_numcse(main main.cpp)
-add_resources(../../resources/segmentation)
