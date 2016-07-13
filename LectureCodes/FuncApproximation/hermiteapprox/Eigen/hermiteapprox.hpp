@@ -2,12 +2,13 @@
 # include <vector>
 # include <Eigen/Dense>
 # include <figure/figure.hpp>
-# include "../../../Interpolation/hermloceval/Eigen/hermloceval.hpp"
-# include "../../../../Utils/polyfit.hpp"
-# include "../../../../Utils/feval.hpp"
+# include "hermloceval.hpp"
+# include "polyfit.hpp"
+# include "feval.hpp"
 using Eigen::VectorXd;
 
-VectorXd slopes(const VectorXd&, const VectorXd&);
+/*LSTBEGIN0*/
+VectorXd slopes(const VectorXd&, const VectorXd&); // forward declaration
 void append(VectorXd&, const VectorXd&);
 
 // Investigation of interpolation error norms for cubic Hermite interpolation of \Blue{$f$} (handle \texttt{f})
@@ -15,7 +16,6 @@ void append(VectorXd&, const VectorXd&);
 // \texttt{N} gives the maximum number of mesh intervals
 template <class Function>
 void hermiteapprox(const Function& f, const double a, const double b, const unsigned N) {
-
   std::vector<double> l2err, linferr, h; // save error and stepwidth in these vectors
   for (unsigned j = 2; j <= N; ++j) {
     // \texttŧ{xx} is the fine mesh on which the error norms are computed
@@ -31,9 +31,8 @@ void hermiteapprox(const Function& f, const double a, const double b, const unsi
       // local evaluation nodes
       VectorXd vx = VectorXd::LinSpaced(100, t(k), t(k+1)),
                locval;
-      // evaluate the hermite interpolant at the vx
+      // evaluate the hermite interpolant at the vx, using \cref{hermloceval}
       hermloceval(vx, t(k), t(k+1), y(k), y(k+1), c(k), c(k+1), locval);
-
       // do not append the first value as that one is already in the vector
       append(xx, vx.tail(99));
       append(val, locval.tail(99));
@@ -82,10 +81,9 @@ void hermiteapprox(const Function& f, const double a, const double b, const unsi
   fig.plot( std::vector<double>({h[0], h[N-2]}), std::vector<double>({std::pow(h[0], pI(0))*std::exp(pI(1)), std::pow(h[N-2], pI(0))*std::exp(pI(1))}), "k" );
 
   fig.save( "hermiperravgsl" );
-
 }
 
-// Compuatation of slopes of piecewise linear interpolation
+// Computation of slopes of piecewise linear interpolation
 // IN : t = nodes
 //      y = values at nodes t 
 // OUT: c = slopes of piecewise linear interpolation
@@ -98,7 +96,7 @@ VectorXd slopes(const VectorXd& t, const VectorXd& y) {
   c(0) = delta(0);
   c(n) = delta(n-1);
   for (unsigned i = 1; i < n; ++i) {
-    c(i) = ( h(i)*delta(i - 1) + h(i - 1)*delta(i) ) / ( t(i + 1) - t(i - 1) );
+    c(i) = (h(i)*delta(i - 1) + h(i - 1)*delta(i)) / (t(i + 1) - t(i - 1));
   }
   return c;
 }
@@ -108,3 +106,4 @@ void append(VectorXd& x, const VectorXd& y) {
   x.conservativeResize(x.size() + y.size());
   x.tail(y.size()) = y;
 }
+/*LSTEND0*/

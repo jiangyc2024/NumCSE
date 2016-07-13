@@ -7,7 +7,7 @@ using Eigen::VectorXd;
  * IN:  t = nodes
  *      y = values in t
  *      x = evaluation points
- * OUT: v = values of interpolant in x                              */
+ *      v will be used to save the values of interpolant in x        */
 void ipoleval(const VectorXd& t, const VectorXd& y, const VectorXd& x, VectorXd& v) {
   // get coefficients using polyfit
   VectorXd p =  polyfit(t, y, y.size() - 1);

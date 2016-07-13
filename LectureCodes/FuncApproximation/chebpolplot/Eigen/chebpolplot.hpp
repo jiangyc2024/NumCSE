@@ -2,7 +2,7 @@
 # include <figure/figure.hpp>
 # include "chebpolmult.hpp"
 
-// plots Chebychev polynomials up to degree \texttt{nmax} on \Blue{$[-1,1]}
+// plots Chebychev polynomials up to degree \texttt{nmax} on \Blue{$[-1,1]$}
 void chebpolplot(const unsigned nmax) {
   Eigen::RowVectorXd x = Eigen::RowVectorXd::LinSpaced(500, -1, 1); // evaluation points
   Eigen::MatrixXd V;

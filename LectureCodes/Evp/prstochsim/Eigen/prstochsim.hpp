@@ -30,7 +30,7 @@ void prstochsim(std::string path, int Nhops)
 	for (int i=0; i<Nhops; ++i)
 	{
 		// Find links from current page \texttt{cp}
-		Eigen::VectorXd col = Eigen::VectorXd(G.col(cp));
+		Eigen::VectorXd col = G.col(cp).cast<double>();
 		std::vector<int> indices;	
 		for (int j=0; j<N; ++j) if (col(j) != 0) indices.push_back(j);
 

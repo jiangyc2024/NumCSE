@@ -45,7 +45,9 @@ int main(){
   mgl::Figure fig2;
   fig2.setlog(false, true);
   fig2.ylabel("Some long y Axis label");
+  fig2.xlabel("Some long x Axis label");
   fig2.plot(x, fx, "g0");
+  fig2.title("Some title");
   fig2.save("plot-2.eps");
 
   return 0;

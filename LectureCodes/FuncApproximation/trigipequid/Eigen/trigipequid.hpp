@@ -6,6 +6,7 @@
 using Eigen::VectorXd;
 using Eigen::VectorXcd; // complex Eigen vector
 
+/*LSTBEGIN0*/
 // Efficient computation of coefficients in expansion \eqref{eq:trigpreal} for a trigonometric
 // interpolation polynomial in equidistant points \Blue{$(\frac{j}{2n+1},y_j)$}, \Blue{$j=0,\ldots,2n$}
 // IN : \texttt{y} has to be a row vector of odd length, return values are column vectors
@@ -41,3 +42,4 @@ void trigipequid(const VectorXd& y, VectorXcd& a, VectorXcd& b) {
   // dont forget scaling factor of forward FFT!
   a /= N; b /= N;
 }
+/*LSTEND0*/
