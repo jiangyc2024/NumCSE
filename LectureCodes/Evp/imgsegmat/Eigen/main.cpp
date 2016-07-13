@@ -12,11 +12,11 @@ int main(int arc, char** argv)
 	auto img = readBMP(path);
 	Eigen::MatrixXd P = greyscale(img);
 
-	int N = P.rows() * P.cols();
-	Eigen::SparseMatrix<double> D(N,N);
-	Eigen::SparseMatrix<double> A(N,N);
+	Eigen::SparseMatrix<double> D;
+	Eigen::SparseMatrix<double> A;
 
 	auto Sfun = [](double a, double b) { return 1; };
 
 	std::tie(A,D) = imgsegmat(P, Sfun);
+
 }

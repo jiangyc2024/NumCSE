@@ -1,6 +1,7 @@
 #include <Eigen/Dense>
 #include <string.h>
 #include <stdint.h>
+#include <iostream>
 
 
 // reads a bmp file and returns a Eigen::MatrixXi formated like: 00000000bbbbbbbbggggggggrrrrrrrr
