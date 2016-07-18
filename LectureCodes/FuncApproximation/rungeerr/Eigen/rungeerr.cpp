@@ -7,7 +7,7 @@
 
 
 int main() {
-/*LSTBEGIN0*/
+/* SAM_LISTING_BEGIN_0 */
   auto f = [](double x) { return 1./(1 + x*x); };
   // sampling points for approximate maximum norm
   Eigen::VectorXd x = Eigen::VectorXd::LinSpaced(1000, -5, 5), 
@@ -22,7 +22,7 @@ int main() {
                     y = polyval(p, x);
     err.push_back( (y - fx).cwiseAbs().maxCoeff() );
   }
-/*LSTEND0*/
+/* SAM_LISTING_END_0 */
 
   mgl::Figure fig;
   fig.setlog(false, true);

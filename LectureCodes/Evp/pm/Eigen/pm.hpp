@@ -39,9 +39,6 @@ void directPowerMethod()
 		z = w/l;
 		res.row(i) << i,l,(s*z-ev).norm(), std::abs(l-std::abs(ew)), std::abs(sgn*rq-ew);
 		s = s*sgn;
-		/*w = A*z; l = norm(w); rq = real(dot(w,z)); z = w/l;
-		res = [res;i,l,norm(s*z-ev),abs(l-abs(ew)),abs(sgn*rq-ew)];
-		s = s * sgn;*/
 	}
 
 

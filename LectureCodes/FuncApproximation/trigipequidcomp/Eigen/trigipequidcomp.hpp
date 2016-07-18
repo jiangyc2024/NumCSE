@@ -5,7 +5,7 @@
 using Eigen::ArrayXcd;
 using Eigen::VectorXcd;
 
-/*LSTBEGIN0*/
+/* SAM_LISTING_BEGIN_0 */
 void trigipequidcomp(const VectorXcd& a, const VectorXcd& b, const unsigned N, VectorXcd& y) {
   const unsigned n = a.size() - 1;
   if (N < (2*n - 1)) {
@@ -35,4 +35,4 @@ void trigipequidcomp(const VectorXcd& a, const VectorXcd& b, const unsigned N, V
     y(k) = v(k) * std::exp( -2.*k*n*M_PI/N*i );
   }
 }
-/*LSTEND0*/
+/* SAM_LISTING_END_0 */

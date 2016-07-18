@@ -3,7 +3,7 @@
 using Eigen::VectorXd;
 using Eigen::MatrixXd;
 
-/*LSTBEGIN0*/
+/* SAM_LISTING_BEGIN_0 */
 //Computes expansion coefficients of trigonometric polyonomials \eqref{eq:trigpreal}
 // IN : \texttt{t} = vector of nodes \Blue{$t_{0},\ldots,t_n\in[0,1[$}
 //      \texttt{y} =  vector of data \Blue{$y_{0},\ldots,y_{n}$}
@@ -29,4 +29,4 @@ void trigpolycoeff(const VectorXd& t, const VectorXd& y, VectorXd& a, VectorXd& 
   a = c.head(n + 1);
   b = c.tail(n);
 }
-/*LSTEND0*/
+/* SAM_LISTING_END_0 */

@@ -7,7 +7,7 @@
 # include "feval.hpp"
 using Eigen::VectorXd;
 
-/*LSTBEGIN0*/
+/* SAM_LISTING_BEGIN_0 */
 void append(VectorXd&, const VectorXd&); // forward declaration of append()
 
 // Investigation of interpolation error norms for cubic Hermite interpolation of \Blue{$f$} (handle \texttt{f})
@@ -86,4 +86,4 @@ void append(VectorXd& x, const VectorXd& y) {
   x.conservativeResize(x.size() + y.size());
   x.tail(y.size()) = y;
 }
-/*LSTEND0*/
+/* SAM_LISTING_END_0 */

@@ -1,25 +1,22 @@
 #include <Eigen/Dense>
 #include <iostream>
 #include <libgen.h>
-//#include "imgsegmat.hpp"
+#include "imgsegmat.hpp"
 #include "imread.hpp"
 
 
 int main(int arc, char** argv)
 {
-	std::string path = std::string(dirname(argv[0])) +	"/eth3.bmp";
+	std::string path = std::string(dirname(argv[0])) +	"/eth.bmp";
+
 	auto img = readBMP(path);
-	
-	for (int i=0; i <3; ++i)
-	{
-		Eigen::MatrixXd G = getcolor(img,i);
+	Eigen::MatrixXd P = greyscale(img);
 
-		std::cout << G << std::endl;
-		std::cout << G.rows() << " " << G.cols() << std::endl;
-	}
+	Eigen::SparseMatrix<double> D;
+	Eigen::SparseMatrix<double> A;
 
-	Eigen::MatrixXd G = greyscale(img);
+	auto Sfun = [](double a, double b) { return 1; };
 
-	std::cout << G << std::endl;
-	std::cout << G.rows() << " " << G.cols() << std::endl;
+	std::tie(A,D) = imgsegmat(P, Sfun);
+
 }
