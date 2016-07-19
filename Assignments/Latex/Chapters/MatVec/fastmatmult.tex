@@ -1,0 +1,25 @@
+\begin{samproblem}*{prb:fastmatmult}{Fast matrix multiplication with \eigen{}}[1]{
+\cref{rem:strassen} presents Strassen's algorithm that can achieve
+  the multiplication of two dense square matrices of size {$n=2^{k}$},
+  $k\in\bbN$, with an asymptotic complexity better than $O(n^{3})$.
+}
+
+\begin{subproblem}{sp:1}[1]
+	Using \eigen~ implement a function
+	\begin{lstlisting}[style=cppsimple]
+	 MatrixXd strassenMatMult(const MatrixXd & A, const MatrixXd & B)
+	\end{lstlisting}
+	that uses Strassen's algorithm to multiply the two matrices $\VA$ and
+	$\VB$ and return the result as output. 
+
+  % BEGIN ================ SOLUTION  ================   %
+  \begin{samsolution}
+    \begin{samcode}[C++-code]{\cpl:cpp:solution}{Strassen's algorithm with \eigen{}}
+      \lstincludecpp[style=cpp_problem]{../Solutions/MatVec/fastmatmult/strassen.cpp}{1}
+    \end{samcode}
+  \end{samsolution}
+  % END ================ SOLUTION  ================   %
+
+\end{subproblem}
+
+\end{samproblem}
