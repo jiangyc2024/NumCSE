@@ -1,4 +1,5 @@
 #include <Eigen/Dense>
+#include <Eigen/Sparse>
 #include <Eigen/Eigenvalues>
 #include <unsupported/Eigen/KroneckerProduct> 
 
