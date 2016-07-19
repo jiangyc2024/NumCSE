@@ -2,8 +2,8 @@
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 #include <iostream>
-#include <string.h>
 #include <tuple>
+#include <string.h>
 #include <vector>
 #include <figure/figure.hpp>
 #include "spdiags.hpp"
