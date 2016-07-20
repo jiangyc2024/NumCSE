@@ -17,9 +17,18 @@ endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules)
 
+# binaries will be saved in ./bin
+set(CMAKE_BINARY_DIR ./bin)
+
 # If your compiler already finds and includes Eigen you can safely remove the following two lines
 find_package(Eigen3 REQUIRED)
 include_directories(${EIGEN3_INCLUDE_DIR})
+
+find_package(MathGL2 2.0.0 REQUIRED)
+include_directories(${MATHGL2_INCLUDE_DIRS})
+
+find_package(Figure REQUIRED)
+include_directories(${FIGURE_INCLUDE_DIR})
 
 ### Problem Sheet 0
 # make gramschmidt: problem 1
@@ -49,9 +58,19 @@ set(SRCS matPow.cpp)
 add_executable(matPow ${SRCS}) 
 
 # make arrowmatvec: for problem 1
-set(SRCS arrowmatvec.cpp)
+set(SRCS arrowmatvec_test.cpp)
 add_executable(arrowmatvec ${SRCS}) 
 
 # make arrowmatvec2: for problem 1
-set(SRCS arrowmatvec2.cpp)
-add_executable(arrowmatvec2 ${SRCS}) 
+set(SRCS arrowmatvec2_test.cpp)
+add_executable(arrowmatvec2 ${SRCS})
+
+# make arrowmatvectiming: for problem 1
+set(SRCS arrowmatvectiming.cpp)
+add_executable(arrowmatvectiming ${SRCS})
+target_link_libraries(arrowmatvectiming ${MATHGL2_LIBRARIES} ${FIGURE_LIBRARY})
+
+# make arrowmatvec2timing: for problem 1
+#set(SRCS arrowmatvec2timing.cpp)
+#add_executable(arrowmatvec2timing ${SRCS})
+#target_link_libraries(arrowmatvec2timing ${MATHGL2_LIBRARIES} ${FIGURE_LIBRARY})
