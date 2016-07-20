@@ -71,6 +71,6 @@ add_executable(arrowmatvectiming ${SRCS})
 target_link_libraries(arrowmatvectiming ${MATHGL2_LIBRARIES} ${FIGURE_LIBRARY})
 
 # make arrowmatvec2timing: for problem 1
-#set(SRCS arrowmatvec2timing.cpp)
-#add_executable(arrowmatvec2timing ${SRCS})
-#target_link_libraries(arrowmatvec2timing ${MATHGL2_LIBRARIES} ${FIGURE_LIBRARY})
+set(SRCS arrowmatvec2timing.cpp)
+add_executable(arrowmatvec2timing ${SRCS})
+target_link_libraries(arrowmatvec2timing ${MATHGL2_LIBRARIES} ${FIGURE_LIBRARY})
