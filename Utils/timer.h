@@ -9,8 +9,7 @@
  *        t.start();                                         *
  *        for (bla) { ... stuff happening ...; t.lap(); }    *
  *        double min = t.min(),                              *
- *               mean = t.mean(),                            *
- *               total_duration = t.duration();              *
+ *               mean = t.mean();                            *
  *                                                           *
  *        OR                                                 *
  *                                                           *
@@ -103,7 +102,15 @@ double Timer::duration() const {
 // returns mean of all laps
 double Timer::mean() const {
   if (t_laps.size() > 0){
-    return duration()/t_laps.size();
+    // save total time in std::chrono units
+    auto total_time = t_laps[0];
+    for (unsigned int i = 1; i < t_laps.size(); ++i) {
+      total_time += t_laps[i];
+    }
+    // convert time to double
+    auto total_dur = std::chrono::duration_cast<prec>(total_time);
+    double avg = double(total_dur.count())/divisor;
+    return avg;
   }
   else {
     std::cerr << "Before calling Timer::mean() you need to call Timer::lap() or Timer::stop()!\n";
