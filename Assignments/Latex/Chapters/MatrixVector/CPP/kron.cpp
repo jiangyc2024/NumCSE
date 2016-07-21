@@ -79,13 +79,10 @@ int main(void) {
     
     // Compute runtime of different implementations of kron
     unsigned int repeats = 10;
-    timer<> tm_kron, tm_kron_fast, tm_kron_super_fast;
-    std::vector<int> times_kron, times_kron_fast, times_kron_super_fast;
+    std::vector<double> times_kron, times_kron_fast, times_kron_super_fast;
     
     for(unsigned int p = 2; p <= 9; p++) {
-        tm_kron.reset();
-        tm_kron_fast.reset();
-        tm_kron_super_fast.reset();
+        Timer tm_kron, tm_kron_fast, tm_kron_super_fast;
         for(unsigned int r = 0; r < repeats; ++r) {
             unsigned int M = pow(2,p);
             A = Eigen::MatrixXd::Random(M,M);
@@ -94,8 +91,8 @@ int main(void) {
             
             // May be too slow for large p, comment if so
             tm_kron.start();
-//             kron(A,B,C);
-//             y = C*x;
+       //     kron(A,B,C);
+       //     y = C*x;
             tm_kron.stop();
             
             tm_kron_fast.start();
@@ -107,12 +104,12 @@ int main(void) {
             tm_kron_super_fast.stop();
         }
         
-        std::cout << "Lazy Kron took:       " << tm_kron.min().count() / 1000000. << " ms" << std::endl;
-        std::cout << "Kron fast took:       " << tm_kron_fast.min().count() / 1000000. << " ms" << std::endl;
-        std::cout << "Kron super fast took: " << tm_kron_super_fast.min().count() / 1000000. << " ms" << std::endl;
-        times_kron.push_back( tm_kron.min().count() );
-        times_kron_fast.push_back( tm_kron_fast.min().count() );
-        times_kron_super_fast.push_back( tm_kron_super_fast.min().count() );
+        std::cout << "Lazy Kron took:       " << tm_kron.min() << " s" << std::endl;
+        std::cout << "Kron fast took:       " << tm_kron_fast.min() << " s" << std::endl;
+        std::cout << "Kron super fast took: " << tm_kron_super_fast.min() << " s" << std::endl;
+        times_kron.push_back( tm_kron.min() );
+        times_kron_fast.push_back( tm_kron_fast.min() );
+        times_kron_super_fast.push_back( tm_kron_super_fast.min() );
     }
     
     for(auto it = times_kron.begin(); it != times_kron.end(); ++it) {

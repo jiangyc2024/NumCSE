@@ -12,10 +12,10 @@ void timing() {
                     d = Eigen::VectorXd::Random(n),
                     x = Eigen::VectorXd::Random(n),
                     y;
-    timer<> t;
+    Timer t;
     t.start(); arrowmatvec(d, a, x, y); t.stop();
     evals.push_back(n); // save vector sizes
-    res.push_back(t.elapsed().count()/1e9); // time gets measured in nanoseconds
+    res.push_back(t.duration());
   }
 
   mgl::Figure fig;

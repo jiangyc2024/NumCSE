@@ -72,15 +72,12 @@ int main(void)
     cout<<"Using standard method, A*B="<<AxB<<endl;
     cout<<"The norm of the error is "<<(AB-AxB).norm()<<endl;
     
-    //compare runtimes of strassenMatMult and of direct multiplication
+    // compare runtimes of strassenMatMult and of direct multiplication
     
     unsigned int repeats = 10;
-    timer<> tm_x, tm_strassen;
-    std::vector<int> times_x, times_strassen;
-    
+    std::vector<double> times_x, times_strassen;
     for(unsigned int k = 4; k <= 10; k++) {
-        tm_x.reset();
-        tm_strassen.reset();
+        Timer tm_x, tm_strassen;
         for(unsigned int r = 0; r < repeats; ++r) {
             unsigned int n = pow(2,k);
             A = MatrixXd::Random(n,n);
@@ -95,11 +92,11 @@ int main(void)
             AB=strassenMatMult(A,B);
             tm_strassen.stop();
         }
-        std::cout << "The standard matrix multiplication took:       " << tm_x.min().count() / 1000000. << " ms" << std::endl;
-        std::cout << "The Strassen's algorithm took:       " << tm_strassen.min().count() / 1000000. << " ms" << std::endl;
+        std::cout << "The standard matrix multiplication took:       " << tm_x.min() << " s" << std::endl;
+        std::cout << "The Strassen's algorithm took:       " << tm_strassen.min() << " s" << std::endl;
         
-        times_x.push_back( tm_x.min().count() );
-        times_strassen.push_back( tm_strassen.min().count() );
+        times_x.push_back( tm_x.min() );
+        times_strassen.push_back( tm_strassen.min() );
     }
     
     for(auto it = times_x.begin(); it != times_x.end(); ++it) {
