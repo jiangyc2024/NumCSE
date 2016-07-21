@@ -7,6 +7,26 @@
 using namespace Eigen;
 using namespace std;
 
+//! \brief Compute the Matrix product $A \times B$ using a naive loop approach (very slow!!)
+//! \param[in] A Matrix $2^k \times 2^k$
+//! \param[in] B Matrix $2^k \times 2^k$
+//! \param[out] Matrix product of A and B of dim $2^k \times 2^k$
+MatrixXd loopMatMult(const MatrixXd & A, const MatrixXd & B) 
+{
+    const int n = A.rows();
+    MatrixXd C = MatrixXd::Zero(n,n);
+
+    for (int i = 0; i < n; ++i) {
+      for (int j = 0; j < n; ++j) {
+        for (int k = 0; k < n; ++k) {
+          C(i,j) += A(i,k)*B(k,j);
+        }
+      }
+    }
+
+    return C;
+}
+
 //! \brief Compute the Matrix product $A \times B$ using Strassen's algorithm.
 //! \param[in] A Matrix $2^k \times 2^k$
 //! \param[in] B Matrix $2^k \times 2^k$
@@ -60,52 +80,64 @@ int main(void)
 {
     srand((unsigned int) time(0));
     
-    //check if strassenMatMult works
-    int k=2;
-    int n=pow(2,k);
-    MatrixXd A=MatrixXd::Random(n,n);
-    MatrixXd B=MatrixXd::Random(n,n);
-    MatrixXd AB(n,n), AxB(n,n);
-    AB=strassenMatMult(A,B);
-    AxB=A*B;
-    cout<<"Using Strassen's method, A*B="<<AB<<endl;
-    cout<<"Using standard method, A*B="<<AxB<<endl;
-    cout<<"The norm of the error is "<<(AB-AxB).norm()<<endl;
+    //check if loopMatMult and strassenMatMult works
+    const int k = 2;
+    const int n = pow(2,k);
+    MatrixXd A = MatrixXd::Random(n,n),
+             B = MatrixXd::Random(n,n),
+             AB_loops = loopMatMult(A,B),
+             AB_strassen = strassenMatMult(A,B),
+             AB_eigen = A*B;
+    cout << "Using loop method we get error norm " << (AB_eigen - AB_loops).norm() << endl 
+         << "A*B =" << endl << AB_loops << endl;
+    cout << "Using Strassen's method we get error norm " << (AB_eigen - AB_strassen).norm() << endl
+         << "A*B =" << endl << AB_strassen << endl;
+    cout << "Using standard Eigen method A*B =" << endl << AB_eigen << endl;
     
-    // compare runtimes of strassenMatMult and of direct multiplication
-    
+    // compare runtimes of strassenMatMult and loop implementation and Eigens built-in method
     unsigned int repeats = 10;
-    std::vector<double> times_x, times_strassen;
+    std::vector<double> times_eigen, times_strassen, times_loop;
     for(unsigned int k = 4; k <= 10; k++) {
-        Timer tm_x, tm_strassen;
+        Timer tm_eigen, tm_strassen, tm_loop;
         for(unsigned int r = 0; r < repeats; ++r) {
             unsigned int n = pow(2,k);
             A = MatrixXd::Random(n,n);
             B = MatrixXd::Random(n,n);
             MatrixXd AB(n,n);
             
-            tm_x.start();
-            AB=A*B;
-            tm_x.stop();
+            tm_eigen.start();
+            AB = A*B;
+            tm_eigen.stop();
             
             tm_strassen.start();
-            AB=strassenMatMult(A,B);
+            AB = strassenMatMult(A,B);
             tm_strassen.stop();
+
+            tm_loop.start();
+            AB = loopMatMult(A,B);
+            tm_loop.stop();
         }
-        std::cout << "The standard matrix multiplication took:       " << tm_x.min() << " s" << std::endl;
-        std::cout << "The Strassen's algorithm took:       " << tm_strassen.min() << " s" << std::endl;
+        cout << "The loop matrix multiplication took:       " << tm_loop.min() << " s" << endl;
+        cout << "The Strassen's algorithm took:       " << tm_strassen.min() << " s" << endl;
+        cout << "The standard matrix multiplication took:       " << tm_eigen.min() << " s" << endl;
         
-        times_x.push_back( tm_x.min() );
+        times_loop.push_back( tm_loop.min() );
         times_strassen.push_back( tm_strassen.min() );
+        times_eigen.push_back( tm_eigen.min() );
     }
     
-    for(auto it = times_x.begin(); it != times_x.end(); ++it) {
-        std::cout << *it << " ";
+    for(auto it = times_loop.begin(); it != times_loop.end(); ++it) {
+        cout << *it << " ";
     }
-    std::cout << std::endl;
+    cout << endl;
+    for(auto it = times_eigen.begin(); it != times_eigen.end(); ++it) {
+        cout << *it << " ";
+    }
+    cout << endl;
     for(auto it = times_strassen.begin(); it != times_strassen.end(); ++it) {
-        std::cout << *it << " ";
+        cout << *it << " ";
     }
-    std::cout << std::endl;
-    
+    cout << endl;
+
+    return 0;
 }
