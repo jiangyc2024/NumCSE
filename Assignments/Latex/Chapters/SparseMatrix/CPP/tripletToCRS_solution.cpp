@@ -245,34 +245,30 @@ int main() {
   // Do some timings
   Timer sortafter_timer, insertsort_timer;
   for(std::size_t M = 2; M < 1024; M *= 2) {
-    sortafter_timer.reset();
-    insertsort_timer.reset();
     std::cout << "Runtime for " << M << "x" << M/2 << " matrix (with nnz(A) <= " << M << "):" << std::endl;
-    for(int r = 0; r < 4; ++r) {
-      TripletMatrix<double> A;
-      CRSMatrix<double> B, E;
-            
-      A.rows = frows(M); // nrows
-      A.cols = fcols(M); //ncols
-      A.triplets.reserve(ftriplets(M));
-      for(std::size_t i = 0; i < ftriplets(M); ++i) {
-        A.triplets.push_back(Triplet<double>(rand() % A.rows, rand() % A.cols, rand() % 1000));
-      }
-            
-      insertsort_timer.start();
-      tripletToCRS(A, B);
-      if(!noaddition){ 
-	      tripletToCRS(A, B);
-		  }
-      insertsort_timer.stop();
-            
-      sortafter_timer.start();
-      tripletToCRS_sortafter(A, E);
-      if(!noaddition) {
-			 	tripletToCRS_sortafter(A, E);
-			}
-      sortafter_timer.stop();
+    TripletMatrix<double> A;
+    CRSMatrix<double> B, E;
+          
+    A.rows = frows(M); // nrows
+    A.cols = fcols(M); //ncols
+    A.triplets.reserve(ftriplets(M));
+    for(std::size_t i = 0; i < ftriplets(M); ++i) {
+      A.triplets.push_back(Triplet<double>(rand() % A.rows, rand() % A.cols, rand() % 1000));
     }
+            
+    insertsort_timer.start();
+    tripletToCRS(A, B);
+    if(!noaddition){ 
+	    tripletToCRS(A, B);
+		}
+    insertsort_timer.stop();
+          
+    sortafter_timer.start();
+    tripletToCRS_sortafter(A, E);
+    if(!noaddition) {
+			tripletToCRS_sortafter(A, E);
+	  }	
+    sortafter_timer.stop();
     std::cout << "Insertsort took:  " << insertsort_timer.duration() << " s." << std::endl;
     std::cout << "Sortafter took:   " << sortafter_timer.duration() << " s." << std::endl;
   }
