@@ -1,3 +1,7 @@
+/* this file is used for the tex-partial inclusion and does not matter to the students 
+ * for the solution of this exercise please refer to tripletToCRS_solution.cpp
+ * the template file for the students is tripletToCRS.cpp																*/
+
 #include <iostream>
 #include <vector>
 #include <algorithm>
