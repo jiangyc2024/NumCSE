@@ -1,3 +1,8 @@
+%% NECESSARY FILES:
+%% * gauleg.cpp
+%% * gauleg.hpp
+%% * quadsingint_template.cpp
+%% * quadsingint.cpp
 
 \begin{samproblem}{prb:effquadsing}{Efficient quadrature of singular integrands (core problem)}{
  This problem deals with efficient numerical quadrature of non-smooth integrands with a special structure.
@@ -130,32 +135,45 @@ auto f = [](double t){ return t*t; }; // $f(t) = t^2$
 
 \end{subproblem}
 
-\iffalse
 
- \begin{subproblem}[2]
-  Give formulas for the nodes $c_j$ and weights $\tilde{w}_j$ of a $2n$-point quadrature rule on $[-1,1]$, whose application to the integrand $f$ will produce the same results as the function \verb|quadsingint| that you implemented in \ref{sp:3}.
+\begin{subproblem}{sp:4}[2]
+  Give formulas for the nodes $c_j$ and weights $\tilde{w}_j$ of a $2n$-point quadrature rule on $[-1,1]$, 
+  whose application to the integrand $f$ will produce the same results as the function \verb|quadsingint| that you implemented in \ref{sp:3}.
   
-  \cprotEnv \begin{solution}
-   Using substitution (I). Let $(x_j, w_j)$, $j=1,\dots,n$ be the Gauss nodes and weights relative to the Gauss quadrature of order $n$ in the interval $[0,1]$. The nodes are mapped from $x_j$ in $[0,1]$ to $c_l$ for $l \in 1,\dots,2n$ in $[-1,1]$ as follows:
-    \begin{align*}
-     c_{2j-i}  = (-1)^i (1-x_j^2),\qquad j=1,\dots,n,\;i=0,1.  
-      \end{align*}
-    The weights $\tilde{w}_{l}, l = 1,\dots,2n$, become:
-    \begin{align*}
-     \tilde{w}_{2j-i} = 2 w_j x_j^2 \sqrt{2 - x_j^2},\qquad j=1,\dots,n,\;i=0,1.
-    \end{align*}
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{solfile}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        Using substitution (I):
+         
+        Let $(x_j, w_j)$, $j=1,\dots,n$ be the Gauss nodes and weights relative to the Gauss quadrature of order $n$ in the interval $[0,1]$. 
+        The nodes are mapped from $x_j$ in $[0,1]$ to $c_l$ for $l \in 1,\dots,2n$ in $[-1,1]$ as follows:
+        \begin{align*}
+          c_{2j-i}  = (-1)^i (1-x_j^2),\qquad j=1,\dots,n,\;i=0,1.  
+        \end{align*}
+        The weights $\tilde{w}_{l}, l = 1,\dots,2n$, become:
+        \begin{align*}
+          \tilde{w}_{2j-i} = 2 w_j x_j^2 \sqrt{2 - x_j^2},\qquad j=1,\dots,n,\;i=0,1.
+        \end{align*}
     
-   Using substitution (II). Let $(x_j, w_j)$, $j=1,\dots,n$ be the Gauss nodes and weights relative to the Gauss quadrature of order $n$ in the interval $[-1,1]$.  The nodes are mapped from $x_j$ to $c_j$  as follows:
-    \begin{align*}
-     c_j = \sin(x_j  \pi / 2),\qquad j=1,\dots,n
-    \end{align*}
-    The weights $\tilde{w}_{j}, j = 1,\dots,n$, become:
-    \begin{align*}
-     \tilde{w}_{j} = w_j \cos^2(x_j  \pi / 2) \pi / 2.
-    \end{align*}
-  \end{solution}
+        Using substitution (II):
 
- \end{subproblem}
+        Let $(x_j, w_j)$, $j=1,\dots,n$ be the Gauss nodes and weights relative to the Gauss quadrature of order $n$ in the interval $[-1,1]$.  
+        The nodes are mapped from $x_j$ to $c_j$  as follows:
+        \begin{align*}
+          c_j = \sin(x_j  \pi / 2),\qquad j=1,\dots,n
+        \end{align*}
+        The weights $\tilde{w}_{j}, j = 1,\dots,n$, become:
+        \begin{align*}
+          \tilde{w}_{j} = w_j \cos^2(x_j  \pi / 2) \pi / 2.
+        \end{align*}
+      \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% END ================== SOLUTION ===============   %
+\end{subproblem}
+
+
 
 %  \begin{subproblem}[4]
 %   What is the maximal degree of polynomials $f$, for which \verb|quadsingint|, in absence of round-off, will return the exact value of \eqref{eq:effquadsingint}?
@@ -164,20 +182,24 @@ auto f = [](double t){ return t*t; }; // $f(t) = t^2$
 %     
 %    \end{solution}
 %  \end{subproblem}
- 
- \begin{subproblem}[1]
+
+\begin{subproblem}[1]
   Tabulate the quadrature error:
-   \begin{align*}
+  \begin{align*}
     \lvert W(f) - \texttt{quadsingint(f,n)} \rvert
-   \end{align*}
-   for $f(t) := \frac{1}{2+\exp(3t)}$ and $n = 1,2,...,25$. Estimate the $0 < q <
-   1$ in the decay law of exponential convergence, see \lref{def:cvgtype}. 
+  \end{align*}
+  for $f(t) := \frac{1}{2+\exp(3t)}$ and $n = 1,2,...,25$. 
+  Estimate the $0 < q <  1$ in the decay law of exponential convergence, see \cref{def:cvgtype}. 
 
-  \cprotEnv   \begin{solution}
-   The convergence is exponential with both methods. The \Cpp{} implementation is in \verb|quadsingint.cpp|.
-   \end{solution}
-
- \end{subproblem}
-\fi
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{solfile}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        The convergence is exponential with both methods. The C++ implementation is in \verb|quadsingint.cpp|.
+      \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% END ================== SOLUTION ===============   %
+\end{subproblem}
  
 \end{samproblem}
