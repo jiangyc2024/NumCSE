@@ -15,8 +15,15 @@ double integrate(const QuadRule& qr, const Function& f) {
   return I;
 }
 
+// approximte the integral $\int_{-1}^1 \arcsin(x) f(x) dx$
 template <class Function>
-void gaussConv(const Function& f, const double I_ex) {
+void gaussConv(const Function& fh, const double I_ex) {
+  
+  // build integrand
+  auto f = [fh](double x) {
+    return std::asin(x)*fh(x);
+  };
+
   std::vector<double> evals, // used to save no. of quad nodes
                       error; // used to save the error
   const unsigned N = 50; // max. no. of nodes
@@ -33,7 +40,7 @@ void gaussConv(const Function& f, const double I_ex) {
   fig.title("Gauss quadrature convergence");
   fig.setlog(true, true); // log-log scaling
   fig.plot(evals, error, " +r").label("Error"); // plot error
-  fig.fplot("x^(-3)", "k--").label("O(n^3)"); // reference line
+  fig.fplot("x^(-3)", "k--").label("O(n^{-3})"); // reference line
   fig.xlabel("No. of quadrature nodes");
   fig.ylabel("|Error|");
   fig.legend();
@@ -41,11 +48,11 @@ void gaussConv(const Function& f, const double I_ex) {
 }
 
 int main() {
-  const double I_ex = 0.8702675180053843773; 
-  // define $f(x) = \arcsin x \sinh x$
-  std::function<double(double)> f = [](double x) {
-    return std::asin(x)*std::sinh(x);
+  const double I_ex = 0.870267525725852642;
+  // define $fh(x) = \sinh x$
+  std::function<double(double)> fh = [](double x) {
+    return std::sinh(x);
   };
-  gaussConv(f, I_ex);
+  gaussConv(fh, I_ex);
   return 0;
 }

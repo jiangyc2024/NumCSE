@@ -4,8 +4,15 @@
 # include <figure/figure.hpp>
 # include "gaussQuad.hpp"
 
+// compute the integral I = \int arcsin(x)f(x)dx, x=-1,..,1
 template <class Function>
-void gaussConv(const Function& f, const double I_ex) {
+void gaussConv(const Function& fh, const double I_ex) {
+
+  // define integrand
+  auto f = [fh](double x) {
+    return std::asin(x)*fh(x);
+  };
+
   std::vector<double> evals, // used to save no. of quad nodes
                       error; // used to save the error
   const unsigned N = 50; // max. no. of nodes
@@ -22,14 +29,14 @@ void gaussConv(const Function& f, const double I_ex) {
   //
   // TODO: create plots (use log-log scaling!)
   //
-  fig.save("conv");
+  fig.save("GaussConv");
 }
 
 int main() {
-  // define f(x) = asin(x)*sinh(x)
-  const double I_ex = 0.8702675180053843773; 
-  std::function<double(double)> f = [](double x) {
-    return std::asin(x)*std::sinh(x);
+  // define f(x) = sinh(x)
+  const double I_ex = 0.870267525725852642;
+  std::function<double(double)> fh = [](double x) {
+    return std::sinh(x);
   };
-  gaussConv(f, I_ex);
+  gaussConv(fh, I_ex);
 }
