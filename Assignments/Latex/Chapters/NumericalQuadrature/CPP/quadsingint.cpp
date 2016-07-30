@@ -34,7 +34,7 @@ double quadsingint(Function&& f, const unsigned n) {
 #endif
 }
 
-int main(int argc, char ** argv) {
+int main() {
     
   auto f = [] (double t) { return 1. / (2. + std::exp(3*t) ); };
     
