@@ -21,14 +21,28 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules)
 find_package(Eigen3 REQUIRED)
 include_directories(${EIGEN3_INCLUDE_DIR})
 
+find_package(MathGL2 2.0.0 REQUIRED)
+include_directories(${MATHGL2_INCLUDE_DIRS})
+
+find_package(Figure REQUIRED)
+include_directories(${FIGURE_INCLUDE_DIR})
+
+set(SRCS gaussConv.cpp)
+add_executable(gaussConv ${SRCS})
+target_link_libraries(gaussConv ${MATHGL2_LIBRARIES} ${FIGURE_LIBRARY})
+
+set(SRCS gaussConvCV.cpp)
+add_executable(gaussConvCV ${SRCS})
+target_link_libraries(gaussConvCV ${MATHGL2_LIBRARIES} ${FIGURE_LIBRARY})
+
 ### Problem Sheet 10
 # make quadinf: problem 2
 set(SRCS quadinf.cpp)
-add_executable(quadinf ${SRCS})
+#add_executable(quadinf ${SRCS})
 
 # make piecewise_hermite_interpolation: problem 1
 set(SRCS legendre.cpp)
-add_executable(legendre ${SRCS})
+#add_executable(legendre ${SRCS})
 
 ### Problem Sheet 11
 # make laserquad: problem 1 (compile and link)
@@ -41,8 +55,8 @@ add_executable(quadsingint ${SRCS})
 
 # make laserquad: problem 5 (compile and link)
 set(SRCS laserquad.cpp gauleg.cpp)
-add_executable(laserquad ${SRCS})
+#add_executable(laserquad ${SRCS})
 
 
 set(SRCS quadU.cpp)
-add_executable(quadU ${SRCS})
+#add_executable(quadU ${SRCS})
