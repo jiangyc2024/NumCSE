@@ -1,0 +1,198 @@
+% NumCSE/Assignments/Latex/Chapters/NumericalQuadrature/GaussianQuadrature.tex
+% exercise requires:   gaussQuad.hpp  gaussConv_template.cpp        gaussConvCV_template.cpp 
+% solutions require:   gaussQuad.hpp  gaussConv.cpp  GaussConv.eps  gaussConvCV.cpp  gaussConvCV.eps 
+
+\begin{samproblem}*{prb:GaussianQuadrature}{Gaussian quadrature (core problem)}{
+  Given a smooth, odd function $f:[-1,1]\rightarrow \mathbb{R}$, consider the integral
+  \begin{equation}
+  \label{eq:GaussianQuadrature_IntArcsin}
+    I := \int_{-1}^{1} \arcsin(t) \; f(t) \,\mathrm{d}t.
+  \end{equation}
+  We want to approximate this integral using global Gauss quadrature.
+  The nodes (vector \texttt{x}) and the weights (vector \texttt{w}) of $n$-point Gaussian quadrature on $[-1,1]$ 
+  can be computed using the provided C++ routine \texttt{gaussquad.hpp}
+}
+
+\begin{samcode}[C++-code]{cpp:gaussquadcode}{Gauss-Legendre quadrature rule}
+  \begin{lstlisting}[style=cpp]
+QuadRule gaussQuad(const unsigned n);
+  \end{lstlisting}
+  Where \texttt{QuadRule} is a struct containing the quadrature weights \texttt{w} and nodes \texttt{x}:
+  \begin{lstlisting}[style=cpp]
+struct QuadRule {
+  Eigen::VectorXd nodes, weight;
+};
+  \end{lstlisting}
+\end{samcode}
+
+%%%%%%%%%%%% SUBPROBLEM 1
+
+\begin{subproblem}{sp:1}[3]
+  Write a C++ routine
+  \begin{samcode}[C++-code]{cpp:gaussconv_prototype}{GaussConv Prototype}
+    \begin{lstlisting}[style=cpp]
+template <class Function>
+void gaussConv(const Function& f);
+    \end{lstlisting}
+  \end{samcode}
+  that produces an appropriate convergence plot of the quadrature error versus the
+  number $n=1,\ldots,50$ of quadrature points. Here, \texttt{f} is a handle to the function $f$.
+
+  Save your convergence plot for $f(t)=\sinh(t)$ as \texttt{GaussConv.eps}.
+  
+  \begin{samhint}
+    If you want you can use the template \texttt{gaussConv_template.cpp}. 
+  \end{samhint}
+
+  \begin{samhint}
+    The exact value of the integral is 0.870267525725852642.
+  \end{samhint}
+
+  \begin{samhint}
+    Use the Figure library to plot. If you're not familiar with it, 
+    %have a look at the documentation, \cref{figureclass}, in the lecture notes.
+  \end{samhint}
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{solfile}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        In our implementation we defined another function 
+        \begin{lstlisting}[style=cpp]
+template <class Function>
+double integrate(const QuadRule& qr, const Function& f);
+        \end{lstlisting}
+        that computes the integral for a given function and quadrature rule.
+        Of course you can do everything in the function \texttt{gaussConv}.
+        \begin{figure}
+          \centering
+          \samplot{Chapters/NumericalQuadrature/PICTURES/GaussConv}[fig:GaussianQuadrature_GaussConv][](0.6\textwidth)
+        \end{figure}
+        \begin{samcode}[C++-code]{cpp:gaussConv_solution}{gaussConv.cpp}
+          \lstinputlisting[style=cpp]{./Chapters/NumericalQuadrature/CPP/gaussConv.cpp}
+        \end{samcode}
+      \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% END ================== SOLUTION ===============   %
+
+\end{subproblem}
+
+
+%%%%%%%%%%%% SUBPROBLEM 2
+
+\begin{subproblem}{sp:2}[1] 
+Which kind of convergence do you observe?
+
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{solfile}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        By reading off the slope in the log-log plot \ref{fig:GaussianQuadrature_GaussConv} we get
+        algebraic convergence, of order approximately $O(n^{-3})$.
+      \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% END ================== SOLUTION ===============   %
+\end{subproblem}
+
+%%%%%%%%%%%% SUBPROBLEM 3
+
+\begin{subproblem}{sp:3}[2] 
+  Transform the integral \eqref{eq:GaussianQuadrature_IntArcsin} into an equivalent one with a suitable
+  change of variable so that Gauss quadrature applied to the transformed integral converges much faster.
+
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{solfile}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        With the change of variable $t=\sin(x)$, $\mathrm{d}t=\cos x\mathrm{d}x$
+        $$I = \int_{-1}^{1} \arcsin(t)\; f(t) \,\mathrm{d}t  = \int_{-\pi/2}^{\pi/2} x\; f(\sin(x))\cos(x)\,\mathrm{d}x.$$
+        (the change of variable has to provide a smooth integrand on the integration interval)
+     \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% END ================== SOLUTION ===============   %
+
+\end{subproblem}
+
+%%%%%%%%%%%% SUBPROBLEM 4
+\begin{subproblem}{sp:4}[3]
+Now, write a C++ function
+  \begin{samcode}[C++-code]{cpp:gaussconvcv_prototype}{GaussConvCV Prototype}
+    \begin{lstlisting}[style=cpp]
+template <class Function>
+void gaussConvCV(const Function& f);
+    \end{lstlisting}
+  \end{samcode}
+  which plots the quadrature error versus the number $n=1,\ldots,50$ of quadrature points for the integral obtained in the previous subtask.
+
+  Again, choose $f(t)=\sinh(t)$ and save your convergence plot as \texttt{GaussConvCV.eps}.
+  
+  \begin{samhint}
+    If you want you can use the template \texttt{gaussConvCV\_template.cpp}. 
+  \end{samhint}
+
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{solfile}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        The Gauss quadrature nodes and weights are defined on the interval $[-1,1]$.
+        We need to transform the to the interval $[-\frac{\pi}{2}, \frac{\pi}{2}]$.
+
+        For the weights $\{w_i\}_{i=1}^n$ on an interval $[a,b]$ we know:
+        \begin{align}
+          \sum_{i=1}^n w_i = b - a
+        \end{align}
+        Denote the nodes on $[-1,1]$ by $\hat{w}$ and on $[-\frac{\pi}{2}, \frac{\pi}{2}]$ by $w$.
+        Then:
+        \begin{align}
+          w_i = \frac{\pi}{2} \hat{w}_i
+        \end{align}
+
+        For the nodes use affine transformation:
+        \begin{align}
+          \begin{cases}
+            \Phi: [-1,1] &\rightarrow [a,b] \\
+            \quad \quad \quad \hat{x} &\rightarrow a + \frac{b-a}{2} (\hat{x} + 1)
+          \end{cases}
+        \end{align}
+
+        See the listing for a suggested solution.
+        \begin{figure}
+          \centering 
+          \samplot{Chapters/NumericalQuadrature/PICTURES/GaussConvCV.eps}
+          \caption{Note the lin-log scale}
+        \end{figure}
+
+        \begin{samcode}[C++-code]{cpp:GaussConvCV}{GaussConvCV solution}
+          \small
+          \lstinputlisting[style=cpp]{Chapters/NumericalQuadrature/CPP/gaussConvCV.cpp}
+        \end{samcode}
+      \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% END ================== SOLUTION ===============   %
+
+\end{subproblem}
+
+%%%%%%%%%%%% SUBPROBLEM 5
+\begin{subproblem}{sp:5}[3]
+Explain the difference between the results obtained in subtasks \ref{sp:1} and \ref{sp:4}.
+
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{solfile}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        The convergence is now exponential.
+        The integrand of the original integral belongs to $C^0([-1,1])$ but not to $C^1([-1,1])$ 
+        because the derivative of the $\arcsin$ function blows up in $\pm1$.
+        The change of variable provides an analytic integrand: $x\cos(x)\sinh(\sin x)$.
+        Gauss quadrature ensures exponential convergence only if the integrand is analytic.
+        This explains the algebraic and the exponential convergence.
+      \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% END ================== SOLUTION ===============   %
+
+\end{subproblem}
+\end{samproblem}
