@@ -54,9 +54,8 @@ add_executable(quadsingint ${SRCS})
 # g++ [compiler opts.]  quadsingint.o gauleg.o -o quadsingint
 
 # make laserquad: problem 5 (compile and link)
-set(SRCS laserquad.cpp gauleg.cpp)
-#add_executable(laserquad ${SRCS})
-
+set(SRCS laserquad.cpp)
+add_executable(laserquad ${SRCS})
 
 set(SRCS quadU.cpp)
 #add_executable(quadU ${SRCS})
