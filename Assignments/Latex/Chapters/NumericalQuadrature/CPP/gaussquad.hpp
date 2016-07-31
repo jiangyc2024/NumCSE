@@ -6,7 +6,7 @@ struct QuadRule {
   Eigen::VectorXd nodes, weights;
 };
 
-QuadRule gaussQuad(const unsigned n) {
+QuadRule gaussquad(const unsigned n) {
   QuadRule qr;
   qr.nodes.resize(n);
   qr.weights.resize(n);
