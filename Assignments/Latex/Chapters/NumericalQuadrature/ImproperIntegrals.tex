@@ -1,0 +1,156 @@
+\begin{samproblem}{prb:impint}{Numerical integration of improper integrals}{
+  We want to devise a numerical method for the computation of improper integrals of the form 
+  $\int_{-\infty}^{\infty} f(t) dt$ for continuous functions $f: \mathbb{R} \rightarrow \mathbb{R}$ 
+  that decay sufficiently fast for $\lvert t \rvert \rightarrow \infty$ 
+  (such that they are integrable on $\mathbb{R}$). 
+ 
+  A first option $(T)$ is the truncation of the domain to a bounded interval $[-b,b], b \leq \infty$, that is, we approximate:
+  \begin{align*}
+    \int_{-\infty}^{\infty} f(t) dt \approx \int_{-b}^{b} f(t) dt
+  \end{align*}
+  and then use a standard quadrature rule (like Gauss-Legendre quadrature) on $[-b,b]$.
+}
+ 
+\begin{subproblem}{sp:1}[1]
+  For the integrand $g(t) := 1 / (1 + t^2)$ determine $b$ such that the truncation error $E_T$ satisfies:
+  \begin{align}
+    E_T := \left\lvert  \int_{-\infty}^{\infty} g(t) dt - \int_{-b}^{b} g(t) dt \right \rvert \leq 10^{-6}
+  \end{align}
+
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{testsol}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        An antiderivative of $g$ is $\mathrm{atan}$. The function $g$ is even.
+        \begin{align}
+          E_T = 2 \int_b^\infty g(t) dt = \lim_{x \rightarrow \infty} 2 \mathrm{atan}(x) - 2 \mathrm{atan}(b) = \pi - 2 \mathrm{atan}(b) \overset{!}{<} 10^{-6}
+        \end{align}
+        i.e. $b > \tan((\pi -10^{-6}) / 2) = \cot(10^{-6} / 2) \approx 2 \cdot 10^6$.
+      \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% END ================== SOLUTION ===============   %
+
+\end{subproblem}
+ 
+\begin{subproblem}{sp:2}[1]
+  What is the algorithmic difficulty faced in the implementation of the truncation approach for a generic integrand?
+
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{testsol}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        A good choice of $b$ requires a detailed knowledge about the decay of $f$, which may not be available for $f$ defined implicitly.
+      \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% END ================== SOLUTION ===============   %
+
+\end{subproblem}
+
+ A second option $(S)$ is the transformation of the improper integral to a bounded domain by substitution. For instance, we may use the map $t = \cot(s)$.
+ 
+\begin{subproblem}{sp:3}[2]
+  Into which integral does the substitution $t = \cot(s)$ convert $\int_{-\infty}^{\infty} f(t) dt$?
+
+
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{solfile}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        \begin{align}
+          &\frac{dt}{ds} = - (1+\cot^2(s)) = -(1+t^2) \\
+          & \int_{-\infty}^{\infty} f(t) dt = - \int_\pi^0 f(\cot(s)) (1+\cot^2(s)) ds = \int_0^\pi \frac{f(\cot(s))}{\sin^2(s)} ds,
+        \end{align}
+        because $\sin^2(\theta) = \frac{1}{1+\cot^2(\theta)}$.
+      \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% END ================== SOLUTION ===============   %
+
+\end{subproblem}
+ 
+\begin{subproblem}{sp:4}[1]
+  Write down the transformed integral explicitly for $g(t) := \frac{1}{1+t^2}$. Simplify the integrand.
+
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{testsol}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        \begin{align}
+          \int_0^\pi \frac{1}{1 + \cot^2(s)} \frac{1}{\sin^2(s)} ds = \int_0^\pi \frac{1}{\sin^2(s) + \cos^2(s)} ds = \int_0^\pi ds = \pi
+        \end{align}
+      \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% BEGIN ================ SOLUTION ===============   %
+
+\end{subproblem}
+
+\begin{subproblem}{sp:5}[2] 
+  Write a C++ function:
+  \begin{lstlisting}[style=cpp]
+template <typename Function>
+double quadinf(int n, const Function& f);
+  \end{lstlisting}
+  that uses the transformation from \ref{sp:4} together with $n$-point Gauss-Legendre quadrature to evaluate $\int_{-\infty}^{\infty} f(t) dt$. 
+  $f$ passes an object that provides an evaluation operator of the form:
+  \begin{lstlisting}
+double operator() (double x) const;
+  \end{lstlisting}
+
+  \begin{samhint}
+    You can use the template \verb|quadinf_template.cpp| if you want.
+  \end{samhint}
+
+  \begin{samhint}
+    A lambda function with signature
+    \begin{lstlisting}[style=cpp]
+(double) -> double
+    \end{lstlisting}
+    automatically satisfies this requirement.
+  \end{samhint}
+
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{testsol}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        \begin{samcode}[C++-code]{cpp:quadinf_sol}{quadinf suggested solution}
+          \small
+          \lstinputlisting[style=cpp]{./Chapters/NumericalQuadrature/CPP/quadinf.cpp}
+        \end{samcode}
+      \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% END ================== SOLUTION ===============   %
+
+\end{subproblem}
+
+\begin{subproblem}{sp:6}[1]
+  Study the convergence as $n \rightarrow \infty$ of the quadrature method implemented in \ref{sp:5} for the integrand 
+  $h(t) := \exp(-(t-1)^2)$ (shifted Gaussian). What kind of convergence do you observe?
+
+  \begin{samhint}
+    \begin{align}
+      \int_{-\infty}^{\infty} h(t) dt = \sqrt{\pi}
+    \end{align}
+  \end{samhint}
+
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{testsol}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        We observe exponential convergence. 
+        \begin{figure}
+          \centering
+          \samplot{./Chapters/NumericalQuadrature/PICTURES/quadinfCvg}[fig:quadinfCvg][](0.6\textwidth)
+          \caption{This plot was created with the data from \texttt{quadinf.cpp}}
+        \end{figure}
+      \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% END ================== SOLUTION ===============   %
+
+\end{subproblem}
+
+\end{samproblem}
