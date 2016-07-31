@@ -42,7 +42,7 @@ add_executable(quadinf ${SRCS})
 
 # make piecewise_hermite_interpolation: problem 1
 set(SRCS legendre.cpp)
-#add_executable(legendre ${SRCS})
+add_executable(legendre ${SRCS})
 
 ### Problem Sheet 11
 # make laserquad: problem 1 (compile and link)
