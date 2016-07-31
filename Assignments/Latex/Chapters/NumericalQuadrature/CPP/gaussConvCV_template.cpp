@@ -2,7 +2,7 @@
 # include <vector>
 # include <Eigen/Dense>
 # include <figure/figure.hpp>
-# include "gaussQuad.hpp"
+# include "gaussquad.hpp"
 
 template <class Function>
 void gaussConvCV(const Function& f, const double I_ex) {

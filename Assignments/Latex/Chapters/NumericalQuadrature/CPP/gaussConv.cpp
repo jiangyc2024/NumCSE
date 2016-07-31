@@ -2,7 +2,7 @@
 # include <vector>
 # include <Eigen/Dense>
 # include <figure/figure.hpp>
-# include "gaussQuad.hpp"
+# include "gaussquad.hpp"
 
 // computing the integral $\int_a^b f(x) dx \approx \sum_{i=1}^n w_i f(c_i)$
 // for given quadrature rule $\{(w_i, x_i)\}_{i=1}^n$
@@ -29,7 +29,7 @@ void gaussConv(const Function& fh, const double I_ex) {
   const unsigned N = 50; // max. no. of nodes
   
   for (unsigned n = 1; n <= N; ++n) {
-    QuadRule qr = gaussQuad(n); // get quadrature rule
+    QuadRule qr = gaussquad(n); // get quadrature rule
     double I = integrate(qr, f); // compute integral
     evals.push_back(n); // save no. of quadrature nodes
     error.push_back(std::abs(I - I_ex)); // save error

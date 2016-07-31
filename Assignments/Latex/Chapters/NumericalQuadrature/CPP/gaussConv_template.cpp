@@ -2,7 +2,7 @@
 # include <vector>
 # include <Eigen/Dense>
 # include <figure/figure.hpp>
-# include "gaussQuad.hpp"
+# include "gaussquad.hpp"
 
 // compute the integral I = \int arcsin(x)f(x)dx, x=-1,..,1
 template <class Function>

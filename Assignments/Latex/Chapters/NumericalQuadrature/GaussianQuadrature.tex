@@ -1,6 +1,6 @@
 % NumCSE/Assignments/Latex/Chapters/NumericalQuadrature/GaussianQuadrature.tex
-% exercise requires:   gaussQuad.hpp  gaussConv_template.cpp        gaussConvCV_template.cpp 
-% solutions require:   gaussQuad.hpp  gaussConv.cpp  GaussConv.eps  gaussConvCV.cpp  gaussConvCV.eps 
+% exercise requires:   gaussquad.hpp  gaussConv_template.cpp        gaussConvCV_template.cpp 
+% solutions require:   gaussquad.hpp  gaussConv.cpp  GaussConv.eps  gaussConvCV.cpp  gaussConvCV.eps 
 
 \begin{samproblem}*{prb:GaussianQuadrature}{Gaussian quadrature (core problem)}{
   Given a smooth, odd function $f:[-1,1]\rightarrow \mathbb{R}$, consider the integral
@@ -15,7 +15,7 @@
 
 \begin{samcode}[C++-code]{cpp:gaussquadcode}{Gauss-Legendre quadrature rule}
   \begin{lstlisting}[style=cpp]
-QuadRule gaussQuad(const unsigned n);
+QuadRule gaussquad(const unsigned n);
   \end{lstlisting}
   Where \texttt{QuadRule} is a struct containing the quadrature weights \texttt{w} and nodes \texttt{x}:
   \begin{lstlisting}[style=cpp]

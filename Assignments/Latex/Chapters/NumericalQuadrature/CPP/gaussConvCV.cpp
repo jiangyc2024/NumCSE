@@ -2,7 +2,7 @@
 # include <vector>
 # include <Eigen/Dense>
 # include <figure/figure.hpp>
-# include "gaussQuad.hpp"
+# include "gaussquad.hpp"
 
 template <class Function>
 void gaussConvCV(const Function& f, const double I_ex) {
@@ -16,7 +16,7 @@ void gaussConvCV(const Function& f, const double I_ex) {
   const unsigned N = 50; // max. no. of nodes
 
   for (unsigned n = 1; n <= N; ++n) {
-    QuadRule qr = gaussQuad(n); // get quadrature rule
+    QuadRule qr = gaussquad(n); // get quadrature rule
     // do not forget to transform quadratur rule!
     Eigen::VectorXd w = qr.weights * M_PI/2; 
     Eigen::VectorXd c = ( -M_PI/2 + M_PI/2*(qr.nodes.array() + 1) ).matrix();
