@@ -38,7 +38,7 @@ target_link_libraries(gaussConvCV ${MATHGL2_LIBRARIES} ${FIGURE_LIBRARY})
 ### Problem Sheet 10
 # make quadinf: problem 2
 set(SRCS quadinf.cpp)
-#add_executable(quadinf ${SRCS})
+add_executable(quadinf ${SRCS})
 
 # make piecewise_hermite_interpolation: problem 1
 set(SRCS legendre.cpp)
