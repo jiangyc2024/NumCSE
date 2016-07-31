@@ -58,4 +58,4 @@ set(SRCS laserquad.cpp)
 add_executable(laserquad ${SRCS})
 
 set(SRCS quadU.cpp)
-#add_executable(quadU ${SRCS})
+add_executable(quadU ${SRCS})
