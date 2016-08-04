@@ -1,4 +1,8 @@
-\begin{samproblem}{prb:impint}{Numerical integration of improper integrals}{
+% NumCSE/Assignments/Chapters/NumericalQuadrature/ImproperIntegrals.tex
+% Exercise requires: quadinf_template.cpp
+% Solution requires: quadinf.cpp
+
+\begin{samproblem}*{prb:impint}{Numerical integration of improper integrals}{
   We want to devise a numerical method for the computation of improper integrals of the form 
   $\int_{-\infty}^{\infty} f(t) dt$ for continuous functions $f: \mathbb{R} \rightarrow \mathbb{R}$ 
   that decay sufficiently fast for $\lvert t \rvert \rightarrow \infty$ 
@@ -93,7 +97,7 @@
 template <typename Function>
 double quadinf(int n, const Function& f);
   \end{lstlisting}
-  that uses the transformation from \ref{sp:4} together with $n$-point Gauss-Legendre quadrature to evaluate $\int_{-\infty}^{\infty} f(t) dt$. 
+  that uses the transformation from \ref{prb:impint:sp:4} together with $n$-point Gauss-Legendre quadrature to evaluate $\int_{-\infty}^{\infty} f(t) dt$. 
   $f$ passes an object that provides an evaluation operator of the form:
   \begin{lstlisting}
 double operator() (double x) const;
@@ -127,7 +131,7 @@ double operator() (double x) const;
 \end{subproblem}
 
 \begin{subproblem}{sp:6}[1]
-  Study the convergence as $n \rightarrow \infty$ of the quadrature method implemented in \ref{sp:5} for the integrand 
+  Study the convergence as $n \rightarrow \infty$ of the quadrature method implemented in \ref{prb:impint:sp:5} for the integrand 
   $h(t) := \exp(-(t-1)^2)$ (shifted Gaussian). What kind of convergence do you observe?
 
   \begin{samhint}

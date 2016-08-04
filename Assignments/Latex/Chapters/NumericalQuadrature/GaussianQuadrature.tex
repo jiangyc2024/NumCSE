@@ -1,6 +1,6 @@
 % NumCSE/Assignments/Latex/Chapters/NumericalQuadrature/GaussianQuadrature.tex
-% exercise requires:   gaussquad.hpp  gaussConv_template.cpp        gaussConvCV_template.cpp 
-% solutions require:   gaussquad.hpp  gaussConv.cpp  GaussConv.eps  gaussConvCV.cpp  gaussConvCV.eps 
+% Exercise requires:   gaussquad.hpp  gaussConv_template.cpp        gaussConvCV_template.cpp 
+% Solution requires:   gaussquad.hpp  gaussConv.cpp  GaussConv.eps  gaussConvCV.cpp  gaussConvCV.eps 
 
 \begin{samproblem}*{prb:GaussianQuadrature}{Gaussian quadrature (core problem)}{
   Given a smooth, odd function $f:[-1,1]\rightarrow \mathbb{R}$, consider the integral
@@ -41,7 +41,7 @@ void gaussConv(const Function& f);
   Save your convergence plot for $f(t)=\sinh(t)$ as \texttt{GaussConv.eps}.
   
   \begin{samhint}
-    If you want you can use the template \texttt{gaussConv_template.cpp}. 
+    If you want you can use the template \texttt{gaussConv\_template.cpp}. 
   \end{samhint}
 
   \begin{samhint}
@@ -49,9 +49,9 @@ void gaussConv(const Function& f);
   \end{samhint}
 
   \begin{samhint}
-    Use the Figure library to plot. If you're not familiar with it, 
-    %have a look at the documentation, \cref{figureclass}, in the lecture notes.
+    Use the Figure library to plot. If you're not familiar with it,  have a look at the documentation, \cref{sec:figureclass}, in the lecture notes.
   \end{samhint}
+
 % BEGIN ================ SOLUTION ===============   %
   \begin{samwriteprbpart}{solfile}
     \begin{writeverbatim}{prbfile}
@@ -74,6 +74,7 @@ double integrate(const QuadRule& qr, const Function& f);
     \end{writeverbatim}
   \end{samwriteprbpart}
 % END ================== SOLUTION ===============   %
+
 
 \end{subproblem}
 
@@ -177,7 +178,7 @@ void gaussConvCV(const Function& f);
 
 %%%%%%%%%%%% SUBPROBLEM 5
 \begin{subproblem}{sp:5}[3]
-Explain the difference between the results obtained in subtasks \ref{sp:1} and \ref{sp:4}.
+Explain the difference between the results obtained in subtasks \ref{prb:GaussianQuadrature:sp:1} and \ref{prb:GaussianQuadrature:sp:4}.
 
 % BEGIN ================ SOLUTION ===============   %
   \begin{samwriteprbpart}{solfile}
@@ -195,4 +196,5 @@ Explain the difference between the results obtained in subtasks \ref{sp:1} and \
 % END ================== SOLUTION ===============   %
 
 \end{subproblem}
+
 \end{samproblem}

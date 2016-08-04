@@ -116,7 +116,7 @@ By differentiating \cref{eq:Legpol} derive a combined 3-term recursion for the s
 
 %%%%%%%%%%%%%% SUBPROBLEM 3
 \begin{subproblem}{sp:3}[2]
-  Use the recursions obtained in \ref{sp:2} to write a C++ function
+  Use the recursions obtained in \ref{prb:ZerosLegendre:sp:2} to write a C++ function
   \begin{lstlisting}[style=cpp]
 void legvals(const Eigen::VectorXd& x, Eigen::MatrixXd& Lx, Eigen::MatrixXd& DLx)
   \end{lstlisting}
@@ -140,7 +140,7 @@ void legvals(const Eigen::VectorXd& x, Eigen::MatrixXd& Lx, Eigen::MatrixXd& DLx
 %%%%%%%%%%%%%% SUBPROBLEM 4
 \begin{subproblem}{sp:4}[3]
   We can compute the zeros of $P_k$, $k=1,\dots,n$, by means of the secant rule (see \cref{par:secant}) using the endpoints 
-  $\{-1,1\}$ of the interval and the zeros of the previous Legendre polynomial as initial guesses, see \ref{sp:1}. 
+  $\{-1,1\}$ of the interval and the zeros of the previous Legendre polynomial as initial guesses, see \ref{prb:ZerosLegendre:sp:1}. 
   We opt for a correction based termination criterion (see \cref{sec:termination-criteria-1}) based on prescribed relative and 
   absolute tolerance (see \cref{mc:secant}).
 

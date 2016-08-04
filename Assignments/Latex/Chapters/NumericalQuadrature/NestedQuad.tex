@@ -1,8 +1,8 @@
 % NumCSE/Assignments/Latex/Chapters/NumericalQuadrature/NestedQuad.tex
-% Handout requires:   laserquad_template.cpp  gaussquad.hpp
-% Solution requires:  laserquad.cpp   gaussquad.hpp
+% Exercise requires:  laserquad_template.cpp gaussquad.hpp
+% Solution requires:  laserquad.cpp gaussquad.hpp
 
-\begin{samproblem}{prb:nestquad}{Nested numerical quadrature}{
+\begin{samproblem}*{prb:nestquad}{Nested numerical quadrature}{
   A laser beam has intensity
   \begin{align*}
     I(x,y) = \exp(- \alpha ((x-p)^2 + (y-q)^2) )
@@ -83,7 +83,7 @@ double gaussquadtriangle(Function&& f, const unsigned N)
   \begin{align} \label{eq:subprb_nested_quad_2}
     \int_\Delta f(x,y) dx dy
   \end{align}
-  using nested $N$-point, 1D Gauss quadratures (using the functions \verb|evalgaussquad| of \ref{sp:2} and  \verb|gauleg|).
+  using nested $N$-point, 1D Gauss quadratures (using the functions \verb|evalgaussquad| of \ref{prb:nestquad:sp:2} and  \verb|gauleg|).
   
   \begin{samhint}
     Write \eqref{eq:subprb_nested_quad_2} explicitly as a double integral. Take particular care to correctly find the intervals of integration.
@@ -133,8 +133,8 @@ double gaussquadtriangle(Function&& f, const unsigned N)
 \end{subproblem}
 
 \begin{subproblem}{sp:4}[1]
-  Apply the function \verb|gaussquadtriangle| of \ref{sp:3} to the subproblem \ref{sp:1} using the parameter $\alpha = 1, p = 0, q = 0$. 
-  Compute the error w.r.t to the number of nodes $N$. What kind of convergence do you observe? Explain the result.
+  Apply the function \verb|gaussquadtriangle| of \ref{prb:nestquad:sp:3} to the subproblem \ref{prb:nestquadsp:1} using the parameter 
+  $\alpha = 1, p = 0, q = 0$.  Compute the error w.r.t to the number of nodes $N$. What kind of convergence do you observe? Explain the result.
   
   \begin{samhint}
     Use the ``exact'' value of the integral $0.366046550000405$.

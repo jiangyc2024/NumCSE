@@ -1,10 +1,8 @@
-%% NECESSARY FILES:
-%% * gauleg.cpp
-%% * gauleg.hpp
-%% * quadsingint_template.cpp
-%% * quadsingint.cpp
+% NumCSE/Assignments/Chapters/NumericalQuadrature/EffQuadSingInt.tex
+% Exercise requires: gauleg.cpp gauleg.hpp quadsingint_template.cpp
+% Solution requires: gauleg.cpp gauleg.hpp quadsingint.cpp
 
-\begin{samproblem}{prb:effquadsing}{Efficient quadrature of singular integrands (core problem)}{
+\begin{samproblem}*{prb:effquadsing}{Efficient quadrature of singular integrands (core problem)}{
  This problem deals with efficient numerical quadrature of non-smooth integrands with a special structure.
  Before you tackle this problem, read about regularization of integrands by transformation \cref{rem:sqrtquad}.
 
@@ -138,7 +136,8 @@ auto f = [](double t){ return t*t; }; // $f(t) = t^2$
 
 \begin{subproblem}{sp:4}[2]
   Give formulas for the nodes $c_j$ and weights $\tilde{w}_j$ of a $2n$-point quadrature rule on $[-1,1]$, 
-  whose application to the integrand $f$ will produce the same results as the function \verb|quadsingint| that you implemented in \ref{sp:3}.
+  whose application to the integrand $f$ will produce the same results as the function \verb|quadsingint| that you implemented in 
+  \ref{prb:effquadsing:sp:3}.
   
 % BEGIN ================ SOLUTION ===============   %
   \begin{samwriteprbpart}{solfile}
