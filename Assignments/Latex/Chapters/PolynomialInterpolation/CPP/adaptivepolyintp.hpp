@@ -12,12 +12,12 @@ void adaptivepolyintp(const Function& f, const double a, const double b,
                   fvals = sp.unaryExpr(f);
   double fmax = fvals.cwiseAbs().maxCoeff(); // approximate max |f(x)|
   std::vector<double> t { (a+b)/2. },     // set of interpolation nodes
-                      y { f((a+b)/2.) },  // values in interpolation nodes
+                      y { f((a+b)/2.) },  // values in nodes
                       errors;               // save errors
 
   for (int i = 0; i < N; ++i) {
     // (i) interpolate with current nodes 
-    // need to convert std::vector to Eigen::VectorXd to use the function interpolate
+    // need to convert std::vector to Eigen::VectorXd to use the function interpoyval
     Eigen::Map<Eigen::VectorXd> te(t.data(), t.size());
     Eigen::Map<Eigen::VectorXd> ye(y.data(), y.size());
     Eigen::VectorXd spvals; 
@@ -49,8 +49,3 @@ void adaptivepolyintp(const Function& f, const double a, const double b,
   std::cout << "Desired accuracy could not be reached.\n";
   tRes = sp; // return all sampling points
 }
-
-
-
-
-
