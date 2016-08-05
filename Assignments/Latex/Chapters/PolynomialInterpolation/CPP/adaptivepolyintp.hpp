@@ -4,12 +4,16 @@
 # include "intpolyval.hpp"
 
 template <class Function>
-void adaptivepolyintp(const Function& f, const double a, const double b, const double tol, const unsigned N, Eigen::VectorXd& tRes) {
-  Eigen::VectorXd sp = Eigen::VectorXd::LinSpaced(N, a, b), // sampling points
-                  fvals = sp.unaryExpr(f); // evaluate f at sampling points
+void adaptivepolyintp(const Function& f, const double a, const double b, 
+                      const double tol, const unsigned N, 
+                      Eigen::VectorXd& tRes, Eigen::VectorXd& errRes) {
+  // get sampling points and evaluate f there
+  Eigen::VectorXd sp = Eigen::VectorXd::LinSpaced(N, a, b),
+                  fvals = sp.unaryExpr(f);
   double fmax = fvals.cwiseAbs().maxCoeff(); // approximate max |f(x)|
   std::vector<double> t { (a+b)/2. },     // set of interpolation nodes
-                      y { f((a+b)/2.) };  // values in interpolation nodes
+                      y { f((a+b)/2.) },  // values in interpolation nodes
+                      errors;               // save errors
 
   for (int i = 0; i < N; ++i) {
     // (i) interpolate with current nodes 
@@ -30,11 +34,15 @@ void adaptivepolyintp(const Function& f, const double a, const double b, const d
 
     // check termination criteria
     if (max < tol*fmax) {
-      tRes = te;
+      // if terminate save results in correct variables
+      tRes = te; 
+      Eigen::Map<Eigen::VectorXd> tmp(errors.data(), errors.size());
+      errRes = tmp;  
       return;
     }
 
-    // (iii) add this node to our set of nodes
+    // (iii) add this node to our set of nodes and save error
+    errors.push_back(max);
     t.push_back(sp(idx));
     y.push_back(fvals(idx));
   } 
