@@ -75,7 +75,7 @@ int main() {
   pef.title("f(t) = 1/(1 + e^{-t^2})");
   pef.setlog(true, true);
   pef.xlabel("No. of interpolation nodes");
-  pef.ylabel("max_x |f(x) - I_\\CT(x)|");
+  pef.ylabel("max_x |f(x) - I_T(x)|");
   pef.plot(ef, " r+").label("Error");
   pef.save("analyticError");
 
@@ -87,6 +87,14 @@ int main() {
   pg.plot(tg, tg.unaryExpr(g), " co").label("Data");
   pf.legend(0.5, 1);
   pg.save("step");
+
+  peg.title("f(t) = 1/(1 + e^{-t^2})");
+  peg.setlog(true, true);
+  peg.xlabel("No. of interpolation nodes");
+  peg.ylabel("max_x |f(x) - I_T(x)|");
+  peg.plot(eg, " r+").label("Error"); // will throw an error as contains -nan
+  peg.save("stepError");
+
   std::cout << "Step function -> step.eps & stepError.eps\n";
 
   ph.title("f(t) = cos(t)sin(2t)");
@@ -95,6 +103,14 @@ int main() {
   ph.plot(th, th.unaryExpr(h), " co").label("Data");
   ph.legend(0,1);
   ph.save("trigonometric");
+
+  peg.title("f(t) = cos(t)sin(2t)");
+  peg.setlog(true, true);
+  peg.xlabel("No. of interpolation nodes");
+  peg.ylabel("max_x |f(x) - I_T(x)|");
+  peg.plot(eh, " r+").label("Error");
+  peg.save("trigonometricError");
+
   std::cout << "Trigonometric function -> trigonometric.eps & trigonometricError.eps\n\n";
 
   return 0;
