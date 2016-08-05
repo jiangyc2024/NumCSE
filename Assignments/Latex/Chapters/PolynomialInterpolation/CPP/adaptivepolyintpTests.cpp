@@ -17,21 +17,22 @@ int main() {
   // get interpolation nodes and print runtimes
   const unsigned N = 1000; // no. of sampling points
   const double tol = 1e-10; // tolerance
-  Eigen::VectorXd tf, tg, th;
+  Eigen::VectorXd tf, tg, th, // nodes
+                  ef, eg, eh; // errors
   Timer fTimer, gTimer, hTimer;
 
   std::cout << "== Timing & Sizes =================================\n";
-  fTimer.start(); adaptivepolyintp(f, af, bf, tol, N, tf); fTimer.stop();
+  fTimer.start(); adaptivepolyintp(f, af, bf, tol, N, tf, ef); fTimer.stop();
   std::cout << "Analytic function took " << fTimer.duration() << "s\n"
             << "Interval:     [" << af << ", " << bf << "]\n"
             << "No. of nodes: " << tf.size() << " (max = " << N << ")\n\n";
 
-  gTimer.start(); adaptivepolyintp(g, ag, bg, tol, N, tg); gTimer.stop();
+  gTimer.start(); adaptivepolyintp(g, ag, bg, tol, N, tg, eg); gTimer.stop();
   std::cout << "Step function took " << gTimer.duration() << "s\n"
             << "Interval: [" << ag << ", " << bg << "]\n"
             << "No. of nodes: " << tg.size() << " (max = " << N << ")\n\n";
 
-  hTimer.start(); adaptivepolyintp(h, ah, bh, tol, N, th); hTimer.stop();
+  hTimer.start(); adaptivepolyintp(h, ah, bh, tol, N, th, eh); hTimer.stop();
   std::cout << "Trigonometric function took " << hTimer.duration() << "s\n"
             << "Interval: [" << ah << ", " << bh << "]\n"
             << "No. of nodes: " << th.size() << " (max = " << N << ")\n\n";
@@ -62,14 +63,23 @@ int main() {
 
   // plot
   std::cout << "== Plots ==========================================\n";
-  mgl::Figure pf, pg, ph;
+  mgl::Figure pf, pg, ph,
+              pef, peg, peh;
   pf.title("f(t) = 1/(1 + e^{-t^2})");
   pf.plot(xf, xf.unaryExpr(f), "b").label("Function");
   pf.plot(xf, If, "r|").label("Interpolation");
   pf.plot(tf, tf.unaryExpr(f), " co").label("Data");
   pf.legend(0,0);
   pf.save("analytic");
-  std::cout << "Analytic function -> analytic.eps\n";
+
+  pef.title("f(t) = 1/(1 + e^{-t^2})");
+  pef.setlog(true, true);
+  pef.xlabel("No. of interpolation nodes");
+  pef.ylabel("max_x |f(x) - I_\\CT(x)|");
+  pef.plot(ef, " r+").label("Error");
+  pef.save("analyticError");
+
+  std::cout << "Analytic function -> analytic.eps & analyticError.eps\n";
 
   pg.title("Step function");
   pg.plot(xg, xg.unaryExpr(g), "b").label("Function");
@@ -77,7 +87,7 @@ int main() {
   pg.plot(tg, tg.unaryExpr(g), " co").label("Data");
   pf.legend(0.5, 1);
   pg.save("step");
-  std::cout << "Step function -> step.eps\n";
+  std::cout << "Step function -> step.eps & stepError.eps\n";
 
   ph.title("f(t) = cos(t)sin(2t)");
   ph.plot(xh, xh.unaryExpr(h), "b").label("Function");
@@ -85,7 +95,7 @@ int main() {
   ph.plot(th, th.unaryExpr(h), " co").label("Data");
   ph.legend(0,1);
   ph.save("trigonometric");
-  std::cout << "Trigonometric function -> trigonometric.eps\n\n";
+  std::cout << "Trigonometric function -> trigonometric.eps & trigonometricError.eps\n\n";
 
   return 0;
 }
