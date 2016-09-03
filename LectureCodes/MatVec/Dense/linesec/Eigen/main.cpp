@@ -4,9 +4,9 @@
 #include <figure/figure.hpp>
 using namespace std;
 using namespace Eigen;
-#include "linsec.hpp"
+#include "linesec.hpp"
 
 int main () {
-  linsec();
+  linesec();
   return 0;
 }

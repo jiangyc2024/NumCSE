@@ -13,11 +13,11 @@ VectorXd zerosquadpolstab(double alpha, double beta){
 		// in order to \com{avoid cancellation}. For the other zero
 		// use Vieta's formula. 
 		if(alpha >= 0){
-			double t = 0.5*(-alpha-wD);
+			double t = 0.5*(-alpha-wD);	// \Label[line]{zqs:11}
 			z << t, beta/t;			
 		}
 		else{
-				double t = 0.5*(-alpha+wD);
+				double t = 0.5*(-alpha+wD);	// \Label[line]{zqs:12}
 				z << beta/t, t;
 		}
 	}

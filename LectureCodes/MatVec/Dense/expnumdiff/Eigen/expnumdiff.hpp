@@ -14,7 +14,7 @@ void numericaldifferentiation(){
 	for(int i = 0; i < n; ++i){
 		// set precision to bits(i) bits (double has 53 bits)
 		numeric_t::set_default_prec( bits(i) );
-		numeric_t x = "1.1";// Evaluation point in extended precision
+		numeric_t x = "1.1";// Evaluation point in extended precision \Label[line]{numdiff:1}
 		for(int j=0;j<k;++j) {
 			numeric_t h = mpfr::pow("2", -1-5*j);// width of difference quotient in extended precision
 			// compute (absolute) error
