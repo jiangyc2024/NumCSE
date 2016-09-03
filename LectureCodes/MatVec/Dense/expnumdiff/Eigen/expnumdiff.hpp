@@ -1,10 +1,9 @@
 #pragma once
-#pragma begin<0>
-// This module provides support for multi precision floating point numbers
-// via the MPFR C++ library which itself is built upon MPFR/GMP.
+/* SAM_LISTING_BEGIN_0 */
+// This module provides support for multi precision floating point numbers via the MPFR C++ library which itself is built upon MPFR/GMP.
 #include <unsupported/Eigen/MPRealSupport>
 //! Numerical differentiation of exponential function with extended precision arithmetic
-//! Uses the unsupported Eigen MPFRC++ Support module
+//! Uses the unsupported \eigen MPFRC++ Support module
 void numericaldifferentiation(){
 	// declare numeric type
 	typedef mpfr::mpreal numeric_t;
@@ -24,7 +23,9 @@ void numericaldifferentiation(){
 		}	
 	}
 	// Plotting
-	mgl::Figure fig;	fig.setFontSize(4);	fig.setlog(true, true);
+	// ...
+	/* SAM_LISTING_END_0 */
+	mgl::Figure fig;	fig.setFontSize(3);	fig.setlog(true, true);
 	std::vector<string> col = {"b","g","r","c","m","h","q","e","u","p"};
 	for(int i = 0; i < bits.size(); ++i)
 		fig.plot(experr.col(0),experr.col(i+1), "+-"+col[i]).label(to_string(bits(i)) +" bits");
@@ -32,4 +33,4 @@ void numericaldifferentiation(){
 	fig.xlabel("h");	fig.ylabel("error");	fig.grid(false);	fig.legend(1,0);
 	fig.save("expnumdiffmultiprecision");
 }
-#pragma end<0>
+
