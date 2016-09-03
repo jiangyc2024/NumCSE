@@ -1,9 +1,8 @@
 # include <cmath>
 # include <vector>
-# include <complex>
+# include <complex> // needed to use complex std::vectors!
 # include <Eigen/Dense>
-# include <unsupported/Eigen/FFT>
-
+# include <unsupported/Eigen/FFT> // contains Eigen::FFT
 using Eigen::VectorXd;
 
 // efficiently compute coefficients \Blue{$\alpha_j$} in the Chebychev expansion

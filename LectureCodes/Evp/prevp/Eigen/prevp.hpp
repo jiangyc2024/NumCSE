@@ -4,8 +4,8 @@
 #include <Eigen/Sparse>
 #include <Eigen/Eigenvalues>
 #include <figure.hpp>
-#include "../../utils/graphMarketMatrixLoader.hpp"
-#include "../../prbuildA/Eigen/prbuildA.hpp"
+#include "graphMarketMatrixLoader.hpp"
+#include "prbuildA.hpp"
 
 void prevp(std::string path)
 {

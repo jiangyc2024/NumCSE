@@ -12,7 +12,7 @@ VectorXi rowbandwidth(const SparseMatrix<numeric_t> &A){
 	VectorXi m = VectorXi::Zero(A.rows());
 	for(int k = 0; k < A.outerSize(); ++k)
 		for(typename SparseMatrix<numeric_t>::InnerIterator it(A,k); it; ++it)
-			m(it.row()) = std::max(m( it.row() ), it.row()-it.col() );
+			m(it.row()) = std::max<VectorXi::Scalar>(m( it.row() ), it.row()-it.col() );
 	return m;
 }
 //! computes row bandwidth numbers \Blue{$m_i^R(\VA)$} of \Blue{$\VA$} (dense matrix) according to \cref{def:envelope}
@@ -35,7 +35,7 @@ VectorXi colbandwidth(const SparseMatrix<numeric_t> &A){
 	VectorXi m = VectorXi::Zero(A.cols());
 	for(int k = 0; k < A.outerSize(); ++k)
 		for(typename SparseMatrix<numeric_t>::InnerIterator it(A,k); it; ++it)
-			m(it.col()) = std::max(m( it.col() ), it.col()-it.row() );
+			m(it.col()) = std::max<VectorXi::Scalar>(m( it.col() ), it.col()-it.row() );
 	return m;
 }
 

@@ -4,7 +4,7 @@
 #include <string>
 #include <stdlib.h>
 #include <time.h>
-#include "../../utils/graphMarketMatrixLoader.hpp"
+#include "graphMarketMatrixLoader.hpp"
 
 
 // simplified page rank algorithm: simulates Nhops link clicks of a surfer
@@ -12,8 +12,8 @@ void prstochsim(std::string path, int Nhops)
 {
 
 	// Load web graph data stored in \Blue{$N\times N$}-matrix \Blue{$\VG$}
-	Eigen::SparseMatrix<int> G;
-	if (!loadGraphMarketMatrix<int>(G, path))
+	Eigen::SparseMatrix<double> G;
+	if (!loadGraphMarketMatrix<double>(G, path))
 	{
 		std::cerr << "Matrix Hardvard500.mtx has not been found." << std::endl;
 		exit(EXIT_FAILURE);
@@ -30,7 +30,7 @@ void prstochsim(std::string path, int Nhops)
 	for (int i=0; i<Nhops; ++i)
 	{
 		// Find links from current page \texttt{cp}
-		Eigen::VectorXd col = Eigen::VectorXd(G.col(cp));
+		Eigen::VectorXd col = G.col(cp).cast<double>();
 		std::vector<int> indices;	
 		for (int j=0; j<N; ++j) if (col(j) != 0) indices.push_back(j);
 

@@ -2,19 +2,19 @@
 # include <vector>
 # include <Eigen/Dense>
 # include <figure/figure.hpp>
-# include "../../../Interpolation/hermloceval/Eigen/hermloceval.hpp"
-# include "../../../../Utils/polyfit.hpp"
-# include "../../../../Utils/feval.hpp"
+# include "hermloceval.hpp"
+# include "polyfit.hpp"
+# include "feval.hpp"
 using Eigen::VectorXd;
 
-void append(VectorXd&, const VectorXd&);
+/* SAM_LISTING_BEGIN_0 */
+void append(VectorXd&, const VectorXd&); // forward declaration of append()
 
 // Investigation of interpolation error norms for cubic Hermite interpolation of \Blue{$f$} (handle \texttt{f})
 // on \Blue{$[a,b]$} with linearly averaged slopes according to \eqref{pwintp:AverageSlopes}.
 // \texttt{N} gives the maximum number of mesh intervals
 template <class Function, class Derivative>
 void hermiteapprox(const Function& f, const Derivative& df, const double a, const double b, const unsigned N) {
-
   std::vector<double> l2err, linferr, h; // save error and stepwidths in these vectors 
   for (unsigned j = 2; j <= N; ++j) {
     // \texttŧ{xx} is the fine mesh on which the error norms are computed
@@ -30,9 +30,8 @@ void hermiteapprox(const Function& f, const Derivative& df, const double a, cons
       // local evaluation nodes in interval \Blue{$[t_k, t_{k+1}]$}
       VectorXd vx = VectorXd::LinSpaced(100, t(k), t(k+1)),
                locval;
-      // evaluate the hermite interpolant at the \texttt{vx}
+      // evaluate the hermite interpolant at the \texttt{vx}, using \cref{hermloceval}
       hermloceval(vx, t(k), t(k+1), y(k), y(k+1), c(k), c(k+1), locval);
-
       // do not append the first value as that one is already in the vector
       append(xx, vx.tail(99));
       append(val, locval.tail(99));
@@ -79,9 +78,7 @@ void hermiteapprox(const Function& f, const Derivative& df, const double a, cons
   // plot linear regression lines
   fig.plot( std::vector<double>({h[0], h[N-2]}), std::vector<double>({std::pow(h[0], pL2(0))*std::exp(pL2(1)), std::pow(h[N-2], pL2(0))*std::exp(pL2(1))}), "m" );
   fig.plot( std::vector<double>({h[0], h[N-2]}), std::vector<double>({std::pow(h[0], pI(0))*std::exp(pI(1)), std::pow(h[N-2], pI(0))*std::exp(pI(1))}), "k" );
-
   fig.save( "hermiperravgsl" );
-
 }
 
 // Appends a Eigen::VectorXd to another Eigen::VectorXd
@@ -89,3 +86,4 @@ void append(VectorXd& x, const VectorXd& y) {
   x.conservativeResize(x.size() + y.size());
   x.tail(y.size()) = y;
 }
+/* SAM_LISTING_END_0 */

@@ -1,0 +1,3 @@
+splineapprox(@atan, @(x) 1./(1+x.^2), -5,5,100);
+splineapprox(@(x) 1./(1+exp(-2*x)),...
+             @(x) 2*exp(-2*x)./(1+exp(-2*x)).^2, -1,1,100);

@@ -28,7 +28,6 @@ int main() {
   fig.legend(1, 1);
   fig.xlabel("x Axis");
   fig.title("Sample plot");
-  fig.setFontSize(6);
 
   fig.save("plot.eps");
   return 0;
