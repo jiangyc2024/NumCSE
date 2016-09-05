@@ -3,13 +3,13 @@
 void gausselimsolve(const MatrixXd &A, const VectorXd& b, VectorXd& x){
 	int n = A.rows();
 	MatrixXd Ab(n,n+1);
-	Ab << A, b;
+	Ab << A, b;//\label{cppgse:1}
 	// Forward elimination (\textit{cf.} step \ding{192} in Ex.~\ref{ex:GE})
 	for(int i = 0; i < n-1; ++i){
 		double pivot = Ab(i,i);
 		for(int k = i+1; k < n; ++k){
 			double fac = Ab(k,i)/pivot;
-			Ab.block(k,i+1,1,n-i)-= fac * Ab.block(i,i+1,1,n-i);
+			Ab.block(k,i+1,1,n-i)-= fac * Ab.block(i,i+1,1,n-i);//\label{cppgse:vec}
 		}
 	}
 	// \Hyperlink{RUECKSUBST}{Back substitution} (\textit{cf.} step \ding{193} in Ex.~\ref{ex:GE})
@@ -20,5 +20,5 @@ void gausselimsolve(const MatrixXd &A, const VectorXd& b, VectorXd& x){
 		}
 		Ab(i,n) /= Ab(i,i);
 	}
-	x = Ab.rightCols(1);
+	x = Ab.rightCols(1);// \label{cppgse:last}
 }

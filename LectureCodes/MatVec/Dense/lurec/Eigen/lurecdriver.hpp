@@ -1,9 +1,9 @@
-void lurecdriver(const MatrixXd &A, 
-		MatrixXd &L, MatrixXd &U){
-	MatrixXd Adec = lurec(A);
+//! post-processing: extract \Blue{$\VL$} and \Blue{$\VU$}
+void lurecdriver(const MatrixXd &A, MatrixXd &L, MatrixXd &U){
+	MatrixXd A_dec = lurec(A);
 	// post-processing: 
 	//extract \Blue{$\VL$} and \Blue{$\VU$}
-	U = Adec.triangularView<Upper>();
+	U = A_dec.triangularView<Upper>();
 	L.setIdentity();
-	L += Adec.triangularView<StrictlyLower>();
+	L += A_dec.triangularView<StrictlyLower>();
 }

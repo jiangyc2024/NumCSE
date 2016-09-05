@@ -1,4 +1,4 @@
-//! Gauss elimination without pivoting, \texttt{x = A\symbol{92}B}
+//! Gauss elimination without pivoting, $\VX = \VA^{-1}\VB$
 //! \texttt{A} must be an \Blue{$n\times n$}-matrix, \texttt{B} an \Blue{$n\times m$}-matrix
 void gausselimsolvemult(const MatrixXd &A, const MatrixXd& B, MatrixXd& X){
 	int n = A.rows();
