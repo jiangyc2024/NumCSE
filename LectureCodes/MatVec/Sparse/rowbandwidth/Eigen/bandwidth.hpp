@@ -5,7 +5,7 @@
 using namespace std;
 using namespace Eigen;
 
-#pragma begin<0>
+/* SAM_LISTING_BEGIN_0 */
 //! computes rowbandwidth numbers \Blue{$m_i^R(\VA)$} of \Blue{$\VA$} (sparse matrix) according to \cref{def:envelope}
 template <class numeric_t>
 VectorXi rowbandwidth(const SparseMatrix<numeric_t> &A){
@@ -27,8 +27,9 @@ VectorXi rowbandwidth(const MatrixBase<Derived> &A){
 			}
 	return m;
 }
-#pragma end<0>
+/* SAM_LISTING_END_0 */
 
+/* SAM_LISTING_BEGIN_1 */
 //! computes colbandwidth numbers \Blue{$m_i^R(\VA)$} of \Blue{$\VA$} (sparse matrix) according to \cref{def:envelope}
 template <class numeric_t>
 VectorXi colbandwidth(const SparseMatrix<numeric_t> &A){
@@ -52,3 +53,4 @@ VectorXi colbandwidth(const MatrixBase<Derived> &A){
 			}
 	return m;
 }
+/* SAM_LISTING_END_1 */

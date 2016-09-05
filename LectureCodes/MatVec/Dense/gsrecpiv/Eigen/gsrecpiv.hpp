@@ -5,7 +5,6 @@ MatrixXd gsrecpiv(const MatrixXd &A){
 		int j; double p; // p = relativly largest pivot, j = pivot row index 
 		p = ( result.col(0).cwiseAbs().cwiseQuotient(
 			A.cwiseAbs().rowwise().maxCoeff() ) ).maxCoeff(&j);// \label{gsrp:1} 
-		std::cout << j << std::endl;
 		if( p <  std::numeric_limits<double>::epsilon() * result.norm() )
 			throw std::logic_error("nearly singular");// \label{gsrp:2} 			
 		result.row(0).swap(result.row(j));// \label{gsrp:3} 

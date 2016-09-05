@@ -15,15 +15,15 @@ int main () {
 	VectorXd b = some_function(x);
 	
 	
-#pragma begin<0>
+/* SAM_LISTING_BEGIN_0 */
 // Setting: \Blue{$N \gg 1$}, 
 // large matrix \Blue{$\VA\in\bbK^{n,n}$}
 auto A_lu_dec = A.lu();
-for(int j=0; j<N; ++j){
+for(int j = 0; j < N; ++j){
 	x = A_lu_dec.solve(b);
 	b = some_function(x);
 }
-#pragma end<0>
+/* SAM_LISTING_END_0 */
 
 
 return 0;

@@ -1,6 +1,5 @@
 template <class solver_t>
-VectorXd arrowsys_sparse(const VectorXd &d, const VectorXd &c, 
-		const VectorXd &b, const double alpha, const VectorXd &y){
+VectorXd arrowsys_sparse(const VectorXd &d, const VectorXd &c, const VectorXd &b, const double alpha, const VectorXd &y){
 	int n = d.size();
 	SparseMatrix<double> A(n+1, n+1); // default: column-major
 	VectorXi reserveVec = VectorXi::Constant(n+1, 2); // nnz per col

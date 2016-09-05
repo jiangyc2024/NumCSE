@@ -1,5 +1,4 @@
-VectorXd arrowsys_slow(const VectorXd &d, const VectorXd &c, 
-		const VectorXd &b, const double alpha, const VectorXd &y){
+VectorXd arrowsys_slow(const VectorXd &d, const VectorXd &c, const VectorXd &b, const double alpha, const VectorXd &y){
 	int n = d.size();
 	MatrixXd A(n + 1,n + 1); A.setZero();
 	A.diagonal().head(n) = d;

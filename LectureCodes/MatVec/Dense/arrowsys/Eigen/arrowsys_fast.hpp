@@ -1,5 +1,4 @@
-VectorXd arrowsys_fast(const VectorXd &d, const VectorXd &c, 
-		const VectorXd &b, const double alpha, const VectorXd &y){
+VectorXd arrowsys_fast(const VectorXd &d, const VectorXd &c, const VectorXd &b, const double alpha, const VectorXd &y){
 	int n = d.size();
 	VectorXd z = c.array() / d.array(); 		// \Blue{$\Vz = \VD^{-1}\Vc$}  
 	VectorXd w = y.head(n).array() / d.array();	// \Blue{$\Vw = \VD^{-1}\Vy_1$}

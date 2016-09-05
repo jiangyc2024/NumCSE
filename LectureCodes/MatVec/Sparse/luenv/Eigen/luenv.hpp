@@ -5,7 +5,7 @@
 #include "substenv.hpp"
 using namespace std;
 using namespace Eigen;
-#pragma begin<0>
+/* SAM_LISTING_BEGIN_0 */
 //! envelope aware recursive LU-factorization
 //! of structurally symmetric matrix
 void luenv(const MatrixXd &A, MatrixXd &L, MatrixXd &U){
@@ -28,4 +28,4 @@ void luenv(const MatrixXd &A, MatrixXd &L, MatrixXd &U){
 		U.row(n-1).setZero();	U(n-1,n-1) = gamma;
 	}
 }
-#pragma end<0>
+/* SAM_LISTING_END_0 */

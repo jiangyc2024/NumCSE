@@ -7,7 +7,7 @@ using namespace Eigen;
 
 int main () {
 	/// tag
-	#pragma begin<0>
+	/* SAM_LISTING_BEGIN_0 */
 	double epsilon = 5.0e-17;
 	MatrixXd A(2,2), D(2,2);
 	A << 	epsilon,	1.0,
@@ -25,6 +25,6 @@ int main () {
 	VectorXd x3 = U.lu().solve(z);
 	cout << "x1=\n" << x1 << "\nx2\n" 
 	<< x2 << "\nx3\n" << x3 << std::endl;
-	#pragma end<0>
+	/* SAM_LISTING_END_0 */
 	return 0;
 }

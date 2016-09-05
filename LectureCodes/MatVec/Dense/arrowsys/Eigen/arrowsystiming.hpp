@@ -8,9 +8,7 @@ MatrixXd arrowsystiming(){
 		VectorXd b = VectorXd::Ones(n[i],1);
 		VectorXd c = VectorXd::LinSpaced(n[i],1,n[i]);
 		VectorXd d = -b;
-		VectorXd y = VectorXd::Constant(n[i]+1,-1).binaryExpr(
-				VectorXd::LinSpaced(n[i]+1,1,n[i]+1), 
-				[](double x, double y){return pow(x,y);} ).array();
+		VectorXd y = VectorXd::Constant(n[i]+1,-1).binaryExpr( VectorXd::LinSpaced(n[i]+1,1,n[i]+1), [](double x, double y){return pow(x,y);} ).array();
 		VectorXd x1(n[i]+1), x2(n[i]+1), x3(n[i]+1), x4(n[i]+1);
 		for(int j = 0; j < nruns; ++j){
 			t1.start();	x1 = arrowsys_slow(d,c,b,alpha,y);	t2.stop();
