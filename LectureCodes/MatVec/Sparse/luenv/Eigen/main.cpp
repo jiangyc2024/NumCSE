@@ -31,7 +31,7 @@ int main () {
 	A.setFromTriplets(triplets.begin(), triplets.end());
 	A.makeCompressed();
 	
-
+	MatrixXd B(A);
 	std::cout << B << std::endl;
 	
 	MatrixXd L(n,n), U(n,n);
