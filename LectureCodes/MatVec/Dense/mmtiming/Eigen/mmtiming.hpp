@@ -40,7 +40,6 @@ void mmtiming(){
   //Plotting
   mgl::Figure fig;
   fig.setFontSize(4);
-  fig.title("Timings: Different implementation of matrix multiplication");
   fig.setlog(true, true);
   fig.plot(timings.col(0),timings.col(1), " +r-").label("loop implementation");
   fig.plot(timings.col(0),timings.col(2)," *m-").label("dot-product implementation");

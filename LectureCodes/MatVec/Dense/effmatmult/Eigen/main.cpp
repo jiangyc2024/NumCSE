@@ -8,6 +8,20 @@ using namespace std::chrono;
 using namespace Eigen;
 #include "effmatmult.hpp"
 int main(){
-  dottenstiming();
+  MatrixXd timings = dottenstiming();
+  std::cout << timings << std::endl;
+  //Plotting
+  mgl::Figure fig;
+  fig.setFontSize(5);
+  fig.title("Timings for rank 1 matrix-vector multiplications");
+  fig.setlog(true, true);
+  fig.plot(timings.col(0),timings.col(1), " +b").label("efficient evaluation");
+  fig.plot(timings.col(0),timings.col(2)," ^r").label("slow evaluation");
+  fig.plot(timings.col(0),timings.col(0).array().pow(1).matrix() * timings(timings.rows()-1,1) / (std::pow(timings(timings.rows()-1,0),1)), "l;").label("O(n)");
+  fig.plot(timings.col(0),timings.col(0).array().pow(2).matrix() * timings(timings.rows()-1,2) / (std::pow(timings(timings.rows()-1,0),2)), "h;").label("O(n^2)");
+  fig.xlabel("vector length n");
+  fig.ylabel("time [s]");
+  fig.legend(0.05,0.95);
+  fig.save("dottenstiming");
   return 0;
 }

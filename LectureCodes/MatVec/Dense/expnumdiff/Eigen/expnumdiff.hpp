@@ -25,11 +25,12 @@ void numericaldifferentiation(){
 	// Plotting
 	// ...
 	/* SAM_LISTING_END_0 */
-	mgl::Figure fig;	fig.setFontSize(3);	fig.setlog(true, true);
+	std::cout << experr << std::endl;
+	mgl::Figure fig;	fig.setlog(true, true);
 	std::vector<string> col = {"b","g","r","c","m","h","q","e","u","p"};
 	for(int i = 0; i < bits.size(); ++i)
 		fig.plot(experr.col(0),experr.col(i+1), "+-"+col[i]).label(to_string(bits(i)) +" bits");
-	fig.title("One-sided difference quotient approx. of derivative of e^x");
+	//fig.title("One-sided difference quotient approx. of derivative of e^x");
 	fig.xlabel("h");	fig.ylabel("error");	fig.grid(false);	fig.legend(1,0);
 	fig.save("expnumdiffmultiprecision");
 }
