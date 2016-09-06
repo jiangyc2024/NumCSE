@@ -35,11 +35,11 @@ void errs () {
   // convergence plot for f
   mgl::Figure fig_f;
   fig_f.title("f(x) = \\frac{1}{1 + \\ (5t)^2}");
-  fig_f.setlog(true, true);
+  fig_f.setlog(false, true);
   fig_f.plot(err_equi_f, "+b").label("Equidistant");
-  fig_f.plot(err_cheb_f, "+r").label("Chebychev");
-  fig_f.plot(err_gauss_f, "+g").label("Gauss");
-  fig_f.legend();
+  fig_f.plot(err_cheb_f, "+m").label("Chebychev");
+  fig_f.plot(err_gauss_f, "+r").label("Gauss");
+  fig_f.legend(0,0);
   fig_f.save("numquaderr1");
 
 
@@ -48,9 +48,9 @@ void errs () {
   fig_g.title("f(x) = \\sqrt{x}");
   fig_g.setlog(true, true);
   fig_g.plot(err_equi_g, "+b").label("Equidistant");
-  fig_g.plot(err_cheb_g, "+r").label("Chebychev");
-  fig_g.plot(err_gauss_g, "+g").label("Gauss");
-  fig_g.legend();
+  fig_g.plot(err_cheb_g, "+m").label("Chebychev");
+  fig_g.plot(err_gauss_g, "+r").label("Gauss");
+  fig_g.legend(1,1);
   fig_g.save("numquaderr2");
 
   return;
