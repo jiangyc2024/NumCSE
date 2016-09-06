@@ -1,4 +1,3 @@
-# include <iostream>
 # include <vector>
 # include <Eigen/Dense>
 # include "polyfit.hpp"
@@ -9,7 +8,6 @@ std::vector<double> numquad(Function& F, const double a, const double b, const u
   // saving the results in this vector
   std::vector<double> res;
   res.reserve(N);
-
 
   if (mode == "gauss") {
     // using the strucht QuadRule from gaussquad.hpp
@@ -58,7 +56,7 @@ std::vector<double> numquad(Function& F, const double a, const double b, const u
       y(j) = F(x(j));
     }
 
-    // get monom basis coefficients using polyfit
+    // get monomial basis coefficients using polyfit
     Eigen::VectorXd coeffs = polyfit(x, y, n);
 
     // compute integral
@@ -66,4 +64,3 @@ std::vector<double> numquad(Function& F, const double a, const double b, const u
   }
   return res;
 }
-  
