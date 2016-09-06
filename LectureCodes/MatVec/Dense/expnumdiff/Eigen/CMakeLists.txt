@@ -7,7 +7,7 @@ find_package(MPFR_CXX)
 
 get_target_name_numcse(expnumdiff_main target_name)
 
-if(TRUE  )
+if( MPFR_FOUND AND MPFR_CXX AND GMP_FOUND  )
 	include_directories(${GMP_INCLUDES} ${MPFR_INCLUDES})
 
 	# create executable
