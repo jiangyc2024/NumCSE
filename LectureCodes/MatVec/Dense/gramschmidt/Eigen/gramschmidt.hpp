@@ -1,3 +1,13 @@
+#pragma once
+
+#include <iostream>
+
+#include <Eigen/Dense>
+
+using namespace std;
+using namespace Eigen;
+
+/* SAM_LISTING_BEGIN_0 */
 //! \brief Given a matrix A of linearly independent columns, returns Gram-Schmidt orthonormalization
 //! Unstable GS algorithm. Output is prone to cancellation issues.
 //! \param[in] A Matrix of linearly independent columns
@@ -20,3 +30,4 @@ Matrix gramschmidt( const Matrix & A ) {
     }
     return Q;
 }
+/* SAM_LISTING_END_0 */

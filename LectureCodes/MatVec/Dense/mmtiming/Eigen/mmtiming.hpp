@@ -1,3 +1,16 @@
+#pragma once
+
+#include <iostream>
+#include <cmath>
+
+#include <Eigen/Dense>
+#include <figure/figure.hpp>
+
+#include "timer.h"
+
+using namespace Eigen;
+
+/* SAM_LISTING_BEGIN_0 */
 //! script for timing different implementations of matrix multiplications
 //! no BLAS is used in Eigen!
 void mmtiming(){
@@ -48,3 +61,4 @@ void mmtiming(){
   fig.xlabel("matrix size n");  fig.ylabel("time [s]");
   fig.legend(0.05,0.95);  fig.save("mmtiming");
 }
+/* SAM_LISTING_END_0 */

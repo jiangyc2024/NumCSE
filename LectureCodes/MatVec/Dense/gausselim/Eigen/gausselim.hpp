@@ -1,3 +1,10 @@
+#pragma once
+
+#include <Eigen/Dense>
+
+using namespace Eigen;
+
+/* SAM_LISTING_BEGIN_0 */
 //! Gauss elimination without pivoting, $\VX = \VA^{-1}\VB$
 //! \texttt{A} must be an \Blue{$n\times n$}-matrix, \texttt{B} an \Blue{$n\times m$}-matrix
 void gausselimsolvemult(const MatrixXd &A, const MatrixXd& B, MatrixXd& X){
@@ -23,3 +30,4 @@ void gausselimsolvemult(const MatrixXd &A, const MatrixXd& B, MatrixXd& X){
 	}
 	X = AB.rightCols(m);
 }
+/* SAM_LISTING_END_0 */

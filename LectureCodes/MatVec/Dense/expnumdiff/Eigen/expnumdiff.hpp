@@ -1,4 +1,16 @@
 #pragma once
+
+#include <iostream>
+#include <cmath>
+#include <vector>
+#include <string>
+
+#include <Eigen/Dense>
+#include <figure/figure.hpp>
+
+using namespace std;
+using namespace Eigen;
+
 /* SAM_LISTING_BEGIN_0 */
 // This module provides support for multi precision floating point numbers via the MPFR C++ library which itself is built upon MPFR/GMP.
 #include <unsupported/Eigen/MPRealSupport>

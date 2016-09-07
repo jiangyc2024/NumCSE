@@ -1,8 +1,10 @@
 #include <iostream>
 #include <cmath>
 #include <limits>
+
 #include <Eigen/Dense>
 #include <figure/figure.hpp>
+
 using namespace std;
 using namespace Eigen;
 

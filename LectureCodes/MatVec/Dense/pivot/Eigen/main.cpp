@@ -1,12 +1,14 @@
 #include <iostream>
+
 #include <Eigen/Dense>
+
+#include "gausselimsolve.hpp"
+#include "lufak.hpp"
+
 using namespace std;
 using namespace Eigen;
-#include "../../gausselimsolve/Eigen/gausselimsolve.hpp"
-#include "../../lufak/Eigen/lufak.hpp"
 
 int main () {
-
 /* SAM_LISTING_BEGIN_0 */
 MatrixXd A(2,2);
 A << 	5.0e-17,	1.0,
@@ -21,5 +23,5 @@ VectorXd z = L.lu().solve(b);
 VectorXd x3 = U.lu().solve(z);
 cout << "x1 = \n" << x1 << "\nx2 = \n" << x2 << "\nx3 = \n" << x3 << std::endl;
 /* SAM_LISTING_END_0 */
-	return 0;
+return 0;
 }

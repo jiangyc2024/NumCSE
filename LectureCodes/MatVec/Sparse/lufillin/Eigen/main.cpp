@@ -1,10 +1,14 @@
 #include <iostream>
+
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 #include <figure/figure.hpp>
+
+#include "spdiags.hpp"
+
 using namespace std;
 using namespace Eigen;
-#include "spdiags.hpp"
+
 int main () {
 /* SAM_LISTING_BEGIN_0 */
 // Build matrix

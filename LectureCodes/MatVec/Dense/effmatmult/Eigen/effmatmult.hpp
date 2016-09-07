@@ -1,3 +1,14 @@
+#pragma once
+
+#include <cmath>
+
+#include <Eigen/Dense>
+
+#include "timer.h"
+
+using namespace Eigen;
+
+/* SAM_LISTING_BEGIN_0 */
 //! This function compares the runtimes for the multiplication of a vector with a
 //! rank-1 matrix $\Va\Vb^{\top}$, $\Va,\Vb\in\bbR^n$ using different associative
 //! evaluations measurements consider minimal time for several (\texttt{nruns}) runs
@@ -17,3 +28,4 @@ MatrixXd dottenstiming(){
   }
   return timings;
 }
+/* SAM_LISTING_END_0 */

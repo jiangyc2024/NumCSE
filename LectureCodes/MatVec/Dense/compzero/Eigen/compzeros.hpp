@@ -1,4 +1,19 @@
 #pragma once
+
+#include <iostream>
+#include <cmath>
+
+#include <Eigen/Dense>
+
+#include <figure/figure.hpp>
+
+using namespace std;
+using namespace Eigen;
+
+#include "zerosquadpol.hpp"
+#include "zerosquadpolstab.hpp"
+
+/* SAM_LISTING_BEGIN_0 */
 //! Eigen Function for testing the computation of the zeros of a parabola
 void compzeros(){
 	int n = 100;
@@ -35,3 +50,4 @@ void compzeros(){
 	fig2.legend(0.05,0.95);
 	fig2.save("zqperr");
 }
+/* SAM_LISTING_END_0 */

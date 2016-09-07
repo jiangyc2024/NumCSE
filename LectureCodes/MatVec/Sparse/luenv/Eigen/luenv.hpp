@@ -1,10 +1,15 @@
 #pragma once
-#include <Eigen/Dense>
+
 #include <cassert>
+
+#include <Eigen/Dense>
+
 #include "bandwidth.hpp"
 #include "substenv.hpp"
+
 using namespace std;
 using namespace Eigen;
+
 /* SAM_LISTING_BEGIN_0 */
 //! envelope aware recursive LU-factorization
 //! of structurally symmetric matrix

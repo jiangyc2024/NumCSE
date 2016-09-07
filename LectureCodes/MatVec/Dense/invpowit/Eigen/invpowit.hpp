@@ -1,3 +1,10 @@
+#pragma once
+
+#include <Eigen/Dense>
+
+using namespace Eigen;
+
+/* SAM_LISTING_BEGIN_0 */
 template<class VecType, class MatType>
 VecType invpowit(const Eigen::MatrixBase<MatType> &A,double tol)
 {
@@ -22,3 +29,4 @@ VecType invpowit(const Eigen::MatrixBase<MatType> &A,double tol)
   }
   return(xn);
 }
+/* SAM_LISTING_END_0 */

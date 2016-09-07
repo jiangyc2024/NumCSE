@@ -1,3 +1,12 @@
+#pragma once
+
+#include <limits>
+
+#include <Eigen/Dense>
+
+using namespace Eigen;
+
+/* SAM_LISTING_BEGIN_0 */
 void lupiv(MatrixXd &A){//insitu
 	int n = A.rows();
 	for(int k = 0; k < n-1; ++k){
@@ -11,3 +20,4 @@ void lupiv(MatrixXd &A){//insitu
 		A.col(k).tail(n-k-1) = fac;// \label{gsrp:5} 
 	}
 }
+/* SAM_LISTING_END_0 */

@@ -1,12 +1,12 @@
 #include <iostream>
 #include <string>
+
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 #include <unsupported/Eigen/SparseExtra> // for import
 #include <figure/figure.hpp>
-using namespace std;
-using namespace Eigen;
 
+using namespace Eigen;
 
 int main (int argc, char* argv[]) {
 	typedef SparseMatrix<double> SpMat_t;

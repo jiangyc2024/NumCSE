@@ -1,3 +1,14 @@
+#pragma once
+
+#include <vector>
+
+#include <Eigen/Dense>
+
+#include "timer.h"
+
+using namespace Eigen;
+
+/* SAM_LISTING_BEGIN_0 */
 //! Eigen code: assessing the gain from using special properties
 //! of system matrices in Eigen
 MatrixXd timing(){
@@ -18,3 +29,4 @@ MatrixXd timing(){
 	}
 	return times;
 }
+/* SAM_LISTING_END_0 */

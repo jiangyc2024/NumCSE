@@ -1,8 +1,6 @@
-#include <iostream>
 #include <Eigen/Dense>
-#include <Eigen/Sparse>
 #include <figure/figure.hpp>
-using namespace std;
+
 using namespace Eigen;
 
 int main () {
@@ -25,5 +23,5 @@ fig3.spy(U);	fig3.setFontSize(4);
 fig3.title("U factor");	fig3.save("fillinpivotU");
 std::cout  << A << std::endl;
 /* SAM_LISTING_END_0 */
-	return 0;
+return 0;
 }

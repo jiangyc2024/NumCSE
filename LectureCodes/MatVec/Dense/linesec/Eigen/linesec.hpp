@@ -1,3 +1,12 @@
+#pragma once
+
+#include <cmath>
+
+#include <Eigen/Dense>
+#include <figure/figure.hpp>
+
+using namespace Eigen;
+
 void linesec(){
 	
 /* SAM_LISTING_BEGIN_0 */

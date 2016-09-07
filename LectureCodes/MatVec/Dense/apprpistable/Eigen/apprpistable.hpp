@@ -1,3 +1,13 @@
+#pragma once
+
+#include <cmath>
+
+#include <Eigen/Dense>
+
+using namespace std;
+using namespace Eigen;
+
+/* SAM_LISTING_BEGIN_0 */
 //! Approximation of Pi by approximating the circumference of a
 //! regular polygon
 MatrixXd apprpistable(double tol = 1e-8, int maxIt = 50){
@@ -15,3 +25,4 @@ MatrixXd apprpistable(double tol = 1e-8, int maxIt = 50){
   }
   return res.topRows(it);
 }
+/* SAM_LISTING_END_0 */

@@ -1,3 +1,18 @@
+#pragma once
+
+#include <cmath>
+#include <vector>
+
+#include <Eigen/Dense>
+
+#include "timer.h"
+#include "gausselimsolve.hpp"
+#include "gausstiming.hpp"
+
+using namespace std;
+using namespace Eigen;
+
+/* SAM_LISTING_BEGIN_0 */
 //! Eigen code for timing numerical solution of linear systems
 MatrixXd gausstiming(){
   std::vector<int> n = {8,16,32,64,128,256,512,1024,2048,4096,8192};
@@ -19,3 +34,4 @@ MatrixXd gausstiming(){
   }
   return times;
 }
+/* SAM_LISTING_END_0 */

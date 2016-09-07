@@ -1,8 +1,10 @@
 #pragma once
+
+#include <algorithm>
+
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
-#include <algorithm>
-using namespace std;
+
 using namespace Eigen;
 
 /* SAM_LISTING_BEGIN_0 */

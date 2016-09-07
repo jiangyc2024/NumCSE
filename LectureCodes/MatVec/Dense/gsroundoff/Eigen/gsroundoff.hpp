@@ -1,3 +1,15 @@
+#pragma once
+#include <ios>
+#include <iostream>
+#include <iomanip>
+
+#include <Eigen/Dense>
+
+#include "gramschmidt.hpp"
+
+using namespace Eigen;
+
+/* SAM_LISTING_BEGIN_0 */
 //! \eigen{} Function demonstrating the effect of roundoff on the result of Gram-Schmidt orthogonalization
 //! A is 10x10 special matrix the so-called Hilbert matrix: $\MAc{i}{j} = (i+j-1)^{-1}$
 void gsroundoff(MatrixXd& A){
@@ -15,3 +27,4 @@ void gsroundoff(MatrixXd& A){
 	MatrixXd R1 = qr.matrixQR().triangularView<Upper>();
 	std::cout << std::scientific << "D = " << std::endl << A - Q1*R1 << std::endl;
 }
+/* SAM_LISTING_END_0 */

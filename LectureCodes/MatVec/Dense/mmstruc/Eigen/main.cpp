@@ -1,6 +1,9 @@
 #include <Eigen/Dense>
+
 #include <figure/figure.hpp>
+
 using namespace Eigen;
+
 int main () {
 	int n = 100;
 	MatrixXd A(n,n), B(n,n); A.setZero(); B.setZero();

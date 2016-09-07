@@ -1,3 +1,17 @@
+#pragma once
+
+#include <iostream>
+
+#include <cmath>
+
+#include <Eigen/Dense>
+#include <figure/figure.hpp>
+
+#include "timer.h"
+
+using namespace Eigen;
+
+/* SAM_LISTING_BEGIN_0 */
 //! Eigen script for timing a smart and foolish way to carry out
 //! multiplication with a scaling matrix
 void scaletiming(){
@@ -25,3 +39,4 @@ void scaletiming(){
   fig.xlabel("vector length n");  fig.ylabel("time [s]");
   fig.legend(0.05,0.95);  fig.save("scaletiming");
 }
+/* SAM_LISTING_END_0 */

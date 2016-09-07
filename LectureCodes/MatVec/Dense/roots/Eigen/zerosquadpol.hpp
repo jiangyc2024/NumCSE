@@ -1,3 +1,12 @@
+#pragma once
+
+#include <cmath>
+
+#include <Eigen/Dense>
+
+using namespace Eigen;
+
+/* SAM_LISTING_BEGIN_0 */
 //! C++ function computing the zeros of a quadratic polynomial
 //! $\xi\to \xi^2+\alpha\xi+\beta$ by means of the familiar discriminant
 //! formula $\xi_{1,2} = \frac{1}{2}(-\alpha\pm\sqrt{\alpha^2-4\beta})$. However
@@ -14,3 +23,4 @@ VectorXd zerosquadpol(double alpha, double beta){
 	}
 	return z;
 }
+/* SAM_LISTING_END_0 */

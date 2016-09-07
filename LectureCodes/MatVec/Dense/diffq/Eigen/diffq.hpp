@@ -1,3 +1,12 @@
+#pragma once
+
+#include <iostream>
+#include <iomanip>
+#include <cmath>
+
+using namespace std;
+
+/* SAM_LISTING_BEGIN_0 */
 //! Difference quotient approximation of the derivative of $\exp$
 void diffq(){
   double h = 0.1, x = 0.0;
@@ -8,3 +17,4 @@ void diffq(){
     h /= 10;
   }
 }
+/* SAM_LISTING_END_0 */

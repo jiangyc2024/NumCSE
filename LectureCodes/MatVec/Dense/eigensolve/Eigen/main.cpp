@@ -7,7 +7,7 @@ int main(){
 	int n = 10;
 	// Initialize a special invertible matrices
 	MatrixXd mat = MatrixXd::Identity(n,n) +
-	 VectorXd::Constant(n,1.0)*RowVectorXd::Constant(n,1.0);
+	VectorXd::Constant(n,1.0)*RowVectorXd::Constant(n,1.0);
 	cout << "Matrix mat = " << endl << mat << endl;
 	// Multiple right hand side vectors stored in matrix, cf. \matlab{}
 	MatrixXd B = MatrixXd::Random(n,2);

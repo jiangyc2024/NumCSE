@@ -1,3 +1,11 @@
+#pragma once
+
+#include <Eigen/Dense>
+#include <Eigen/Sparse>
+
+using namespace Eigen;
+
+/* SAM_LISTING_BEGIN_0 */
 template <class solver_t>
 VectorXd arrowsys_sparse(const VectorXd &d, const VectorXd &c, const VectorXd &b, const double alpha, const VectorXd &y){
 	int n = d.size();
@@ -16,3 +24,4 @@ VectorXd arrowsys_sparse(const VectorXd &d, const VectorXd &c, const VectorXd &b
 	A.makeCompressed();
 	return solver_t(A).solve(y);
 }
+/* SAM_LISTING_END_0 */

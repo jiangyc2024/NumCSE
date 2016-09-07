@@ -1,3 +1,12 @@
+#pragma once
+
+#include <cassert>
+
+#include <Eigen/Dense>
+
+using namespace Eigen;
+
+/* SAM_LISTING_BEGIN_0 */
 //! Multiplication of normalized lower/upper triangular matrices
 void lumult(const MatrixXd& L, const MatrixXd& U, MatrixXd& A){
   int n = L.rows();
@@ -10,3 +19,4 @@ void lumult(const MatrixXd& L, const MatrixXd& U, MatrixXd& A){
   	  A(i,k) = (L.block(i,0,1,k) * U.block(0,k,k,1))(0,0) + L(i,k)*U(k,k);
   }
 }
+/* SAM_LISTING_END_0 */

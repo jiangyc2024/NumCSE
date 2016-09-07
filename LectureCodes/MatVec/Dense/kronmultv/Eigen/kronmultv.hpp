@@ -1,3 +1,10 @@
+#pragma once
+
+#include <Eigen/Dense>
+
+using namespace Eigen;
+
+/* SAM_LISTING_BEGIN_0 */
 //! \brief Multiplication of Kronecker product with vector $y = (A \otimes B)x$. Elegant way using reshape
 //! WARNING: using Matrix::Map we assume the matrix is in ColMajor format, *beware* you may incur bugs if matrix is in RowMajor isntead
 //! \param[in] A Matrix $m \times n$
@@ -13,3 +20,4 @@ void kronmultv(const Matrix &A, const Matrix &B, const Vector &x, Vector &y){
     Matrix t = B * Matrix::Map(x.data(),k,n) * A.transpose(); // \Label[line]{kvcpp:1}
     y = Matrix::Map(t.data(), m*l, 1);
 }
+/* SAM_LISTING_END_0 */

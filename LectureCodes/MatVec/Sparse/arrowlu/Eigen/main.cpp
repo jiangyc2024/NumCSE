@@ -1,7 +1,9 @@
 #include <iostream>
+
 #include <Eigen/Dense>
-#include <Eigen/Sparse>
+
 #include <figure/figure.hpp>
+
 using namespace std;
 using namespace Eigen;
 

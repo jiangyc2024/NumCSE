@@ -1,3 +1,10 @@
+#pragma once
+
+#include <Eigen/Dense>
+
+using namespace Eigen;
+
+/* SAM_LISTING_BEGIN_0 */
 //! Gauss elimination without pivoting, \texttt{x = A\symbol{92}b}
 //! \texttt{A} must be an \Blue{$n\times n$}-matrix, \texttt{b} an \Blue{$n$}-vector
 void gausselimsolve(const MatrixXd &A, const VectorXd& b, VectorXd& x){
@@ -22,3 +29,4 @@ void gausselimsolve(const MatrixXd &A, const VectorXd& b, VectorXd& x){
 	}
 	x = Ab.rightCols(1);// \label{cppgse:last}
 }
+/* SAM_LISTING_END_0 */

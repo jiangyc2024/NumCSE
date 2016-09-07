@@ -4,14 +4,13 @@
 #include <iomanip>
 #include <ios>
 #include <Eigen/Dense>
-using namespace std;
-using namespace Eigen;
+
 #include "expeval.hpp"
 
 int main () {
 	int n = 20;
-	VectorXd x = VectorXd::LinSpaced(21,-20, n);
-	MatrixXd res(n+1,4);
+	Eigen::VectorXd x = Eigen::VectorXd::LinSpaced(21,-20, n);
+	Eigen::MatrixXd res(n+1,4);
 	for(int i = 0; i <= n; ++i){
 		res(i,0) = x(i);
 		res(i,1) = expeval(x(i));

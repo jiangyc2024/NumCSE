@@ -1,3 +1,12 @@
+#pragma once
+
+#include <cassert>
+
+#include <Eigen/Dense>
+
+using namespace Eigen;
+
+/* SAM_LISTING_BEGIN_0 */
 //! Algorithm of Crout: LU-factorization of \Blue{$\VA\in\bbK^{n,n}$}
 void lufak(const MatrixXd& A, MatrixXd& L, MatrixXd& U){
   int n = A.rows();  assert( n == A.cols());
@@ -12,3 +21,4 @@ void lufak(const MatrixXd& A, MatrixXd& L, MatrixXd& U){
   	  L(i,k) = (A(i,k) - (L.block(i,0,1,k) * U.block(0,k,k,1))(0,0))/U(k,k);
   }
 }
+/* SAM_LISTING_END_0 */

@@ -1,3 +1,15 @@
+#pragma once
+
+#include <iostream>
+#include <cmath>
+#include <limits>
+
+#include <Eigen/Dense>
+
+using namespace std;
+using namespace Eigen;
+
+/* SAM_LISTING_BEGIN_0 */
 //! Solving an LSE \Blue{$\VA\Vx=\Vb$} by Gaussian elimination with partial pivoting
 //! \texttt{A} must be an \Blue{$n\times n$}-matrix, \texttt{b} an \Blue{$n$}-vector
 void gepiv(const MatrixXd &A, const VectorXd& b, VectorXd& x){
@@ -23,3 +35,4 @@ void gepiv(const MatrixXd &A, const VectorXd& b, VectorXd& x){
 	}
 	x = Ab.rightCols(1); // \label{lup:last}
 }
+/* SAM_LISTING_END_0 */

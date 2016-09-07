@@ -1,3 +1,15 @@
+#pragma once
+
+#include <iostream>
+#include <cmath>
+
+#include <Eigen/Dense>
+
+#include "timer.h"
+
+using namespace Eigen;
+
+/* SAM_LISTING_BEGIN_0 */
 //! script for timing different implementations of matrix multiplications
 void mmeigenmkl(){
   int nruns = 3, minExp = 6, maxExp = 13;
@@ -17,3 +29,4 @@ void mmeigenmkl(){
   }
   std::cout << timings << std::endl;
 }
+/* SAM_LISTING_END_0 */

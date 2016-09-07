@@ -1,12 +1,14 @@
 #include <iostream>
+
 #include <Eigen/Dense>
+
+#include "gausselimsolve.hpp"
+#include "lufak.hpp"
+
 using namespace std;
 using namespace Eigen;
-#include "../../gausselimsolve/Eigen/gausselimsolve.hpp"
-#include "../../lufak/Eigen/lufak.hpp"
 
 int main () {
-
 /* SAM_LISTING_BEGIN_0 */
 double epsilon = 5.0e-17;
 MatrixXd A(2,2), D(2,2);

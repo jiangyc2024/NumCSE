@@ -2,9 +2,11 @@
 #include <cmath>
 #include <limits>
 #include <random>
+
 #include <Eigen/Dense>
 #include <Eigen/QR>
 #include <figure/figure.hpp>
+
 using namespace std;
 using namespace Eigen;
 
@@ -14,7 +16,7 @@ int main () {
 //! Theory: Spielman and Teng
 MatrixXd res(20,3);
 mt19937 gen(42); // seed
- std::normal_distribution<> d; // normal distribution, mean = 0.0, stddev = 1.0
+std::normal_distribution<> d; // normal distribution, mean = 0.0, stddev = 1.0
 for(int n = 10; n <= 10*20; n += 10){
 	// Build Wilkinson matrix
 	MatrixXd A(n,n); A.setIdentity();

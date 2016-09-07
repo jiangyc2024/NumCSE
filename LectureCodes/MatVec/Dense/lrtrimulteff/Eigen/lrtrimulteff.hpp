@@ -1,3 +1,13 @@
+#pragma once
+
+#include <numeric>
+#include <cassert>
+
+#include <Eigen/Dense>
+
+using namespace Eigen;
+
+/* SAM_LISTING_BEGIN_0 */
 //! Computation of $\Vy = \operatorname{triu}(\VA\VB^{T})\Vx$
 //! Efficient implementation with backward cumulative sum (partial\_sum)
 template<class Vec, class Mat>
@@ -10,3 +20,4 @@ void lrtrimulteff(const Mat& A, const Mat& B, const Vec& x, Vec& y){
     y += (A.col(l).array() * tmp.reverse().array()).matrix();
   }
 }
+/* SAM_LISTING_END_0 */

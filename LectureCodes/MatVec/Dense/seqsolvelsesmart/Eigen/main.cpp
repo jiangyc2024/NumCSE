@@ -1,7 +1,8 @@
 #include <iostream>
 #include <cmath>
+
 #include <Eigen/Dense>
-using namespace std;
+
 using namespace Eigen;
 
 int main () {
@@ -13,7 +14,6 @@ int main () {
 	A.setRandom();
 	auto some_function = [](VectorXd &x){return x*42;};
 	VectorXd b = some_function(x);
-	
 	
 /* SAM_LISTING_BEGIN_0 */
 // Setting: \Blue{$N \gg 1$}, 

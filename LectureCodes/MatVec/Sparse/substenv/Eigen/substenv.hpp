@@ -1,7 +1,10 @@
 #pragma once
+
 #include <Eigen/Dense>
+
 using namespace std;
 using namespace Eigen;
+
 /* SAM_LISTING_BEGIN_0 */
 //! evelope aware forward substitution for \Blue{$\VL\Vx=\Vy$}
 //! (\Blue{$\VL$} = lower triangular matrix)

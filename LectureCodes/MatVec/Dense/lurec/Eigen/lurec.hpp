@@ -1,3 +1,10 @@
+#pragma once
+
+#include <Eigen/Dense>
+
+using namespace Eigen;
+
+/* SAM_LISTING_BEGIN_0 */
 //! in situ recursive LU-factorization
 MatrixXd lurec(const MatrixXd &A){
 	int n = A.rows();
@@ -10,3 +17,4 @@ MatrixXd lurec(const MatrixXd &A){
 	}
 	return A;
 }
+/* SAM_LISTING_END_0 */
