@@ -1,9 +1,6 @@
-#define NDEBUG true
 #include <Eigen/Dense>
 #include <figure/figure.hpp>
 #include <iostream>
-#include <numeric>
-#include <cmath>
 #include <cassert>
 using namespace Eigen;
 #include "lrtrimulteff.hpp"
@@ -15,8 +12,13 @@ int main(){
   B << 9,8,7,6,5,4,3,2,1;
   VectorXd x(n);
   x << 4,5,6;
-  VectorXd y(n);
-  lrtrimulteff(A, B, x, y);
-  std::cout << y << std::endl;
+  VectorXd y(n), y_eff(n);
+/* SAM_LISTING_BEGIN_0 */
+Eigen::MatrixXd AB = A*B.transpose();
+y = AB.triangularView<Eigen::Upper>()*x;
+/* SAM_LISTING_END_0 */
+  lrtrimulteff(A, B, x, y_eff);
+  std::cout << "y orginal\n" << y << std::endl;
+  std::cout << "y eff\n" << y_eff << std::endl;
   return 0;
 }
