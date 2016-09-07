@@ -1,16 +1,14 @@
 #include <iostream>
+
 #include <Eigen/Dense>
-#include <cmath>
-#include <cassert>
-using namespace std;
-using namespace Eigen;
+
 #include "lumult.hpp"
 
 int main () {
 	int n = 3;
-	MatrixXd A(n,n);
-	MatrixXd L(n,n);
-	MatrixXd U(n,n);
+	Eigen::MatrixXd A(n,n);
+	Eigen::MatrixXd L(n,n);
+	Eigen::MatrixXd U(n,n);
 	L << 	1, 0, 0,
 			-1, 1, 0,
 			-2, 0.25, 1;

@@ -1,15 +1,22 @@
+#pragma once
+
+#include <Eigen/Dense>
+
+using namespace Eigen;
+
+/* SAM_LISTING_BEGIN_0 */
 //! Gauss elimination without pivoting, \texttt{x = A\symbol{92}b}
 //! \texttt{A} must be an \Blue{$n\times n$}-matrix, \texttt{b} an \Blue{$n$}-vector
 void gausselimsolve(const MatrixXd &A, const VectorXd& b, VectorXd& x){
 	int n = A.rows();
 	MatrixXd Ab(n,n+1);
-	Ab << A, b;
+	Ab << A, b;//\label{cppgse:1}
 	// Forward elimination (\textit{cf.} step \ding{192} in Ex.~\ref{ex:GE})
 	for(int i = 0; i < n-1; ++i){
 		double pivot = Ab(i,i);
 		for(int k = i+1; k < n; ++k){
 			double fac = Ab(k,i)/pivot;
-			Ab.block(k,i+1,1,n-i)-= fac * Ab.block(i,i+1,1,n-i);
+			Ab.block(k,i+1,1,n-i)-= fac * Ab.block(i,i+1,1,n-i);//\label{cppgse:vec}
 		}
 	}
 	// \Hyperlink{RUECKSUBST}{Back substitution} (\textit{cf.} step \ding{193} in Ex.~\ref{ex:GE})
@@ -20,5 +27,6 @@ void gausselimsolve(const MatrixXd &A, const VectorXd& b, VectorXd& x){
 		}
 		Ab(i,n) /= Ab(i,i);
 	}
-	x = Ab.rightCols(1);
+	x = Ab.rightCols(1);// \label{cppgse:last}
 }
+/* SAM_LISTING_END_0 */

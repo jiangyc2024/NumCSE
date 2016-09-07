@@ -1,8 +1,6 @@
 #include <iostream>
 #include <Eigen/Dense>
-#include <cmath>
-#include <limits>
-using namespace std;
+
 using namespace Eigen;
 #include "smw.hpp"
 

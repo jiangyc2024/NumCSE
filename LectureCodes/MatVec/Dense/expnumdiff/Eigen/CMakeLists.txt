@@ -5,13 +5,13 @@ find_package(MPFR)
 find_package(GMP)
 find_package(MPFR_CXX)
 
-get_target_name_numcse(expnumdiff_main target_name)
+get_target_name_numcse(main target_name)
 
-if(MPFR_FOUND AND MPFR_CXX AND GMP_FOUND )
+if(TRUE  )
 	include_directories(${GMP_INCLUDES} ${MPFR_INCLUDES})
 
 	# create executable
-	add_executable_numcse(expnumdiff_main main.cpp)
+	add_executable_numcse(main main.cpp)
 
 	# link with mpfr gm
 	target_link_libraries(${target_name} ${MPFR_LIBRARIES} ${GMP_LIBRARIES})

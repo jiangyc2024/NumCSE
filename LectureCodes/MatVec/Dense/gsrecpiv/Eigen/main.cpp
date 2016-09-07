@@ -6,7 +6,7 @@ using namespace std;
 using namespace Eigen;
 #include "gsrecpiv.hpp"
 /*
- * wrong/error code! --> look at gsseqpiv
+ * wrong/error code! --> look at lupiv
  */
 
 int main () {

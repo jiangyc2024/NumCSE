@@ -1,6 +1,17 @@
-//! Eigen script: assessing the gain from using special properties
+#pragma once
+
+#include <vector>
+
+#include <Eigen/Dense>
+
+#include "timer.h"
+
+using namespace Eigen;
+
+/* SAM_LISTING_BEGIN_0 */
+//! Eigen code: assessing the gain from using special properties
 //! of system matrices in Eigen
-MatrixXd gausstiming(){
+MatrixXd timing(){
 	std::vector<int> n = {16,32,64,128,256,512,1024,2048,4096,8192};
 	int nruns = 3;
 	MatrixXd times(n.size(),3);
@@ -18,3 +29,4 @@ MatrixXd gausstiming(){
 	}
 	return times;
 }
+/* SAM_LISTING_END_0 */

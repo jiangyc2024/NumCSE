@@ -1,7 +1,6 @@
 #include <iostream>
 #include <Eigen/Dense>
-using namespace std;
-using namespace Eigen;
+
 #include "gramschmidt.hpp"
 
 int main () {

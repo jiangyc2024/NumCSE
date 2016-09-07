@@ -1,3 +1,13 @@
+#pragma once
+
+#include <iostream>
+
+#include <Eigen/Dense>
+
+using namespace std;
+using namespace Eigen;
+
+/* SAM_LISTING_BEGIN_0 */
 void storageOrder(int nrows=6,int ncols=7)
 {
   cout << "Different matrix storage layouts in Eigen" << endl;
@@ -19,3 +29,4 @@ void storageOrder(int nrows=6,int ncols=7)
   for (int l=0;l < mrm.size(); l++) cout << mrm(l) << ',';
   cout << endl;
 }
+/* SAM_LISTING_END_0 */
