@@ -8,6 +8,7 @@
 
 using namespace std;
 
+/* SAM_LISTING_BEGIN_0 */
 template <class SpMat>
 SpMat initSparseMatrix(size_t n)
 {
@@ -31,7 +32,9 @@ SpMat initSparseMatrix(size_t n)
   M.makeCompressed();
   return M;
 }
+/* SAM_LISTING_END_0 */
 
+/* SAM_LISTING_BEGIN_1 */
 template <class SpMat>
 void printTriplets(const SpMat &M)
 {
@@ -39,7 +42,9 @@ void printTriplets(const SpMat &M)
     for (typename SpMat::InnerIterator it(M,k); it; ++it)
       cout << "(" << it.row() << ',' << it.col() << ") -> " << it.value() << endl;
 }
+/* SAM_LISTING_END_1 */
 
+/* SAM_LISTING_BEGIN_2 */
 void solveSparseTest(size_t n)
 {
   using SpMat = Eigen::SparseMatrix<double, Eigen::RowMajor>;
@@ -64,7 +69,9 @@ void solveSparseTest(size_t n)
   }
   cout << "Residual norm = " << (M*x-b).norm() << endl;
 }
+/* SAM_LISTING_END_2 */
 
+/* SAM_LISTING_BEGIN_3 */
 int main(int argc,char **argv)
 {
   cout << "EIGEN DENSE LINEAR ALGEBRA CODES" << endl;
@@ -81,3 +88,4 @@ int main(int argc,char **argv)
   }
   return 0;
 }
+/* SAM_LISTING_END_3 */
