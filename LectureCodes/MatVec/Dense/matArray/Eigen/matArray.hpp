@@ -1,5 +1,14 @@
-void matArray(int nrows,int ncols)
-{
+#pragma once
+
+#include <iostream>
+
+#include <Eigen/Dense>
+
+using namespace std;
+using namespace Eigen;
+
+/* SAM_LISTING_BEGIN_0 */
+void matArray(int nrows,int ncols){
   Eigen::MatrixXd m1(nrows,ncols),m2(nrows,ncols);
   for(int i = 0; i < m1.rows(); i++)
     for(int j=0; j < m1.cols(); j++) {  
@@ -15,3 +24,4 @@ void matArray(int nrows,int ncols)
   // Entry-wise boolean expression, \texttt{true} cases counted
   cout << (m1.array() > 3).count() << " entries of m1 > 3" << endl;
 }
+/* SAM_LISTING_END_0 */

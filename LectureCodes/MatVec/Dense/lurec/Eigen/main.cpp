@@ -1,10 +1,12 @@
 #include <iostream>
+
 #include <Eigen/Dense>
-#include <cmath>
-using namespace std;
-using namespace Eigen;
+
 #include "lurec.hpp"
 #include "lurecdriver.hpp"
+
+using namespace std;
+using namespace Eigen;
 
 int main () {
 	int n = 3;

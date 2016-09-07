@@ -1,3 +1,20 @@
+#pragma once
+
+#include <vector>
+
+#include <Eigen/Dense>
+#include <Eigen/Sparse>
+#include <Eigen/IterativeLinearSolvers>
+
+using namespace Eigen;
+
+#include "arrowsys_fast.hpp"
+#include "arrowsys_slow.hpp"
+#include "arrowsys_sparse.hpp"
+#include "timer.h"
+
+
+/* SAM_LISTING_BEGIN_0 */
 MatrixXd arrowsystiming(){
 	std::vector<int> n = {8,16,32,64,128,256,512,1024,2048,4096};
 	int nruns = 3;
@@ -8,9 +25,7 @@ MatrixXd arrowsystiming(){
 		VectorXd b = VectorXd::Ones(n[i],1);
 		VectorXd c = VectorXd::LinSpaced(n[i],1,n[i]);
 		VectorXd d = -b;
-		VectorXd y = VectorXd::Constant(n[i]+1,-1).binaryExpr(
-				VectorXd::LinSpaced(n[i]+1,1,n[i]+1), 
-				[](double x, double y){return pow(x,y);} ).array();
+		VectorXd y = VectorXd::Constant(n[i]+1,-1).binaryExpr( VectorXd::LinSpaced(n[i]+1,1,n[i]+1), [](double x, double y){return pow(x,y);} ).array();
 		VectorXd x1(n[i]+1), x2(n[i]+1), x3(n[i]+1), x4(n[i]+1);
 		for(int j = 0; j < nruns; ++j){
 			t1.start();	x1 = arrowsys_slow(d,c,b,alpha,y);	t2.stop();
@@ -27,3 +42,4 @@ MatrixXd arrowsystiming(){
 	}
 	return times;
 }
+/* SAM_LISTING_END_0 */

@@ -1,3 +1,13 @@
+#pragma once
+
+#include <iostream>
+
+#include <Eigen/Dense>
+
+using namespace std;
+using namespace Eigen;
+
+/* SAM_LISTING_BEGIN_0 */
 template<typename MatType>
 void reshapetest(MatType &M)
 {
@@ -17,3 +27,4 @@ void reshapetest(MatType &M)
     cout << "Matrix M = " << endl << M << endl;
   }
 }
+/* SAM_LISTING_END_0 */

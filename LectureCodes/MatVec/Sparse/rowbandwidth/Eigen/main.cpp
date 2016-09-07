@@ -1,11 +1,13 @@
 #include <iostream>
 #include <vector>
-#include <algorithm>
+
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
-using namespace std;
-using namespace Eigen;
+
 #include "bandwidth.hpp"
+
+using namespace Eigen;
+
 int main () {
 	int n = 7;
 	typedef Triplet<double> triplet_t;
