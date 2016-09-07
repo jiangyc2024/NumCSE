@@ -24,7 +24,7 @@ void scaletiming(){
     for(int j = 0; j < nruns; ++j){
 		MatrixXd D = d.asDiagonal(); // d.asDiagonal()*x would be optimized \label{scti:1}
 		tbad.start(); y = D*x; 	tbad.stop();	// matrix vector multiplication \label{scti:2}
-		tgood.start();y= d.cwiseProduct(x);	tgood.stop(); // comp. wise mult. \label{scti:1}
+		tgood.start();y= d.cwiseProduct(x);	tgood.stop(); // comp. wise mult. \label{scti:3}
 	}
 	timings(i,0)=n; timings(i,1)=tgood.min(); timings(i,2)=tbad.min();
   }
