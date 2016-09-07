@@ -15,7 +15,7 @@ MatrixXd ApproxPIinstable(double tol = 1e-8, int maxIt = 50){
   res(it,0) = n; res(it,1) = An;
   res(it,2) = An - M_PI; res(it,3)=s;
   while( it < maxIt && s > tol ){// terminate when s is ’small enough’
-  	s = sqrt((1.- sqrt(1.-s*s))/2.);// recursion for area
+  	s = sqrt((1.- sqrt(1.-s*s))/2.);// recursion for area \Label{pis:1}
   	n *= 2; An = n/2.*s;	// new estimate for circumference
   	++it;
   	res(it,0) =n; res(it,1) =An;// store results and (absolute) error
