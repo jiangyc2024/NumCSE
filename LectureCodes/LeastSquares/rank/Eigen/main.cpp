@@ -1,19 +1,18 @@
 #include <iostream>
+#include <limits>
 #include <Eigen/Dense>
 
-using namespace std;
-using namespace Eigen;
+using Eigen::MatrixXd;
 
-int main()
-{
-    MatrixXd A(3, 2);
-    double eps = NumTraits<double>::epsilon();
-    A << 1, 1,
-         sqrt(eps), 0,
-         0, sqrt(eps);
+int main() {
+  MatrixXd A(3, 2);
+  double eps = std::numeric_limits<double>::epsilon();
+  A << 1, 1,
+       sqrt(eps), 0,
+       0, sqrt(eps);
 
-     cout << A.fullPivLu().rank() << endl;
-     cout << (A.transpose() * A).fullPivLu().rank() << endl;
+  std::cout << A.fullPivLu().rank() << "\n"
+            << (A.transpose() * A).fullPivLu().rank() << "\n";
 
-    return 0;
+  return 0;
 }
