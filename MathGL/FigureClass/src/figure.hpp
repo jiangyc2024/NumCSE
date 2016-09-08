@@ -249,7 +249,7 @@ MglPlot& Figure::spy(const Matrix& A, const std::string& style) {
   // x for the col-index and y for the row-index
   std::vector<double> x, y;
 
-  ranges_ = {0, A.cols() + 1, 0, A.rows() + 1};
+  ranges_ = std::array<double, 4>{0, A.cols() + 1, 0, A.rows() + 1};
   for (unsigned i = 0; i < A.rows(); ++i) {
     for (unsigned j = 0; j < A.cols(); ++j) {
       if (A(i,j) != 0) {
