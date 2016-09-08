@@ -14,12 +14,7 @@ Eigen::VectorXd polyfit(const Eigen::VectorXd& x, const Eigen::VectorXd& y, cons
   }
   Eigen::VectorXd coeffs = A.householderQr().solve(y);
 
-  // need to reverse it: return coeff of highest power first
-  Eigen::VectorXd coeffs_switched(coeffs.size());
-  for (unsigned k = 0; k < coeffs.size(); ++k) {
-    coeffs_switched(k) = coeffs(coeffs.size() - k - 1);
-  }
-  return coeffs_switched;
+  return coeffs.reverse();
 }
 
 # endif
