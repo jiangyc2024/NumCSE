@@ -141,7 +141,7 @@ private:
   int plotHeight_, plotWidth_; // height and width of the plot
   int leftMargin_, topMargin_; // left and top margin of plot inside the image
   std::vector<std::unique_ptr<MglPlot> > plots_; // x, y (and z) data for the plots
-  std::vector<std::pair<std::string, std::string>> additionalLabels_; // manually added labels 
+  std::vector<std::pair<std::string, std::string>> additionalLabels_; // manually added labels
 };
 
 /* bar plot for given y data                                                       *
@@ -221,11 +221,11 @@ Figure::plot(const xVector& x, const yVector& y, std::string style)
   mglData xd = make_mgldata(x);
   mglData yd = make_mgldata(y);
 
-  // if the ranges are set to auto set the new ranges 
+  // if the ranges are set to auto set the new ranges
   if(autoRanges_){
     setRanges(xd, yd, 0.); // the 0 stands no top+bottom margin
   }
-  
+
   // check if a style is given,
   // if yes: add that style to the style queue and remove it from the style-deque,
   // if no : get a new style from the style-deque
@@ -297,14 +297,14 @@ MglPlot& Figure::spy(const Matrix& A, const std::string& style) {
   if (std::max(A.cols(), A.rows()) > 9999) {
     radius = "1";
   }
-  
+
   // counting nonzero entries
   unsigned long counter = 0;
   // save positions of entries in these vectors
   // x for the col-index and y for the row-index
   std::vector<double> x, y;
 
-  ranges_ = std::array<double, 4>{0, A.cols() + 1, 0, A.rows() + 1};
+  ranges_ = {0., (double) A.cols() + 1., 0., (double) A.rows() + 1.};
   for (unsigned i = 0; i < A.rows(); ++i) {
     for (unsigned j = 0; j < A.cols(); ++j) {
       if (A(i,j) != 0) {
@@ -328,7 +328,7 @@ MglPlot& Figure::spy(const Matrix& A, const std::string& style) {
 }
 
 # if FIG_HAS_EIGEN
-template <typename Scalar> 
+template <typename Scalar>
 MglPlot& Figure::spy(const Eigen::SparseMatrix<Scalar>& A, const std::string& style) {
 
    has_3d_ = false;
@@ -345,13 +345,13 @@ MglPlot& Figure::spy(const Eigen::SparseMatrix<Scalar>& A, const std::string& st
   if (std::max(A.cols(), A.rows()) > 9999) {
     radius = "1";
   }
-  
+
   // counting nonzero entries
   unsigned long counter = 0;
   // save positions of entries in these vectors
   std::vector<double> x, y;
 
-  ranges_ = std::array<double, 4>{0, A.cols() + 1, 0, A.rows() + 1};
+  ranges_ = {0., (double) A.cols() + 1., 0., (double) A.rows() + 1.};
   // iterate over nonzero entries, using method suggested in Eigen::Sparse documentation
   for (unsigned k = 0; k < A.outerSize(); ++k) {
     for (typename Eigen::SparseMatrix<Scalar>::InnerIterator it(A, k); it; ++it) {
