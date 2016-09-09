@@ -1,3 +1,12 @@
+#pragma once
+
+#include <cmath>
+
+#include <Eigen/Dense>
+
+using namespace Eigen;
+
+/* SAM_LISTING_BEGIN_0 */
 //! simple Cholesky factorization
 void cholfac(const MatrixXd &A, MatrixXd &R){
 	int n = A.rows();
@@ -9,3 +18,4 @@ void cholfac(const MatrixXd &A, MatrixXd &R){
 	}
 	R.triangularView<StrictlyLower>().setZero();
 }
+/* SAM_LISTING_END_0 */

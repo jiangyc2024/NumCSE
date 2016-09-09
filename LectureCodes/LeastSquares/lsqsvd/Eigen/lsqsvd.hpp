@@ -1,20 +1,18 @@
 #include <Eigen/Dense>
+#include <Eigen/SVD>
+using Eigen::VectorXd;
+using Eigen::MatrixXd;
 
-template<typename VecType, typename MatType>
-VecType lsqsvd(const Eigen::MatrixBase<MatType> &A, const VecType &b)
-{
-    using namespace Eigen;
-    using entry_t = typename MatType::Scalar;
-    JacobiSVD<Matrix<entry_t, Dynamic, Dynamic>> svd(A, ComputeThinU | ComputeThinV);
+VectorXd lsqsvd(const MatrixXd& A, const VectorXd& b) {
+  Eigen::JacobiSVD<MatrixXd> svd(A, Eigen::ComputeThinU | Eigen::ComputeThinV);
+  // fast solution:
+  // return svd.solve(b);
+  
+  // 'manual' solution:
+  VectorXd sv = svd.singularValues();
+  unsigned r = svd.nonzeroSingularValues(); // no. of nonzero singular values
+  MatrixXd U = svd.matrixU(), 
+           V = svd.matrixV();
 
-    auto sv = svd.singularValues();
-    auto U = svd.matrixU();
-    auto V = svd.matrixV();
-    auto r = svd.nonzeroSingularValues(); // default threshold is NumTraits<Scalar>::epsilon()
-
-    return V.leftCols(r)
-        * (
-            sv.head(r).cwiseInverse().asDiagonal()
-                * (U.leftCols(r).adjoint() * b)
-        );
+  return V.leftCols(r)*( sv.head(r).cwiseInverse().asDiagonal() * (U.leftCols(r).adjoint()*b) );
 }

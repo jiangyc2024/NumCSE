@@ -1,4 +1,13 @@
-//! C++ function computing the zeros of a quadratic polynomial
+#pragma once
+
+#include <cmath>
+
+#include <Eigen/Dense>
+
+using namespace Eigen;
+
+/* SAM_LISTING_BEGIN_0 */
+//! \cpp function computing the zeros of a quadratic polynomial
 //! $\xi\to \xi^2+\alpha\xi+\beta$ by means of the familiar discriminant
 //! formula $\xi_{1,2} = \frac{1}{2}(-\alpha\pm\sqrt{\alpha^2-4\beta})$. 
 //! This is a stable implementation based on Vieta's theorem.
@@ -13,13 +22,14 @@ VectorXd zerosquadpolstab(double alpha, double beta){
 		// in order to \com{avoid cancellation}. For the other zero
 		// use Vieta's formula. 
 		if(alpha >= 0){
-			double t = 0.5*(-alpha-wD);
+			double t = 0.5*(-alpha-wD);	// \Label[line]{zqs:11}
 			z << t, beta/t;			
 		}
 		else{
-				double t = 0.5*(-alpha+wD);
+				double t = 0.5*(-alpha+wD);	// \Label[line]{zqs:12}
 				z << beta/t, t;
 		}
 	}
 	return z;
 }
+/* SAM_LISTING_END_0 */

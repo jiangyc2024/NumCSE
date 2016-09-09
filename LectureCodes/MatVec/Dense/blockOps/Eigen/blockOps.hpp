@@ -1,3 +1,13 @@
+#pragma once
+
+#include <iostream>
+
+#include <Eigen/Dense>
+
+using namespace std;
+using namespace Eigen;
+
+/* SAM_LISTING_BEGIN_0 */
 template<typename MatType>
 void blockAccess(Eigen::MatrixBase<MatType> &M)
 {
@@ -31,3 +41,4 @@ void blockAccess(Eigen::MatrixBase<MatType> &M)
   M.template triangularView<Lower>() *= -1.5; // \Label{ba:2}
   cout << "Matrix M = " << endl << M << endl;
 }
+/* SAM_LISTING_END_0 */
