@@ -22,4 +22,30 @@
 
 \end{subproblem}
 
+\begin{subproblem}{sp:2}[1]
+	Validate the correctness of your code by comparing the result
+    with \eigen's built-in matrix multiplication.
+
+  \begin{samsolution}
+    \begin{samcode}[C++-code]{\cpl:cpp:solution}{Strassen's algorithm with \eigen{}}
+      \lstincludecpp[style=cpp_problem]{../Solutions/MatVec/fastmatmult/strassen.cpp}{1}
+    \end{samcode}
+  \end{samsolution}
+\end{subproblem}
+
+\begin{subproblem}{sp:3}[1]
+	Measure the runtime of your function
+    \lstinline[style=cppsimple]|strassenMatMult|
+    for random matrices of sizes $2^{k}$, $k=4,\ldots,10$, and compare
+    with the matrix multiplication offered by the $\ast$-operator
+    of \eigen{}.
+
+  \begin{samhint}
+    Use the optimization capabilities of your C++ compiler by appending \\ \lstinline[style=cppsimple]|-DCMAKE_BUILD_TYPE=RELEASE| to the cmake invocation in order to get reliable timings. Please note that this also disables various integrity checks.
+  \end{samhint}
+  \begin{samhint}
+    Ensure that the compiler does not optimize away your computation by using the result of the multiplication in some fashion (e.g. by summing one coefficient of the result matrix and printing it after all measurements finished).
+  \end{samhint}
+\end{subproblem}
+
 \end{samproblem}

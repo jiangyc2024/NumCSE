@@ -18,13 +18,13 @@ Matrix gramschmidt(const Matrix &A);
   that performs the same computations as \cref{gramschmidt}. 
 
   \begin{samhint}
-    Use \eigen{}s block operations (see \href{https://eigen.tuxfamily.org/dox/group__TutorialBlockOperations.html}{$\uparrow$})
+    Use \eigen{}s block operations (see \href{https://eigen.tuxfamily.org/dox/group__TutorialBlockOperations.html}{\ExternalLinkSymb})
   \end{samhint}
 
   % BEGIN ================ SOLUTION  ================   %
   \begin{samsolution}
     \begin{samcode}[C++-code]{\cpl:cpp:solution}{Gram-Schmidt orthogonalization with \eigen{}}
-      \lstincludecpp[style=cpp_problem]{../Solutions/MatVec/gramschmidt/gramschmidt.cpp}{1}
+      \lstinputlisting[style=cpp_problem]{../Solutions/MatVec/gramschmidt/gramschmidt.hpp}
     \end{samcode}
   \end{samsolution}
   % END ================ SOLUTION  ================   %
@@ -40,7 +40,7 @@ Matrix gramschmidt(const Matrix &A);
   % BEGIN ================ SOLUTION  ================   %
   \begin{samsolution}
     \begin{samcode}[C++-code]{\cpl:cpp:solution}{Gram-Schmidt orthogonalization with \eigen{}}
-      \lstincludecpp[style=cpp_problem]{../Solutions/MatVec/gramschmidt/gramschmidt.cpp}{2}
+      \lstincludecpp[style=cpp_problem]{../Solutions/MatVec/gramschmidt/main.cpp}{1}
     \end{samcode}
   \end{samsolution}
   % END ================ SOLUTION  ================   %

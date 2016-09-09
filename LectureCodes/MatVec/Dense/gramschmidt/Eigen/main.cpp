@@ -1,16 +1,19 @@
 #include <iostream>
 #include <Eigen/Dense>
-using namespace std;
-using namespace Eigen;
+
 #include "gramschmidt.hpp"
 
-int main () {
-	// Ortho test
-	unsigned int n = 9;
-	Eigen::MatrixXd A = Eigen::MatrixXd::Random(n,n);
-	Eigen::MatrixXd Q = gramschmidt( A );
+using namespace Eigen;
 
-	// Output should be idenity matrix
-	std::cout << Q*Q.transpose() << std::endl;
-  return 0;
+/* SAM_LISTING_BEGIN_1 */
+int main () { /* SAM_SOLUTION_BEGIN */
+    // Ortho test
+    unsigned int n = 9;
+    MatrixXd A = MatrixXd::Random(n,n);
+    MatrixXd Q = gramschmidt( A );
+
+    // Output should be idenity matrix
+    std::cout << Q*Q.transpose() << std::endl;
+    return 0; /* SAM_SOLUTION_END */
 }
+/* SAM_LISTING_END_1 */
