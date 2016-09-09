@@ -1,0 +1,163 @@
+% NumCSE/Assignments/Latex/Chapters/NumericalQuadrature/NestedQuad.tex
+% Exercise requires:  laserquad_template.cpp gaussquad.hpp
+% Solution requires:  laserquad.cpp gaussquad.hpp
+
+\begin{samproblem}*{prb:nestquad}{Nested numerical quadrature}{
+  A laser beam has intensity
+  \begin{align*}
+    I(x,y) = \exp(- \alpha ((x-p)^2 + (y-q)^2) )
+  \end{align*}
+  on the plane orthogonal to the direction of the beam.
+}
+ 
+\begin{subproblem}{sp:1}[1]
+  Write down the radiant power absorbed by the triangle
+  \begin{align*}
+    \Delta := \{(x,y)^T \in \mathbb{R}^2 \; | \; x \geq 0, y \geq 0, x+y \leq 1 \}
+  \end{align*}
+  as a double integral.
+  
+  \begin{samhint}
+    The  radiant power absorbed by a surface is the integral of the intensity over the surface.
+  \end{samhint}
+  
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{solfile}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        The radiant power absorbed by $\Delta$ can be written as:
+        \begin{align*}
+          \int_\Delta I(x,y) dx dy = \int_0^1 \int_0^{1-y} I(x,y) dx dy.
+        \end{align*}
+      \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% END ================== SOLUTION ===============   %
+
+\end{subproblem}
+
+\begin{subproblem}{sp:2}[3]
+  Write a C++ function 
+  \begin{lstlisting}[style=cpp]
+template <class Function>
+double evalgaussquad(const double a, const double b, Function&& f, const QuadRule& Q);
+  \end{lstlisting}
+  that evaluates an the $N$-point quadrature for an integrand passed in \texttt{f}
+  in $[a,b]$. It should rely on the quadrature rule on the reference interval
+  $[-1,1]$ that supplied through an object of type \texttt{QuadRule}. 
+  (The vectors \verb|weights| and \verb|nodes| denote the weights and
+  nodes of the reference quadrature rule respectively.)
+  
+  \begin{samhint}
+    Use the function \verb|gaussquad| from \verb|gaussquad.hpp| to compute nodes and weights in $[-1,1]$.
+  \end{samhint}
+  
+  \begin{samhint}
+    You can use the template \verb|laserquad_template.cpp|.
+  \end{samhint}
+  
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{solfile}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        You can find the full code in \verb|laserquad.cpp|.
+
+        \begin{samcode}[C++-code]{cpp:gaussquadeval}{gaussquadeval}
+          \small
+          \lstincludecpp{./Chapters/NumericalQuadrature/CPP/laserquad_partialInclusion.cpp}{1}
+        \end{samcode}
+      \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% END ================== SOLUTION ===============   %
+
+\end{subproblem}
+
+\begin{subproblem}{sp:3}[4]
+  Write a C++ function
+  \begin{lstlisting}[style=cpp]
+template <class Function>
+double gaussquadtriangle(Function&& f, const unsigned N)
+  \end{lstlisting}
+  for the computation of the integral
+  \begin{align} \label{eq:subprb_nested_quad_2}
+    \int_\Delta f(x,y) dx dy
+  \end{align}
+  using nested $N$-point, 1D Gauss quadratures (using the functions \verb|evalgaussquad| of \ref{prb:nestquad:sp:2} and  \verb|gauleg|).
+  
+  \begin{samhint}
+    Write \eqref{eq:subprb_nested_quad_2} explicitly as a double integral. Take particular care to correctly find the intervals of integration.
+  \end{samhint}
+  
+  \begin{samhint}
+    C++ lambda functions are well suited for this kind of implementation.
+  \end{samhint}
+
+  
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{solfile}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        The integral can be written as
+        \begin{align*}
+          \int_\Delta f(x,y) dx dy = \int_0^1 \int_0^{1-y} f(x,y) dx dy.
+        \end{align*}
+        In the C++ implementation, we define the auxiliary (lambda) function $f_y$:
+        \begin{align*}
+          \forall y \in [0,1], f_y: [1,1-y] \rightarrow \mathbb{R}, x \mapsto f_y(x) := f(x,y)
+        \end{align*}
+        We also define the (lambda) approximated integrand:
+        \begin{align}
+          g(y) := \int_0^{1-y} f_y(x) dx \approx \frac{1}{1-y} \sum_{i = 0}^N w_i f_y\left(\frac{x_i + 1}{2}  (1-y)\right) =: \mathcal{I}(y),
+        \end{align}
+        the integral of which can be approximated, using a nested Gauss quadrature:
+        \begin{align}
+          \int_\Delta f(x,y) dx dy  = \int_0^1  \int_0^{1-y} f_y(x) dx dx = \int_0^1 g(y) dy \approx \frac{1}{2} \sum_{j = 1}^N w_j \mathcal{I}\left(\frac{y_j + 1}{2}\right).
+        \end{align}
+
+        This problem can also be solved using loops (so no nested lambda function).
+        This more straightforward approach is commented in the listing.
+        If you chose that implementation have a look at the nested-lambda one and try to understand how it works.
+
+        The full implementation can be found in \verb|laserquad.cpp|.
+
+        \begin{samcode}[C++-code]{cpp:gaussquadtriangle}{gaussquadtriangle}
+          \small
+          \lstincludecpp{./Chapters/NumericalQuadrature/CPP/laserquad_partialInclusion.cpp}{2}
+        \end{samcode}
+      \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% END ================== SOLUTION ===============   %
+
+\end{subproblem}
+
+\begin{subproblem}{sp:4}[1]
+  Apply the function \verb|gaussquadtriangle| of \ref{prb:nestquad:sp:3} to the subproblem \ref{prb:nestquadsp:1} using the parameter 
+  $\alpha = 1, p = 0, q = 0$.  Compute the error w.r.t to the number of nodes $N$. What kind of convergence do you observe? Explain the result.
+  
+  \begin{samhint}
+    Use the ``exact'' value of the integral $0.366046550000405$.
+  \end{samhint}
+  
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{solfile}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        As one expects from theoretical considerations, the convergence is exponential.
+        \begin{figure}[h]
+          \centering
+          \samplot{./Chapters/NumericalQuadrature/PICTURES/laserquadCvg}[fig:laserquadCvg][](0.6\textwidth)
+          \caption{This plot used the results from \texttt{laserquad.cpp}}
+        \end{figure}
+        \begin{samcode}[C++-code]{cpp:laserquadDriver}{\texttt{main} function of laserquad}
+          \small
+          \lstincludecpp{./Chapters/NumericalQuadrature/CPP/laserquad_partialInclusion.cpp}{3}
+        \end{samcode}
+     \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% END ================== SOLUTION ===============   %
+
+\end{subproblem}
+\end{samproblem}

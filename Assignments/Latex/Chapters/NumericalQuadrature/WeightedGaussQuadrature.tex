@@ -1,0 +1,316 @@
+% NumCSE/Assignments/Latex/Chapters/NumericalQuadrature/WeightedGaussQuadrature.tex
+% Exercise requires: -
+% Solution requires: quadU.cpp
+
+\begin{samproblem}*{prb:weightedgauss}{Weighted Gauss quadrature}{
+  The development of an alternative quadrature formula for \eqref{eq:effquadsingint} relies on the Chebyshev polynomials of the second kind $U_n$, defined as
+  \begin{equation*}
+    U_n(t)=\frac{\sin((n+1)\arccos t)}{\sin(\arccos t)}, \qquad n\in\mathbb{N}
+  \end{equation*}
+  Recall the role of the orthogonal Legendre polynomials in the derivation and definition of Gauss-Legendre quadrature rules (see \cref{par:LP}).
+
+  As regards the integral \eqref{eq:effquadsingint}, this role is played by the $U_n$, which are orthogonal polynomials with respect to a 
+  weighted $L^2$ inner product, see \cref{eq:wSPLtwo}, with weight given by $w(\tau)=\sqrt{1-\tau^2}$.
+}
+
+%%%%%%%%%%%%%%%%%%%%%% SUBPROBLEM 1
+\begin{subproblem}{sp:1}[2]
+  Show that the $U_n$ satisfy the 3-term recursion
+  \begin{equation*}
+    U_{n+1}(t)=2tU_n(t)-U_{n-1}(t),\qquad U_0(t)=1,\qquad U_1(t)=2t,
+  \end{equation*}
+  for every $n\ge 1$.
+
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{solfile}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        $\mathbf{n=0}$:
+
+        This case is trivial, since $U_0(t)=\frac{\sin(\arccos t)}{\sin(\arccos t)}=1$, as desired. 
+
+        $\mathbf{n=1}$:
+
+        Using the trigonometric identity $\sin 2x = \sin x \cos x$, we have 
+        \begin{equation*}
+          U_1(t)=\frac{2\sin(\arccos t)}{\sin(\arccos t)}=2\cos \arccos t = 2t
+        \end{equation*}
+
+        $\mathbf{n \ge 2}$:
+
+        Using the identity $\sin (x+y) = \sin x \cos y + \sin y \cos x$, we obtain:
+        \begin{align*}
+          U_{n+1}(t)   &= \frac{\sin((n+1)\arccos t)t + \cos((n+1)\arccos t) \sin (\arccos t)}{\sin(\arccos t)} \\
+            & = U_n(t) t+\cos((n+1)\arccos t).
+        \end{align*}
+        Similarly, we have
+        \begin{align*}
+          U_{n-1}(t)&=\frac{\sin((n+1 -1 )\arccos t)}{\sin(\arccos t)} \\ 
+            &= \frac{\sin((n+1)\arccos t)t - \cos((n+1)\arccos t) \sin (\arccos t)}{\sin(\arccos t)}\\
+            & = U_n(t) t-\cos((n+1)\arccos t).
+        \end{align*}
+        Combining the last two equalities we obtain the desired 3-term recursion.
+     \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% END ================== SOLUTION ===============   %
+
+\end{subproblem}
+
+
+%%%%%%%%%%%%%%%%%%%%%% SUBPROBLEM 2
+\begin{subproblem}{sp:2}[1]
+  Show that $U_n\in \Pol{n}$ with leadinr coefficient $2^n$.
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{solfile}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        Let us prove the claim by induction. 
+        
+        $\mathbf{n=0}$: This case is trivial, since $U_0(t)=1$. 
+        
+        \textbf{Induction hypothesis}: Let us now assume that the statement is true for every $k=0,\dots,n$ and let us prove it for $n+1$. 
+        
+        In view of $U_{n+1}(t)=2tU_n(t)-U_{n-1}(t)$, since by inductive hypothesis $U_n\in\Pol{n}$ and $U_{n-1}\in\Pol{n-1}$, 
+        we have that $U_{n+1}\in \Pol{{n+1}}$. Moreover, the leading coefficient will be $2$ times the leading order coefficient 
+        of $U_n$, namely $2^{n+1}$, as desired. \hspace{11cm} $\qed$
+
+     \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% END ================== SOLUTION ===============   %
+
+\end{subproblem}
+
+%%%%%%%%%%%%%%%%%%%%%% SUBPROBLEM 3
+\begin{subproblem}{sp:3}[2]
+  Show that for every $m,n\in\mathbb{N}_0$ we have
+  \begin{align*}
+    \int_{-1}^1 \sqrt{1-t^2}\,U_m(t) U_n(t)\,dt=\frac{\pi}{2}\delta_{mn}.
+  \end{align*}
+
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{solfile}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        With the substitution $t=\cos s$ we obtain
+        \begin{align*}
+          \int_{-1}^1 \sqrt{1-t^2}U_m(t) U_n(t)\,dt &= \int_{-1}^1 \sqrt{1-t^2}  \frac{\sin((m+1)\arccos t)\sin((n+1)\arccos t)}{\sin^2(\arccos t)}\,dt \\
+            &=  \int_{0}^\pi \sin s  \frac{\sin((m+1)s)\sin((n+1)s)}{\sin^2 s}\sin s\,ds \\
+            &=  \int_{0}^\pi  \sin((m+1)s)\sin((n+1)s)\,ds \\
+            &=\frac{1}{2} \int_{0}^\pi  \cos((m-n)s) - \cos((m+n+2)s)\,ds. \\
+        \end{align*}
+        The claim immediately follows, as it was done in \ref{PS9}, \ref{prob:ChebPolyProp}.
+     \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% END ================== SOLUTION ===============   %
+
+\end{subproblem}
+
+%%%%%%%%%%%%%%%%%%%%%% SUBPROBLEM 4
+\begin{subproblem}{sp:4}[1]
+  What are the zeros $\xi^n_j$ ($j=1,\dots,n$) of $U_n$, $n\ge 1$? Give an explicit formula similar to the formula for the Chebyshev nodes in $[-1,1]$.
+
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{solfile}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        From the definition of $U_n$ we immediately find that the zeros are given by
+        \begin{align}\label{eq:zeros}
+          \xi^n_j= \cos\left(\frac{j}{n+1}\pi\right),\qquad j=1,\dots,n.
+        \end{align}
+     \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% END ================== SOLUTION ===============   %
+
+\end{subproblem}
+
+%%%%%%%%%%%%%%%%%%%%%% SUBPROBLEM 5
+\begin{subproblem}{sp:5}[4]
+  Show that the choice of weights
+  \begin{equation*}
+    w_j=\frac{\pi}{n+1}\sin^2\left(\frac{j}{n+1}\pi\right),\qquad j=1,\dots, n,
+  \end{equation*}
+  ensures that the quadrature formula
+  \begin{equation}\label{eq:quadrature_formula}
+    Q^U_n(f)=\sum_{j=1}^n w_j f(\xi^n_j)
+  \end{equation}
+  provides the exact value of  \eqref{eq:effquadsingint} for $f\in\Pol{n-1}$ (assuming exact arithmetic).
+  \begin{samhint}
+    Use  all the previous subproblems.
+  \end{samhint}
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{solfile}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        Since $U_{k}$ is a polynomial of degree exactly $k$, the set $\{U_k:k=0,\dots,n-1\}$ is a basis of $\Pol{n-1}$. 
+        Therefore, by linearity it suffices to prove the above identity for $f=U_k$ for every $k$. 
+        Fix $k=0,\dots,n-1$. Setting $x=\pi/(n+1)$, from \eqref{eq:zeros} we readily derive
+        \begin{align*}
+          \sum_{j=1}^n w_j U_k(\xi^n_j) &= \sum_{j=1}^n \frac{\pi}{n+1}\sin^2\left(\frac{j}{n+1}\pi\right) 
+          \frac{\sin((k+1)\arccos \xi^n_j)}{\sin(\arccos \xi^n_j)}\\
+            &=  x \sum_{j=1}^n \sin(jx) \sin((k+1)jx)\\
+            &=  \frac{x}{2} \sum_{j=1}^n\left(\cos((k+1-1)jx)-\cos((k+1+1)jx)\right)\\
+            &=  \frac{x}{2}\Re \sum_{j=0}^n \left( e^{i k x j}-e^{i(k+2) x j}\right)\\
+            &=  \frac{x}{2}\Re\left( \sum_{j=0}^n  e^{i k x j}-\frac{1-e^{i\pi(k+2)}}{1-e^{i (k+2) x }}\right).
+        \end{align*}
+        Thus, for $k=0$ we have
+        \begin{align*}
+          \sum_{j=1}^n w_j U_0(\xi^n_j) = \frac{x}{2}\Re\left( \sum_{j=0}^n  1-\frac{1-e^{2\pi i}}{1-e^{ 2 x i }}\right)
+          = \frac{x}{2}\Re\left( (n+1)-0\right) = \frac{\pi}{2}.
+        \end{align*}
+        On the other hand, if $k=1,\dots,n-1$ we obtain
+        \begin{align*}
+          \sum_{j=1}^n w_j U_k(\xi^n_j) =  \frac{x}{2}\Re\left( \frac{1-e^{i\pi k}}{1-e^{i k x}}-
+          \frac{1-e^{i\pi(k+2)}}{1-e^{i (k+2) x }}\right) =  \frac{(1-(-1)^k)x}{2}\Re\left( \frac{1}{1-e^{i k x}}-\frac{1}{1-e^{i (k+2) x}}\right).
+        \end{align*}
+        In view of the elementary equality $(a+ib)(a-ib)=a^2+b^2$ we have $\Re(1/(a+ib)) = a/(a^2+b^2)$. Thus
+        \begin{align*}
+          \Re\left( \frac{1}{1-e^{i k x}}\right) = \Re\left( \frac{1}{1-\cos(kx)-i\sin(kx)} \right)
+          = \frac{1-\cos(kx)}{(1-\cos(kx))^2 + \sin(kx)^2}  = \frac{1}{2}
+        \end{align*}
+        Arguing in a similar way we have $\Re\,(1-e^{i (k+2) x})^{-1}= 1/2$. Therefore for $k=1,\dots,n-1$ we have
+        \begin{align*}
+          \sum_{j=1}^n w_j U_k(\xi^n_j) = \frac{(1-(-1)^k)x}{2}\left( \frac{1}{2} -\frac{1}{2} \right) = 0.
+        \end{align*}
+        To summarise, we have proved that
+        \begin{align*}
+          \sum_{j=1}^n w_j U_k(\xi^n_j) = \frac{\pi}{2}\delta_{k0},\qquad k=0,\dots,n-1.
+        \end{align*}
+        Finally, the claim follows from \ref{prb:weightedgauss:sp:3}, since $U_0(t)=1$ and so the integral in  \eqref{eq:effquadsingint} 
+        is nothing else than the weighted scalar product between $U_k$ and $U_0$.     
+      \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% END ================== SOLUTION ===============   %
+
+\end{subproblem}
+
+%%%%%%%%%%%%%%%%%%%%%% SUBPROBLEM 6
+\begin{subproblem}{sp:6}[2]
+  Show that the quadrature formula \eqref{eq:quadrature_formula} gives the exact value of \eqref{eq:effquadsingint}  even for every $f\in \Pol{2n-1}$.
+  \begin{samhint}
+    See \cref{thm:Gaussquad}.
+  \end{samhint}
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{solfile}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        The conclusion follows by applying the same argument given in \cref{thm:Gaussquad} with the weighted $L^2$ scalar 
+        product with weight $w$ defined above.
+     \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% END ================== SOLUTION ===============   %
+
+\end{subproblem}
+
+%%%%%%%%%%%%%%%%%%%%%% SUBPROBLEM 7
+\begin{subproblem}{sp:7}[3]
+  Show that the quadrature error
+  \begin{equation*}
+    |Q^U_n(f)-W(f)|
+  \end{equation*}
+  decays to $0$ exponentially as $n\to \infty$ for every $f\in C^\infty([-1,1])$ that admits an analytic extension to an 
+  open subset of the complex plane.
+
+  \begin{samhint}
+    See \cref{par:quadbest}.
+  \end{samhint}
+
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{solfile}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        By definition, the weights defined above are positive, and the quadrature rule is exact for polynomials up to order $2n-1$. 
+        Therefore, arguing as in \cref{par:quadbest}, we obtain the exponential decay, as desired.
+     \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% END ================== SOLUTION ===============   %
+
+\end{subproblem}
+
+%%%%%%%%%%%%%%%%%%%%%% SUBPROBLEM 8
+\begin{subproblem}{sp:8}[2]
+  Write a C++ function
+  \begin{lstlisting}[style=cpp]
+template<typename Function>
+double quadU(const Function& f, const unsigned n)
+  \end{lstlisting}
+  that gives $Q^U_n(f)$ as output, where \texttt{f} is an object with an evaluation operator, like a lambda function, representing $f$, e.g.
+  \begin{lstlisting}[style=cpp]
+auto f = [] (double& t) {return 1/(2 + exp(3*t));};
+  \end{lstlisting}
+
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{solfile}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        The full code can be found in \texttt{quadU.cpp}.
+        \begin{samcode}{cpp:quadU}{Suggested solution for quadU}
+          \lstincludecpp{./Chapters/NumericalQuadrature/CPP/quadU_partialInclusion.cpp}{1}
+        \end{samcode}
+     \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% END ================== SOLUTION ===============   %
+
+\end{subproblem}
+
+%%%%%%%%%%%%%%%%%%%%%% SUBPROBLEM 9
+\begin{subproblem}{sp:9}[2]
+  Test your implementation with the function $f(t)=1/(2+e^{3t})$ and $n=1,\dots,25$. 
+  Tabulate the quadrature error $E_n(f)=|W(f)-Q^U_n(f)|$ using the  ``exact'' value $W(f)=0.483296828976607$. 
+  Estimate the parameter $0\le q<1$ in the asymptotic decay law $E_n(f)\approx Cq^n$ characterizing (sharp) 
+  exponential convergence, see \cref{def:cvgtype}. 
+
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{solfile}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        The full code can be found in \texttt{quadU.cpp}.
+        \begin{samcode}{cpp:quadUDriver}{Suggested driver for quadU}
+          \lstincludecpp{./Chapters/NumericalQuadrature/CPP/quadU_partialInclusion.cpp}{2}
+        \end{samcode}
+
+        \begin{minipage}[h]{0.47\textwidth}
+            \centering
+            \samplot{./Chapters/NumericalQuadrature/PICTURES/quadUCvg}[fig:quadUCvg][](0.9\textwidth)
+        \end{minipage}
+          \hfill
+        \begin{minipage}[h]{0.53\textwidth}
+          An approximation of $q$ is given by $E_n(f)/E_{n-1}(f)$:
+          \small
+          \begin{lstlisting}
+  n               Error      Approximated q
+  2          0.00171981            0.194545
+  3         0.000294532            0.171259
+  4         4.54948e-05            0.154465
+  5         6.30403e-06            0.138566
+  6         7.57006e-07            0.120083
+  7         6.99966e-08           0.0924651
+  8         2.14329e-09           0.0306199
+  9         1.09843e-09            0.512495
+ 10         3.82291e-10            0.348035
+ 11         8.71921e-11            0.228078
+ 12         1.66109e-11            0.190509
+ 13         2.80703e-12            0.168988
+ 14         4.28158e-13             0.15253
+ 15         5.80647e-14            0.135615
+ 16         7.10543e-15            0.122371
+ 17         2.77556e-16           0.0390625
+ 18         2.77556e-16                   1
+ 19         2.77556e-16                   1
+          \end{lstlisting}
+        \end{minipage}
+      \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% END ================== SOLUTION ===============   %
+
+\end{subproblem}
+
+\end{samproblem}

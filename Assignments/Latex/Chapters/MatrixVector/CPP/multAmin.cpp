@@ -76,20 +76,17 @@ int main(void) {
     std::cout << "|y-x| = " << (y - x).norm() << std::endl;
     
     // Timing from 2^4 to 2^13 repeating nruns times
-    timer<> tm_slow, tm_slow_loops, tm_fast;
-    std::vector<int> times_slow, times_slow_loops, times_fast;
     unsigned int nruns = 10;
+    std::vector<double> times_slow, times_slow_loops, times_fast;
     for(unsigned int p = 4; p <= 13; ++p) {
-        tm_slow.reset();
-        tm_slow_loops.reset();
-        tm_fast.reset();
+        Timer tm_slow, tm_slow_loops, tm_fast;
         for(unsigned int r = 0; r < nruns; ++r) {
             x = Eigen::VectorXd::Random(pow(2,p));
         
             tm_slow.start();
             multAminSlow(x, y);
             tm_slow.stop();
-            
+
             tm_slow_loops.start();
             multAminLoops(x, y);
             tm_slow_loops.stop();
@@ -98,9 +95,9 @@ int main(void) {
             multAmin(x, y);
             tm_fast.stop();
         }
-        times_slow.push_back( tm_slow.avg().count() );
-        times_slow_loops.push_back( tm_slow_loops.avg().count() );
-        times_fast.push_back( tm_fast.avg().count() );
+        times_slow.push_back( tm_slow.mean() );
+        times_slow_loops.push_back( tm_slow_loops.mean() );
+        times_fast.push_back( tm_fast.mean() );
     }
     
     for(auto it = times_slow.begin(); it != times_slow.end(); ++it) {
