@@ -148,7 +148,7 @@ if [ $status -ne 0 ]; then
 	git branch public
 	echo "Adding remote origin_public pointing to the NumCSEStudents repo (public -> origin_public/master)"
     EXIT_ON_ERROR=false
-	git remote add origin_public git@gitlab.math.ethz.ch:NumCSE/NumCSEStudent.git
+	git remote add -t public origin_public git@gitlab.math.ethz.ch:NumCSE/NumCSEStudent.git
 	EXIT_ON_ERROR=true
 fi
 notice "Take all commits from public_stash and rebase them onto public"
