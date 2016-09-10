@@ -58,7 +58,7 @@ for acr in acl:
           try:
             files_to_be_deleted.remove(path)
           except ValueError:
-            print("File path " + path + " can not be included, since it was never excluded. Did you specify an invalid path?", file=sys.stderr)
+            sys.stderr.write("File path " + path + " can not be included, since it was never excluded. Did you specify an invalid path?")
   else:
     raise "unexpected exception"
 
