@@ -1,6 +1,8 @@
 import os
 import re
-os.chdir("../..")
+import sys
+os.chdir(os.path.dirname(os.path.realpath(__file__)) + "/../..")
+prefix = " " + sys.argv[1] + " " if len(sys.argv)>1 else " "
 
 #
 # Configuration
@@ -13,6 +15,7 @@ acl = []
 with open('Scripts/Publish/acl', 'r') as file:
   acl_raw = file.read().strip()
   acl_raw = acl_raw.split("\n")
+  acl_raw = filter(None, acl_raw)
   # integrity check
   if len(filter(lambda acr: (acr[0]!="+" and acr[0]!="-" and acr[0] != "#"), acl_raw)) > 0:
     raise "Invalid syntax in acl file (lines must begin with + or -)"
@@ -56,7 +59,7 @@ for acr in acl:
   else:
     raise "unexpected exception"
 
-print(files_to_be_deleted)
+print(prefix[1:] + ("; " + prefix).join(files_to_be_deleted))
 #for subdir, dirs, files in os.walk(rootdir):
 #    for file in files:
 #        print os.path.join(subdir, file)
