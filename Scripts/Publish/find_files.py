@@ -61,8 +61,11 @@ for acr in acl:
             sys.stderr.write("File path " + path + " can not be included, since it was never excluded. Did you specify an invalid path?")
   else:
     raise "unexpected exception"
-
-print(prefix[1:] + ("; " + prefix).join(files_to_be_deleted))
+if len(files_to_be_deleted) > 0:
+  print(prefix[1:] + ("; " + prefix).join(files_to_be_deleted))
+else:
+  sys.stderr.write("Did not match any files to be removed from the repository. Double check the \`acl\` file")
+  exit(1)
 #for subdir, dirs, files in os.walk(rootdir):
 #    for file in files:
 #        print os.path.join(subdir, file)
