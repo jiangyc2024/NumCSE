@@ -136,8 +136,9 @@ git branch public_stash && _CLEANUP_PUBLIC_STASH=true
 # checkout new branch public stash
 git checkout public_stash
 # get all files to be removed and
+FILES_TO_BE_REMOVED="$(python $GIT_TOP_LEVEL/Scripts/Publish/find_files.py 'git rm --cached --ignore-unmatch')"
 # remove all solutions from this branch
-git filter-branch -f --index-filter "$(python $GIT_TOP_LEVEL/Scripts/Publish/find_files.py 'git rm --cached --ignore-unmatch')" HEAD >> log
+git filter-branch -f --index-filter "$FILES_TO_BE_REMOVED" HEAD >> log
 # check that the public branch exists
 trap - ERR # remove error handler temporary
 git rev-parse --verify public &> /dev/null
