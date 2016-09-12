@@ -1,1 +1,1 @@
-add_subdirectory(Solutions)
+add_subdirectory(Codes)

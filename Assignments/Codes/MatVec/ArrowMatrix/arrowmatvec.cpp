@@ -1,7 +1,8 @@
 #include <iostream>
-// INTERNAL ONLY
+#if INTERNAL
 #include <chrono>
-// INTERNAL ONLY END
+#include "figure.h"
+#endif \\INTERNAL
 
 #include <Eigen/Dense>
 
@@ -92,7 +93,7 @@ void arrow_matrix_2_times_x(const VectorXd & d, const VectorXd & a,
 }
 /* SAM_LISTING_END_0 */
 
-// INTERNAL ONLY
+#if INTERNAL
 using duration_t = std::chrono::nanoseconds;
 
 template <class Function>
@@ -127,8 +128,22 @@ void time_arrow_matrix() {
     std::cout << elapsed.count() << " ns" << std::endl;
   }
 
+
+  mgl::Figure fig;
+  fig.title("Timings arrow_matrix_2_times_x");
+  fig.ranges(2, 9000, 1e-8, 1e3);
+  fig.setlog(true, true); // set loglog scale
+  fig.plot(evals, res1, " r+").label("arrowmatvec");
+  fig.plot(evals, res2, " g+").label("arrowmatvec2");
+  fig.fplot("1e-9*x^3", "k|").label("O(n^3)");
+  fig.fplot("1e-7*x", "k").label("O(n)");
+  fig.xlabel("Vector size n");
+  fig.ylabel("Time [s]");
+  fig.legend(0, 1);
+  fig.save("arrowmatvec2timing.eps");
+  fig.save("arrowmatvec2timing.png");
 }
-// END INTERNAL ONLY
+#endif \\ INTERNAL
 
 int main(void) {
   // VectorXd a = {1,2,3,4,5};

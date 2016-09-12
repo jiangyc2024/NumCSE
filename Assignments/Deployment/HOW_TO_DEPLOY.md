@@ -22,11 +22,16 @@ We use the following conventions:
 - give each cpp file a unique name.cpp
 - for range based listing: use:
 
-```
-/* SAM_LISTING_BEGIN_3 */
-// CODE Goes here
-/* SAM_LISTING_END_3 */
-```
+    ```
+    /* SAM_LISTING_BEGIN_3 */
+    // CODE Goes here
+    /* SAM_LISTING_END_3 */
+    ```
+
+    WARNING: due to issues with lstlisting, we have the following restrictions:
+    - code between multiline comments is not escaped, must compile with latex
+    - TODO: escape code
+
 
 - mark solution-only code within:
 
@@ -72,3 +77,6 @@ Call:
 ```
 ./deploy.py
 ```
+* Conventions:
+
+- use least amount of templates
