@@ -1,24 +1,35 @@
+# Links
+
+Dox:
+https://svn.id.ethz.ch/sam/Numcourses/ncse/ncse_new/documentation/doc_samstyle.pdf
+Macros:
+https://svn.id.ethz.ch/sam/Numcourses/ncse/ncse_new/NCSENEW_macros.tex
+
 # Requirements
 
-`unifdef` and `python3`
+We use `unifdef` and `python3` to deploy.
+
+# TODOs
+
+- "lib" mode, see below
 
 # Assignment codes tree structure
 
 The "Assigments" folder is structured in the following way:
- - "/LaTeX": contains all ".tex" files, *one* .tex file per problem. Each ".tex" file is in an appropriate "Chapter/ProblemName" folder.
+ - "./LaTeX": contains all ".tex" files, *one* .tex file per problem. Each ".tex" file is in an appropriate "Chapter/ProblemName" folder.
    Each folder in LaTeX must have a corresponging folder in LectureCodes.
    TODO: possibly merge LaTeX and Codes
  - "/Codes": contains all ".cpp" and other codes that are used for problem sheets. Also contains binary data such as generated images.
    Each code goes in an appropriate "Chapter/ProblemName" folder, and must have a corresponding laTex file.
-   SPECIAL: each ProblemName folder must have a file "description.json" containing a list of all files used by the problem. See below.
- - "./Deployment": contains scripts and details for packaging of tempaltes/solutions
-
- - "Legacy": svn imported old codes and tex
+   SPECIAL: each "ProblemName" folder must have a file "description.json" containing a list of all files used by the problem. See below.
+ - "./Deployment": contains scripts and details for packaging of templates/solutions
+ - "./Legacy": svn imported old codes and tex, at some point will be purged
 
 # Writing C++
 
 We use the following conventions:
 - try and use one cpp file per problem
+- templates and solutions must compile
 - give each cpp file a unique name.cpp
 - for range based listing: use:
 
@@ -32,8 +43,7 @@ We use the following conventions:
     - code between multiline comments is not escaped, must compile with latex
     - TODO: escape code
 
-
-# mark solution-only code within:
+# Mark solution-only code within:
 
     ```
     #if SOLUTION
@@ -41,7 +51,7 @@ We use the following conventions:
     #endif \\ SOLUTION
     ```
 
-# mark internal-only code within:
+# Mark internal-only code within:
 
     ```
     #if INTERNAL
@@ -50,9 +60,10 @@ We use the following conventions:
     ```
 
 # Include code into LaTeX files:
-    use the range based lstinput listing. To include template of file "file.cpp"
-    include file "templates/file.cpp" instead. For
-    solution include file "solutions/file.cpp" instead.
+
+Use the range based lstinput listing. To include template of file "file.cpp"
+include file as if it were "templates/file.cpp" instead. For the
+solution, include the file as "solutions/file.cpp" instead.
 
 # Create description.json
 
@@ -67,12 +78,12 @@ Each problem directory has a "description.json" file. This contains 5 fields:
 
 # Update the assigment bundle list (edit assignment_list.json)
 
-Add a new problem sheet by adding a new entry into the "ProblemSheet" array.
-Give a name for the problem sheet and a list of
-files in "problems". The path is relative
-to the "assignment_dir" path. The working dir is where all bundles will be created.
-The "cmake" entry specifies the cmake header to use (do not edit).
-The "include" field specifies files and folders that are included in every bundle.
+1. Add a new problem sheet by adding a new entry into the "ProblemSheet" array.
+2. Give a name for the problem sheet and a list of files in "problems".
+3. The path is relative to the "assignment_dir" path.
+4. The "working dir" is where all bundles will be created.
+5. The "cmake" entry specifies the cmake header to use (do not edit).
+6. The "include" field specifies files and folders that are included in every bundle.
 
 # Deploy
 
@@ -88,9 +99,9 @@ are created:
 - "solutions"
 - "solutions_nolabels"
 - "tempaltes_nolabels"
-- 
+
 Additionally in `working_dir` a folder is created for each "Problem Sheet".
-Folder are also compressed. THis folders contain solutions and templates
+Folder are also compressed. These folders contain solutions and templates
 with labels stripped away.
 
 # Conventions:
