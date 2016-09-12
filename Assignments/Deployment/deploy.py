@@ -192,12 +192,16 @@ def generate_nolabels(assignment_dir, problem_dir, obj):
             if is_cpp(file):
                 strip_labels(solution_file_path, problem_dir + "solutions/", problem_dir + "solutions_nolabels/")
                 solution_cpp_list.append(solution_file_path)
+            else:
+                copy(solution_file_path, problem_dir + "solutions/", problem_dir + "solutions_nolabels/")
     if "templates" in obj:
         for template_file_path in obj["templates"]:
             file = problem_dir + "templates/" + template_file_path
             if is_cpp(file):
                 strip_labels(template_file_path, problem_dir + "templates/", problem_dir + "templates_nolabels/")
                 template_cpp_list.append(template_file_path)
+            else:
+                copy(template_file_path, problem_dir + "templates/", problem_dir + "templates_nolabels/")
     if "all" in obj:
         for shared_file_path in obj["all"]:
             file = problem_dir + "solutions/" + shared_file_path
@@ -206,6 +210,10 @@ def generate_nolabels(assignment_dir, problem_dir, obj):
                 strip_labels(shared_file_path, problem_dir + "templates/", problem_dir + "templates_nolabels/")
                 template_cpp_list.append(shared_file_path)
                 solution_cpp_list.append(shared_file_path)
+            else:
+                copy(shared_file_path, problem_dir + "templates/", problem_dir + "templates_nolabels/")
+                copy(shared_file_path, problem_dir + "solutions/", problem_dir + "solutions_nolabels/")
+
 
     return [None, template_cpp_list, None, solution_cpp_list]
 

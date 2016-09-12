@@ -16,6 +16,7 @@ using namespace Eigen;
  * @param[in] x A n-dimensional vector
  * @param[out] y The vector y = A*A*x
  */
+/* SAM_LISTING_BEGIN_1 */
 void efficient_arrow_matrix_2_times_x(const VectorXd & d, const VectorXd & a,
                               const VectorXd & x, VectorXd & y) {
   assert(d.size() == a.size() && a.size() == x.size() &&
@@ -51,6 +52,7 @@ void efficient_arrow_matrix_2_times_x(const VectorXd & d, const VectorXd & a,
 
   #endif // SOLUTION
 }
+/* SAM_LISTING_END_1 */
 
 /* @brief Build an "arrow matrix"
  * Given vectors $a$ and $b$, returns A*A*x in $y$, where A is build from a,d
@@ -146,10 +148,9 @@ void time_arrow_matrix() {
   fig.title("Timings of arrow\\_matrix\\_2\\_times\\_x");
   fig.ranges(2, 9000, 1e-8, 1e3);
   fig.setlog(true, true); // set loglog scale
-  fig.plot(sizes, timings, " r+").label("arrowmatvec");
+  fig.plot(sizes, timings, " r+").label("runtime");
   fig.fplot("1e-9*x^3", "k|").label("O(n^3)");
-  fig.fplot("1e-7*x", "k").label("O(n)");
-  fig.xlabel("Vector size n");
+  fig.xlabel("Vector size (n)");
   fig.ylabel("Time [s]");
   fig.legend(0, 1);
   fig.save("arrowmatvec_timing.eps");
@@ -159,11 +160,11 @@ void time_arrow_matrix() {
   fig2.title("Comparison of timings");
   fig2.ranges(2, 9000, 1e-8, 1e3);
   fig2.setlog(true, true); // set loglog scale
-  fig2.plot(sizes, timings, " r+").label("arrowmatvec");
-  fig2.plot(sizes, timings_efficient, " r+").label("arrowmatvec");
+  fig2.plot(sizes, timings, " r+").label("original");
+  fig2.plot(sizes, timings_efficient, " r+").label("efficient");
   fig2.fplot("1e-9*x^3", "k|").label("O(n^3)");
   fig2.fplot("1e-7*x", "k").label("O(n)");
-  fig2.xlabel("Vector size n");
+  fig2.xlabel("Vector size (n)");
   fig2.ylabel("Time [s]");
   fig2.legend(0, 1);
   fig2.save("arrowmatvec_comparison.eps");
@@ -175,11 +176,11 @@ void runtime_arrow_matrix() {
 #if SOLUTION
   // sizes will contain the size of the matrix
   // timings will contain the runtimes in seconds
-  /* BEGIN_SAM_LISTING_3 */
+  /* SAM_LISTING_BEGIN_3 */
   std::vector<double> sizes, timings;
 
-  std::cout << "n" << "\n" << "time" << std::endl;
-  for (unsigned n = 4; n <= 8192; n *= 2){
+  std::cout << "n" << "\t" << "time" << std::endl;
+  for (unsigned n = 4; n <= 2048; n *= 2){
     // Create test input using random vectors
     Eigen::VectorXd a = Eigen::VectorXd::Random(n),
                     d = Eigen::VectorXd::Random(n),
@@ -195,9 +196,9 @@ void runtime_arrow_matrix() {
     sizes.push_back(n); // save vector sizes
     timings.push_back(t.duration());
 
-    std::cout << n << "\n" << t.duration() << std::endl;
+    std::cout << n << "\t" << t.duration() << std::endl;
   }
-  /* END_SAM_LISTING_3 */
+  /* SAM_LISTING_END_3 */
 #else
   // TODO: your code here
 #endif // SOLUTION
@@ -206,8 +207,8 @@ void runtime_arrow_matrix() {
 #if SOLUTION
 void runtime_arrow_matrix_with_chrono() {
   std::vector<double> sizes, timings;
-  std::cout << "n" << "\n" << "time" << std::endl;
-  for (unsigned n = 4; n <= 8192; n *= 2){
+  std::cout << "n" << "\t" << "time" << std::endl;
+  for (unsigned n = 4; n <= 2048; n *= 2){
     // Create test input using random vectors
     Eigen::VectorXd a = Eigen::VectorXd::Random(n),
                     d = Eigen::VectorXd::Random(n),
@@ -222,7 +223,7 @@ void runtime_arrow_matrix_with_chrono() {
     t.stop();
     sizes.push_back(n); // save vector sizes
     timings.push_back(t.duration());
-    std::cout << n << "\n" << t.duration() << std::endl;
+    std::cout << n << "\t" << t.duration() << std::endl;
   }
 }
 #endif // SOLUTION

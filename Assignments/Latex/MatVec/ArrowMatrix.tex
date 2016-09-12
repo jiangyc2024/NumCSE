@@ -41,12 +41,12 @@
 
   Give a detailed explanation of the results.
 
-% \begin{figure}[ht]
-% \centering
-% \includegraphics[width=0.8\textwidth]{\problems/\chpt/PICTURES/arrowmatvectiming.eps}
-% \caption{timings for \texttt{arrowmatvec(d,a,x)}}
-% \label{fig:arrowmatvectiming}
-% \end{figure}
+ \begin{figure}[ht]
+\centering
+\includegraphics[width=0.8\textwidth]{../Codes/MatVec/ArrowMatrix/arrowmatvec_timing.eps}
+\caption{timings for \texttt{arrowmatvec(d,a,x)}}
+\label{fig:arrowmatvectiming}
+\end{figure}
 
  \begin{samwriteprbpart}{sol}
   \begin{samsolution}
@@ -132,20 +132,27 @@ What is the complexity of your algorithm from sub-problem
   \ref{mc:ArrowMatrixVector_arrowmatvec} for $n=2^{5,6,\ldots,12}$.
  \begin{samwriteprbpart}{sol}
  \begin{samhint}
-  You can use \verb|std::chrono| to time your code.
+Beware, for large $n$ ($n > 2048$) the computations may take a long time.
+\end{samhint}
+ \begin{samhint}
+  You can use \verb|std::chrono| to time your code. HINT: TODO HOW TO USE CHRONO
  \end{samhint}
 \begin{samsolution}
 The standard matrix multiplication has runtime growing with $O(n^3)$.
 The complexity of the more efficient implementation is with $O(n)$.
-See \autoref{mc:ArrowMatrixVector_arrowmatvec2timing} and Figure~\ref{fig:arrowmatvec2timing}.
+See \autoref{cpp:arrowmat_timing} and Figure~\ref{fig:arrowmatvec2timing}.
 
-\samincludecpp{../Codes/MatVec/ArrowMatrix/solutions/arrowmatvec.cpp}[3]
+\begin{samcode}[C++11-code]{cpp:arrowmat_timing}{Computation of timing of arrow matrix multiplication}
+\samincludecpp[label]{../Codes/MatVec/ArrowMatrix/solutions/arrowmatvec.cpp}[3]
+\end{samcode}
 
-% \begin{figure}[ht]
-% \centering
-% \includegraphics[width=0.8\textwidth]{\problems/\chpt/PICTURES/arrowmatvec2timing.eps}
-% \caption{timings for \texttt{arrowmatvec2(d,a,x)}} \label{fig:arrowmatvec2timing}
-% \end{figure}
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.8\textwidth]{../Codes/MatVec/ArrowMatrix/arrowmatvec_comparison.eps}
+\caption{Comparison of the timings of \texttt{arrow\_matrix\_2\_times\_x} and \texttt{efficient\_arrow\_matrix\_2\_times\_y} on an \texttt{Intel i7-6700k @ 4.00GHz}.}
+\label{fig:arrowmatvec2timing}
+\end{figure}
+
 \end{samsolution}
 \end{samwriteprbpart}
 \end{subproblem}
