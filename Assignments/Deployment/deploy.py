@@ -130,7 +130,6 @@ def is_cpp(file):
     """
     Returns True if file looks like a C++ file (header of .cpp)
     """
-    print(file)
     return "cpp" == file.split(".")[-1]
 
 def open_problem_description(assignment_dir, problem_obj):
@@ -150,7 +149,7 @@ def open_problem_description(assignment_dir, problem_obj):
         print(err)
         exit(-1)
 
-    if not problem_dir[-1].endswith("/"):
+    if not problem_dir.endswith("/"):
         problem_dir += "/"
 
     f.close()
@@ -169,10 +168,12 @@ def generate_templates_and_solutions(assignment_dir, problem_dir, obj):
         shared_list += obj["internal"]
     except: pass
 
-    for solution_file_path in obj["solutions"]:
-        deploy(solution_file_path, problem_dir, problem_dir + "solutions/", True)
-    for template_file_path in obj["templates"]:
-        deploy(template_file_path, problem_dir, problem_dir + "templates/", False)
+    if "solutions" in obj:
+        for solution_file_path in obj["solutions"]:
+            deploy(solution_file_path, problem_dir, problem_dir + "solutions/", True)
+    if "templates" in obj:
+        for template_file_path in obj["templates"]:
+            deploy(template_file_path, problem_dir, problem_dir + "templates/", False)
     for shared_file_path in shared_list:
         deploy(shared_file_path, problem_dir, problem_dir + "solutions/", True)
         deploy(shared_file_path, problem_dir, problem_dir + "templates/", False)
@@ -185,23 +186,26 @@ def generate_nolabels(assignment_dir, problem_dir, obj):
     template_cpp_list = []
     solution_cpp_list = []
 
-    for solution_file_path in obj["solutions"]:
-        file = problem_dir + "solutions/" + solution_file_path
-        if is_cpp(file):
-            strip_labels(solution_file_path, problem_dir + "solutions/", problem_dir + "solutions_nolabels/")
-            solution_cpp_list.append(solution_file_path)
-    for template_file_path in obj["templates"]:
-        file = problem_dir + "templates/" + template_file_path
-        if is_cpp(file):
-            strip_labels(template_file_path, problem_dir + "templates/", problem_dir + "templates_nolabels/")
-            template_cpp_list.append(template_file_path)
-    for shared_file_path in obj["all"]:
-        file = problem_dir + "solutions/" + shared_file_path
-        if is_cpp(file):
-            strip_labels(shared_file_path, problem_dir + "solutions/", problem_dir + "solutions_nolabels/")
-            strip_labels(shared_file_path, problem_dir + "templates/", problem_dir + "templates_nolabels/")
-            template_cpp_list.append(shared_file_path)
-            solution_cpp_list.append(shared_file_path)
+    if "solutions" in obj:
+        for solution_file_path in obj["solutions"]:
+            file = problem_dir + "solutions/" + solution_file_path
+            if is_cpp(file):
+                strip_labels(solution_file_path, problem_dir + "solutions/", problem_dir + "solutions_nolabels/")
+                solution_cpp_list.append(solution_file_path)
+    if "templates" in obj:
+        for template_file_path in obj["templates"]:
+            file = problem_dir + "templates/" + template_file_path
+            if is_cpp(file):
+                strip_labels(template_file_path, problem_dir + "templates/", problem_dir + "templates_nolabels/")
+                template_cpp_list.append(template_file_path)
+    if "all" in obj:
+        for shared_file_path in obj["all"]:
+            file = problem_dir + "solutions/" + shared_file_path
+            if is_cpp(file):
+                strip_labels(shared_file_path, problem_dir + "solutions/", problem_dir + "solutions_nolabels/")
+                strip_labels(shared_file_path, problem_dir + "templates/", problem_dir + "templates_nolabels/")
+                template_cpp_list.append(shared_file_path)
+                solution_cpp_list.append(shared_file_path)
 
     return [None, template_cpp_list, None, solution_cpp_list]
 

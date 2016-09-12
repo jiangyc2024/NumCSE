@@ -2,19 +2,19 @@
 % The solutions require:
 
 \begin{samproblem}*{}{Arrow matrix-vector multiplication}[1](1){
-    An ``arrow matricx'' $\VA$ is constructed given two vectors $\mathbb{a}$ and $\mathbb{d}$.
+    An ``arrow matrix'' $\VA$ is constructed given two vectors $\mathbf{a}$ and $\mathbf{d}$.
     The matrix is then squared and multiplied with a vector $\Vx$. This is implemented in the
     following C++ function:
 
-\samincludecpp{../Codes/MatVec/ArrowMatrix/arrowmatvec.cpp}
+\samincludecpp{../Codes/MatVec/ArrowMatrix/templates/arrowmatvec.cpp}[0]
 
 }
 
 %%%%%%%%%%%% SUBPROBLEM 1
 \begin{subproblem}{}
 
-  For general vectors $\mathbb{d} = (d_1, \dots, d_n)^\top$ and $\mathbb{a} = (a_1, \dots, a_n)^\top$
-  sketch the matrix $\VA$ created in the function \verb|ArrowMatrixSquaredTimes|.
+  For general vectors $\mathbf{d} = (d_1, \dots, d_n)^\top$ and $\mathbf{a} = (a_1, \dots, a_n)^\top$
+  sketch the matrix $\VA$ created in the function \verb|arrow_matrix_2_times_x|.
 
   \begin{samwriteprbpart}{sol}
   \begin{samsolution}

@@ -1,1 +1,4 @@
- 
+{
+    "name": "ArrowMatrix",
+    "all" : ["arrowmatvec.cpp"]
+}
