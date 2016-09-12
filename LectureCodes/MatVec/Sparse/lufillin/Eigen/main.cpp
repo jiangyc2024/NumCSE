@@ -17,8 +17,11 @@ RowVectorXd diag_el(5);	diag_el << -1,-1, 3, -1,-1;
 VectorXi diag_no(5);	diag_no << -n, -1, 0, 1, n;
 MatrixXd B = diag_el.replicate(2*n,1);
 B(n-1,1) = 0; B(n,3) = 0; // delete elements
-SparseMatrix<double> A = spdiags(B, diag_no, 2*n, 2*n);	// Utils folder
-// It's not possible to get L, U with the sparseLU --> dense
+// A custom function from the Utils folder
+SparseMatrix<double> A = spdiags(B, diag_no, 2*n, 2*n);	
+// It is not possible to access the LU-factors in the case of
+// \eigen's LU-decomposition for sparse matrices.
+// Therefore we have to resort to the dense version.
 auto solver = MatrixXd(A).lu();
 MatrixXd L = MatrixXd::Identity(2*n,2*n);
 L += solver.matrixLU().triangularView<StrictlyLower>();
