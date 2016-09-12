@@ -23,9 +23,9 @@ We use the following conventions:
 - for range based listing: use:
 
 ```
-/* BEGIN_SAM_LISTING */
+/* SAM_LISTING_BEGIN_3 */
 // CODE Goes here
-/* END_SAM_LISTING */
+/* SAM_LISTING_END_3 */
 ```
 
 - mark solution-only code within:
