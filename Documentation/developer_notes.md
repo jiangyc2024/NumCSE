@@ -56,18 +56,17 @@ small scale to make sure everything still works as it should.**
 ## Embedding the C++-codes in the script
 
 As the codes are organised on Gitlab and the script on SVN we use a symlink
-from `ncse_new/../../`(the parent directory of the SVN-NCSE directory)
-to the LectureCodes Gitlab-directory.
+from `ncse_new/` to the LectureCodes Gitlab-directory.
 To set up the symlink access the parent directory of the SVN-NCSE directory and do:
 
-	ln -s /path/to/Gitlabs/LectureCodes CppScriptCodes
+	ln -s /path/to/Gitlabs/LectureCodes CppCodes
 
 ### Full inclusion of the code 
 
 Place the codes in the `.tex` files as follows:
 
 	\lstinputlisting[style=cpp, <optional arguments>]{%
-		./../../CppScriptCodes/Chapter/Eigen/code.cpp}
+		./CppCodes/Chapter/Eigen/code.cpp}
 	
 ### Partial inclusion
 
@@ -75,7 +74,7 @@ It is also possible to include only certain parts of the code in the script.
 To do so you can use the `samincludecpp`-macro:
 
 	\samincludecpp[<optional arguments>]{%
-		./../../CppScriptCodes/Chapter/Eigen/code.cpp}[<no>]
+		./CppCodes/Chapter/Eigen/code.cpp}[<no>]
 
 To mark the parts in the `.*pp` file you can use:
 

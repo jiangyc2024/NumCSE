@@ -5,7 +5,8 @@
 
 # define SCALAR long double
 
-// numerical differentiation using difference quotient \Blue{$f'(x) = \lim_{h\rightarrow 0} \frac{f(x + h) - f(x)}{h}
+// numerical differentiation using difference quotient
+// \Blue{$f'(x) = \lim_{h\rightarrow 0} \frac{f(x + h) - f(x)}{h}$}
 // IN: f = function to derive, 
 //     df = exact derivative (to compare results),
 //     name = string of function name (for plot filename)
