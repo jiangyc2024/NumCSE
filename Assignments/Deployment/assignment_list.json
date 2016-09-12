@@ -10,15 +10,9 @@
     "ProblemSheets" :
     [
         {
-            "name" : "ProblemSheet1",
-            "problems" : [ "DummyChapter/problem_test1/",
-                           "DummyChapter/problem_test2/"
-                         ]
-        },
-
-        {
-            "name" : "ProblemSheet2",
-            "problems" : [ "DummyChapter/problem_test2/"
+            "name" : "DummyProblemSheet",
+            "problems" : [ "DummyChapter/dummy_problem1/",
+                           "DummyChapter/dummy_problem2/"
                          ]
         }
     ],

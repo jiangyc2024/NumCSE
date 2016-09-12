@@ -13,6 +13,8 @@ The "Assigments" folder is structured in the following way:
    SPECIAL: each ProblemName folder must have a file "description.json" containing a list of all files used by the problem. See below.
  - "./Deployment": contains scripts and details for packaging of tempaltes/solutions
 
+ - "Legacy": svn imported old codes and tex
+
 * Writing C++
 
 We use the following conventions:
@@ -29,7 +31,7 @@ We use the following conventions:
 - mark solution-only code within:
 
 ```
-#ifdef SOLUTION
+#if SOLUTION
 // CODE Goes here
 #endif \\ SOLUTION
 ```
@@ -37,7 +39,7 @@ We use the following conventions:
 - mark internal-only code within:
 
 ```
-#ifdef INTERNAL
+#if INTERNAL
 // CODE Goes here
 #endif \\ INTERNAL
 ```
