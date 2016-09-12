@@ -1,27 +1,26 @@
 #include <iostream>
+
 #include <Eigen/Dense>
-#include <cmath>
-#include <limits>
-using namespace std;
-using namespace Eigen;
+
 #include "lupiv.hpp"
 #include "lupivdriver.hpp"
+
 int main () {
 	int n = 3;
-	MatrixXd A(n,n);
+	Eigen::MatrixXd A(n,n);
 	A << 	1, 0, 2,
 			-1, 4, 1,
 			-2, 1, 2;
-	VectorXd b = VectorXd::LinSpaced(n,0,2);
+	Eigen::VectorXd b = Eigen::VectorXd::LinSpaced(n,0,2);
 	std::cout << "A=\n" << A << std::endl;
-	MatrixXd L(n,n);
-	MatrixXd U(n,n);
+	Eigen::MatrixXd L(n,n);
+	Eigen::MatrixXd U(n,n);
 	lupivdriver(A,L,U);
 	std::cout << "LU-Decomposition of A: \nL=\n" << L << "\nU=\n" << U << std::endl;
 	// check / solve system
-	VectorXd z = L.lu().solve(b);
-	VectorXd xown = U.lu().solve(z);
-	VectorXd xex = A.lu().solve(b);
+	Eigen::VectorXd z = L.lu().solve(b);
+	Eigen::VectorXd xown = U.lu().solve(z);
+	Eigen::VectorXd xex = A.lu().solve(b);
 	std::cout << "Own result:\n" << xown << std::endl;
 	std::cout << "Eigen result:\n" << xex << std::endl;
 	

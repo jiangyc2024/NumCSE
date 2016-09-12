@@ -1,4 +1,19 @@
 #pragma once
+
+#include <iostream>
+#include <cmath>
+
+#include <Eigen/Dense>
+
+#include <figure/figure.hpp>
+
+using namespace std;
+using namespace Eigen;
+
+#include "zerosquadpol.hpp"
+#include "zerosquadpolstab.hpp"
+
+/* SAM_LISTING_BEGIN_0 */
 //! Eigen Function for testing the computation of the zeros of a parabola
 void compzeros(){
 	int n = 100;
@@ -15,8 +30,7 @@ void compzeros(){
 		res(i,2) = std::abs((z2(0)-ztrue)/ztrue);
 		res(i,3) = std::abs((z1(1)-z2true)/z2true);
 	}
-	// Graphical output of relative error of roots computed by unstable
-	// implementation
+	// Graphical output of relative error of roots computed by unstable implementation
 	mgl::Figure fig1;
 	fig1.setFontSize(3);
 	fig1.title("Roots of a parabola computed in an unstable manner");
@@ -36,3 +50,4 @@ void compzeros(){
 	fig2.legend(0.05,0.95);
 	fig2.save("zqperr");
 }
+/* SAM_LISTING_END_0 */

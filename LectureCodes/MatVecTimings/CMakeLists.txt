@@ -1,1 +1,0 @@
-add_executable_numcse(ncse_accesstiming main.cpp)

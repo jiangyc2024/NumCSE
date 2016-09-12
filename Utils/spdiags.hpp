@@ -3,7 +3,7 @@
 #include <Eigen/Sparse>
 #include <algorithm>
 using namespace Eigen;
-#pragma begin<0>
+/* SAM_LISTING_BEGIN_0 */
 /**
  * @brief Equvalent to MATLAB function A = spdiags(B,d,m,n)
  * spdiags(B,d,m,n) creates an m-by-n sparse matrix by taking the 
@@ -39,7 +39,7 @@ SparseMatrix<numeric_t> spdiags(const Matrix<numeric_t,-1,-1> &B,
 	A.makeCompressed();
 	return A;
 }
-#pragma end<0>
+/* SAM_LISTING_END_0 */
 
 
 /*

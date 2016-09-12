@@ -1,3 +1,15 @@
+#pragma once
+
+#include <iostream>
+#include <limits>
+
+#include <Eigen/Dense>
+
+#include "gsrecpiv.hpp"
+
+using namespace Eigen;
+
+/* SAM_LISTING_BEGIN_0 */
 MatrixXd gsrecpiv(const MatrixXd &A){
 	int n = A.rows();
 	MatrixXd result = A;
@@ -16,3 +28,4 @@ MatrixXd gsrecpiv(const MatrixXd &A){
 	}
 	return result;
 }
+/* SAM_LISTING_END_0 */

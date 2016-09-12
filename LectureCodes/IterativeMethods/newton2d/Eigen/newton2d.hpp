@@ -1,6 +1,7 @@
 #include <iostream>
 #include <Eigen/Dense>
 #include <cmath>
+#include <vector>
 
 void newton2d()
 {

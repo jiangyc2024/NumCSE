@@ -2,7 +2,6 @@
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 
-using namespace std;
 using namespace Eigen;
 
 #include "substenv.hpp"
@@ -10,7 +9,6 @@ using namespace Eigen;
 #include "spdiags.hpp"
 
 int main () {
-	
 	// Build matrix
 	int n = 5;
 	RowVectorXd diag_el(5);		diag_el << -1,-1, 3, -1,-1;
@@ -32,6 +30,5 @@ int main () {
 	VectorXi mr = rowbandwidth(L);
 	VectorXd x_own = substenv(L,y,mr);
 	std::cout << "x from own impl.\n" << x_own << std::endl;
-	
 	return 0;
 }

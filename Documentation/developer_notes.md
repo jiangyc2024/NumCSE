@@ -66,28 +66,24 @@ To set up the symlink access the parent directory of the SVN-NCSE directory and 
 
 Place the codes in the `.tex` files as follows:
 
-	\begin{lstlisting}
-	  \lstinputlisting[style=cpp, <optional arguments>]{%
-	    ./../../CppScriptCodes/Chapter/Eigen/code.cpp}
-	\end{lstlisting}
+	\lstinputlisting[style=cpp, <optional arguments>]{%
+		./../../CppScriptCodes/Chapter/Eigen/code.cpp}
 	
 ### Partial inclusion
 
 It is also possible to include only certain parts of the code in the script.
-To do so you can use the `lstincludecpp`-macro:
+To do so you can use the `samincludecpp`-macro:
 
-    \begin{lstlisting}
-        \lstincludecpp[<optional arguments>]{%
-          ./../../CppScriptCodes/Chapter/Eigen/code.cpp}{<no>}
-    \end{lstlisting}
+	\samincludecpp[<optional arguments>]{%
+		./../../CppScriptCodes/Chapter/Eigen/code.cpp}[<no>]
 
 To mark the parts in the `.*pp` file you can use:
 
-    /*LSTBEGIN<no>*/
+    /* SAM_LISTING_BEGIN_<no> */
     some code happening here
-    /*LSTEND<no>*/
+    /* SAM_LISTING_END_<no> */
     
 Be sure to replace `<no>` and with a number of your choice and not only `no`,
 so in the end you have something like
 
-    /*LSTBEGIN0*/ ... /*LSTEND0*/
+    /* SAM_LISTING_BEGIN_0 */ ... /* SAM_LISTING_END_0 */

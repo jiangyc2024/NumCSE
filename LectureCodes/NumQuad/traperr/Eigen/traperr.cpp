@@ -4,7 +4,7 @@
 # include <figure/figure.hpp>
 # include "trapezoidal.hpp"
 
-void cvg(const double l, const double r, const std::string title, const std::string saveas) {
+void cvg(const double l, const double r, const bool logx, const std::string title, const std::string saveas) {
 
   // repeating the experiment for different parameters 'a'
   Eigen::VectorXd a(4); a << 0.5, 0.9, 0.95, 0.99;
@@ -13,9 +13,13 @@ void cvg(const double l, const double r, const std::string title, const std::str
 
   mgl::Figure fig;
   fig.title(title);
-  fig.xlabel("# of evals");
-  fig.ylabel("Error");
-  fig.setlog(true, true); // loglog scale
+  fig.xlabel("no. of quadrature nodes");
+  fig.ylabel("|quadrature error|");
+  if (logx) {
+    fig.setlog(true, true); // loglog scale
+  } else {
+    fig.setlog(false, true); // semilogy scale
+  }
   std::vector<std::string> plotstyles = {"b+", "r+", "g+", "c+"};
   for (unsigned i = 0; i < a.size(); ++i) {
     // we must define the function here, because the trapezoidal function requires a function
@@ -25,7 +29,6 @@ void cvg(const double l, const double r, const std::string title, const std::str
       // f(x) = 1/sqrt(1 - a*sin(2*pi*x + 1)
       return 1/std::sqrt(1 - a(i)*std::sin(2*M_PI*x + 1));
     };
-
 
     std::vector<double> res; // saving results here
     res.reserve(N);
@@ -47,8 +50,10 @@ void cvg(const double l, const double r, const std::string title, const std::str
 }
 
 int main () {
-  cvg(0, 0.5, "Non periodic: on [0, 0.5]", "traperr2.eps");
-  cvg(0, 1, "Periodic: on [0,1]", "traperr1.eps");
+  // test for non periodic (using loglog scale)
+  cvg(0, 0.5, true, "Non periodic: on [0, 0.5]", "traperr2.eps");
+  // test for periodic interval (using semilogy scale)
+  cvg(0, 1, false, "Periodic: on [0,1]", "traperr1.eps");
 
   return 0;
 }

@@ -1,11 +1,16 @@
 #pragma once
-#include <Eigen/Dense>
+
 #include <cassert>
+
+#include <Eigen/Dense>
+
 #include "bandwidth.hpp"
 #include "substenv.hpp"
+
 using namespace std;
 using namespace Eigen;
-#pragma begin<0>
+
+/* SAM_LISTING_BEGIN_0 */
 //! envelope aware recursive LU-factorization
 //! of structurally symmetric matrix
 void luenv(const MatrixXd &A, MatrixXd &L, MatrixXd &U){
@@ -13,7 +18,8 @@ void luenv(const MatrixXd &A, MatrixXd &L, MatrixXd &U){
 	assert(n == A.rows() && "A must be square");
 	if(n == 1){ L.setIdentity(); U = A;}
 	else{
-		VectorXi mr = rowbandwidth(A); double gamma;
+		VectorXi mr = rowbandwidth(A); // = colbandwidth thanks to symmetry
+		double gamma;
 		MatrixXd L1(n-1,n-1), U1(n-1,n-1);
 		luenv(A.topLeftCorner(n-1, n-1), L1, U1);
 		VectorXd u = substenv(L1, A.col(n-1).head(n-1), mr);
@@ -28,4 +34,4 @@ void luenv(const MatrixXd &A, MatrixXd &L, MatrixXd &U){
 		U.row(n-1).setZero();	U(n-1,n-1) = gamma;
 	}
 }
-#pragma end<0>
+/* SAM_LISTING_END_0 */

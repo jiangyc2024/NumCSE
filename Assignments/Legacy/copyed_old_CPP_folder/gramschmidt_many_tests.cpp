@@ -72,10 +72,10 @@ int main(void) {
     // Output should be idenity matrix
     std::cout << Q*Q.transpose() << std::endl;
     
-    timer<> tm, tm_fast;
-    std::vector<int> times, times_fast;
+    std::vector<double> times, times_fast;
     unsigned N = 9, repeats = 3, p = 1;
     for(unsigned n = 0; n < N; ++n) {
+        Timer tm, tm_fast;
         for(unsigned int r = 0; r < repeats; ++r) {
             A = Eigen::MatrixXd::Random(p,p);
             tm.start();
@@ -85,8 +85,8 @@ int main(void) {
             Q = gramschmidt_lessloops( A );
             tm_fast.stop();
         }
-        times.push_back( tm.avg().count() );
-        times_fast.push_back( tm_fast.avg().count() );
+        times.push_back( tm.mean() );
+        times_fast.push_back( tm_fast.mean() );
         p *= 2;
     }
     for(auto it = times.begin(); it != times.end(); ++it) {

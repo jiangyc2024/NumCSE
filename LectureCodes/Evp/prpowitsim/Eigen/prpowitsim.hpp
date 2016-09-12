@@ -1,8 +1,8 @@
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 #include <figure.hpp>
-#include "../../utils/graphMarketMatrixLoader.hpp"
-#include "../../prbuildA/Eigen/prbuildA.hpp"
+#include "graphMarketMatrixLoader.hpp"
+#include "prbuildA.hpp"
 
 // sime page rank calculation by tracking fractions of many surfers
 void prpowitsim(std::string path, double d = 0.15, int Nsteps = 5)

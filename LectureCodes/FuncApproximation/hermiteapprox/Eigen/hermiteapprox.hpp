@@ -7,7 +7,7 @@
 # include "feval.hpp"
 using Eigen::VectorXd;
 
-/*LSTBEGIN0*/
+/* SAM_LISTING_BEGIN_0 */
 VectorXd slopes(const VectorXd&, const VectorXd&); // forward declaration
 void append(VectorXd&, const VectorXd&);
 
@@ -106,4 +106,4 @@ void append(VectorXd& x, const VectorXd& y) {
   x.conservativeResize(x.size() + y.size());
   x.tail(y.size()) = y;
 }
-/*LSTEND0*/
+/* SAM_LISTING_END_0 */

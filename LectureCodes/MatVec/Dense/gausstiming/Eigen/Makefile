@@ -25,9 +25,6 @@ mkl_parallel.dat: mkl_parallel
 nomkl_gauss.dat: nomkl_gauss
 	./$< > $<.dat
 	
-#nomkl_gauss.dat: nomkl_gauss
-#	./nomkl_gauss > nomkl_gauss.dat	
-	
 mkl_sequential: main.cpp gausstiming.hpp
 	$(COMPILER) $(FLAGS_SEQUENTIAL) -DEIGEN_USE_MKL_ALL $< -o $@ $(FLAGS_LINK_SEQUENTIAL)
 	

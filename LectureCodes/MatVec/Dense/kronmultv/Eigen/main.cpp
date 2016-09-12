@@ -1,7 +1,7 @@
 #include <iostream>
+
 #include <Eigen/Dense>
-using namespace std;
-using namespace Eigen;
+
 #include "kronmultv.hpp"
 
 int main () {

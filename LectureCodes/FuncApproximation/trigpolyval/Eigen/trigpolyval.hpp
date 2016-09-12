@@ -6,7 +6,7 @@
 using Eigen::VectorXd;
 using Eigen::VectorXcd;
 
-/*LSTBEGIN0*/
+/* SAM_LISTING_BEGIN_0 */
 // Evaluation of trigonometric interpolant at numerous points
 // IN : \texttt{t} = vector of nodes \Blue{$t_{0},\ldots,t_n\in[0,1[$}
 //      \texttt{y} = vector of data \Blue{$y_{0},\ldots,y_{n}$}
@@ -31,4 +31,4 @@ void trigpolyval(const VectorXd& t, const VectorXd& y, const VectorXd& x, Vector
   VectorXcd qc = ((-2*n*M_PI*i*x).array().exp() * p.array()).matrix();
   q = qc.real(); // imaginary part is zero, cut it off
 }
-/*LSTEND0*/
+/* SAM_LISTING_END_0 */
