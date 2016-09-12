@@ -1,6 +1,6 @@
 * Requirements
 
-unifdef and python3
+`unifdef` and `python3`
 
 * Assignment codes tree structure
 
@@ -35,24 +35,24 @@ We use the following conventions:
 
 - mark solution-only code within:
 
-```
-#if SOLUTION
-// CODE Goes here
-#endif \\ SOLUTION
-```
+    ```
+    #if SOLUTION
+    // CODE Goes here
+    #endif \\ SOLUTION
+    ```
 
 - mark internal-only code within:
 
-```
-#if INTERNAL
-// CODE Goes here
-#endif \\ INTERNAL
-```
+    ```
+    #if INTERNAL
+    // CODE Goes here
+    #endif \\ INTERNAL
+    ```
 
 * Include code into LaTeX files:
-
-use the range based lstinput listing. To include template of file "file.cpp" include file "templates/file.cpp" instead. For
-solution include file "solutions/file.cpp" instead.
+    use the range based lstinput listing. To include template of file "file.cpp"
+    include file "templates/file.cpp" instead. For
+    solution include file "solutions/file.cpp" instead.
 
 * Create description.json
 
@@ -62,12 +62,16 @@ Each problem directory has a "description.json" file. This contains 5 fields:
 - "solutions" a list of files included as solutions into the bundle
 - "all" a list of files included everywhere
 - "internal" a list of files not bundled (used for LaTeX and inside repository only)
+- TODO: "lib" a library similar to "include" in the main JSON,
+  but will be copied only o the selected problem 
 
 * Update the assigment bundle list (edit assignment_list.json)
 
-Add a new problem sheet by adding a new entry into the "ProblemSheet" array. Give a name for the problem sheet and a list of
+Add a new problem sheet by adding a new entry into the "ProblemSheet" array.
+Give a name for the problem sheet and a list of
 files in "problems". The path is relative
-to the "assignment_dir" path. The working dir is where all bundles will be created. The "cmake" entry specifies the cmake header to use (do not edit).
+to the "assignment_dir" path. The working dir is where all bundles will be created.
+The "cmake" entry specifies the cmake header to use (do not edit).
 The "include" field specifies files and folders that are included in every bundle.
 
 * Deploy
@@ -77,6 +81,12 @@ Call:
 ```
 ./deploy.py
 ```
+
+to deploy newly created C++ files.
+
 * Conventions:
 
+Follow the following rules:
 - use least amount of templates
+- we use `using Eigen`, we do not `using std`
+- function name: TODO (`underscore_separated_name`)
