@@ -1,4 +1,4 @@
 {
     "name": "ArrowMatrix",
-    "all" : ["arrowmatvec.cpp"]
+    "all" : ["arrowmatvec.cpp", "timer.hpp"]
 }

@@ -1,8 +1,9 @@
 #include <iostream>
+#include "timer.hpp"
 #if INTERNAL
 #include <chrono>
-#include "figure.h"
-#endif \\INTERNAL
+#include "figure/figure.hpp"
+#endif // INTERNAL
 
 #include <Eigen/Dense>
 
@@ -21,8 +22,7 @@ void efficient_arrow_matrix_2_times_x(const VectorXd & d, const VectorXd & a,
          "Vector size must be the same!");
   int n = d.size();
 
-  // SOLUTION ONLY
-
+  #if SOLUTION
   // Notice that we can compute (A*A)*x more efficiently using
   // A*(A*x). This is in fact performing two matrix vetor multiplications
   // instead of a more expensive matrix-matrix multiplication.
@@ -33,22 +33,23 @@ void efficient_arrow_matrix_2_times_x(const VectorXd & d, const VectorXd & a,
   // D*x can be rewritten as d*x componentwise
   // H*x is zero, except at the last component
   // V*x
-  auto A_times_x = [] (const VectorXd & x) {
+  auto A_times_x = [&a, &d, n] (const VectorXd & x) {
     // This takes care of the diagonal (D*x)
     VectorXd Ax = ( d.array() * x.array() ).matrix();
 
-    // Now H*x only affects the last component of A*x
-    Ax(n-1) += a.head(n - 1) * x.head(n-1);
+    // H*x only affects the last component of A*x
+    // This is a dot product between a and x with the last component removed
+    Ax(n-1) += a.head(n - 1).dot(x.head(n-1));
 
-    // Now V*x is equal to the vector (a(0)*x(n-1), ..., a(n-2)*x(n-1), 0)
+    // V*x is equal to the vector (a(0)*x(n-1), ..., a(n-2)*x(n-1), 0)
     Ax.head(n-1) +=  x(n-1) * a.head(n-1);
 
     return Ax;
-  }
+  };
 
   y = A_times_x(A_times_x(x));
 
-  // END SOLUTION ONLY
+  #endif // SOLUTION
 }
 
 /* @brief Build an "arrow matrix"
@@ -67,7 +68,7 @@ void arrow_matrix_2_times_x(const VectorXd & d, const VectorXd & a,
 
   #if SOLUTION
   // In this lines, we extract the blocks used to construct the matrix A.
-  #endif \\ SOLUTION
+  #endif // SOLUTION
   VectorXd d_head = d.head(n-1);
   VectorXd a_head = a.head(n-1);
   MatrixXd d_diag = d_head.asDiagonal();
@@ -85,7 +86,7 @@ void arrow_matrix_2_times_x(const VectorXd & d, const VectorXd & a,
   // A = | D   | a      |
   //     |-----+--------|
   //     | a\^T | d(n-1) |
-  #endif \\ SOLUTION
+  #endif // SOLUTION
   A << d_diag,             a_head,
        a_head.transpose(), d(n-1);
 
@@ -119,36 +120,138 @@ duration_t timing(const Function & F, int repeats = 10) {
 
 void time_arrow_matrix() {
 
-  for(int n = 2; n < 2048; n = n << 1) {
+  std::vector<double> sizes, timings, timings_efficient;
+
+  for(int n = (1 << 5); n < (1 << 12); n = n << 1) {
     VectorXd d = VectorXd::Random(n);
     VectorXd a = VectorXd::Random(n);
     VectorXd x = VectorXd::Random(n);
     VectorXd y(n);
-    duration_t elapsed = timing([&a, &d, &x, &y] () { arrow_matrix_2_times_x(d,a,x,y); }, 1);
-    std::cout << elapsed.count() << " ns" << std::endl;
+    duration_t elapsed = timing([&a, &d, &x, &y] () {
+        arrow_matrix_2_times_x(d,a,x,y);
+      }, 1);
+    duration_t elapsed_efficient = timing([&a, &d, &x, &y] () {
+        efficient_arrow_matrix_2_times_x(d,a,x,y);
+      }, 1);
+
+    std::cout << "Took:           " << elapsed.count() << " ns" << std::endl;
+    std::cout << "Efficient took: " << elapsed_efficient.count() << " ns" << std::endl;
+
+    timings.push_back(elapsed.count() * 10e-9);
+    timings_efficient.push_back(elapsed_efficient.count() * 10e-9);
+    sizes.push_back(n);
   }
 
-
   mgl::Figure fig;
-  fig.title("Timings arrow_matrix_2_times_x");
+  fig.title("Timings of arrow\\_matrix\\_2\\_times\\_x");
   fig.ranges(2, 9000, 1e-8, 1e3);
   fig.setlog(true, true); // set loglog scale
-  fig.plot(evals, res1, " r+").label("arrowmatvec");
-  fig.plot(evals, res2, " g+").label("arrowmatvec2");
+  fig.plot(sizes, timings, " r+").label("arrowmatvec");
   fig.fplot("1e-9*x^3", "k|").label("O(n^3)");
   fig.fplot("1e-7*x", "k").label("O(n)");
   fig.xlabel("Vector size n");
   fig.ylabel("Time [s]");
   fig.legend(0, 1);
-  fig.save("arrowmatvec2timing.eps");
-  fig.save("arrowmatvec2timing.png");
+  fig.save("arrowmatvec_timing.eps");
+  fig.save("arrowmatvec_timing.png");
+
+  mgl::Figure fig2;
+  fig2.title("Comparison of timings");
+  fig2.ranges(2, 9000, 1e-8, 1e3);
+  fig2.setlog(true, true); // set loglog scale
+  fig2.plot(sizes, timings, " r+").label("arrowmatvec");
+  fig2.plot(sizes, timings_efficient, " r+").label("arrowmatvec");
+  fig2.fplot("1e-9*x^3", "k|").label("O(n^3)");
+  fig2.fplot("1e-7*x", "k").label("O(n)");
+  fig2.xlabel("Vector size n");
+  fig2.ylabel("Time [s]");
+  fig2.legend(0, 1);
+  fig2.save("arrowmatvec_comparison.eps");
+  fig2.save("arrowmatvec_comparison.png");
 }
-#endif \\ INTERNAL
+#endif // INTERNAL
+
+void runtime_arrow_matrix() {
+#if SOLUTION
+  // sizes will contain the size of the matrix
+  // timings will contain the runtimes in seconds
+  /* BEGIN_SAM_LISTING_3 */
+  std::vector<double> sizes, timings;
+
+  std::cout << "n" << "\n" << "time" << std::endl;
+  for (unsigned n = 4; n <= 8192; n *= 2){
+    // Create test input using random vectors
+    Eigen::VectorXd a = Eigen::VectorXd::Random(n),
+                    d = Eigen::VectorXd::Random(n),
+                    x = Eigen::VectorXd::Random(n),
+                    y;
+    Timer t;
+    t.start();
+    // Perform a single test
+    // TODO: more tests
+    arrow_matrix_2_times_x(d, a, x, y);
+    efficient_arrow_matrix_2_times_x(d, a, x, y);
+    t.stop();
+    sizes.push_back(n); // save vector sizes
+    timings.push_back(t.duration());
+
+    std::cout << n << "\n" << t.duration() << std::endl;
+  }
+  /* END_SAM_LISTING_3 */
+#else
+  // TODO: your code here
+#endif // SOLUTION
+}
+
+#if SOLUTION
+void runtime_arrow_matrix_with_chrono() {
+  std::vector<double> sizes, timings;
+  std::cout << "n" << "\n" << "time" << std::endl;
+  for (unsigned n = 4; n <= 8192; n *= 2){
+    // Create test input using random vectors
+    Eigen::VectorXd a = Eigen::VectorXd::Random(n),
+                    d = Eigen::VectorXd::Random(n),
+                    x = Eigen::VectorXd::Random(n),
+                    y;
+    Timer t;
+    t.start();
+    // Perform a single test
+    // TODO: more tests
+    arrow_matrix_2_times_x(d, a, x, y);
+    efficient_arrow_matrix_2_times_x(d, a, x, y);
+    t.stop();
+    sizes.push_back(n); // save vector sizes
+    timings.push_back(t.duration());
+    std::cout << n << "\n" << t.duration() << std::endl;
+  }
+}
+#endif // SOLUTION
 
 int main(void) {
-  // VectorXd a = {1,2,3,4,5};
-  // VectorXd d = {1,3,4,5,6};
-  // VectorXd x = {-5,4,6,-8,5};
+  VectorXd a(5);
+  a << 1., 2., 3., 4., 5.;
+  VectorXd d(5);
+  d <<1., 3., 4., 5., 6.;
+  VectorXd x(5);
+  x << -5., 4., 6., -8., 5.;
+  VectorXd yi, ye;
 
+  arrow_matrix_2_times_x(a,d,x,yi);
+  efficient_arrow_matrix_2_times_x(a,d,x,ye);
+
+  double err = (yi - ye).norm();
+
+  std::cout << "Error: " << err << std::endl;
+
+#if INTERNAL
   time_arrow_matrix();
+#endif // INTERNAL
+
+  runtime_arrow_matrix();
+#if SOLUTION
+  runtime_arrow_matrix_with_chrono();
+#endif // SOLUTION
+
+  double eps = std::numeric_limits<double>::denorm_min();
+  exit(err < eps);
 }

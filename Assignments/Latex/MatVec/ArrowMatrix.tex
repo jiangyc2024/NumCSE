@@ -35,7 +35,8 @@
 
 %%%%%%%%%%%% SUBPROBLEM 2
 \begin{subproblem}{}
-  We measure the run time of the function \verb|arrow_matrix_2_times_x| (in file \texttt{arrowmatvec.cpp})
+  We measure the run time of the function \verb|arrow_matrix_2_times_x| (written in the
+  file \texttt{arrowmatvec.cpp})
   and plot the results in Figure \ref{fig:arrowmatvectiming}.
 
   Give a detailed explanation of the results.
@@ -48,15 +49,18 @@
 % \end{figure}
 
  \begin{samwriteprbpart}{sol}
-\begin{samsolution}
+  \begin{samsolution}
   The standard matrix-matrix multiplication has runtime growing with $O(n^3)$ and the standard
   matrix-vector multiplication has runtimes growing with $O(n^2)$. Hence, the overall
   computational complexity is dominated by $O(n^3)$.
 
+  In this case, the line affecting the complexity is \verb|y = A*A*x|.
+
   Remember that most of C++ operators have a \textbf{left-to-right} precedence. This means that,
   even if,
   mathematically, $(\mathbf{A} \mathbf{A}) \mathbf{y} = \mathbf{A} (\mathbf{A} \mathbf{y})$, when
-  implementing the expression in C++, the \emph{complexity} of the code will be very different.
+  implementing the expression in C++, the \emph{complexity} of the code will be very different. The left hand
+  side has complexity $O(n^3)$, whilst the right hand size has complexity $O(n^2)$.
 
   Remark: even Eigen's own internal template expression mechanism is not able to efficiently
   exploit this fact.
@@ -65,37 +69,54 @@
 \end{subproblem}
 
 %%%%%%%%%%%% SUBPROBLEM 3
-\begin{subproblem}
+\begin{subproblem}{}
 Write an \emph{efficient} C++ function
 \begin{verbatim}
-  void efficient_arrow_matrix_2_times_x(const VectorXd & d, const VectorXd & a,
+  void efficient_arrow_matrix_2_times_x(const VectorXd & d,
+                              const VectorXd & a,
                               const VectorXd & x, VectorXd & y)
 \end{verbatim}
-that computes the same multiplication as in code \ref{mc:ArrowMatrixVector_arrowmatvec} but
-with optimal asymptotic complexity with respect to {$n$}. Compute the complexity of your code and explain why you obtain the result.
+that computes the same multiplication as in code \ref{mc:ArrowMatrixVector_arrowmatvec}, but
+with optimal asymptotic complexity with respect to {$n$}. Compute the complexity of your code and
+explain why you obtain the result.
+
 Here \texttt{d} passes the vector $(d_{1},\ldots,d_{n})^{T}$ and \texttt{a} passes the
 vector $(a_{1},\ldots,a_{n})^{T}$.
  \begin{samwriteprbpart}{sol}
 \begin{samsolution}
-  Due to the special structure of the matrix, it is possible to write a more efficient
-  implementation than the standard matrix-vector multiplication.
+  Due to the special structure of the matrix, it is possible to write a function that is more efficient
+  than the standard matrix-vector multiplication.
 
+  Define $\mathbf{a}_- := (a_{(1)}, \dots, a_{(n-1)}, 0)$.
   We can rewrite $\mathbf{A}$ as follows:
 
+    \begin{align}
+    \VA= & \begin{pmatrix}
+      d_1 &     &        &         & a_1     \\
+          & d_2 &        &         & a_2     \\
+          &     & \ddots &         & \vdots  \\
+          &     &        & d_{n-1}  & a_{n-1} \\
+      a_1 & a_2 & \dots  & a_{n-1}   & d_n     \\
+    \end{pmatrix} \\
+    = & \mathrm{diag}(\mathbf{d}) + (\mathbf{0},\dots,\mathbf{0}, \mathbf{a}_-) + (\mathbf{0},\mathbf{0},\mathbf{0},\mathbf{a}_-)^\top
+    =: \mathbf{D} + \mathbf{V} + \mathbf{H}.
+    \end{align}
+    and $\VA \Vx = \mathbf{D} \mathbf{x} + \mathbf{V} \mathbf{x} + \mathbf{H} \mathbf{x}$. Each of these
+    multiplications can be done in $O(n)$ operations.
 
-  See code listing \ref{mc:ArrowMatrixVector_arrowmatvec2}.
+    See code listing \ref{mc:ArrowMatrixVector_arrowmatvec2}.
 \vspace{0.5cm}
 
-% \lstinputlisting[caption={implementation of the function \texttt{arrowmatvec2}},label={mc:ArrowMatrixVector_arrowmatvec2}]
-% {\problems/\chpt/MATLAB/arrowmatvec2.m}
+\samincludecpp{../Codes/MatVec/ArrowMatrix/solutions/arrowmatvec.cpp}[1]
+
 \end{samsolution}
 \end{samwriteprbpart}
 \end{subproblem}
 
 %%%%%%%%%%%% SUBPROBLEM 4
-\begin{subproblem}
+\begin{subproblem}{}
 What is the complexity of your algorithm from sub-problem
-\ref{subprb:ArrowMatrixVector_3} (with respect to samproblem size $n$)?
+\ref{subprb:ArrowMatrixVector_3} (with respect to matrix size $n$)?
  \begin{samwriteprbpart}{sol}
 \begin{samsolution}
   The efficient implementation only needs two vector-vector element-wise multiplications and
@@ -106,19 +127,19 @@ What is the complexity of your algorithm from sub-problem
 
 %%%%%%%%%%%% SUBPROBLEM 5
 
-\begin{subproblem}
+\begin{subproblem}{}
   Compare the runtime of your implementation and the implementation given in code
   \ref{mc:ArrowMatrixVector_arrowmatvec} for $n=2^{5,6,\ldots,12}$.
-  Use the routines as explained in example
-  \ref{ex:effmatmult} of the Lecture Slides.
  \begin{samwriteprbpart}{sol}
+ \begin{samhint}
+  You can use \verb|std::chrono| to time your code.
+ \end{samhint}
 \begin{samsolution}
-The standard matrix multiplication has runtimes growing with $O(n^3)$.
-The runtimes of the more efficient implementation are growing with $O(n)$.
+The standard matrix multiplication has runtime growing with $O(n^3)$.
+The complexity of the more efficient implementation is with $O(n)$.
 See \autoref{mc:ArrowMatrixVector_arrowmatvec2timing} and Figure~\ref{fig:arrowmatvec2timing}.
 
-% \lstinputlisting[caption={Execution and timings of \texttt{arrowmatvec} and \texttt{arrowmatvec2}}, label={mc:ArrowMatrixVector_arrowmatvec2timing}]
-% {\problems/\chpt/MATLAB/arrowmatvec2timing.m}
+\samincludecpp{../Codes/MatVec/ArrowMatrix/solutions/arrowmatvec.cpp}[3]
 
 % \begin{figure}[ht]
 % \centering
