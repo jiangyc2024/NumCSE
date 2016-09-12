@@ -1,0 +1,29 @@
+{
+    "working_dir" : "./",
+    "assignment_dir" : "../Codes",
+
+    "cmake" : "CMakeLists_header.txt",
+    "include" : [
+        "cmake-modules/"
+    ],
+
+    "ProblemSheets" :
+    [
+        {
+            "name" : "ProblemSheet1",
+            "problems" : [ "DummyChapter/problem_test1/",
+                           "DummyChapter/problem_test2/"
+                         ]
+        },
+
+        {
+            "name" : "ProblemSheet2",
+            "problems" : [ "DummyChapter/problem_test2/"
+                         ]
+        }
+    ],
+
+    "Orphan" : [
+        "DummyChapter/unused_problem/"
+     ]
+}
