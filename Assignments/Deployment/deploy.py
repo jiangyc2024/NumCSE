@@ -340,4 +340,10 @@ Bundling {}\n\
         generate_templates_and_solutions(assignment_dir, problem_dir, problem_obj, header_str)
 
 if __name__ == "__main__":
+    
+    try: subprocess.call(["unifdef", "--help"])
+    except FileNotFoundError:
+        print("You must install 'unifdef'.")
+        exit(-1)
+    
     parse_json("assignment_list.json")

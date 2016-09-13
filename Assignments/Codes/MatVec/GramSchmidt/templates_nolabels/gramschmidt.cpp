@@ -1,7 +1,9 @@
-//// Copyright (C) 2016 Filippo Leonardi  @ ETHZ 
-//// Constributors: 
+//// 
+//// Copyright (C) 2016 lfilippo <tille, jgacon> @ Eidgenössische Technische Hochschule Zürich
+//// Contributors: tille, jgacon
+//// This file is part of the NumCSE repository.
 //// Report issues to: https://gitlab.math.ethz.ch/NumCSE/NumCSE/issues
-
+////
 #include <Eigen/Dense>
 #include <iostream>
 
