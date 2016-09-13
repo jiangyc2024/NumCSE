@@ -51,7 +51,7 @@ int main(void) {
   MatrixXd A = MatrixXd::Random(n,n);
   MatrixXd Q = gram_schmidt( A );
 
-  // Compute how far is Q*Q^T from the identity
+  // Compute how far is $\mathbf{Q}*\mathbf{Q}^\top$ from the identity
   double err = (Q*Q.transpose() - MatrixXd::Identity(n,n))
     .norm();
 
