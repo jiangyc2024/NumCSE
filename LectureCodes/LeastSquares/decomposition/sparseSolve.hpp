@@ -1,6 +1,6 @@
 # include <Eigen/Sparse>
 # include <Eigen/SparseLU>
-// or for QR: # include <Eigen/SparseQR>
+// or for QR: \#include <Eigen/SparseQR>
 # include <Eigen/IterativeLinearSolvers> // use only if A is SPD!
 using SparseMatrix = Eigen::SparseMatrix<double>;
 
