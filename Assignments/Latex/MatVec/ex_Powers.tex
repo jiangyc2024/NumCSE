@@ -1,0 +1,109 @@
+% ncse_new/\problems/\chpt/ex_Powers.tex
+% solutions require:   Pow.m ,  mainPow.m,  Pow_timings.eps
+\renewcommand{\chpt}{ch_matvec}
+
+\begin{problem}[Matrix powers] \label{prb:Powers}
+
+\begin{subproblem}[2] \label{subprb:Powers_1}
+Implement a \Matlab~ function 
+$$\mathtt{Pow(A,k)}$$
+that, using only basic linear algebra operations (including matrix-vector or matrix-matrix multiplications), 
+computes efficiently the $k^{th}$ power of the $n\times n$ matrix $\VA$.
+
+\begin{hint}
+ use the \Matlab~ operator $\wedge$ to test your implementation on random matrices $\VA$.
+\end{hint}
+
+\begin{hint}
+ use the \Matlab~ functions \texttt{de2bi} to extract the ``binary digits'' of an integer. 
+\end{hint}
+
+\begin{solution}
+Write $k$ in binary format: $k=\sum_{j=0}^M b_j\;2^j$,  $\:b_j\in\{0,1\}$. Then
+$$\VA^k = \prod_{j=0}^M \VA^{2^j\; b_j} = \prod_{j\;s.t.\;b_j=1} \VA^{2^j}. $$
+We compute $\VA,\;\VA^2,\;\VA^4,\;\ldots,\VA^{2^M}$ (one matrix-matrix multiplication each) and we multiply only the matrices $\VA^{2^j}$ such that $b_j\ne 0$.
+
+\lstinputlisting[caption={An efficient implementation for \ref{prb:Powers}},label={mc:Pow}]
+{\problems/\chpt/MATLAB/Pow.m}
+\end{solution}
+\end{subproblem}
+
+
+%======================================================================================
+
+\begin{subproblem}[1] \label{subprb:Powers_2}
+Find the asymptotic complexity in $k$ (and $n$) taking into account that in \Matlab~ a matrix-matrix multiplication requires a $O(n^3)$ effort.
+
+\begin{solution}
+Using the simplest implementation:
+$$A^k = \underbrace{\bigg(\ldots\Big(\big(A\cdot A\big)\cdot A\Big)\ldots \cdot A \bigg)\cdot A}_{k} \qquad \rightarrow \qquad O\big((k-1)n^3\big).$$
+Using the efficient implementation from Listing~\ref{mc:Pow}, for each $j\in\{1,2,\ldots,\log_2(k)\}$
+we have to perform at most two multiplications ($X*A$ and $A*A$):
+$$ \text{complexity}\quad\leq \quad 2 * M * \text{matrix-matrix mult.} \quad \approx \quad 2 * \lceil\log_2 k\rceil * n^3.$$
+($\lceil a\rceil = \mathtt{ceil}(a) =\inf\{ b\in\IZ,\; a\leq b\} $).
+\end{solution}
+\end{subproblem}
+
+
+%======================================================================================
+
+\begin{subproblem}[1] \label{subprb:Powers_3}
+Plot the runtime of the built-in \Matlab~ power ($\wedge$) function and find out the complexity.
+Compare it with the function \texttt{Pow} from \ref{subprb:Powers_1}.\\
+Use the matrix
+$$A_{j,k}= \frac1{\sqrt n} \;\exp\Big(\frac{2\pi i \;jk}n\Big)$$
+to test the two functions.
+
+\begin{solution}
+\lstinputlisting[caption={Timing plots for \ref{prb:Powers}},label={mc:mainPow}]
+{\problems/\chpt/MATLAB/mainPow.m}
+
+\begin{figure}[htb]
+\centering
+\label{fig:Pow_timings}
+\includegraphics[width=0.95\textwidth]{\problems/\chpt/PICTURES/Pow_timings.eps}
+\caption{Timings for \ref{prb:Powers}}
+\end{figure}
+
+The \Matlab $\wedge$-function has (at most) logarithmic complexity in $k$ but the timing is slightly better than our implementation. % ~68\% on average
+
+All the eigenvalues of the Vandermonde matrix $A$ have absolute value $1$, so the powers $A^k$ are ``stable'':
+the eigenvalues of $A^k$ are not approaching neither $0$ nor $\infty$ when $k$ grows.
+\end{solution}
+\end{subproblem}
+
+\begin{subproblem}[2] \label{sp:pow:o1}
+  Using \eigen{}, devise a \Cpp{} function with the calling sequence
+\begin{lstlisting}
+template <class Matrix>
+void matPow(const Matrix &A,unsigned int k);
+\end{lstlisting}
+that computes the $k^{\mathtt{th}}$ power of the square matrix $\VA$ (passed in
+the argument \texttt{A}). Of course, your implementation should be as efficient
+as the \matlab{} version from sub-problem \ref{subprb:Powers_1}.
+
+\begin{hint}
+ matrix multiplication suffers no aliasing issues (you can safely write \texttt{A = A*A}).
+\end{hint}
+
+\begin{hint}
+ feel free to use the provided \func{matPow.cpp}.
+\end{hint}
+
+\begin{hint}
+ you may want to use \texttt{log} and \texttt{ceil}.
+\end{hint}
+
+\begin{hint}
+ \Eigen~ implementation of power (\texttt{A.pow(k)}) can be found in:
+ \begin{verbatim}
+  #include <unsupported/Eigen/MatrixFunctions>
+ \end{verbatim}
+\end{hint}
+
+\begin{solution}
+\lstinputlisting[caption={Implementation of \func{matPow}},label={cppc:matPow}]
+{\problems/\chpt/CPP/matPow.cpp}
+\end{solution}
+\end{subproblem}
+\end{problem}
