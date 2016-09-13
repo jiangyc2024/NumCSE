@@ -67,7 +67,7 @@ def copy(file, indir, outdir):
     else:
         shutil.copy2(indir + file, outdir + file)
 
-def deploy(filename, indir, outdir,
+def deploy(filename, indir, outdir, header = None,
            with_solution = False, with_internal = False):
     """
     Parse a C++ file trough "unifdef" and remove SOLUTIONS and INTERNAL ifdef
@@ -92,6 +92,19 @@ def deploy(filename, indir, outdir,
         print("Preparing solutions/templates for '{}'".format(filename))
         print(" ".join(cmd))
         subprocess.call(cmd)
+        
+        if header:
+            f = open(outdir + filename, "r")
+            lines = []
+            for line in f.readlines():
+                lines.append(line)
+            f.close()
+            
+            f = open(outdir + filename, "w")
+            f.write(header)
+            for line in lines:
+                f.write(line)
+            f.close()
     else:
         copy(filename, indir, outdir)
 
@@ -132,7 +145,7 @@ def is_cpp(file):
     """
     return "cpp" == file.split(".")[-1]
 
-def open_problem_description(assignment_dir, problem_obj):
+def open_problem_description(assignment_dir, problem_obj, main_obj):
 
     print("---> Processing '{}'".format(problem_obj))
 
@@ -151,12 +164,27 @@ def open_problem_description(assignment_dir, problem_obj):
 
     if not problem_dir.endswith("/"):
         problem_dir += "/"
+        
+    try: author = problem_obj["author"]
+    except: author = main_obj["author"]
+    try: contributors = problem_obj["contributors"]
+    except: contributors = main_obj["contributors"]
+    try: email = problem_obj["email"]
+    except: email = main_obj["contributors"]
+
+    header = open(main_obj["working_dir"] + main_obj["cpp_header"], 'r')
+    header_string = ""
+    for line in header.readlines():
+        header_string += line.format(author=author, 
+                                     contributors=contributors, 
+                                     email=email)
+    header.close()
 
     f.close()
 
-    return [problem_dir, obj]
+    return [problem_dir, obj, header_string]
 
-def generate_templates_and_solutions(assignment_dir, problem_dir, obj):
+def generate_templates_and_solutions(assignment_dir, problem_dir, obj, header):
     mkdir(problem_dir + "solutions/")
     mkdir(problem_dir + "templates/")
 
@@ -170,13 +198,13 @@ def generate_templates_and_solutions(assignment_dir, problem_dir, obj):
 
     if "solutions" in obj:
         for solution_file_path in obj["solutions"]:
-            deploy(solution_file_path, problem_dir, problem_dir + "solutions/", True)
+            deploy(solution_file_path, problem_dir, problem_dir + "solutions/", header, True)
     if "templates" in obj:
         for template_file_path in obj["templates"]:
-            deploy(template_file_path, problem_dir, problem_dir + "templates/", False)
+            deploy(template_file_path, problem_dir, problem_dir + "templates/", header, False)
     for shared_file_path in shared_list:
-        deploy(shared_file_path, problem_dir, problem_dir + "solutions/", True)
-        deploy(shared_file_path, problem_dir, problem_dir + "templates/", False)
+        deploy(shared_file_path, problem_dir, problem_dir + "solutions/", header, True)
+        deploy(shared_file_path, problem_dir, problem_dir + "templates/", header, False)
 
 def generate_nolabels(assignment_dir, problem_dir, obj):
 
@@ -263,14 +291,14 @@ def parse_json(filename):
         solution_cpp_list = {}
 
         for problem in problem_sheet_obj["problems"]:
-            [problem_dir, problem_obj] = open_problem_description(assignment_dir, problem)
+            [problem_dir, problem_obj, header_str] = open_problem_description(assignment_dir, problem, obj)
 
             try: shutil.rmtree(problem_dir + solutions_nolabels_folder_name)
             except: pass
             try: shutil.rmtree(problem_dir + templates_nolabels_folder_name)
             except: pass
 
-            generate_templates_and_solutions(assignment_dir, problem_dir, problem_obj)
+            generate_templates_and_solutions(assignment_dir, problem_dir, problem_obj, header_str)
 
             [template_file_list, problem_template_cpp_list,
              solution_file_list, problem_solution_cpp_list] = generate_nolabels(assignment_dir, problem_dir, problem_obj)
@@ -302,14 +330,14 @@ Bundling {}\n\
 
     for problem in obj["Orphan"]:
 
-        [problem_dir, problem_obj] = open_problem_description(assignment_dir, problem)
+        [problem_dir, problem_obj, header_str] = open_problem_description(assignment_dir, problem, obj)
 
         try: shutil.rmtree(problem_dir + solutions_nolabels_folder_name)
         except: pass
         try: shutil.rmtree(problem_dir + templates_nolabels_folder_name)
         except: pass
 
-        generate_templates_and_solutions(assignment_dir, problem_dir, problem_obj)
+        generate_templates_and_solutions(assignment_dir, problem_dir, problem_obj, header_str)
 
 if __name__ == "__main__":
     parse_json("assignment_list.json")

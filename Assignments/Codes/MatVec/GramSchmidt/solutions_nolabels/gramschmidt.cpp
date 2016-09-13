@@ -1,7 +1,11 @@
+//// Copyright (C) 2016 Filippo Leonardi  @ ETHZ 
+//// Constributors: 
+//// Report issues to: https://gitlab.math.ethz.ch/NumCSE/NumCSE/issues
+
 #include <Eigen/Dense>
 #include <iostream>
 
-using Eigen;
+using namespace Eigen;
 
 /* @brief Performs Gram-Schidt orthonormalization
  * Given a matrix $\mathbf{A}$ of linearly independent columns,
@@ -12,7 +16,7 @@ using Eigen;
  */
 MatrixXd gram_schmidt(const MatrixXd & A) {
   // We create a matrix Q with the same size as A
-  Matrix Q(A);
+  MatrixXd Q(A);
 
   // The first vector just gets normalized
   Q.col(0).normalize();
@@ -25,10 +29,11 @@ MatrixXd gram_schmidt(const MatrixXd & A) {
     // Normalize vector if possible
     // (otherwise means colums of $\mathbf{A}$ are
     // almost linear dependant)
+    double eps = std::numeric_limits<double>::denorm_min();
     if( Q.col(j).norm() <= eps * A.col(j).norm() ) {
       std::cerr << "Gram-Schmidt failed because "
                 << "A has (almost) linear dependant "
-                << " columns. Bye." << std::endl;
+                << "columns. Bye." << std::endl;
       break;
     } else {
       Q.col(j).normalize();
@@ -41,17 +46,19 @@ MatrixXd gram_schmidt(const MatrixXd & A) {
 int main(void) {
   // Orthonormality test
   unsigned int n = 9;
-  Eigen::MatrixXd A = Eigen::MatrixXd::Random(n,n);
-  Eigen::MatrixXd Q = gramschmidt( A );
+  MatrixXd A = MatrixXd::Random(n,n);
+  MatrixXd Q = gram_schmidt( A );
 
-  // Norm of matrices?
-  double err = (Q*Q.transpose() - Identity(n,n)).norm();
+  // Compute how far is Q*Q^T from the identity
+  double err = (Q*Q.transpose() - MatrixXd::Identity(n,n))
+    .norm();
 
   // Output should be identity matrix
-  std::cout << "Error: "
+  std::cout << "Error is: "
             << err
             << std::endl;
 
+  // If error is too big, we exit with error
   double eps = std::numeric_limits<double>::denorm_min();
   exit(err < eps);
 }

@@ -1,4 +1,8 @@
 {
+    "author" : "",
+    "contributors" : "",
+    "email" : "",
+
     "name": "GramSchmidt",
     "all" : [ "gramschmidt.cpp" ]
 }

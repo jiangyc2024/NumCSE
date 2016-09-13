@@ -2,7 +2,12 @@
     "working_dir" : "./",
     "assignment_dir" : "../Codes",
 
+    "author" : "lfilippo",
+    "email" : "filippo.leonardi@sam.math.ethz.ch",
+    "contributors" : "tille, jgacon",
+
     "cmake" : "CMakeLists_header.txt",
+    "cpp_header" : "cpp_header.txt",
     "include" : [
         "cmake-modules/"
     ],
