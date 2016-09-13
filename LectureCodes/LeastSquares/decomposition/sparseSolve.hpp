@@ -10,7 +10,8 @@ void sparse_solve(const SparseMatrix& A, const VectorXd& b, VectorXd& x) {
   x = solver.solve(b);
 }
 
-// solve LSE if the system matrix A is symmetric, positive definite
+// Solve LSE, if the system matrix A is symmetric, positive definite,
+// using conjugate gradient (CG) iterative solver
 void sparseSpd_solve(const SparseMatrix& A, const VectorXd& b, VectorXd& x) {
   Eigen::ConjugateGradient<SparseMatrix> solver(A);
   x = solver.solve(b);
