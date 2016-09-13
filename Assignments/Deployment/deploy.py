@@ -228,10 +228,14 @@ def parse_json(filename):
     templates_nolabels_folder_name = "templates_nolabels/"
 
     archive_format = "zip"
+    
+    this_dir = os.path.dirname(os.path.realpath(__file__))
+    os.chdir(this_dir)
 
     f = open(filename, 'r')
 
     obj = json.load(f)
+    
 
     assignment_dir = obj["assignment_dir"]
     working_dir = obj["working_dir"]
