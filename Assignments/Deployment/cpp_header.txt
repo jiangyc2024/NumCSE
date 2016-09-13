@@ -1,0 +1,6 @@
+//// 
+//// Copyright (C) 2016 {author} <{email}> @ Eidgenössische Technische Hochschule Zürich
+//// Contributors: {contributors}
+//// This file is part of the NumCSE repository.
+//// Report issues to: https://gitlab.math.ethz.ch/NumCSE/NumCSE/issues
+////
