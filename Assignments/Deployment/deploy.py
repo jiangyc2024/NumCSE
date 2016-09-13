@@ -213,7 +213,10 @@ def generate_nolabels(assignment_dir, problem_dir, obj):
             else:
                 copy(shared_file_path, problem_dir + "templates/", problem_dir + "templates_nolabels/")
                 copy(shared_file_path, problem_dir + "solutions/", problem_dir + "solutions_nolabels/")
-
+    
+    subprocess.call(["git", "add", problem_dir + "templates_nolabels/"])
+    subprocess.call(["git", "add", problem_dir + "solutions_nolabels/"])
+    #os.subprocess()
 
     return [None, template_cpp_list, None, solution_cpp_list]
 
