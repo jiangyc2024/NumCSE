@@ -10,12 +10,10 @@ using Eigen;
  * @param[in] $\mathbf{A}$ Matrix of linearly independent columns
  * @return Matrix with ONB of $span(a_1, \cdots, a_n)$ as columns
  */
-/* SAM_LISTING_BEGIN_1 */
 MatrixXd gram_schmidt(const MatrixXd & A) {
   // We create a matrix Q with the same size as A
   Matrix Q(A);
 
-#if SOLUTION
   // The first vector just gets normalized
   Q.col(0).normalize();
 
@@ -36,13 +34,10 @@ MatrixXd gram_schmidt(const MatrixXd & A) {
       Q.col(j).normalize();
     }
   }
-#endif // SOLUTION
 
   return Q;
 }
-/* SAM_LISTING_END_1 */
 
-/* SAM_LISTING_BEGIN_2 */
 int main(void) {
   // Orthonormality test
   unsigned int n = 9;
@@ -60,4 +55,3 @@ int main(void) {
   double eps = std::numeric_limits<double>::denorm_min();
   exit(err < eps);
 }
-/* SAM_LISTING_END_2 */
