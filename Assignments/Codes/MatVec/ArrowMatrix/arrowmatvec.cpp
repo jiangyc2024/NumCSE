@@ -17,37 +17,53 @@ using namespace Eigen;
  * @param[out] y The vector y = A*A*x
  */
 /* SAM_LISTING_BEGIN_1 */
-void efficient_arrow_matrix_2_times_x(const VectorXd & d, const VectorXd & a,
-                              const VectorXd & x, VectorXd & y) {
+void efficient_arrow_matrix_2_times_x(const VectorXd & d,
+                                      const VectorXd & a,
+                                      const VectorXd & x,
+                                      VectorXd & y) {
   assert(d.size() == a.size() && a.size() == x.size() &&
          "Vector size must be the same!");
   int n = d.size();
 
   #if SOLUTION
   // Notice that we can compute (A*A)*x more efficiently using
-  // A*(A*x). This is in fact performing two matrix vetor multiplications
+  // A*(A*x). This is in fact performing two matrix vetor
+  // multiplications
   // instead of a more expensive matrix-matrix multiplication.
-  // Therefore, as first step, we need a way to efficiently compute A*x
+  // Therefore, as first step, we need a way to efficiently
+  // compute A*x
 
-  // This function computes A*x
+  // This function computes A*x, you can use it
+  // by calling A\_times\_x(x);
+  // This is the syntax for lambda functions: notice the extra
+  // [variables] code. Each variable written within [] brakets
+  // will be caputred (i.e. seen) inside the lambda function
+  // Without \&, a copy of the variable will be performed
+
   // Notice that A = D + H + V, s.t. A*x = D*x + H*x + V*x
   // D*x can be rewritten as d*x componentwise
   // H*x is zero, except at the last component
-  // V*x
+  // V*x is similar is only affected by the last component of x
   auto A_times_x = [&a, &d, n] (const VectorXd & x) {
     // This takes care of the diagonal (D*x)
+    // Notice: we use d.array() to tell Eigen to treat
+    // a vector an an array. As a result: each operation
+    // is performed componentwise.
     VectorXd Ax = ( d.array() * x.array() ).matrix();
 
     // H*x only affects the last component of A*x
-    // This is a dot product between a and x with the last component removed
+    // This is a dot product between a and x with the last
+    // component removed
     Ax(n-1) += a.head(n - 1).dot(x.head(n-1));
 
-    // V*x is equal to the vector (a(0)*x(n-1), ..., a(n-2)*x(n-1), 0)
+    // V*x is equal to the vector
+    // (a(0)*x(n-1), ..., a(n-2)*x(n-1), 0)
     Ax.head(n-1) +=  x(n-1) * a.head(n-1);
 
     return Ax;
   };
 
+  // <=> y = A*A*x
   y = A_times_x(A_times_x(x));
 
   #endif // SOLUTION

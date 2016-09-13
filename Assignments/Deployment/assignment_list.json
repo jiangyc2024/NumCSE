@@ -18,7 +18,8 @@
         {
             "name" : "ProblemSheet1",
             "problems" : [
-                "MatVec/ArrowMatrix/"
+                "MatVec/ArrowMatrix/",
+                "MatVec/GramSchmidt/"
             ]
         }
     ],

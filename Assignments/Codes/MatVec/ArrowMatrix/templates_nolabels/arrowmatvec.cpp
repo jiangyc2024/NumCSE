@@ -12,8 +12,10 @@ using namespace Eigen;
  * @param[in] x A n-dimensional vector
  * @param[out] y The vector y = A*A*x
  */
-void efficient_arrow_matrix_2_times_x(const VectorXd & d, const VectorXd & a,
-                              const VectorXd & x, VectorXd & y) {
+void efficient_arrow_matrix_2_times_x(const VectorXd & d,
+                                      const VectorXd & a,
+                                      const VectorXd & x,
+                                      VectorXd & y) {
   assert(d.size() == a.size() && a.size() == x.size() &&
          "Vector size must be the same!");
   int n = d.size();
