@@ -3,8 +3,10 @@
 #include <iostream>
 #include <chrono>
 using namespace std::chrono;
+using namespace std;
 
 /** Timing of row and column oriented access for Eigen */
+/* SAM_LISTING_BEGIN_1 */
 void rowcolaccesstiming(void)
 {
   const int K = 3; // Number of repetitions
@@ -30,9 +32,10 @@ void rowcolaccesstiming(void)
       double t = (double)duration_cast<microseconds>(toc-tic).count()/1E6;
       t2 = std::min(t2,t);
     }
-    std::cout << "n = " << n << ", t(row) = " << t1 << ", t(col) " << t2 << std::endl;
+    cout << "n= " << n << ", t(row)= " << t1 << ", t(col) " << t2 << endl;
   }
 }
+/* SAM_LISTING_END_1 */
 
 // Overhead of returning by value
 // First version return by reference

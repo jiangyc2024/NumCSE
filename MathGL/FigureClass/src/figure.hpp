@@ -8,6 +8,7 @@
 # include <stdexcept>
 # include <cassert>
 # include <numeric>
+# include <cctype> // isalpha
 
 # include "FigureConfig.hpp"
 # if FIG_HAS_EIGEN
@@ -70,6 +71,13 @@ public:
   void legend(const double& xPos = 1, const double& yPos = 1);
 
   void addlabel(const std::string& label, const std::string& style);
+
+  template <typename Matrix>
+  MglPlot& bar(const Matrix& y, std::string style = "");
+
+  template <typename xVector, typename Matrix>
+  typename std::enable_if<!std::is_same<typename std::remove_pointer<typename std::decay<Matrix>::type>::type, char >::value, MglPlot&>::type
+  bar(const xVector& x, const Matrix& y, std::string style =  "");
 
   template <typename yVector>
   MglPlot& plot(const yVector& y, std::string style = "");
@@ -134,8 +142,72 @@ private:
   int plotHeight_, plotWidth_; // height and width of the plot
   int leftMargin_, topMargin_; // left and top margin of plot inside the image
   std::vector<std::unique_ptr<MglPlot> > plots_; // x, y (and z) data for the plots
-  std::vector<std::pair<std::string, std::string>> additionalLabels_; // manually added labels
+  std::vector<std::pair<std::string, std::string>> additionalLabels_; // manually added labels 
 };
+
+/* bar plot for given y data                                                       *
+ * PRE : -                                                                         *
+ * POST: add bar plot of [1:length(y)]-y to plot queue with given style (optional) */
+template <typename Matrix>
+MglPlot& Figure::bar(const Matrix& y, std::string style) 
+{
+  // build a fitting x vector for the y vector
+  std::vector<double> x(y.rows());
+  std::iota(x.begin(), x.end(), 1);
+  return bar(x, y, style);
+}
+
+/* bar plot of x,y data                                                *
+ * PRE : -                                                             *
+ * POST: add bar plot of x-y to plot queue with given style (optional) */
+template <typename xVector, typename Matrix>
+// the long template magic expression ensures this function is not called if yVector is a string (which would be allowed as it is a templated argument)
+typename std::enable_if<!std::is_same<typename std::remove_pointer<typename std::decay<Matrix>::type>::type, char >::value, MglPlot&>::type
+Figure::bar(const xVector& x, const Matrix& y, std::string style)
+{
+
+  // TODO check if x is really a vector. Problem: cant use .rows or .cols as it can be a std::vector
+
+  const long m = y.rows(),
+             n = y.cols();
+
+  // check that input lengths fit
+  if (x.size() != m) {
+    std::cerr << "In function Figure::bar(): Data sets must have same lengths! Remember to save the bar-data in columns!";
+  }
+
+  // initialize data
+  mglData xd = make_mgldata(x); // straightforward for x vector
+  mglData yd = mglData(y.cols(), y.rows(), y.data()); // y might be a matrix
+
+  // if the ranges are set to auto set the new ranges 
+  if(autoRanges_){
+    setRanges(xd, yd, 0.); // the 0 stands no top+bottom margin
+  }
+  
+  // check if a style is given,
+  // if yes: add that style to the style queue and remove it from the style-deque,
+  // if no : get a new style from the style-deque
+  if (style.size() == 0) {
+    for (long i = 0; i < n; ++i) {
+      style += styles_.get_next();
+    }
+  }
+  else {
+    // special characters dont matter in bar plot, remove all non-alphabetic characters
+    std::remove_if(style.begin(), style.end(), [](int ch){ return !std::isalpha(ch); });
+    // eliminate all used colors from styles
+    for (std::size_t j = 0; j < style.size(); ++j) {
+      std::stringstream ss;
+      ss << style[j];
+      styles_.eliminate(ss.str());
+    }
+  }
+
+  // put the x-y data in the plot queue 
+  plots_.emplace_back(std::unique_ptr<MglBarPlot>(new MglBarPlot(xd, yd, style)));
+  return *plots_.back().get();
+}
 
 /* plot y data                                                         *
  * PRE : -                                                             *
@@ -166,11 +238,11 @@ Figure::plot(const xVector& x, const yVector& y, std::string style)
   mglData xd = make_mgldata(x);
   mglData yd = make_mgldata(y);
 
-  // if the ranges are set to auto set the new ranges
+  // if the ranges are set to auto set the new ranges 
   if(autoRanges_){
     setRanges(xd, yd, 0.); // the 0 stands no top+bottom margin
   }
-
+  
   // check if a style is given,
   // if yes: add that style to the style queue and remove it from the style-deque,
   // if no : get a new style from the style-deque
@@ -242,14 +314,15 @@ MglPlot& Figure::spy(const Matrix& A, const std::string& style) {
   if (std::max(A.cols(), A.rows()) > 9999) {
     radius = "1";
   }
-
+  
   // counting nonzero entries
   unsigned long counter = 0;
   // save positions of entries in these vectors
   // x for the col-index and y for the row-index
   std::vector<double> x, y;
 
-  ranges_ = std::array<double, 4>{0., (double) A.cols() + 1., 0., (double) A.rows() + 1.};
+  ranges_ = std::array<double, 4>{0, (static_cast<double>(A.cols() + 1)), 0,
+				  (static_cast<double>(A.rows() + 1)) };
   for (unsigned i = 0; i < A.rows(); ++i) {
     for (unsigned j = 0; j < A.cols(); ++j) {
       if (A(i,j) != 0) {
@@ -273,7 +346,7 @@ MglPlot& Figure::spy(const Matrix& A, const std::string& style) {
 }
 
 # if FIG_HAS_EIGEN
-template <typename Scalar>
+template <typename Scalar> 
 MglPlot& Figure::spy(const Eigen::SparseMatrix<Scalar>& A, const std::string& style) {
 
    has_3d_ = false;
@@ -290,13 +363,14 @@ MglPlot& Figure::spy(const Eigen::SparseMatrix<Scalar>& A, const std::string& st
   if (std::max(A.cols(), A.rows()) > 9999) {
     radius = "1";
   }
-
+  
   // counting nonzero entries
   unsigned long counter = 0;
   // save positions of entries in these vectors
   std::vector<double> x, y;
 
-  ranges_ = {0., (double) A.cols() + 1., 0., (double) A.rows() + 1.};
+  ranges_ = std::array<double, 4>{0, (static_cast<double>(A.cols() + 1)), 0,
+				  (static_cast<double>(A.rows() + 1)) };
   // iterate over nonzero entries, using method suggested in Eigen::Sparse documentation
   for (unsigned k = 0; k < A.outerSize(); ++k) {
     for (typename Eigen::SparseMatrix<Scalar>::InnerIterator it(A, k); it; ++it) {
