@@ -1,50 +1,52 @@
-\relax 
-\providecommand\hyper@newdestlabel[2]{}
-\@setckpt{./MatrixVec/gramschmidteigen}{
-\setcounter{page}{2}
-\setcounter{equation}{0}
-\setcounter{enumi}{0}
-\setcounter{enumii}{0}
-\setcounter{enumiii}{0}
-\setcounter{enumiv}{0}
-\setcounter{footnote}{0}
-\setcounter{mpfootnote}{0}
-\setcounter{part}{0}
-\setcounter{chapter}{0}
-\setcounter{section}{0}
-\setcounter{subsection}{0}
-\setcounter{subsubsection}{0}
-\setcounter{paragraph}{0}
-\setcounter{subparagraph}{0}
-\setcounter{figure}{0}
-\setcounter{table}{0}
-\setcounter{parentequation}{0}
-\setcounter{tcbbreakpart}{1}
-\setcounter{tcblayer}{0}
-\setcounter{tcbrastercolumn}{0}
-\setcounter{tcbrasterrow}{0}
-\setcounter{tcbraster}{0}
-\setcounter{lstnumber}{1}
-\setcounter{tcblisting}{0}
-\setcounter{mtc}{0}
-\setcounter{minitocdepth}{4}
-\setcounter{ptc}{0}
-\setcounter{parttocdepth}{2}
-\setcounter{lstcolrangelow}{0}
-\setcounter{lstcolrangehigh}{0}
-\setcounter{Item}{0}
-\setcounter{Hfootnote}{0}
-\setcounter{bookmark@seq@number}{0}
-\setcounter{theorem}{0}
-\setcounter{exercise}{0}
-\setcounter{samexercise}{0}
-\setcounter{plotcnt}{0}
-\setcounter{streamvline}{0}
-\setcounter{pngcnt}{0}
-\setcounter{eps@face}{0}
-\setcounter{subprbcnt}{0}
-\setcounter{hintcnt}{0}
-\setcounter{svnrevision}{88695}
-\setcounter{lstlisting}{0}
-\setcounter{section@level}{0}
+\chapter{Matrix Vector}
+\Label{cha:matvec}
+
+\begin{samproblem}*{prb:gramschmidteigen}{Gram-Schmidt orthogonalization with \eigen{}}[1]{
+\cref{gramschmidt} presents a \matlab{} code that effects the Gram-Schmidt
+  orthogonalization of the columns of an argument matrix. 
 }
+
+\begin{subproblem}{sp:1}[1]
+  Based on the C++ linear algebra library \eigen{} implement a function
+
+  \begin{samcode}[C++-code]{cpp:signature}{Function prototype}
+    \begin{lstlisting}[style=cpp]
+template <class Matrix>  
+Matrix gramschmidt(const Matrix &A);
+    \end{lstlisting}
+  \end{samcode}
+  that performs the same computations as \cref{gramschmidt}. 
+
+  \begin{samhint}
+    Use \eigen{}s block operations (see \href{https://eigen.tuxfamily.org/dox/group__TutorialBlockOperations.html}{\ExternalLinkSymb})
+  \end{samhint}
+
+  % BEGIN ================ SOLUTION  ================   %
+  \begin{samsolution}
+    \begin{samcode}[C++-code]{\cpl:cpp:solution}{Gram-Schmidt orthogonalization with \eigen{}}
+      \lstinputlisting[style=cpp_problem]{../Solutions/MatVec/gramschmidt/gramschmidt.hpp}
+    \end{samcode}
+  \end{samsolution}
+  % END ================ SOLUTION  ================   %
+
+\end{subproblem}
+
+\begin{subproblem}{sp:2}[1]
+  \label{sp:strassen:2}
+  Test your implementation by applying it to a small random matrix
+  and checking the orthonormality of the columns of the output
+  matrix.
+
+  % BEGIN ================ SOLUTION  ================   %
+  \begin{samsolution}
+    \begin{samcode}[C++-code]{\cpl:cpp:solution}{Gram-Schmidt orthogonalization with \eigen{}}
+      \lstincludecpp[style=cpp_problem]{../Solutions/MatVec/gramschmidt/main.cpp}{1}
+    \end{samcode}
+  \end{samsolution}
+  % END ================ SOLUTION  ================   %
+
+\end{subproblem}
+
+\end{samproblem}
+
+ 
