@@ -35,19 +35,6 @@ There you can find different versions of the same code:
 
 All binaries can then be found in the `bin` folder.
 
-### Building C++-codes & usage with Eigen and MathGL/Figure:
-
-All C++ codes should use the `add_executable_numcse` macro 
-that works similar to cmake built in `add_executable` command, but 
-automatically links with MathGL and places the binary in the correct folder.
-For further information see [Documentation](Documentation/cmake.md)
-
-**Example CMakeLists.txt file**
-
-```
-add_executable_numcse(main main.cpp)
-```
-
 ### Third party libraries
 
 Dependencies / Requirements
