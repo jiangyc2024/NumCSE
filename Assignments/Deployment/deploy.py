@@ -244,6 +244,8 @@ def generate_nolabels(assignment_dir, problem_dir, obj, main_obj):
     mkdir(problem_dir + "solutions_nolabels/")
     mkdir(problem_dir + "templates_nolabels/")
 
+    git_add_template_list = []
+    git_add_solution_list = []
     template_cpp_list = []
     solution_cpp_list = []
 
@@ -255,6 +257,7 @@ def generate_nolabels(assignment_dir, problem_dir, obj, main_obj):
                 solution_cpp_list.append(solution_file_path)
             else:
                 copy(solution_file_path, problem_dir + "solutions/", problem_dir + "solutions_nolabels/")
+            git_add_solution_list.append(problem_dir + "solutions_nolabels/" + solution_file_path)
     if "templates" in obj:
         for template_file_path in obj["templates"]:
             file = problem_dir + "templates/" + template_file_path
@@ -263,6 +266,7 @@ def generate_nolabels(assignment_dir, problem_dir, obj, main_obj):
                 template_cpp_list.append(template_file_path)
             else:
                 copy(template_file_path, problem_dir + "templates/", problem_dir + "templates_nolabels/")
+            git_add_template_list.append(problem_dir + "templates_nolabels/" + template_file_path)
     if "all" in obj:
         for shared_file_path in obj["all"]:
             file = problem_dir + "solutions/" + shared_file_path
@@ -274,15 +278,21 @@ def generate_nolabels(assignment_dir, problem_dir, obj, main_obj):
             else:
                 copy(shared_file_path, problem_dir + "templates/", problem_dir + "templates_nolabels/")
                 copy(shared_file_path, problem_dir + "solutions/", problem_dir + "solutions_nolabels/")
+            git_add_template_list.append(problem_dir + "templates_nolabels/" + shared_file_path)
+            git_add_solution_list.append(problem_dir + "solutions_nolabels/" + shared_file_path)
                 
     generate_cmake_for_problem(template_cpp_list, problem_dir + "templates_nolabels/", main_obj["cmake"] , obj["name"])
     generate_cmake_for_problem(solution_cpp_list, problem_dir + "solutions_nolabels/", main_obj["cmake"] , obj["name"])
+    git_add_solution_list.append(problem_dir + "solutions_nolabels/CMakeLists.txt")
+    git_add_template_list.append(problem_dir + "templates_nolabels/CMakeLists.txt")
     for file in main_obj["include"]:
         copy(file, main_obj["working_dir"], problem_dir + "templates_nolabels/")
         copy(file, main_obj["working_dir"], problem_dir + "solutions_nolabels/")
+        git_add_solution_list.append(problem_dir + "solutions_nolabels/" + file)
+        git_add_template_list.append(problem_dir + "templates_nolabels/" + file)
     
-    subprocess.call(["git", "add", problem_dir + "templates_nolabels/"])
-    subprocess.call(["git", "add", problem_dir + "solutions_nolabels/"])
+    subprocess.call(["git", "add"] + git_add_template_list)
+    subprocess.call(["git", "add"] + git_add_solution_list)
     #os.subprocess()
 
     return [None, template_cpp_list, None, solution_cpp_list]
