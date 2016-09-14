@@ -13,8 +13,8 @@ This repository will host all the codes used in the lecture notes, and assignmen
 - `MathGL` - documentation and example codes for MathGL
 - `CMake` - macros, modules used by CMake
 - `Assigmnents` - all codes used in the assignment. The path for each problem is:
-    - for templates: Assigmnents/Codes/<Chapter>/<ProblemName>/templates_nolabels
-    - for solutions: Assigmnents/Codes/<Chapter>/<ProblemName>/solutions_nolabels
+    - for templates: `Assigmnents/Codes/<Chapter>/<ProblemName>/templates_nolabels`
+    - for solutions: `Assigmnents/Codes/<Chapter>/<ProblemName>/solutions_nolabels`
 
 ## How to use
 
