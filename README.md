@@ -4,20 +4,21 @@ This repository will host all the codes used in the lecture notes, and assignmen
 
 **Additional links**
 
+- GitLab tutorial [TODO]
 - [Debugger tutorial](https://gitlab.math.ethz.ch/tille/debugging-cpp-code-with-lldb)
-- [Developer notes](Documentation/developer_notes.md)
-- [Project specific cmake documentation](Documentation/cmake.md)
 
 ## Project Structure
 
 - `LectureCodes` - all codes used in the lecture notes / script sorted by their subject
-- `Documentation` - enhanced documentation for developers
 - `MathGL` - documentation and example codes for MathGL
 - `CMake` - macros, modules used by CMake
+- `Assigmnents` - all codes used in the assignment. The path for each problem is:
+    - for templates: Assigmnents/Codes/<Chapter>/<ProblemName>/templates_nolabels
+    - for solutions: Assigmnents/Codes/<Chapter>/<ProblemName>/solutions_nolabels
 
 ## How to use
 
-In the LectureCodes you can find a folder for each code from the script.
+In the LectureCodes you can find a folder for each code from the lecture notes script.
 
 There you can find different versions of the same code:
 
