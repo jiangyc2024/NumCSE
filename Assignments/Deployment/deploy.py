@@ -25,6 +25,15 @@ set(SRCS {problem_name}/{cpp_name})\n\
 add_executable({cpp_name_noext} ${{SRCS}})\n\n\
 "
 
+# String to use for each C++ file in the CMakeLists.txt
+# cpp_name_noext is the name of the exeutable
+# cpp_name is the name of the .cpp file
+cmake_single_problem_template = "\
+# make {cpp_name_noext}\n\
+set(SRCS {cpp_name})\n\
+add_executable({cpp_name_noext} ${{SRCS}})\n\n\
+"
+
 def generate_cmake(list_of_cpp_files,
                    outdir, header_file, problem_sheet):
     """
@@ -46,6 +55,30 @@ def generate_cmake(list_of_cpp_files,
             cpp_file_noext = ".".join(cpp_file.split(".")[0:-1])
             outfile.write(cmake_template.format(problem_name=problem,
                                                 cpp_name_noext=cpp_file_noext, cpp_name=cpp_file))
+
+    infile.close()
+    outfile.close()
+    
+    
+def generate_cmake_for_problem(list_of_cpp_files,
+                   outdir, header_file, problem_name):
+    """
+    Given a list of cpp files and an output directory, write a CMakeLists.txt file
+    using the header provided in header file. problem_shhet is the name of the
+    problem sheet.
+    """
+    print("Generating CMake file for '{}'.".format(problem_name))
+    infile = open(header_file, "r")
+
+    outfile = open(outdir + "CMakeLists.txt", "w")
+
+    for line in infile.readlines():
+        outfile.write(line.format(problem_sheet_name=problem_name))
+
+    for cpp_file in list_of_cpp_files:
+        cpp_file_noext = ".".join(cpp_file.split(".")[0:-1])
+        outfile.write(cmake_single_problem_template.format(problem_name=problem_name,
+                     cpp_name_noext=cpp_file_noext, cpp_name=cpp_file))
 
     infile.close()
     outfile.close()
@@ -206,7 +239,7 @@ def generate_templates_and_solutions(assignment_dir, problem_dir, obj, header):
         deploy(shared_file_path, problem_dir, problem_dir + "solutions/", header, True)
         deploy(shared_file_path, problem_dir, problem_dir + "templates/", header, False)
 
-def generate_nolabels(assignment_dir, problem_dir, obj):
+def generate_nolabels(assignment_dir, problem_dir, obj, main_obj):
 
     mkdir(problem_dir + "solutions_nolabels/")
     mkdir(problem_dir + "templates_nolabels/")
@@ -241,6 +274,12 @@ def generate_nolabels(assignment_dir, problem_dir, obj):
             else:
                 copy(shared_file_path, problem_dir + "templates/", problem_dir + "templates_nolabels/")
                 copy(shared_file_path, problem_dir + "solutions/", problem_dir + "solutions_nolabels/")
+                
+    generate_cmake_for_problem(template_cpp_list, problem_dir + "templates_nolabels/", main_obj["cmake"] , obj["name"])
+    generate_cmake_for_problem(solution_cpp_list, problem_dir + "solutions_nolabels/", main_obj["cmake"] , obj["name"])
+    for file in main_obj["include"]:
+        copy(file, main_obj["working_dir"], problem_dir + "templates_nolabels/")
+        copy(file, main_obj["working_dir"], problem_dir + "solutions_nolabels/")
     
     subprocess.call(["git", "add", problem_dir + "templates_nolabels/"])
     subprocess.call(["git", "add", problem_dir + "solutions_nolabels/"])
@@ -301,7 +340,7 @@ def parse_json(filename):
             generate_templates_and_solutions(assignment_dir, problem_dir, problem_obj, header_str)
 
             [template_file_list, problem_template_cpp_list,
-             solution_file_list, problem_solution_cpp_list] = generate_nolabels(assignment_dir, problem_dir, problem_obj)
+             solution_file_list, problem_solution_cpp_list] = generate_nolabels(assignment_dir, problem_dir, problem_obj, obj)
 
             copy("", problem_dir + solutions_nolabels_folder_name, problem_sheet_solutions_dir + problem_obj["name"])
             copy("", problem_dir + templates_nolabels_folder_name, problem_sheet_templates_dir + problem_obj["name"])
