@@ -1,0 +1,152 @@
+\renewcommand{\ProblemName}{Kronecker}
+
+\begin{samproblem}*
+  {prb:Kron}
+  {Kronecker product}[1](1)
+  {
+    In \lref{def:kron} we learned about the so-called Kronecker product.
+    In this problem we revisit the
+    discussion of \lref{ex:kron}. Please refresh yourself on this example and
+    study \lref{mc:kronmultv} again.
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%% SUBPROBLEM 1: Compute kron
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{subproblem}{subprb:Kron_2}
+  Compute the kronecker product
+  $\mathbf{C} = \mathbf{A} \otimes \mathbf{B}$ of the matrices
+\begin{align*}
+  \mathbf{A} = \begin{pmatrix}
+         1 & 2   \\
+         3 & 4   \\
+       \end{pmatrix}
+\end{align*}
+and
+\begin{align*}
+\mathbf{B}=\begin{pmatrix}
+         5 & 6   \\
+         7 & 8   \\
+       \end{pmatrix}.
+\end{align*}
+
+% ==================== BEGIN SOLUTION
+\begin{samwriteprbpart}{cmpm}
+  \begin{writeverbatim}{prbfile}
+    \begin{samsolution}
+      \begin{align*}
+\Vy=\begin{pmatrix}
+         5 & 6 & 10 & 12  \\
+         7 & 8 & 14 & 16  \\
+         15 & 18 & 20 & 24  \\
+         21 & 24 & 28 & 32  \\
+       \end{pmatrix}\Vx.
+        \end{align*}
+      \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% ==================== END SOLUTION
+\end{subproblem}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%% SUBPROBLEM 2: Complexity
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{subproblem}{subprb:Kron_3}
+What is the asymptotic complexity ($\to$ \lref{def:comp})
+of the \Matlab~ code \eqref{eq:ex_Kron}? Use the Landau symbol
+from \lref{def:O} to state your answer.
+
+% ==================== BEGIN SOLUTION
+\begin{samwriteprbpart}{cmpk}
+  \begin{writeverbatim}{prbfile}
+    \begin{samsolution}
+      \texttt{kron(A,B)} results in a matrix of size $n^2 \times n^2$ and $x$
+      has length $n^2$. So the complexity is the same as a matrix-vector
+      multiplication for the resulting sizes. In total this is $O(n^2*n^2)=O(n^4)$.
+      \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% ==================== END SOLUTION
+\end{subproblem}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%% SUBPROBLEM 3: Implement
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{subproblem}{subprb:Kron_6}
+Implement a C++ function
+\begin{lstlisting}[style=cppsimple]
+void kron(const MatrixXd & A, const MatrixXd & B,
+          MatrixXd & C);
+\end{lstlisting}
+that computes the Kronecker product of the argument matrices
+\texttt{A} and \texttt{B} and stores the result in the matrix \texttt{C}.
+
+% ==================== BEGIN SOLUTION
+\begin{samwriteprbpart}{cmpk}
+  \begin{writeverbatim}{prbfile}
+    \begin{samsolution}
+      See \texttt{kron.cpp} or \cref{cppc:mainKron}.
+    \end{samsolution}
+  \end{writeverbatim}
+\end{samwriteprbpart}
+% ==================== END SOLUTION
+\end{subproblem}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%% SUBPROBLEM 3: Implement
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{subproblem}{subprb:Kron_7}
+  Devise an implementation of the \matlab{} code \eqref{eq:ex_Kron}
+  in C++ according
+  to the function definition
+  \begin{lstlisting}[style=cppsimple]
+void kron_mv(const MatrixXd & A, const MatrixXd & B,
+             const VectorXd & x, VectorXd & y);
+  \end{lstlisting}
+  The meaning of the arguments should be self-explanatory.
+
+% ==================== BEGIN SOLUTION
+\begin{samwriteprbpart}{cmpk}
+  \begin{writeverbatim}{prbfile}
+    \begin{samsolution}
+    See \texttt{kron.cpp} or \cref{cppc:mainKron}.
+    \end{samsolution}
+  \end{writeverbatim}
+\end{samwriteprbpart}
+% ==================== END SOLUTION
+\end{subproblem}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%% SUBPROBLEM 3: Implement one liner problem
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{subproblem}{subprb:kron:8}
+  Now, using a function definition similar to that of the previous sub-problem,
+  implement the C++ equivalent of \eqref{eq:Kron:sl} in the function
+  \texttt{kron\_mv\_fast}.
+  Study \lref{rem:eigrs} about ``reshaping'' matrices in \eigen{}.
+\end{subproblem}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%% SUBPROBLEM 3: Conmpute runtime
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{subproblem}{subprb:kron:9}
+  Compare the runtimes of your two implementations as you did for the \matlab{}
+  implementations in sub-problem \ref{subprb:Kron_5}.
+
+% ==================== BEGIN SOLUTION
+\begin{samwriteprbpart}{cmpk}
+  \begin{writeverbatim}{prbfile}
+    \begin{samsolution}
+      \begin{samcode}[C++11-code]{}{}
+        \samincludecpp{\codes/MatVec/Kronecker/solutions/kron.cpp}
+      \end{samcode}
+
+      % \samplot{\codes/MatVec/Kronecker/kron_timings_cpp.eps}
+              % {fig:kron_timings}
+    \end{samsolution}
+  \end{writeverbatim}
+\end{samwriteprbpart}
+% ==================== END SOLUTION
+\end{subproblem}
+
+\end{samproblem}
