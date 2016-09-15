@@ -1,4 +1,5 @@
 {
     "name": "Kron",
-    "all" : ["kron.cpp", "timer.hpp"]
+    "all" : ["kron.cpp"],
+    "lib" : ["timer.h"]
 }

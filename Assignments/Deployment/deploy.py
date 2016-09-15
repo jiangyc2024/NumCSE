@@ -207,7 +207,7 @@ def open_problem_description(assignment_dir, problem_obj, main_obj):
 
     return [problem_dir, obj, header_string]
 
-def generate_templates_and_solutions(assignment_dir, problem_dir, obj):
+def generate_templates_and_solutions(assignment_dir, problem_dir, obj, main_obj):
     mkdir(problem_dir + "solutions/")
     mkdir(problem_dir + "templates/")
 
@@ -228,6 +228,12 @@ def generate_templates_and_solutions(assignment_dir, problem_dir, obj):
     for shared_file_path in shared_list:
         deploy(shared_file_path, problem_dir, problem_dir + "solutions/", True)
         deploy(shared_file_path, problem_dir, problem_dir + "templates/", False)
+    if "lib" in obj:
+        for lib in obj["lib"]:
+            if not lib in main_obj["lib"]:
+                print("Error: library not defined in 'assignments.json'")
+            copy(lib, main_obj["working_dir"] + main_obj["lib"][lib], problem_dir + "solutions/")
+            copy(lib, main_obj["working_dir"] + main_obj["lib"][lib], problem_dir + "templates/")
 
 def generate_nolabels(assignment_dir, problem_dir, obj, main_obj, header_str = None):
 
@@ -270,6 +276,14 @@ def generate_nolabels(assignment_dir, problem_dir, obj, main_obj, header_str = N
                 copy(shared_file_path, problem_dir + "solutions/", problem_dir + "solutions_nolabels/")
             git_add_template_list.append(problem_dir + "templates_nolabels/" + shared_file_path)
             git_add_solution_list.append(problem_dir + "solutions_nolabels/" + shared_file_path)
+    if "lib" in obj:
+        for lib in obj["lib"]:
+            if not lib in main_obj["lib"]:
+                print("Error: library not defined in 'assignments.json'")
+            copy(lib, main_obj["working_dir"] + main_obj["lib"][lib], problem_dir + "solutions_nolabels/")
+            copy(lib, main_obj["working_dir"] + main_obj["lib"][lib], problem_dir + "templates_nolabels/")
+            git_add_template_list.append(problem_dir + "templates_nolabels/" + lib)
+            git_add_solution_list.append(problem_dir + "solutions_nolabels/" + lib)
                 
     generate_cmake_for_problem(template_cpp_list, problem_dir + "templates_nolabels/", main_obj["cmake"] , obj["name"])
     generate_cmake_for_problem(solution_cpp_list, problem_dir + "solutions_nolabels/", main_obj["cmake"] , obj["name"])
@@ -337,7 +351,7 @@ def parse_json(filename):
             try: shutil.rmtree(problem_dir + templates_nolabels_folder_name)
             except: pass
 
-            generate_templates_and_solutions(assignment_dir, problem_dir, problem_obj)
+            generate_templates_and_solutions(assignment_dir, problem_dir, problem_obj, obj)
 
             [template_file_list, problem_template_cpp_list,
              solution_file_list, problem_solution_cpp_list] = generate_nolabels(assignment_dir, problem_dir, problem_obj, obj, header_str)
@@ -376,7 +390,7 @@ Bundling {}\n\
         try: shutil.rmtree(problem_dir + templates_nolabels_folder_name)
         except: pass
 
-        generate_templates_and_solutions(assignment_dir, problem_dir, problem_obj)
+        generate_templates_and_solutions(assignment_dir, problem_dir, problem_obj, obj)
 
 if __name__ == "__main__":
     

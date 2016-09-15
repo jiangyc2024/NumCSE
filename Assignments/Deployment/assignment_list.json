@@ -11,6 +11,9 @@
     "include" : [
         "cmake-modules/"
     ],
+    "lib" : {
+        "timer.h" : "../../Utils/"
+    },
 
     "ProblemSheets" :
     [

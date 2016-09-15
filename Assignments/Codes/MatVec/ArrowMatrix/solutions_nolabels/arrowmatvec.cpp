@@ -6,7 +6,7 @@
 //// Report issues to: https://gitlab.math.ethz.ch/NumCSE/NumCSE/issues
 ////
 #include <iostream>
-#include "timer.hpp"
+#include "timer.h"
 
 #include <Eigen/Dense>
 

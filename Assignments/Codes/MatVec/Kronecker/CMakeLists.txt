@@ -1,3 +1,6 @@
+
+include_directories(../../../Utils)
+
 add_executable_numcse(kron_solution kron.cpp)
 get_target_name_numcse(kron_solution SOLUTION)
 target_compile_definitions(${SOLUTION} PRIVATE SOLUTION=1 INTERNAL=1)

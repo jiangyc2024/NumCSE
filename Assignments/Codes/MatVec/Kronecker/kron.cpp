@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 
-#include "timer.hpp"
+#include "timer.h"
 
 using namespace Eigen;
 
@@ -144,11 +144,12 @@ int main(void) {
         }
 
         std::cout << "Lazy Kron took:       " << tm_kron.min() << " s" << std::endl;
-        std::cout << "Kron vec took:       " << tm_kron_mult.min() << " s" << std::endl;
-        std::cout << "Kron with map took: " << tm_kron_map.min() << " s" << std::endl;
+        std::cout << "Kron vec took:        " << tm_kron_mult.min() << " s" << std::endl;
+        std::cout << "Kron with map took:   " << tm_kron_map.min() << " s" << std::endl;
         times_kron.push_back( tm_kron.min() );
         times_kron_mult.push_back( tm_kron_mult.min() );
         times_kron_map.push_back( tm_kron_map.min() );
+
     }
 
     for(auto it = times_kron.begin(); it != times_kron.end(); ++it) {
@@ -163,4 +164,8 @@ int main(void) {
         std::cout << *it << " ";
     }
     std::cout << std::endl;
+
+#if INTERNAL
+
+#endif // INTERNAL
 }

@@ -21,7 +21,7 @@
  *        NOTE: stop() and lap() are equivalent!             *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-class Timer{
+class Timer {
   typedef std::chrono::nanoseconds prec;
   typedef std::chrono::high_resolution_clock clock;
   typedef std::chrono::duration<double> duration_t;

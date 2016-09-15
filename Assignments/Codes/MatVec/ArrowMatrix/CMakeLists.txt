@@ -1,3 +1,5 @@
+include_directories(../../../Utils)
+
 add_executable_numcse(arrow_mat_vec_solution arrowmatvec.cpp)
 get_target_name_numcse(arrow_mat_vec_solution SOLUTION)
 target_compile_definitions(${SOLUTION} PRIVATE SOLUTION=1 INTERNAL=1)

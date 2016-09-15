@@ -18,17 +18,17 @@ using namespace Eigen;
  * @return Matrix with ONB of $span(a_1, \cdots, a_n)$ as columns
  */
 MatrixXd gram_schmidt(const MatrixXd & A) {
-  // We create a matrix Q with the same size as A
-  MatrixXd Q(A);
+    // We create a matrix Q with the same size as A
+    MatrixXd Q(A);
 
 
-  return Q;
+    return Q;
 }
 
 int main(void) {
-  // Orthonormality test
-  unsigned int n = 9;
-  MatrixXd A = MatrixXd::Random(n,n);
-  // TODO: use gramschmidt to compute orthogonalization of
-  // the matrix $\mathbf{A}$.
+    // Orthonormality test
+    unsigned int n = 9;
+    MatrixXd A = MatrixXd::Random(n,n);
+    // TODO: use gramschmidt to compute orthogonalization of
+    // the matrix $\mathbf{A}$.
 }

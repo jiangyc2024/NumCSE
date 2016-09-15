@@ -1,8 +1,8 @@
 #include <iostream>
-#include "timer.hpp"
+#include "timer.h"
 #if INTERNAL
 #include <chrono>
-#include "figure/figure.hpp"
+#include <figure/figure.hpp>
 #endif // INTERNAL
 
 #include <Eigen/Dense>
