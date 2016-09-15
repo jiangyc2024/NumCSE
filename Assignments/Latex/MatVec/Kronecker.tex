@@ -34,7 +34,7 @@ and
   \begin{writeverbatim}{prbfile}
     \begin{samsolution}
       \begin{align*}
-\mathbf{X}=\begin{pmatrix}
+\mathbf{C}=\begin{pmatrix}
          5 & 6 & 10 & 12  \\
          7 & 8 & 14 & 16  \\
          15 & 18 & 20 & 24  \\
@@ -57,12 +57,24 @@ void kron(const MatrixXd & A, const MatrixXd & B, MatrixXd & C);
 \end{lstlisting}
 that computes the Kronecker product of the argument matrices
 \texttt{A} and \texttt{B} and stores the result in the matrix \texttt{C}.
-You can use Eigen block operations, see the \EigenDoc{group__TutorialBlockOperations.html}.
+You can use Eigen ``block'' operations, see the \EigenDoc{group__TutorialBlockOperations.html}.
 
 % ==================== BEGIN SOLUTION
 \begin{samwriteprbpart}{cmpk}
   \begin{writeverbatim}{prbfile}
     \begin{samsolution}
+      The Kronecker product has the structure:
+      \begin{align*}
+        \mathbf{C} = \begin{pmatrix}
+          a_{(1,1)} \mathbf{B} & \dots & a_{(n,1)} \mathbf{B} \\
+          \vdots              &       & \vdots               \\
+          a_{(1,n)} \mathbf{B} & \dots & a_{(n,n)} \mathbf{B}
+          \end{pmatrix}.
+      \end{align*}
+      Here, each $a_{(i,j)} \mathbf{B} \in \IR^{n\times n}$
+      (for $0 < i,j \leq n$) is a Matrix (we will call
+      this matrix a block). The proposed code loops over each block and stores
+      the result of the product withing the matrix.
       \begin{samcode}[C++11-code]{cpp:kron-basic}{Kronecker product}
         \samincludecpp{\codes/MatVec/\ProblemName/solutions/kron.cpp}[1]
         \gitlabSolF{MatVec}{\ProblemName}{kron.cpp}
@@ -78,7 +90,7 @@ You can use Eigen block operations, see the \EigenDoc{group__TutorialBlockOperat
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{subproblem}{subprb:kron-cmplx}
 What is the asymptotic complexity (\lref{def:comp})
-of the C++ code \ref{subprb:Kron_6}? Use the Landau symbol
+of the C++ code \ref{cpp:kron-basic}? Use the \emph{Landau} symbol
 from \lref{def:O} to state your answer.
 
 % ==================== BEGIN SOLUTION
@@ -101,6 +113,7 @@ from \lref{def:O} to state your answer.
 %%%%%%%%%%%% SUBPROBLEM 3: Implement
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{subproblem}{subprb:kron-impl-vec}
+  In general, computing the entire matrix is unnecessary.
   Devise an efficient implementation of a C++ code for the computation of
   $\mathbf{y} = (\mathbf{A} \otimes \mathbf{B}) \mathbf{x}$.
   \begin{lstlisting}[style=cppsimple]
@@ -109,10 +122,30 @@ void kron_mult(const MatrixXd & A, const MatrixXd & B,
   \end{lstlisting}
   The meaning of the arguments should be self-explanatory.
 
+  Exploit the structure of the matrix and reuse computations as much as possible.
+
 % ==================== BEGIN SOLUTION
 \begin{samwriteprbpart}{cmpk}
   \begin{writeverbatim}{prbfile}
     \begin{samsolution}
+      Define $\tilde{\mathbf{x}}_{j} := (x_{j*n + 1}, \dots, x_{(j+1)*n})^\top \in \IR^{n}$
+      (a ``segment'' of $\mathbf{x})$ for $j = 0, \dots, n$). Notice the following:
+      \begin{align*}
+        \mathbf{C} \mathbf{x} = \begin{pmatrix}
+          a_{(1,1)} \mathbf{B} & \dots & a_{(n,1)} \mathbf{B} \\
+          \vdots              &       & \vdots               \\
+          a_{(1,n)} \mathbf{B} & \dots & a_{(n,n)} \mathbf{B}
+        \end{pmatrix} \begin{pmatrix}
+          \tilde{\mathbf{x}}_{0} \\
+          \vdots \\
+          \tilde{\mathbf{x}}_{n-1}
+        \end{pmatrix} = \begin{pmatrix}
+          a_{(1,1)} \mathbf{B} \tilde{\mathbf{x}}_{0} + \dots + a_{(n,1)} \mathbf{B} \tilde{\mathbf{x}}_{n-1} \\
+          \vdots              \\
+          a_{(1,n)} \mathbf{B} \tilde{\mathbf{x}}_{0} + \dots + a_{(n,n)} \mathbf{B} \tilde{\mathbf{x}}_{n-1}
+        \end{pmatrix}.
+      \end{align*}
+      The computation of $\mathbf{z}_j := \mathbf{B} \tilde{\mathbf{x}}_{j}$, can be reused.
       \begin{samcode}[C++11-code]{cpp:kron-vector-mult}{Kronecker product times vector}
         \samincludecpp{\codes/MatVec/\ProblemName/solutions/kron.cpp}[2]
         \gitlabSolF{MatVec}{\ProblemName}{kron.cpp}
@@ -129,7 +162,7 @@ void kron_mult(const MatrixXd & A, const MatrixXd & B,
 \begin{subproblem}{subprb:kron-impl-map}
   Devise an efficient implementation of a C++ code for the computation of
   $\mathbf{y} = (\mathbf{A} \otimes \mathbf{B}) \mathbf{x}$. This time use
-  Eigen ``reshaping'' functions.
+  Eigen ``reshaping'' functions. The function to implement is:
   \begin{lstlisting}[style=cppsimple]
 void kron_reshape(const MatrixXd & A, const MatrixXd & B,
                const VectorXd & x, VectorXd & y);
@@ -158,6 +191,12 @@ void kron_reshape(const MatrixXd & A, const MatrixXd & B,
 \begin{subproblem}{subprb:kron:9}
   Compare the runtimes of your implementations in sub-problems
   \ref{subprb:kron-impl}, \ref{subprb:kron-impl-vec} and \ref{subprb:kron-impl-map}.
+  To this end, measure the runtime of the functions \texttt{kron}, \texttt{kron\_mult},
+  \texttt{kron\_reshape},
+  with $n = 2^1,\dots,2^8$. Repeat the experiments $10$ times and consider only the smallest
+  runtime (skip the computations with \texttt{kron} for $n > 2^6$).
+  You can use the class \texttt{Timer} or the STL class \texttt{std::chrono}.
+  Report the measurements in seconds with scientific notation using 3 decimal digits.
 
 % ==================== BEGIN SOLUTION
 \begin{samwriteprbpart}{cmpk}

@@ -1,6 +1,12 @@
 #include <Eigen/Dense>
 #include <iostream>
 #include <vector>
+#if SOLUTION
+#include <iomanip>
+#endif // SOLUTION
+#if INTERNAL
+#include <figure/figure.hpp>
+#endif // INTERNAL
 
 #include "timer.h"
 
@@ -18,15 +24,12 @@ void kron(const MatrixXd & A, const MatrixXd & B,
 #if SOLUTION
     // Allocate enough space for the matrix
     C = MatrixXd(A.rows()*B.rows(), A.cols()*B.cols());
-    // TODO: Here is important the order of the loops:
-    // try and swap the following two lines
-    // and time the result
     for(unsigned int i = 0; i < A.rows(); ++i) {
         for(unsigned int j = 0; j < A.cols(); ++j) {
             // We use eigen block operations to set the values of
-            // each $n \times n$ block
+            // each $n \times n$ block.
             C.block(i*B.rows(),j*B.cols(), B.rows(), B.cols())
-                = A(i,j)*B;
+                = A(i,j)*B; // $\in \mathbb{R}^{(n \times n)}$
         }
     }
 #else // TEMPLATE
@@ -48,13 +51,18 @@ void kron(const MatrixXd & A, const MatrixXd & B,
 /* SAM_LISTING_BEGIN_2 */
 void kron_mult(const MatrixXd & A, const MatrixXd & B,
                const VectorXd & x, VectorXd & y) {
-    assert(A.rows() == A.cols() && A.rows() == B.rows() && B.rows() == B.cols() &&
+    assert(A.rows() == A.cols() &&
+           A.rows() == B.rows() &&
+           B.rows() == B.cols() &&
            "Matrices A and B must be square matrices with same size!");
+    assert(x.size() == A.cols()*A.cols() &&
+           "Vector x must have length A.cols()^2");
     unsigned int n = A.rows();
 
 #if SOLUTION
     // Allocate space for output
-    y = VectorXd::Zero(n, n);
+    y = VectorXd::Zero(n*n);
+
 
     for(unsigned int j = 0; j < n; ++j) {
         VectorXd z = B * x.segment(j*n, n);
@@ -63,8 +71,8 @@ void kron_mult(const MatrixXd & A, const MatrixXd & B,
         }
     }
 #else // TEMPLATE
-    // TODO: implement $y = (A \otimes B) \cdot x$
-#endif //TEMPLATE
+    // TODO: implement $y = (A \otimes B) \cdot x$ as efficiently as possible
+#endif // TEMPLATE
 }
 /* SAM_LISTING_END_2 */
 
@@ -97,7 +105,7 @@ void kron_reshape(const MatrixXd & A, const MatrixXd & B,
 
 int main(void) {
 
-    // Check if kron works, cf.
+    // Testing correctness of Kron
     MatrixXd A(2,2);
     A << 1, 2, 3, 4;
     MatrixXd B(2,2);
@@ -106,33 +114,60 @@ int main(void) {
 
     VectorXd x = Eigen::VectorXd::Random(4);
     VectorXd y;
-    kron(A,B,C);
+
+    std::cout << "Testing kron, kron_mult, and kron_reshape with small matrices..."
+              << std::endl;
+
+    // Compute using kron
+    kron(A, B, C);
     y = C*x;
-    std::cout << "kron(A,B)=" << std::endl << C << std::endl;
-    std::cout << "Using kron: y=       " << std::endl << y << std::endl;
 
-    kron_mult(A,B,x,y);
-    std::cout << "Using kron_mult: y=  " << std::endl << y << std::endl;
-    kron_reshape(A,B,x,y);
-    std::cout << "Using kron_map: y=  " << std::endl << y << std::endl;
+    std::cout << "kron(A,B) = " << std::endl
+              << C << std::endl;
+    std::cout << "Using kron: y = " << std::endl
+              << y << std::endl;
 
+    // Compute using kron_mult
+    kron_mult(A, B, x, y);
+    std::cout << "Using kron_mult: y =" << std::endl
+              << y << std::endl;
+
+    // Compute using kron_reshape
+    kron_reshape(A, B, x, y);
+    std::cout << "Using kron_map: y =" << std::endl
+              << y << std::endl;
+
+#if SOLUTION
     // Compute runtime of different implementations of kron
-    unsigned int repeats = 10;
-    std::vector<double> times_kron, times_kron_mult, times_kron_map;
 
-    for(unsigned int p = 2; p <= 9; p++) {
+    /* SAM_LISTING_BEGIN_4 */
+    // We repeat each runtime measurment 10 times
+    // (this is done in order to remove outliers)
+    unsigned int repeats = 10;
+    std::vector<double> sizes, times_kron, times_kron_mult, times_kron_map;
+
+    std::cout << "Runtime for each implementation." << std::endl;
+    std::cout << std::setw(5) << "n"
+              << std::setw(15) << "kron"
+              << std::setw(15) << "kron_mult"
+              << std::setw(15) << "kron_reshape"
+              << std::endl;
+
+    // Loop from $M = 2,\dots,2^5$
+    for(unsigned int M = 2; M <= (1 << 8); M = M << 1) {
         Timer tm_kron, tm_kron_mult, tm_kron_map;
+        // Run experiments "repeats" times
         for(unsigned int r = 0; r < repeats; ++r) {
-            unsigned int M = pow(2,p);
             A = MatrixXd::Random(M,M);
             B = MatrixXd::Random(M,M);
             x = VectorXd::Random(M*M);
 
-            // May be too slow for large p, comment if so
+            if( M < (1 << 6)) {
             tm_kron.start();
-            kron(A,B,C);
-            y = C*x;
+                kron(A,B,C);
+                y = C*x;
             tm_kron.stop();
+            }
 
             tm_kron_mult.start();
             kron_mult(A,B,x,y);
@@ -143,29 +178,38 @@ int main(void) {
             tm_kron_map.stop();
         }
 
-        std::cout << "Lazy Kron took:       " << tm_kron.min() << " s" << std::endl;
-        std::cout << "Kron vec took:        " << tm_kron_mult.min() << " s" << std::endl;
-        std::cout << "Kron with map took:   " << tm_kron_map.min() << " s" << std::endl;
-        times_kron.push_back( tm_kron.min() );
+        double kron_time = (M < (1 << 6)) ? tm_kron.min() : std::nan("");
+        std::cout << std::setw(5) << M
+                  << std::scientific << std::setprecision(3)
+                  << std::setw(15) << kron_time
+                  << std::setw(15) << tm_kron_mult.min()
+                  << std::setw(15) << tm_kron_map.min() << std::endl;
+        sizes.push_back( M );
+        times_kron.push_back( kron_time );
         times_kron_mult.push_back( tm_kron_mult.min() );
         times_kron_map.push_back( tm_kron_map.min() );
 
     }
-
-    for(auto it = times_kron.begin(); it != times_kron.end(); ++it) {
-        std::cout << *it << " ";
-    }
-    std::cout << std::endl;
-    for(auto it = times_kron_mult.begin(); it != times_kron_mult.end(); ++it) {
-        std::cout << *it << " ";
-    }
-    std::cout << std::endl;
-    for(auto it = times_kron_map.begin(); it != times_kron_map.end(); ++it) {
-        std::cout << *it << " ";
-    }
-    std::cout << std::endl;
+    /* SAM_LISTING_END_4 */
+#else // TEMPLATE
+    // TODO: Compute runtime of kron, kron_mult and kron_reshape.
+    // Output the runtimes in scientific notation with 3 decimal digits
+    // Use the Timer class.
+#endif // TEMPLATE
 
 #if INTERNAL
-
+  mgl::Figure fig;
+  fig.title("Timings of arrow\\_matrix\\_2\\_times\\_x");
+  fig.ranges(2, 9000, 1e-8, 1e3);
+  fig.setlog(true, true); // set loglog scale
+  fig.plot(sizes, times_kron, " r+").label("runtime");
+  fig.plot(sizes, times_kron_mult, " b+").label("runtime");
+  fig.plot(sizes, times_kron_map, " g+").label("runtime");
+  fig.fplot("1e-9*x^4", "k|").label("O(n^4)");
+  fig.xlabel("Vector size (n)");
+  fig.ylabel("Time [s]");
+  fig.legend(0, 1);
+  fig.save("arrowmatvec_timing.eps");
+  fig.save("arrowmatvec_timing.png");
 #endif // INTERNAL
 }

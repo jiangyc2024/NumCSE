@@ -36,11 +36,15 @@ void kron(const MatrixXd & A, const MatrixXd & B,
  */
 void kron_mult(const MatrixXd & A, const MatrixXd & B,
                const VectorXd & x, VectorXd & y) {
-    assert(A.rows() == A.cols() && A.rows() == B.rows() && B.rows() == B.cols() &&
+    assert(A.rows() == A.cols() &&
+           A.rows() == B.rows() &&
+           B.rows() == B.cols() &&
            "Matrices A and B must be square matrices with same size!");
+    assert(x.size() == A.cols()*A.cols() &&
+           "Vector x must have length A.cols()^2");
     unsigned int n = A.rows();
 
-    // TODO: implement $y = (A \otimes B) \cdot x$
+    // TODO: implement $y = (A \otimes B) \cdot x$ as efficiently as possible
 }
 
 /* \brief Compute the Kronecker product $C = A \otimes B$.
@@ -65,7 +69,7 @@ void kron_reshape(const MatrixXd & A, const MatrixXd & B,
 
 int main(void) {
 
-    // Check if kron works, cf.
+    // Testing correctness of Kron
     MatrixXd A(2,2);
     A << 1, 2, 3, 4;
     MatrixXd B(2,2);
@@ -74,63 +78,31 @@ int main(void) {
 
     VectorXd x = Eigen::VectorXd::Random(4);
     VectorXd y;
-    kron(A,B,C);
+
+    std::cout << "Testing kron, kron_mult, and kron_reshape with small matrices..."
+              << std::endl;
+
+    // Compute using kron
+    kron(A, B, C);
     y = C*x;
-    std::cout << "kron(A,B)=" << std::endl << C << std::endl;
-    std::cout << "Using kron: y=       " << std::endl << y << std::endl;
 
-    kron_mult(A,B,x,y);
-    std::cout << "Using kron_mult: y=  " << std::endl << y << std::endl;
-    kron_reshape(A,B,x,y);
-    std::cout << "Using kron_map: y=  " << std::endl << y << std::endl;
+    std::cout << "kron(A,B) = " << std::endl
+              << C << std::endl;
+    std::cout << "Using kron: y = " << std::endl
+              << y << std::endl;
 
-    // Compute runtime of different implementations of kron
-    unsigned int repeats = 10;
-    std::vector<double> times_kron, times_kron_mult, times_kron_map;
+    // Compute using kron_mult
+    kron_mult(A, B, x, y);
+    std::cout << "Using kron_mult: y =" << std::endl
+              << y << std::endl;
 
-    for(unsigned int p = 2; p <= 9; p++) {
-        Timer tm_kron, tm_kron_mult, tm_kron_map;
-        for(unsigned int r = 0; r < repeats; ++r) {
-            unsigned int M = pow(2,p);
-            A = MatrixXd::Random(M,M);
-            B = MatrixXd::Random(M,M);
-            x = VectorXd::Random(M*M);
+    // Compute using kron_reshape
+    kron_reshape(A, B, x, y);
+    std::cout << "Using kron_map: y =" << std::endl
+              << y << std::endl;
 
-            // May be too slow for large p, comment if so
-            tm_kron.start();
-            kron(A,B,C);
-            y = C*x;
-            tm_kron.stop();
-
-            tm_kron_mult.start();
-            kron_mult(A,B,x,y);
-            tm_kron_mult.stop();
-
-            tm_kron_map.start();
-            kron_reshape(A,B,x,y);
-            tm_kron_map.stop();
-        }
-
-        std::cout << "Lazy Kron took:       " << tm_kron.min() << " s" << std::endl;
-        std::cout << "Kron vec took:        " << tm_kron_mult.min() << " s" << std::endl;
-        std::cout << "Kron with map took:   " << tm_kron_map.min() << " s" << std::endl;
-        times_kron.push_back( tm_kron.min() );
-        times_kron_mult.push_back( tm_kron_mult.min() );
-        times_kron_map.push_back( tm_kron_map.min() );
-
-    }
-
-    for(auto it = times_kron.begin(); it != times_kron.end(); ++it) {
-        std::cout << *it << " ";
-    }
-    std::cout << std::endl;
-    for(auto it = times_kron_mult.begin(); it != times_kron_mult.end(); ++it) {
-        std::cout << *it << " ";
-    }
-    std::cout << std::endl;
-    for(auto it = times_kron_map.begin(); it != times_kron_map.end(); ++it) {
-        std::cout << *it << " ";
-    }
-    std::cout << std::endl;
+    // TODO: Compute runtime of kron, kron_mult and kron_reshape.
+    // Output the runtimes in scientific notation with 3 decimal digits
+    // Use the Timer class.
 
 }
