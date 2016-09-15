@@ -1,12 +1,11 @@
-% The exercise requires:
-% The solutions require:
-
 \begin{samproblem}*
   {prb:arrowmatvec}
   {Arrow matrix-vector multiplication}[1](1)
   {
-    An ``arrow matrix'' $\VA \in \IR^{n \times n}$ is constructed given two vectors $\mathbf{a} \in \IR^n$ and $\mathbf{d} \in \IR^n$.
-    The matrix is then squared and multiplied with a vector $\Vx \in \IR^n$. This is implemented in the
+    An ``arrow matrix'' $\VA \in \IR^{n \times n}$ is constructed given two
+    vectors $\mathbf{a} \in \IR^n$ and $\mathbf{d} \in \IR^n$.
+    The matrix is then squared and multiplied with a vector $\Vx \in \IR^n$.
+    This is implemented in the
     following C++ function:
     \begin{samcode}[C++11-code]{cpp:ArrowMatrixVector_arrowmatvec}
       {Computing $\mathbf{A}^2$}
@@ -58,16 +57,20 @@
  \begin{samwriteprbpart}{sol}
     \begin{writeverbatim}{prbfile}
       \begin{samsolution}
-        The standard matrix-matrix multiplication has runtime growing with $O(n^3)$ and the standard
+        The standard matrix-matrix multiplication has runtime growing with $O(n^3)$
+        and the standard
         matrix-vector multiplication has runtimes growing with $O(n^2)$. Hence, the overall
         computational complexity is dominated by $O(n^3)$.
 
         In this case, the line affecting the complexity is \texttt{y = A*A*x}.
 
-        Remember that most of C++ operators have a \textbf{left-to-right} precedence. This means that,
+        Remember that most of C++ operators have a \textbf{left-to-right} precedence.
+        This means that,
         even if,
-        mathematically, $(\mathbf{A} \mathbf{A}) \mathbf{y} = \mathbf{A} (\mathbf{A} \mathbf{y})$, when
-        implementing the expression in C++, the \emph{complexity} of the code will be very different. The left hand
+        mathematically, $(\mathbf{A} \mathbf{A}) \mathbf{y} = \mathbf{A} (\mathbf{A} \mathbf{y})$,
+        when
+        implementing the expression in C++, the \emph{complexity} of the code will
+        be very different. The left hand
         side has complexity $O(n^3)$, whilst the right hand size has complexity $O(n^2)$.
 
         Remark: even Eigen own internal template expression mechanism is not
@@ -154,7 +157,8 @@ What is the complexity of your algorithm from sub-problem
   \ref{mc:ArrowMatrixVector_arrowmatvec} for $n=2^{5,6,\ldots,12}$.
   Beware, for large $n$ ($n > 2048$) the computations may take a long time.
 
-  In order to solve this task you have two options: either use \texttt{std::chrono} or use the \texttt{Timer} class.
+  In order to solve this task you have two options:
+  either use \texttt{std::chrono} or use the \texttt{Timer} class.
 
   \textbf{How to use \texttt{Timer}}
 
@@ -174,7 +178,8 @@ t.duration();
 
   \textbf{Advanced user: how to use \texttt{std::chrono}}
 
-  Find the documentation of \texttt{chrono} \href{http://en.cppreference.com/w/cpp/chrono/high_resolution_clock}{here}
+  Find the documentation of \texttt{chrono}
+  on \CppRefDoc{chrono/high_resolution_clock}.
 
   First include the \texttt{chrono} STL header file (note: this requires C++11).
 
@@ -203,28 +208,28 @@ nanoseconds, \texttt{std::chrono::nanoseconds}), use the \texttt{duration\_cast}
 using duration_t = std::chrono::nanoseconds;
 duration_t elapsed = std::chrono::duration_cast<duration_t>(end - start);
 \end{lstlisting}
-To obtain the actual number (as integer) used to represent \texttt{elasped}, use \texttt{elapsed.count()}.
+To obtain the actual number (as integer) used to represent
+\texttt{elasped}, use \texttt{elapsed.count()}.
 
 
 \begin{samwriteprbpart}{sol}
     \begin{writeverbatim}{prbfile}
-\begin{samsolution}
-The standard matrix multiplication has runtime growing with $O(n^3)$.
-The complexity of the more efficient implementation is with $O(n)$.
-See \autoref{cpp:arrowmat_timing} and Figure~\ref{fig:arrowmatvec2timing}.
+      \begin{samsolution}
+        The standard matrix multiplication has runtime growing with $O(n^3)$.
+        The complexity of the more efficient implementation is with $O(n)$.
+        See \autoref{cpp:arrowmat_timing} and Figure~\ref{fig:arrowmatvec2timing}.
 
-\begin{samcode}[C++11-code]{cpp:arrowmat_timing}{Computation of timing of arrow matrix multiplication}
-\samincludecpp{\codes/MatVec/ArrowMatrix/solutions/arrowmatvec.cpp}[3]
-\end{samcode}
+        \begin{samcode}[C++11-code]{cpp:arrowmat_timing}
+          {Computation of timing of arrow matrix multiplication}
+          \samincludecpp{\codes/MatVec/ArrowMatrix/solutions/arrowmatvec.cpp}[3]
+        \end{samcode}
 
-% \begin{figure}
-\samplot{\codes/MatVec/ArrowMatrix/arrowmatvec_comparison.eps}
-{fig:arrowmatvec-timings-comparison}
-% \end{figure}
+        \samplot{\codes/MatVec/ArrowMatrix/arrowmatvec_comparison.eps}
+        {fig:arrowmatvec-timings-comparison}
 
-\end{samsolution}
-\end{writeverbatim}
-\end{samwriteprbpart}
+      \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
 \end{subproblem}
 
 \end{samproblem}
