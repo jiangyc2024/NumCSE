@@ -12,60 +12,60 @@ using namespace Eigen;
  */
 /* SAM_LISTING_BEGIN_1 */
 MatrixXd gram_schmidt(const MatrixXd & A) {
-  // We create a matrix Q with the same size as A
-  MatrixXd Q(A);
+    // We create a matrix Q with the same size as A
+    MatrixXd Q(A);
 
 #if SOLUTION
-  // The first vector just gets normalized
-  Q.col(0).normalize();
+    // The first vector just gets normalized
+    Q.col(0).normalize();
 
-  for(unsigned int j = 1; j < A.cols(); ++j) {
-    // Replace inner loop over each previous vector in Q with fast
-    //  matrix-vector multiplication
-    Q.col(j) -= Q.leftCols(j) * (Q.leftCols(j).transpose() * A.col(j));
+    for(unsigned int j = 1; j < A.cols(); ++j) {
+        // Replace inner loop over each previous vector in Q with fast
+        //  matrix-vector multiplication
+        Q.col(j) -= Q.leftCols(j) * (Q.leftCols(j).transpose() * A.col(j));
 
-    // Normalize vector if possible
-    // (otherwise means colums of $\mathbf{A}$ are
-    // almost linear dependant)
-    double eps = std::numeric_limits<double>::denorm_min();
-    if( Q.col(j).norm() <= eps * A.col(j).norm() ) {
-      std::cerr << "Gram-Schmidt failed because "
-                << "A has (almost) linear dependant "
-                << "columns. Bye." << std::endl;
-      break;
-    } else {
-      Q.col(j).normalize();
+        // Normalize vector if possible
+        // (otherwise means colums of $\mathbf{A}$ are
+        // almost linear dependant)
+        double eps = std::numeric_limits<double>::denorm_min();
+        if( Q.col(j).norm() <= eps * A.col(j).norm() ) {
+            std::cerr << "Gram-Schmidt failed because "
+                      << "A has (almost) linear dependant "
+                      << "columns. Bye." << std::endl;
+            break;
+        } else {
+            Q.col(j).normalize();
+        }
     }
-  }
 #endif // SOLUTION
 
-  return Q;
+    return Q;
 }
 /* SAM_LISTING_END_1 */
 
 /* SAM_LISTING_BEGIN_2 */
 int main(void) {
-  // Orthonormality test
-  unsigned int n = 9;
-  MatrixXd A = MatrixXd::Random(n,n);
+    // Orthonormality test
+    unsigned int n = 9;
+    MatrixXd A = MatrixXd::Random(n,n);
 #if SOLUTION
-  MatrixXd Q = gram_schmidt( A );
+    MatrixXd Q = gram_schmidt( A );
 
-  // Compute how far is $\mathbf{Q}*\mathbf{Q}^\top$ from the identity
-  double err = (Q*Q.transpose() - MatrixXd::Identity(n,n))
-    .norm();
+    // Compute how far is $\mathbf{Q}*\mathbf{Q}^\top$ from the identity
+    double err = (Q*Q.transpose() - MatrixXd::Identity(n,n))
+        .norm();
 
-  // Output should be identity matrix
-  std::cout << "Error is: "
-            << err
-            << std::endl;
+    // Output should be identity matrix
+    std::cout << "Error is: "
+              << err
+              << std::endl;
 
-  // If error is too big, we exit with error
-  double eps = std::numeric_limits<double>::denorm_min();
-  exit(err < eps);
+    // If error is too big, we exit with error
+    double eps = std::numeric_limits<double>::denorm_min();
+    exit(err < eps);
 #else // TEMPLATE
-  // TODO: use gramschmidt to compute orthogonalization of
-  // the matrix $\mathbf{A}$.
+    // TODO: use gramschmidt to compute orthogonalization of
+    // the matrix $\mathbf{A}$.
 #endif
 }
 /* SAM_LISTING_END_2 */

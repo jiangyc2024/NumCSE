@@ -12,7 +12,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%% SUBPROBLEM 1: Compute kron
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{subproblem}{subprb:Kron_2}
+\begin{subproblem}{subprb:kron-comp}
   Compute the kronecker product
   $\mathbf{C} = \mathbf{A} \otimes \mathbf{B}$ of the matrices
 \begin{align*}
@@ -50,7 +50,7 @@ and
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%% SUBPROBLEM 3: Implement
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{subproblem}{subprb:Kron_6}
+\begin{subproblem}{subprb:kron-impl}
 Implement a C++ function
 \begin{lstlisting}[style=cppsimple]
 void kron(const MatrixXd & A, const MatrixXd & B, MatrixXd & C);
@@ -76,7 +76,7 @@ You can use Eigen block operations, see \EigenDoc{group__TutorialBlockOperations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%% SUBPROBLEM 2: Complexity
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{subproblem}{subprb:Kron_3}
+\begin{subproblem}{subprb:kron-cmplx}
 What is the asymptotic complexity (\lref{def:comp})
 of the C++ code \ref{subprb:Kron_6}? Use the Landau symbol
 from \lref{def:O} to state your answer.
@@ -100,7 +100,7 @@ from \lref{def:O} to state your answer.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%% SUBPROBLEM 3: Implement
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{subproblem}{subprb:Kron_7}
+\begin{subproblem}{subprb:kron-impl-vec}
   Devise an efficient implementation of a C++ code for the computation of
   $\mathbf{y} = (\mathbf{A} \otimes \mathbf{B}) \mathbf{x}$.
   \begin{lstlisting}[style=cppsimple]
@@ -126,7 +126,7 @@ void kron_mult(const MatrixXd & A, const MatrixXd & B,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%% SUBPROBLEM 3: Implement one liner problem
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{subproblem}{subprb:kron:8}
+\begin{subproblem}{subprb:kron-impl-map}
   Devise an efficient implementation of a C++ code for the computation of
   $\mathbf{y} = (\mathbf{A} \otimes \mathbf{B}) \mathbf{x}$. This time use
   Eigen ``reshaping'' functions.
@@ -156,7 +156,8 @@ void kron_reshape(const MatrixXd & A, const MatrixXd & B,
 %%%%%%%%%%%% SUBPROBLEM 3: Conmpute runtime
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{subproblem}{subprb:kron:9}
-  Compare the runtimes of your implementations in sub-problems \ref{subprb:Kron_5}.
+  Compare the runtimes of your implementations in sub-problems
+  \ref{subprb:kron-impl}, \ref{subprb:kron-impl-vec} and \ref{subprb:kron-impl-map}.
 
 % ==================== BEGIN SOLUTION
 \begin{samwriteprbpart}{cmpk}

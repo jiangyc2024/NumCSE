@@ -85,7 +85,7 @@ void kron_reshape(const MatrixXd & A, const MatrixXd & B,
     unsigned int n = A.rows();
 
 #if SOLUTION
-    Matrix t = B * MatrixXd::Map(x.data(), n, n) * A.transpose();
+    MatrixXd t = B * MatrixXd::Map(x.data(), n, n) * A.transpose();
     y = MatrixXd::Map(t.data(), n*n, 1);
 #else // TEMPLATE
     // TODO: compute y using MatrixXd::Map();
@@ -98,68 +98,68 @@ void kron_reshape(const MatrixXd & A, const MatrixXd & B,
 int main(void) {
 
     // Check if kron works, cf.
-    Eigen::MatrixXd A(2,2);
+    MatrixXd A(2,2);
     A << 1, 2, 3, 4;
-    Eigen::MatrixXd B(2,2);
+    MatrixXd B(2,2);
     B << 5, 6, 7, 8;
-    Eigen::MatrixXd C;
+    MatrixXd C;
 
-    Eigen::VectorXd x = Eigen::VectorXd::Random(4);
-    Eigen::VectorXd y;
+    VectorXd x = Eigen::VectorXd::Random(4);
+    VectorXd y;
     kron(A,B,C);
     y = C*x;
     std::cout << "kron(A,B)=" << std::endl << C << std::endl;
     std::cout << "Using kron: y=       " << std::endl << y << std::endl;
 
-    kron_fast(A,B,x,y);
-    std::cout << "Using kron_fast: y=  " << std::endl << y << std::endl;
-    kron_super_fast(A,B,x,y);
-    std::cout << "Using kron_super_fast: y=  " << std::endl << y << std::endl;
+    kron_mult(A,B,x,y);
+    std::cout << "Using kron_mult: y=  " << std::endl << y << std::endl;
+    kron_map(A,B,x,y);
+    std::cout << "Using kron_map: y=  " << std::endl << y << std::endl;
 
     // Compute runtime of different implementations of kron
     unsigned int repeats = 10;
-    std::vector<double> times_kron, times_kron_fast, times_kron_super_fast;
+    std::vector<double> times_kron, times_kron_mult, times_kron_map;
 
     for(unsigned int p = 2; p <= 9; p++) {
-        Timer tm_kron, tm_kron_fast, tm_kron_super_fast;
+        Timer tm_kron, tm_kron_mult, tm_kron_map;
         for(unsigned int r = 0; r < repeats; ++r) {
             unsigned int M = pow(2,p);
-            A = Eigen::MatrixXd::Random(M,M);
-            B = Eigen::MatrixXd::Random(M,M);
-            x = Eigen::VectorXd::Random(M*M);
+            A = MatrixXd::Random(M,M);
+            B = MatrixXd::Random(M,M);
+            x = VectorXd::Random(M*M);
 
             // May be too slow for large p, comment if so
             tm_kron.start();
-            //     kron(A,B,C);
-            //     y = C*x;
+            kron(A,B,C);
+            y = C*x;
             tm_kron.stop();
 
-            tm_kron_fast.start();
-            kron_fast(A,B,x,y);
-            tm_kron_fast.stop();
+            tm_kron_mult.start();
+            kron_mult(A,B,x,y);
+            tm_kron_mult.stop();
 
-            tm_kron_super_fast.start();
-            kron_super_fast(A,B,x,y);
-            tm_kron_super_fast.stop();
+            tm_kron_map.start();
+            kron_map(A,B,x,y);
+            tm_kron_map.stop();
         }
 
         std::cout << "Lazy Kron took:       " << tm_kron.min() << " s" << std::endl;
-        std::cout << "Kron fast took:       " << tm_kron_fast.min() << " s" << std::endl;
-        std::cout << "Kron super fast took: " << tm_kron_super_fast.min() << " s" << std::endl;
+        std::cout << "Kron vec took:       " << tm_kron_mult.min() << " s" << std::endl;
+        std::cout << "Kron with map took: " << tm_kron_map.min() << " s" << std::endl;
         times_kron.push_back( tm_kron.min() );
-        times_kron_fast.push_back( tm_kron_fast.min() );
-        times_kron_super_fast.push_back( tm_kron_super_fast.min() );
+        times_kron_mult.push_back( tm_kron_mult.min() );
+        times_kron_map.push_back( tm_kron_map.min() );
     }
 
     for(auto it = times_kron.begin(); it != times_kron.end(); ++it) {
         std::cout << *it << " ";
     }
     std::cout << std::endl;
-    for(auto it = times_kron_fast.begin(); it != times_kron_fast.end(); ++it) {
+    for(auto it = times_kron_mult.begin(); it != times_kron_mult.end(); ++it) {
         std::cout << *it << " ";
     }
     std::cout << std::endl;
-    for(auto it = times_kron_super_fast.begin(); it != times_kron_super_fast.end(); ++it) {
+    for(auto it = times_kron_map.begin(); it != times_kron_map.end(); ++it) {
         std::cout << *it << " ";
     }
     std::cout << std::endl;
