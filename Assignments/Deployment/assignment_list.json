@@ -15,16 +15,11 @@
     "ProblemSheets" :
     [
         {
-            "name" : "DummyProblemSheet",
-            "problems" : [ "DummyChapter/dummy_problem1/",
-                           "DummyChapter/dummy_problem2/"
-                         ]
-        },
-        {
             "name" : "ProblemSheet1",
             "problems" : [
                 "MatVec/ArrowMatrix/",
-                "MatVec/GramSchmidt/"
+                "MatVec/GramSchmidt/",
+                "MatVec/Kronecker/"
             ]
         }
     ],

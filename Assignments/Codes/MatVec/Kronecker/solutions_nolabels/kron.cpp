@@ -13,57 +13,71 @@
 
 using Eigen;
 
-/* \brief Compute the Kronecker product $C = A \otimes B$.
- * \param[in] A Matrix $n \times n$
- * \param[in] B Matrix $n \times n$
+/* \brief Compute the Kronecker product.
+ * Computes $\mathbf{C} = \mathbf{A} \otimes \mathbf{B}$.
+ * \param[in] A Matrix of size $n \times n$
+ * \param[in] B Matrix of size $n \times n$
  * \param[out] C Kronecker product of A and B of dim $n^2 \times n^2$
  */
-void kron(const MatrixXd & A, const MatrixXd & B, MatrixXd & C)
-{
-    C = Matrix(A.rows()*B.rows(), A.cols()*B.cols());
+void kron(const MatrixXd & A, const MatrixXd & B,
+          MatrixXd & C) {
+    // Allocate enough space for the matrix
+    C = MatrixXd(A.rows()*B.rows(), A.cols()*B.cols());
+    // TODO: Here is important the order of the loops:
+    // try and swap the following two lines
+    // and time the result
     for(unsigned int i = 0; i < A.rows(); ++i) {
         for(unsigned int j = 0; j < A.cols(); ++j) {
-            C.block(i*B.rows(),j*B.cols(), B.rows(), B.cols()) = A(i,j)*B;
+            // We use eigen block operations to set the values of
+            // each $n \times n$ block
+            C.block(i*B.rows(),j*B.cols(), B.rows(), B.cols())
+                = A(i,j)*B;
         }
     }
 }
 
-/* @brief Compute the Kronecker product C = $A \otimes B$.
- * Exploit matrix-vector product.
- * A,B and x must have dimension $n \times n$ resp. $n$.
- * @param[in] A Matrix $n \times n$
- * @param[in] B Matrix $n \times n$
- * @param[in] x Vector of dim
- * param[out] y Vector y = kron(A,B)*x
+/* \brief Compute the Kronecker product applied to a vector.
+ * Computes $\mathbf{y} = (\mathbf{A} \otimes \mathbf{B}) \mathbf{x}$.
+ * Exploit efficient matrix-vector product.
+ * \param[in] A Matrix of size $n \times n$
+ * \param[in] B Matrix of size $n \times n$
+ * \param[in] x Vector of dim. $n^2 \times n^2$
+ * \param[out] y Vector y = kron(A,B)*x
  */
-void kron_fast(const MatrixXd & A, const MatrixXd & B,
-               const VectorXd & x, VectorXd & y)
-{
-    y = Vector::Zero(A.rows()*B.rows());
-
+void kron_mult(const MatrixXd & A, const MatrixXd & B,
+               const VectorXd & x, VectorXd & y) {
+    assert(A.rows() == A.cols() && A.rows() == B.rows() && B.rows() == B.cols() &&
+           "Matrices A and B must be square matrices with same size!").
     unsigned int n = A.rows();
-    for(unsigned int j = 0; j < A.cols(); ++j) {
+
+    // Allocate space for output
+    y = VectorXd::Zero(n, n);
+
+    for(unsigned int j = 0; j < n; ++j) {
         Vector z = B * x.segment(j*n, n);
-        for(unsigned int i = 0; i < A.rows(); ++i) {
-            y.segment(i*n,n) += A(i,j)*z;
+        for(unsigned int i = 0; i < n;; ++i) {
+            y.segment(i*n, n) += A(i, j)*z;
         }
     }
 }
 
-/* @brief Compute the Kronecker product $C = A \otimes B$. Uses fast remapping tecniques (similar to Matlab reshape)
- * A,B and x must have dimension $n \times n$ resp. $n^2$
- * Elegant way using reshape
- * WARNING: using Matrix::Map we assume the matrix is in ColMajor format, *beware* you may incur in bugs if matrix is in RowMajor isntead
- * @param[in] A Matrix $n \times n$
- * @param[in] B Matrix $n \times n$
- * @param[in] x Vector of dim $n$
- * param[out] y Vector y = kron(A,B)*x
+/* \brief Compute the Kronecker product $C = A \otimes B$.
+ * Use fast reshaping (similar to Matlab reshape)
+ * WARNING: using Matrix::Map we assume the matrix is in Column major format,
+ *          the code is not valid for Row Major format.
+ * \param[in] A Matrix $n \times n$
+ * \param[in] B Matrix $n \times n$
+ * \param[in] x Vector of dim $n^2$
+ * \param[out] y Vector y = kron(A,B)*x
  */
-void kron_super_fast(const Matrix & A, const Matrix & B, const Vector & x, Vector & y)
-{
+void kron_reshape(const MatrixXd & A, const MatrixXd & B,
+                  const VectorXd & x, VectorXd & y) {
+    assert(A.rows() == A.cols() && A.rows() == B.rows() && B.rows() == B.cols() &&
+           "Matrices A and B must be square matrices with same size!").
     unsigned int n = A.rows();
-    Matrix t = B * Matrix::Map(x.data(),n,n) * A.transpose();
-    y = Matrix::Map(t.data(), n*n, 1);
+
+    Matrix t = B * MatrixXd::Map(x.data(), n, n) * A.transpose();
+    y = MatrixXd::Map(t.data(), n*n, 1);
 }
 
 int main(void) {

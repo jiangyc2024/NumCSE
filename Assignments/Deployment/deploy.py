@@ -100,7 +100,7 @@ def copy(file, indir, outdir):
     else:
         shutil.copy2(indir + file, outdir + file)
 
-def deploy(filename, indir, outdir, header = None,
+def deploy(filename, indir, outdir,
            with_solution = False, with_internal = False):
     """
     Parse a C++ file trough "unifdef" and remove SOLUTIONS and INTERNAL ifdef
@@ -125,23 +125,10 @@ def deploy(filename, indir, outdir, header = None,
         print("Preparing solutions/templates for '{}'".format(filename))
         print(" ".join(cmd))
         subprocess.call(cmd)
-        
-        if header:
-            f = open(outdir + filename, "r")
-            lines = []
-            for line in f.readlines():
-                lines.append(line)
-            f.close()
-            
-            f = open(outdir + filename, "w")
-            f.write(header)
-            for line in lines:
-                f.write(line)
-            f.close()
     else:
         copy(filename, indir, outdir)
 
-def strip_labels(filename, indir, outdir = None):
+def strip_labels(filename, indir, header = None, outdir = None):
     """
     Remove labels from files. Currently rmoves "SAM_LISTING" comment blocks.
     """
@@ -157,6 +144,9 @@ def strip_labels(filename, indir, outdir = None):
 
     print("Stripping '{}', writing to '{}'.".format(filename, out_filename))
     out_file = open(out_filename, "w")
+
+    if header:
+        out_file.write(header)
 
     for line in file.readlines():
         if "SAM_LISTING" not in line:
@@ -203,7 +193,7 @@ def open_problem_description(assignment_dir, problem_obj, main_obj):
     try: contributors = problem_obj["contributors"]
     except: contributors = main_obj["contributors"]
     try: email = problem_obj["email"]
-    except: email = main_obj["contributors"]
+    except: email = main_obj["email"]
 
     header = open(main_obj["working_dir"] + main_obj["cpp_header"], 'r')
     header_string = ""
@@ -217,7 +207,7 @@ def open_problem_description(assignment_dir, problem_obj, main_obj):
 
     return [problem_dir, obj, header_string]
 
-def generate_templates_and_solutions(assignment_dir, problem_dir, obj, header):
+def generate_templates_and_solutions(assignment_dir, problem_dir, obj):
     mkdir(problem_dir + "solutions/")
     mkdir(problem_dir + "templates/")
 
@@ -231,15 +221,15 @@ def generate_templates_and_solutions(assignment_dir, problem_dir, obj, header):
 
     if "solutions" in obj:
         for solution_file_path in obj["solutions"]:
-            deploy(solution_file_path, problem_dir, problem_dir + "solutions/", header, True)
+            deploy(solution_file_path, problem_dir, problem_dir + "solutions/", True)
     if "templates" in obj:
         for template_file_path in obj["templates"]:
-            deploy(template_file_path, problem_dir, problem_dir + "templates/", header, False)
+            deploy(template_file_path, problem_dir, problem_dir + "templates/", False)
     for shared_file_path in shared_list:
-        deploy(shared_file_path, problem_dir, problem_dir + "solutions/", header, True)
-        deploy(shared_file_path, problem_dir, problem_dir + "templates/", header, False)
+        deploy(shared_file_path, problem_dir, problem_dir + "solutions/", True)
+        deploy(shared_file_path, problem_dir, problem_dir + "templates/", False)
 
-def generate_nolabels(assignment_dir, problem_dir, obj, main_obj):
+def generate_nolabels(assignment_dir, problem_dir, obj, main_obj, header_str = None):
 
     mkdir(problem_dir + "solutions_nolabels/")
     mkdir(problem_dir + "templates_nolabels/")
@@ -253,7 +243,7 @@ def generate_nolabels(assignment_dir, problem_dir, obj, main_obj):
         for solution_file_path in obj["solutions"]:
             file = problem_dir + "solutions/" + solution_file_path
             if is_cpp(file):
-                strip_labels(solution_file_path, problem_dir + "solutions/", problem_dir + "solutions_nolabels/")
+                strip_labels(solution_file_path, problem_dir + "solutions/", header_str, problem_dir + "solutions_nolabels/")
                 solution_cpp_list.append(solution_file_path)
             else:
                 copy(solution_file_path, problem_dir + "solutions/", problem_dir + "solutions_nolabels/")
@@ -262,7 +252,7 @@ def generate_nolabels(assignment_dir, problem_dir, obj, main_obj):
         for template_file_path in obj["templates"]:
             file = problem_dir + "templates/" + template_file_path
             if is_cpp(file):
-                strip_labels(template_file_path, problem_dir + "templates/", problem_dir + "templates_nolabels/")
+                strip_labels(template_file_path, problem_dir + "templates/", header_str, problem_dir + "templates_nolabels/")
                 template_cpp_list.append(template_file_path)
             else:
                 copy(template_file_path, problem_dir + "templates/", problem_dir + "templates_nolabels/")
@@ -271,8 +261,8 @@ def generate_nolabels(assignment_dir, problem_dir, obj, main_obj):
         for shared_file_path in obj["all"]:
             file = problem_dir + "solutions/" + shared_file_path
             if is_cpp(file):
-                strip_labels(shared_file_path, problem_dir + "solutions/", problem_dir + "solutions_nolabels/")
-                strip_labels(shared_file_path, problem_dir + "templates/", problem_dir + "templates_nolabels/")
+                strip_labels(shared_file_path, problem_dir + "solutions/", header_str, problem_dir + "solutions_nolabels/")
+                strip_labels(shared_file_path, problem_dir + "templates/", header_str, problem_dir + "templates_nolabels/")
                 template_cpp_list.append(shared_file_path)
                 solution_cpp_list.append(shared_file_path)
             else:
@@ -347,10 +337,10 @@ def parse_json(filename):
             try: shutil.rmtree(problem_dir + templates_nolabels_folder_name)
             except: pass
 
-            generate_templates_and_solutions(assignment_dir, problem_dir, problem_obj, header_str)
+            generate_templates_and_solutions(assignment_dir, problem_dir, problem_obj)
 
             [template_file_list, problem_template_cpp_list,
-             solution_file_list, problem_solution_cpp_list] = generate_nolabels(assignment_dir, problem_dir, problem_obj, obj)
+             solution_file_list, problem_solution_cpp_list] = generate_nolabels(assignment_dir, problem_dir, problem_obj, obj, header_str)
 
             copy("", problem_dir + solutions_nolabels_folder_name, problem_sheet_solutions_dir + problem_obj["name"])
             copy("", problem_dir + templates_nolabels_folder_name, problem_sheet_templates_dir + problem_obj["name"])
@@ -386,7 +376,7 @@ Bundling {}\n\
         try: shutil.rmtree(problem_dir + templates_nolabels_folder_name)
         except: pass
 
-        generate_templates_and_solutions(assignment_dir, problem_dir, problem_obj, header_str)
+        generate_templates_and_solutions(assignment_dir, problem_dir, problem_obj)
 
 if __name__ == "__main__":
     
