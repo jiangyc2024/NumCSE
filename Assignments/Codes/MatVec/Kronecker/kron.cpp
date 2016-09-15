@@ -4,7 +4,7 @@
 
 #include "timer.hpp"
 
-using Eigen;
+using namespace Eigen;
 
 /* \brief Compute the Kronecker product.
  * Computes $\mathbf{C} = \mathbf{A} \otimes \mathbf{B}$.
@@ -49,7 +49,7 @@ void kron(const MatrixXd & A, const MatrixXd & B,
 void kron_mult(const MatrixXd & A, const MatrixXd & B,
                const VectorXd & x, VectorXd & y) {
     assert(A.rows() == A.cols() && A.rows() == B.rows() && B.rows() == B.cols() &&
-           "Matrices A and B must be square matrices with same size!").
+           "Matrices A and B must be square matrices with same size!");
     unsigned int n = A.rows();
 
 #if SOLUTION
@@ -57,8 +57,8 @@ void kron_mult(const MatrixXd & A, const MatrixXd & B,
     y = VectorXd::Zero(n, n);
 
     for(unsigned int j = 0; j < n; ++j) {
-        Vector z = B * x.segment(j*n, n);
-        for(unsigned int i = 0; i < n;; ++i) {
+        VectorXd z = B * x.segment(j*n, n);
+        for(unsigned int i = 0; i < n; ++i) {
             y.segment(i*n, n) += A(i, j)*z;
         }
     }
@@ -81,7 +81,7 @@ void kron_mult(const MatrixXd & A, const MatrixXd & B,
 void kron_reshape(const MatrixXd & A, const MatrixXd & B,
                   const VectorXd & x, VectorXd & y) {
     assert(A.rows() == A.cols() && A.rows() == B.rows() && B.rows() == B.cols() &&
-           "Matrices A and B must be square matrices with same size!").
+           "Matrices A and B must be square matrices with same size!");
     unsigned int n = A.rows();
 
 #if SOLUTION
@@ -113,7 +113,7 @@ int main(void) {
 
     kron_mult(A,B,x,y);
     std::cout << "Using kron_mult: y=  " << std::endl << y << std::endl;
-    kron_map(A,B,x,y);
+    kron_reshape(A,B,x,y);
     std::cout << "Using kron_map: y=  " << std::endl << y << std::endl;
 
     // Compute runtime of different implementations of kron
@@ -139,7 +139,7 @@ int main(void) {
             tm_kron_mult.stop();
 
             tm_kron_map.start();
-            kron_map(A,B,x,y);
+            kron_reshape(A,B,x,y);
             tm_kron_map.stop();
         }
 
