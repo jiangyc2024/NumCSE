@@ -1,0 +1,10 @@
+{
+    "name" : "problem1",
+    "internal" : [ "unbundled_code.cpp" ],
+    "templates" : ["template_code1.cpp"
+                    ],
+    "solutions" : ["solution_code1.cpp"
+                    ],
+    "all" : ["shared_code1.cpp", "text_file.txt"
+            ]
+}

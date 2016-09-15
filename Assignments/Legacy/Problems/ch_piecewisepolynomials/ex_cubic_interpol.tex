@@ -1,0 +1,58 @@
+\begin{problem}[Local error estimate for cubic Hermite interpolation \coreproblem]
+ 
+ Consider the cubic Hermite interpolation operator $\mathcal{H}$ of a function defined on an interval $[a,b]$ to the space  $\mathcal{P}_3$ polynomials of degree at most $3$:
+ \[
+  \mathcal{H}: C^1([a,b]) \rightarrow \mathcal{P}_3
+ \]
+defined by:
+\begin{itemize}
+ \item $(\mathcal{H}f)(a) = f(a)$;
+ \item $(\mathcal{H}f)(b) = f(b)$;
+ \item $(\mathcal{H}f)'(a) = f'(a)$;
+ \item $(\mathcal{H}f)'(b) = f'(b)$.
+\end{itemize}
+Assume $f \in C^4([a,b])$. Show that for every $x \in ]a,b[$ there exists $\tau \in [a,b]$ such that\begin{align}
+ (f - \mathcal{H}f)(x) = \frac{1}{24} f^{(4)}(\tau) (x - a)^2(x-b)^2.
+\end{align}
+
+\begin{hint}
+ Fix $x \in ]a,b[$. Use an auxiliary function:
+ \begin{align}
+  \varphi(t) := f(t) - (\mathcal{H}f)(t) - C (t-a)^2(t-b)^2.
+ \end{align}
+ Find $C$ s.t. $\varphi(x) = 0$.
+\end{hint}
+
+\begin{hint}
+ Use Rolle's theorem (together with the previous hint and the definition of $\mathcal{H}$) to find a lower bound for the number of zeros of $\varphi^{(k)}$ for $k = 1,2,3,4$.
+\end{hint}
+
+\begin{hint}
+ Use the fact that $(\mathcal{H}f) \in \mathcal{P}_3$ and for $p(t) := (t - a)^2(t - b)^2, p \in \mathcal{P}_4$.
+\end{hint}
+
+
+\begin{hint}
+ Conclude showing that $\exists \tau \in ]a,b[, \varphi^{(4)}(\tau) = 0$. Use the definition of $\varphi$ to find an expression for $C$.
+\end{hint}
+
+
+\begin{solution}
+ Fix $x \in ]a,b[$. Define:
+ \begin{align}
+  \varphi(t) := f(t) - \mathcal{H}f(t) - C (t-a)^2(t-b)^2
+ \end{align}
+ with
+ \[
+C := \frac{f(x) - \mathcal{H}f(x)}{(x-a)^2(x-b)^2}.
+ \]
+ Then $\varphi(a) = \varphi(b) = \varphi'(a) = \varphi'(b) = 0$ (using the definition of $\mathcal{H}$). Moreover $\varphi(x) = 0$ (by construction). Therefore, by Rolle's theorem ($\varphi$ has at least two local extrema), $\exists \xi_1, \xi_2 \in ]a,b[, \xi_1 \neq \xi_2$ such that $\varphi'(\xi_1) = \varphi'(\xi_2) = 0$. \\
+ $\Rightarrow \varphi'$ has at least 4 zeros in $[a,b]$ ($a, b, \xi_1$ and $\xi_2$ are pairwise distinct). \\
+ $\Rightarrow \varphi''$ has at least 3 zeros in $[a,b]$ ($\varphi'$ has at least 3 local extrema). \\
+ $\Rightarrow \varphi^{(3)}$ has at least 2 zeros in $[a,b]$ ($\varphi''$ has at least 2 local extrema). \\
+ $\Rightarrow \varphi^{(4)}$ has at least 1 zero in $[a,b]$ ($\varphi^{(3)}$ has at least one local extrema), let $\tau$ be such zero. \\
+ $\Rightarrow 0 = \varphi^{(4)}(\tau) = f^{(4)}(\tau) - 24 C$. \\
+ $\Rightarrow C = \frac{1}{24} f^{(4)}(\tau)$. $\qed$
+\end{solution}
+
+\end{problem}

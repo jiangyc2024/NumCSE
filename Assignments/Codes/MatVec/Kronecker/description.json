@@ -1,0 +1,4 @@
+{
+    "name": "Kron",
+    "all" : ["kron.cpp", "timer.hpp"]
+}

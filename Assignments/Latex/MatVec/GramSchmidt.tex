@@ -1,0 +1,65 @@
+\begin{samproblem}*
+  {prb:gramschmidteigen}
+  {Gram-Schmidt orthogonalization with \eigen{}}[1]
+  {
+    \cref{gramschmidt} performs a Gram-Schmidt
+    orthogonalization of the columns of a givenn argument matrix.
+  }
+
+% ============================== SUBPROBLEM
+\begin{subproblem}{sp:1}[1]
+  Based on the C++ linear algebra library \eigen{}, implement a function
+  \begin{lstlisting}[style=cpp]
+MatrixXd gramschmidt(const MatrixXd &A);
+  \end{lstlisting}
+  that performs the same computations as \cref{gramschmidt}.
+
+  Use \eigen{}s block operations
+  (see \href{https://eigen.tuxfamily.org/dox/group__TutorialBlockOperations.html}
+  {here}).
+
+  % BEGIN ================ SOLUTION  ================   %
+  \begin{samwriteprbpart}{impl}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        \begin{samcode}[C++-code]{\cpl:cpp:solution}
+          {Gram-Schmidt orthogonalization with \eigen{}}
+          \samincludecpp
+          {\codes/MatVec/GramSchmidt/solutions/gramschmidt.cpp}[1]
+%         \gitlabSolF{MatVec}{GramSchmidt}{gramschmidt.cpp}
+        \end{samcode}
+%         \gitlabSolF{MatVec}{GramSchmidt}{gramschmidt.cpp} \\
+%         \gitlabTemF{MatVec}{GramSchmidt}{gramschmidt.cpp} \\
+%         \gitlabSolD{MatVec}{GramSchmidt} \\
+%         \gitlabTemD{MatVec}{GramSchmidt}
+      \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+  % END ================ SOLUTION  ================   %
+\end{subproblem}
+
+% ============================== SUBPROBLEM
+\begin{subproblem}{sp:2}[1]
+  \label{sp:strassen:2}
+  Test your implementation by applying the function \ccode{gram\_schmidt}
+  to a small random matrix
+  and checking the orthonormality of the columns of the output
+  matrix.
+
+  % BEGIN ================ SOLUTION  ================   %
+  \begin{samwriteprbpart}{test}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        \begin{samcode}[C++-code]{\cpl:cpp:solution}
+          {Test of Gram-Schmidt orthogonalization with \eigen{}}
+          \samincludecpp
+          {\codes/MatVec/GramSchmidt/solutions/gramschmidt.cpp}[2]
+        \end{samcode}
+      \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+  % END ================ SOLUTION  ================   %
+
+\end{subproblem}
+
+\end{samproblem}

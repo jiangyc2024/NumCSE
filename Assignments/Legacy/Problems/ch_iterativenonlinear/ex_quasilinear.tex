@@ -1,0 +1,152 @@
+
+\renewcommand{\chpt}{ch_iterativenlse}
+
+
+\begin{problem}[Solving a quasi-linear system \coreproblem] \label{prb:quasilin}
+
+In \lref{par:QLSE} we studied Newton's method for a so-called quasi-linear system
+of equations, see \lref{eq:QLSE}. In \lref{ex:QLSE} we then dealt with concrete 
+quasi-linear system of equations and in this problem we will supplement the
+theoretical considerations from class by implementation in \Eigen{}. We will also
+learn about a simple fixed point iteration for that system, see
+\ncsesect{sec:FixedPointIterations}. Refresh yourself about the relevant parts of
+the lecture. You should also try to recall the Sherman-Morrison-Woodbury formula \ncseref{lem:SMW}.
+
+Consider the \emph{nonlinear} (quasi-linear) system:
+\begin{gather*}
+  \label{QLSE:x1}
+  \vec{A}(\vec{x}) \vec{x} = \vec{b}\;,
+\end{gather*}
+as in \ncseex{ex:QLSE}. Here, $\vec{A}: \IR^n \rightarrow \IR^{n,n}$ is a matrix-valued function:
+\[
+ \vec{A}(\vec{x}) := \begin{bmatrix}
+                      \gamma(\vec{x})	& 1 & & \\
+                      1			& \gamma(\vec{x}) & 1 \\
+                      & \ddots & \ddots & \ddots \\
+                      & & \ddots & \ddots & \ddots \\
+                      & & & 1			& \gamma(\vec{x}) & 1 \\
+                      & & & & 1			& \gamma(\vec{x}) \\
+                     \end{bmatrix}, \quad \gamma(\vec{x}) := 3 + \lVert \vec{x} \rVert_2
+\]
+where $\lVert \cdot \rVert_2$ is the Euclidean norm.
+ 
+\begin{subproblem}[1]
+  \label{QLSE:sp1}
+  A fixed point iteration fro \eqref{QLSE:x1} can be obtained by the ``frozen
+  argument technique''; in a step we take the argument to the matrix valued
+  function from the previous step and just solve a linear system for the
+  next iterate. State the defining recursion and iteration function for
+  the resulting fixed point iteration.
+\end{subproblem}
+
+\begin{subproblem}[2]
+  We consider the fixed point iteration derived in sub-problem \ref{QLSE:sp1}.
+  Implement a function computing the iterate $\vec{x}^{(k+1)}$ from
+  $\vec{x}^{(k)}$ in \Eigen{}.
+
+ \begin{hint}
+  (Optional) This is classical example where \emph{lambda} C++11 functions may become handy.
+
+  Write the iteration function as:
+ \begin{lstlisting}
+template <class func, class Vector>
+void fixed_point_step(func&& A, const Vector & b, const Vector & x, Vector & x_new);
+ \end{lstlisting}
+ where \verb|func| type will be that of a \emph{lambda} function implementing $\vec{A}$. The vector \verb|b| will be an input random r.h.s. vector. The vector \verb|x| will be the input $\vec{x}^{(k)}$ and \verb|x_new| the output $\vec{x}^{(k+1)}$.
+ 
+ Then define a \emph{lambda} function:
+ \begin{lstlisting}
+auto A = [ /* TODO */ ] (const Eigen::VectorXd & x) -> Eigen::SparseMatrix<double> & { /* TODO */ };
+ \end{lstlisting}
+ returning $\vec{A}(\vec{x})$ for an input $\vec{x}$ (\emph{capture} the appropriate variables).
+ You can then call your stepping function with:
+ \begin{lstlisting}
+fixed_point_step(A, b, x, x_new);
+ \end{lstlisting}
+ 
+ Include \verb|#include <functional>| to use \verb|std::function|.
+ \end{hint}
+ 
+ \cprotEnv \begin{solution}
+  See \verb|quasilin.cpp|.
+ \end{solution}
+\end{subproblem}
+
+\begin{subproblem}[1] \label{subprb:solve-quasilin-fixedpoint}
+ Write a routine that finds the solution $\vec{x}^*$ with the fixed point method
+ applied to the previous quasi-linear system. Use $\vec{x}^{(0)} = \vec{b}$ as
+ initial guess. Supply it with a suitable correction based stopping criterion as discussed in
+ \lref{sec:termination-criteria-1} and pass absolute and relative tolerance as
+ arguments. 
+ 
+ \cprotEnv \begin{solution}
+  See \verb|quasilin.cpp| .
+ \end{solution}
+\end{subproblem}
+ 
+ 
+\begin{subproblem}[1] \label{subprb:quasilin-newton}
+ Let $\vec{b} \in \IR^n$ be given. Write the recursion formula for the solution of 
+ \[
+ \vec{A}(\vec{x}) \vec{x} = \vec{b}
+ \]
+ with the Newton method. 
+ 
+ \begin{solution}
+ The Newton iteration, as provided in the lecture notes, reads:
+\begin{align}
+  \vec{x}^{(k+1)} = \vec{x}^{(k)} - \left( \vec{A}(\vec{x}^{(k)}) + \frac{\vec{x}^{(k)} (\vec{x}^{(k)})^\top}{\lVert \vec{x}^{(k)} \rVert_2}\right)^{-1} ( \vec{A}(\vec{x}^{(k)}) \vec{x}^{(k)} - \vec{b} ).
+\end{align}
+ \end{solution}
+
+\end{subproblem}
+
+\begin{subproblem}[3] \label{subprb:rewrite-SMW}
+ The matrix $\vec{A}(\vec{x})$, being symmetric and tri-diagonal, is cheap to invert. Rewrite the previous iteration efficiently, exploiting, the Sherman-Morrison-Woodbury inversion formula for rank-one modifications \ncseref{lem:SMW}.
+ 
+ \begin{solution}
+ We replace the inversion with the SMW formula:
+ \begin{align*}
+  \vec{x}^{(k+1)} & = \vec{x}^{(k)} - \left( \vec{A}(\vec{x}^{(k)}) + \frac{\vec{x}^{(k)} (\vec{x}^{(k)})^\top}{\lVert \vec{x}^{(k)} \rVert_2}\right)^{-1} ( \vec{A}(\vec{x}^{(k)}) \vec{x}^{(k)} - \vec{b} ) \\
+  & = \vec{x}^{(k)} -  \vec{A}(\vec{x}^{(k)})^{-1} \left( \vec{I} - \frac{1}{\lVert \vec{x}^{(k)} \rVert_2} \frac{\vec{x}^{(k)} (\vec{x}^{(k)})^\top \vec{A}(\vec{x}^{(k)})^{-1} }{1 + \frac{(\vec{x}^{(k)})^\top \vec{A}(\vec{x}^{(k)})^{-1} \vec{x}^{(k)}}{\lVert \vec{x}^{(k)} \rVert_2} } \right) ( \vec{A}(\vec{x}^{(k)}) \vec{x}^{(k)} - \vec{b} ) \\
+  & = \vec{A}(\vec{x}^{(k)})^{-1} \vec{b} + \vec{A}(\vec{x}^{(k)})^{-1} \frac{\vec{x}^{(k)} (\vec{x}^{(k)})^\top \vec{A}(\vec{x}^{(k)})^{-1} }{\lVert \vec{x}^{(k)} \rVert_2 + (\vec{x}^{(k)})^\top \vec{A}(\vec{x}^{(k)})^{-1} \vec{x}^{(k)} } ( \vec{A}(\vec{x}^{(k)}) \vec{x}^{(k)} - \vec{b} ) \\
+  & = \vec{A}(\vec{x}^{(k)})^{-1} \left(\vec{b} + \frac{\vec{x}^{(k)} (\vec{x}^{(k)})^\top  ( \vec{x}^{(k)} - \vec{A}(\vec{x}^{(k)})^{-1} \vec{b} )}{\lVert \vec{x}^{(k)} \rVert_2 + (\vec{x}^{(k)})^\top \vec{A}(\vec{x}^{(k)})^{-1} \vec{x}^{(k)} } \right) \\
+ \end{align*}
+ \end{solution}
+
+\end{subproblem}
+
+
+\begin{subproblem}[4]
+ Implement the above step of Newton method in \Eigen{}.
+ 
+ \begin{hint}
+  If you didn't manage to solve subproblem \ref{subprb:rewrite-SMW} use directly the formula from \ref{subprb:quasilin-newton}.
+ \end{hint}
+ 
+ \begin{hint}
+  (Optional) Feel free to exploit lambda functions (as above), writing  a function:
+ \begin{lstlisting}
+template <class func, class Vector>
+void newton_step(func&& A, const Vector & b, const Vector & x, Vector & x_new);
+ \end{lstlisting}
+ \end{hint}
+
+ \cprotEnv \begin{solution}
+  See \verb|quasilin.cpp|.
+ \end{solution}
+
+\end{subproblem}
+
+\begin{subproblem}[1]
+ Repeat subproblem \ref{subprb:solve-quasilin-fixedpoint} for the Newton method.
+ As initial guess use $\vec{x}^{(0)} = \vec{b}$.
+ 
+ \cprotEnv \begin{solution}
+  See \verb|quasilin.cpp|.
+ \end{solution}
+\end{subproblem}
+ 
+\end{problem}
+
+ 

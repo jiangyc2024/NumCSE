@@ -1,0 +1,7 @@
+//// 
+//// Copyright (C) 2016 SAM (D-MATH) @ ETH Zurich
+//// Author(s): {author} <{email}> 
+//// Contributors: {contributors}
+//// This file is part of the NumCSE repository.
+//// Report issues to: https://gitlab.math.ethz.ch/NumCSE/NumCSE/issues
+////

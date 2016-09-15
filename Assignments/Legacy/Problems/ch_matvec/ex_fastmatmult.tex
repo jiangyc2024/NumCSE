@@ -1,0 +1,53 @@
+% Required for hand-in: ---
+% Required for solution: ---
+\renewcommand{\chpt}{ch_matvec}
+
+\begin{problem}[Fast matrix multiplication]
+  \label{prb:fastmatmult}
+  \lref{rem:strassen} presents Strassen's algorithm that can achieve
+  the multiplication of two dense square matrices of size {$n=2^{k}$},
+  $k\in\bbN$, with an asymptotic complexity better than $O(n^{3})$.
+
+  \begin{subproblem}[2]
+    \label{sp:strassen:1}
+    Using \eigen~ implement a function
+\begin{lstlisting}[style=cppsimple]
+ MatrixXd strassenMatMult(const MatrixXd & A, const MatrixXd & B)
+\end{lstlisting}
+    that uses Strassen's algorithm to multiply the two matrices $\VA$ and
+    $\VB$ and return the result as output. 
+
+    \begin{solution}
+      See Listing~\ref{cppc:strassen}.   
+    \end{solution}
+
+  \end{subproblem}
+
+  \begin{subproblem}[2]
+    Validate the correctness of your code by comparing the result
+    with \eigen's built-in matrix multiplication.
+
+    \begin{solution}
+     See Listing~\ref{cppc:strassen}.     
+    \end{solution}
+  \end{subproblem}
+
+  \begin{subproblem}[3]
+     \label{sp:strassen:2}
+    Measure the runtime of your function
+    \lstinline[style=cppsimple]|strassenMatMult|
+    for random matrices of sizes $2^{k}$, $k=4,\ldots,10$, and compare
+    with the matrix multiplication offered by the $\ast$-operator
+    of \eigen{}.
+
+    \begin{solution}
+     See Listing~\ref{cppc:strassen}.
+     \lstinputlisting[style=cpp,caption={\eigen{}  Implementation of the Strassen's algorithm and runtime comparisons.},label={cppc:strassen}]
+{\problems/\chpt/CPP/strassen.cpp}
+    \end{solution}
+    
+    
+
+
+  \end{subproblem}
+\end{problem}

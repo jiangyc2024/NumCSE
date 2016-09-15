@@ -1,0 +1,218 @@
+% ncse_new/p3_ODE/ch1_SingleStepMethods/ex_RK3.tex
+% it contains part of the solution of ex_TaylorODE, 2 methods for the same problem
+% last year it was called Heun
+% solution:           ExRK3solution.eps   ExRK3convergence.eps   RK3_step.m     MyIntegrate.m   pred_prey.m       exRK3.m
+
+\begin{problem}[Three-stage Runge-Kutta method \coreproblem] \label{prb:RK3}
+The most widely used class of numerical integratos for IVPs is that of \emph{explicit} Runge-Kutta (RK) methods as defined in \ncsedef{def:rk}. They are usually described by giving their coefficients in the form of a Butcher scheme \ncseref{eq:BSexpl}.
+
+\begin{subproblem}[4] \label{subprb:RK3_1}
+Implement a header-only \Cpp{} class \verb|RKIntegrator|
+\begin{lstlisting}[language=c++]
+template <class State>
+class RKIntegrator {
+public:
+  RKIntegrator(const Eigen::MatrixXd & A,
+               const Eigen::VectorXd & b) {
+    // TODO: given a Butcher scheme in A,b, initialize RK method for solution of an IVP
+  }
+
+  template <class Function>
+  std::vector<State> solve(const Function &f, double T,
+                           const State & y0,
+                           unsigned int N) const {
+    // TODO: computes N uniform time steps for the ODE y'(t) = f(y) up to time T of RK method with initial value y0 and store all steps (y_k) into return vector 
+  }
+private:
+  template <class Function>
+  void step(const Function &f, double h,
+            const State & y0, State & y1) const {
+    // TODO: performs a single step from y0 to y1 with step size h of the RK method for the IVP with rhs f
+  }
+
+  // TODO: hold data for RK methods
+};
+\end{lstlisting}
+which implements a generic RK method given by a Butcher scheme to solve the autonomous initial value problem $\dot{\Vy} = \Vf(\Vy)$, $\Vy(t_{0}) = \Vy_{0}$.
+    
+\begin{hint}
+ See \verb|rkintegrator_template.hpp| for more details about the implementation.
+\end{hint}
+
+\cprotEnv \begin{solution} 
+ See \verb|rkintegrator.hpp|.
+\end{solution}
+\end{subproblem}
+
+%     whose right hand side
+%     is passed via the function handle \texttt{\symbol{64}(t,y) odefun(t,y)}, over the
+%     interval specified by \texttt{tspan} using $N\in\bbN$ uniform timesteps.
+% 
+% The return values should correspond to those of the \Matlab standard integrators, % see \slrem{ex:ode45}.
+
+ 
+% Definition~\ncsedef{def:rk} gives the step of Runge-Kutta method taken into account for the problem $\dot\Vy= \Vf(t,\Vy)$:
+% $$ \Vk_1=\Vf(t,\Vy_0),\quad \Vk_2=\Vf\Big(t+\frac h3,\Vy_0+\frac h3\Vk_1\Big),\quad \Vk_3=\Vf\Big(t+\frac23h,\Vy_0+\frac23 h\Vk_2\Big),\quad
+% \Vy_1 = \Vy_0+\frac h4\Vk_1+\frac34h\Vk_3. $$
+% A single step for this method is implemented in code~\ref{mc:RK3_step}:
+
+% \lstinputlisting[caption={A single step of the 3-stages Runge-Kutta method.},label={mc:RK3_step}] {p3_ODE/ch1_SingleStepMethods/MATLAB/RK3_step.m}
+
+% Here, the first internal stage is the starting value of the step.
+% We compute the function values of the three internal stages \texttt{K1}, \texttt{K2}, \texttt{K3}; in the end, we compute the numerical solution \texttt{y1} after one complete time step.
+% Here you can see how the additional arguments are passed to the ODE file.
+% 
+% 
+% For the integration of an ODE with a general one-step method (with constant time steps), we can use the following wrapper function:
+% 
+%     \lstinputlisting[caption={Wrapper function for one-step methods.},label={mc:MyIntegrate}]
+%     {p3_ODE/ch1_SingleStepMethods/MATLAB/MyIntegrate.m}
+
+%     Here, the first three input arguments are similar to the syntax of
+%     the standard Matlab solvers: first a function describing the ODE,
+%     then a vector \texttt{tspan = [t0 T]} containing the start and end
+%     time and then the initial value \texttt{y0} (a column vector).
+% 
+% These three arguments are usually followed by an optional argument to set certain options for the solver.
+% Here, we have two options, the first one is the number of time steps. 
+% The step size is then automatically determined by the assumption that the step size is constant, see line 4.
+% The second option determines the method used for the integration.
+% The last (optional) argument is a tool to pass additional arguments to the ODE routine.
+% 
+% In this function, we assume \texttt{y0} and the output of the step function to be column vectors.
+% Nevertheless the output of \Matlab standard solvers is given as a row for each time step.
+% Thus, to keep consistency, in the last line of the code we transpose the result.
+% 
+% We can integrate the ODE defined by \texttt{odefun} calling:
+% \begin{center}  \texttt{ [t, y] = MyIntegrate(@odefun, tspan, y0, n, @RK3\_step); }\end{center}
+% }
+\begin{subproblem}[3] \label{subprb:RK3_1}
+Test your implementation of the RK methods with the following data. As autonomous initial value problem, consider the predator/prey model (cf. \ncseref{ex:LV}):
+\begin{align} \label{eq:predator-prey}
+ \dot y_1(t) = (\alpha_1 - \beta_1 y_2(t)) y_1(t) \\
+ \dot y_2(t) = (\beta_2 y_1(t) - \alpha_2) y_2(t) \\
+ \vec{y}(0) = \left[ 100, 5 \right] 
+\end{align}
+with coefficients $\alpha_1 = 3, \alpha_2 = 2, \beta_1 = \beta_2 = 0.1$.
+
+Use a Runge-Kutta single step method described by the following \emph{Butcher scheme} (cf. \ncseref{def:rk}):
+\begin{equation}
+  \label{eq:ButcherHeun}
+  \begin{array}{c|ccc}
+    0           & 0           &             &   \\
+    \frac{1}{3} & \frac{1}{3} & 0           &   \\
+    \frac{2}{3} & 0           & \frac{2}{3} & 0 \\
+    \hline      & \frac{1}{4} & 0           & \frac{3}{4}
+  \end{array}
+\end{equation}
+
+Compute an approximated solution up to time $T = 10$ for the number of steps $N = 2^j, j = 7, \dots, 14$.
+
+Use, as reference solution, $\vec{y}(10) = \left[ 0.319465882659820, 9.730809352326228 \right]$.
+
+Tabulate the error and compute the experimental order of algebraic convergence of the method.
+
+\begin{hint}
+ See \verb|rk3prey_template.cpp| for more details about the implementation.
+\end{hint}
+
+\cprotEnv \begin{solution} 
+ See \verb|rk3prey.cpp|.
+\end{solution}
+
+\end{subproblem}
+
+%=====================================================================================================
+% 
+% \begin{subproblem}[1] \label{subprb:RK3_2}
+% How many \texttt{odefun}-evaluations does the function call \texttt{RK3(odefun,tspan, y0, N)} involve?
+% 
+%  \cprotEnv  \begin{solution}
+% As we can see in the function \texttt{RK3\_step}, we have to call the ODE file three times per internal step, once for every increment $\Vk_i$. So, the total number is $3N$.
+% \end{solution}
+
+
+%=====================================================================================================
+% 
+% %out of subproblems:
+% \vspace{4mm}
+% A so-called predator-prey model was introduced in {ex:LV}, which boils down to initial value problems for the Lotka-Volterra  differential equations {eq:LV}, for example
+%     \begin{equation}\label{eq:predator-prey}
+%       \begin{array}[h]{rcrl}
+%         \dot{u} &=& \ (\alpha_1-\beta_1 v)u, & \quad u(0) = 100\;,\\
+%         \dot{v} &=& -(\alpha_2-\beta_2 u)v, &\quad  v(0) = 5\;.
+%       \end{array}
+%     \end{equation}
+%     Here, $u(t)$ denotes the population of the prey, and $v(t)$ that of the
+%     predators. Further, the following parameters are to be use in the sequel:
+%     $\alpha_1 = 3$ is the birth rate of the prey, $\alpha_2 = 2$ is the birth rate of
+%     the predators, whereas $\beta_1 = \beta_2 = 0.1$ are the death rates of the prey
+%     and predators, respectively.
+%     
+% 
+% %=====================================================================================================
+% 
+% \begin{subproblem}[3] \label{subprb:RK3_3}
+% 
+% Use the \Matlab{} standard integrator \texttt{ode45} with  relative tolerance \texttt{100eps} and absolute tolerance \texttt{eps} to determine ``reference values'' $u(10)$, $v(10)$ for the solution of the initial value problem \eqref{eq:predator-prey}.
+% 
+% Plot the populations $u(t)$ and $v(t)$ as a function of $t\in[0,10]$, see \ncseref[Fig.]{lv2}.
+% Then create a phase diagram, where you plot the number of prey against the number of predators, $\big(u(t),v(t)\big)$, see \ncseref[Fig.]{lv1} from \ncseex{ex:LV}.
+% 
+% \begin{hint}
+% see {ex:scmatl} or the \Matlab help pages for instructions how to set tolerances for the integrator. 
+% \end{hint}
+% 
+% \begin{solution}
+%  See the solution of \ref{subprb:RK3_4}.
+% \end{solution}
+% 
+% \end{subproblem}
+% 
+% %=====================================================================================================
+% 
+% \begin{subproblem}[3] \label{subprb:RK3_4}
+%  
+% 
+% Use the initial value problem \eqref{eq:predator-prey} as a test case to determine numerically the order of convergence of the Runge-Kutta method defined in \eqref{eq:ButcherHeun}.
+% 
+% \begin{hint}
+%  you may use the integration interval $[0,10]$ and monitor the error at final time.
+% This error can be computed based on the reference values found in the previous sub-problem. 
+% \end{hint}
+% 
+% \end{subproblem}
+% 
+%  \cprotEnv \begin{solution}
+%  
+% To solve the predator-prey model, we first implement the ODE right-hand side.
+% 
+% %Code~\ref{mc:pred_prey} can compute also some derivatives of $\Vf$, these will only be used in \ref{prb:TaylorODE}
+% 
+% % \lstinputlisting[caption={The implementation of the Lotka-Volterra ODE.}, label={mc:pred_prey}]
+% % {p3_ODE/ch1_SingleStepMethods/MATLAB/pred_prey.m}
+% 
+% To use the Runge-Kutta method, we actually only need the parameters $\alpha_1$, $\alpha_2$, $\beta_1$ and $\beta_2$ and the first \texttt{case} of the \texttt{switch}. % (the vector \texttt{x} will be needed only in \ref{prb:TaylorODE}).
+% Note that in order to use the standard \Matlab solvers we have to keep the first input argument for the time variable, although the equation does not explicitly depend on time.
+% 
+% % \begin{figure}[htbp]\caption{The solution of the predator-prey model and the convergence plot
+% % %of the methods of \ref{prb:RK3} and \ref{prb:TaylorODE}
+% % } \label{fig:ExRK3}
+% % \begin{center}\includegraphics[width=0.75\textwidth]{ExRK3solution}
+% % \includegraphics[width=0.65\textwidth]{ExRK3convergence}\end{center}\end{figure}
+% % 
+% % \lstinputlisting[caption={Comparison of the algorithms of \ref{prb:RK3}
+% % %and \ref{prb:TaylorODE}
+% % },label={mc:exRK3},escapechar={}]
+% % {p3_ODE/ch1_SingleStepMethods/MATLAB/exRK3.m}
+% 
+% In code~\ref{mc:exRK3}, we either use the default parameters for the ODE, which are set to those given in the problem, or we can set different ones by hand.
+% Then we set the initial condition and the time interval and we use the \texttt{odeset} function to set the absolute and relative tolerances for the \Matlab solver.
+% 
+% To illustrate the order of convergence of a method experimentally, we solve the same problem for different step sizes and compare the error at the final time.
+% This is done in the \texttt{for}-loop of code~\ref{mc:exRK3}.
+% Finally, we produce a loglog-plot of the error versus the step size and observe third order convergence, see Figure~\ref{fig:ExRK3}.
+% 
+% \end{solution}
+% 
+\end{problem}

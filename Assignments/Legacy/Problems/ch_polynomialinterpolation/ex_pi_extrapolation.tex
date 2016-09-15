@@ -1,0 +1,122 @@
+\begin{problem}[Approximation of $\pi$]
+In \lref{subsec:extrapolation} we learned about the use of polynomial extrapolation
+(= interpolation outside the interval covered by the nodes) to compute
+inaccessible limits $\lim\nolimits_{h\to 0}\Psi(h)$. In this problem we apply
+extrapolation to obtain the limit of a sequence $x^{(n)}$ for $n\to\infty$.
+
+We consider a quantity of interest that is defined as a limit
+  \begin{gather}
+    \label{eq:1}
+    x^{\ast} = \lim\limits_{n\to\infty} T(n)\;,
+  \end{gather}
+  with a function $T:\{n,n+1,\ldots\}\mapsto\bbR$. However, computing $T(n)$ for
+  very large arguments $k$ may not yield reliable results.
+
+  The idea of \emph{extrapolation} is, firstly, to compute a few values
+  $T(n_{0}),T(n_{1}),\ldots,T(n_{k})$, $k\in\bbN$, and to consider them as the values 
+  $g(1/n_{0}),g(1/n_{1}),\ldots,g(1/n_{k})$ of a continuous function
+  $g:]0,1/n_{\min}]\mapsto\bbR$, for which, obviously
+  \begin{gather}
+    \label{eq:2}
+    x^{\ast} = \lim\limits_{h\to 0} g(h)\;.
+  \end{gather}
+  Thus we recover the usual setting for the application of polynomial
+  extrapolation techniques. Secondly, according to the idea of extrapolation to
+  zero, the function $g$ is approximated by an interpolating polynomial
+  $p\in\Cp_{k-1}$ with $p_{k-1}(n_{j}^{-1}) = T(n_{j})$, $j=1,\ldots,k$. In many
+  cases % (see \ncsesect{subsec:extrapolation} for detailed information and the
+  % connection with asymptotic expansions)
+  we can expect that $p_{k-1}(0)$ will
+  provide a good approximation for $x^{\ast}$.  In this problem we study the
+  algorithmic realization of this extrapolation idea for a simple example.
+
+  The unit circle can be approximated by inscribed regular polygons with $n$ edges.
+  The length of half of the circumference of such an $n$-edged polygon
+  can be calculated by elementary geometry:
+   
+    \[
+    \begin{array}{c|ccccccc}
+      n & 2 & 3 & 4 & 5 & 6 & 8 & 10 \\
+      \hline
+        &  &  &  &  &  &  &  \\[-\smallskipamount]
+      T(n) := \frac{U_n}{2} &\; 2 &\; \frac{3}{2}\sqrt{3} &\; 2 \sqrt{2} &\;
+                                                                           \frac{5}{4}\sqrt{10-2\sqrt{5}} &\; 3 &\; 4\sqrt{2-\sqrt{2}} &\;
+                                                                                                                                         \frac{5}{2} \left ( \sqrt{5}-1 \right )
+    \end{array}
+    \]
+
+Write a \Cpp{} function
+\begin{center}
+  \texttt{double pi\_approx(int k);}
+\end{center}
+that uses the \emph{Aitken-Neville scheme}, see \ncseref{AitkenNeville}, to
+approximate $\pi$ by extrapolation from the data in the above table, using
+the first $k$ values, $k=1,\ldots,7$.
+
+
+\cprotEnv \begin{solution}
+ See \verb|pi_approx.cpp|.
+\end{solution}
+
+
+% \bigskip
+%  
+% We want to approximate $pi$ as half of the circumference of the unit
+% circle. The circumference of the unit circle is approximated by the
+% circumference of polygons fitted into the unit circle. These are given
+% by geometry. Thus, we obtain the function $U(n)$, which gives us the
+% circumference of the polygon with $n$ edges. We then have the
+% relation, that
+% \begin{equation*}
+%   \lim_{n\to \infty} \frac{U(n)}{2} = \pi\ .
+% \end{equation*}
+% The idea is, to use interpolation, to approximate $\pi$. But for the
+% function $U(n)$, we would have to evaluate the interpolation
+% polynomial at $\infty$. Thus, we reformulate the problem by defining a
+% function $\widetilde{U}(\frac{1}{n}) = U(n)$. Now we have
+% \begin{equation*}
+%   \lim_{n\to \infty} \frac{U(n)}{2} 
+%   = \lim_{\frac{1}{n}\to 0} \frac{\widetilde{U}(\frac{1}{n})}{2} 
+%   = \pi\ ,
+% \end{equation*}
+% thus, we have to interpolate $\widetilde{U}$ at zero, which is more
+% reasonable than interpolating at $\infty$. Since we only need to
+% interpolate at one specific point, we can use the Aitken-Neville
+% scheme. This is done in \texttt{pi\_approx}.
+% 
+% % \lstinputlisting[caption={Matlab Code for
+% %   \texttt{pi\_approx}},label={lst:pi_approx}]{pi_approx.m}
+% 
+% Here, we first build up the data given in the table. Then, we do a
+% vectorized version of the Aitken-Neville scheme.
+% 
+% In the script \texttt{a1.m}, we plot the unit circle and the first few
+% polygons, then approximate $\pi$ with a polynomial of degree 1 to 7,
+% print out the approximation and plot the error.
+% % 
+% % \lstinputlisting[caption={Matlab Code for
+% %   Problem 1.},label={lst:a1}]{a1.m}
+% 
+% The output is given below.
+% 
+% \begin{verbatim}
+%    >> a1
+%    Degree = 1, pi ~ 2.000000
+%    Degree = 2, pi ~ 3.794229
+%    Degree = 3, pi ~ 3.244731
+%    Degree = 4, pi ~ 3.125325
+%    Degree = 5, pi ~ 3.140488
+%    Degree = 6, pi ~ 3.141676
+%    Degree = 7, pi ~ 3.141595
+% \end{verbatim}
+
+% \begin{center}
+%   \includegraphics[width=\textwidth]{a1}
+% \end{center}
+
+% We also used the function \texttt{plot\_circle}.
+
+% \lstinputlisting[caption={Matlab Code for
+%   \texttt{plot\_circle}.},label={lst:plot_circle}]{plot_circle.m}
+ 
+\end{problem}

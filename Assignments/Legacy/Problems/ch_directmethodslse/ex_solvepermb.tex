@@ -1,0 +1,37 @@
+% ncse_new/p1_SystemsOfEquations/ch2_DirectMethodsLSE/ex_Lyapunov.tex
+% solutions require:  solveLyapunov.m
+
+\begin{problem}[Sequential linear systems]\label{prb:permb}
+  This problem is about a sequence of linear systems, please see
+  \lref{rem:seqsolvelse}. The idea is that if we solve several linear systems with
+  the same matrix $\VA$, the computational cost may be reduced by performing the
+  LU decomposition only once.
+
+  Consider the following \matlab{} function with input data $\VA\in\R^{n,n}$ and $\Vb\in\R^n$.
+
+\lstinputlisting[label={mc:solvepermb}]{\problems/ch_directmethodslse/MATLAB/solvepermb.m}
+
+\begin{subproblem}[1]
+What is the asymptotic complexity of this function as $n\to\infty$?
+\begin{solution}
+The code consists of $n$ solutions of a linear system, and so the asymptotic complexity is $O(n^4)$.
+\end{solution}
+\end{subproblem}
+
+\begin{subproblem}[2]
+  Port the \matlab{} function \lstinline|solvepermb| to C++ using \eigen{}.
+  (This means that the C++ code should perform exactly the same computations in 
+  exactly the same order.)
+  \begin{solution}
+    See file \texttt{solvepermb.cpp}.
+  \end{solution}
+\end{subproblem}
+
+\begin{subproblem}[3]
+Design an efficient implementation of this function with asymptotic complexity $O(n^3)$ in Eigen.
+\begin{solution}
+See file \texttt{solvepermb.cpp}.
+\end{solution}
+\end{subproblem}
+
+\end{problem}

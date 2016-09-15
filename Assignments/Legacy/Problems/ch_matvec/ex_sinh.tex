@@ -1,0 +1,84 @@
+% ncse_new/p1_SystemsOfEquations/ch1_MatVec/ex_ArrowMatrixVector.tex
+% the exercise requires:    arrowmatvec.m    arrowmatvectiming.eps    arrowmatvectiming.jpg
+% the solutions require:    arrowmatvec2.m    arrowmatvec2timing.m    arrowmatvec2timing.eps
+
+\renewcommand{\chpt}{ch_matvec}
+
+\begin{problem}[Approximating the Hyperbolic Sine] \label{prb:sinh}
+
+In this problem we study how Taylor expansions can be used to avoid cancellations
+errors in the approximation of the hyperbolic sine, \emph{cf.} the discussion in 
+\lref{ex:taylorcancel} carefully.
+
+Consider the Matlab code given in Listing~\ref{mc:sinh_unstable}.
+\lstinputlisting[caption={Matlab function \texttt{sinh\_unstable}}, label={mc:sinh_unstable}]{\problems/ch_matvec/MATLAB/sinh_unstable.m}
+
+\begin{subproblem}[1]
+  Explain why the function given in Listing~\ref{mc:sinh_unstable} may not give a good approximation of the hyperbolic sine for small values of $x$, and compute the relative error
+  \[
+\frac{|\mathtt{sinh\_unstable}(x)-\sinh(x)|}{|\sinh(x)|}
+\]
+with Matlab for $x=10^{-k}$, $k=1,2,\ldots,10$ using as ``exact value'' the result
+of the \matlab{} built-in function \texttt{sinh}.
+  \begin{solution}
+As $x\to 0$, the terms $t$ and $1/t$ become close to each other, thereby creating cancellations errors in $y$. For $x=10^{-3}$, the relative error computed with Matlab is $6.2\cdot10^{-14}$.
+    \end{solution}
+
+\begin{subproblem}[1]
+   Write the Taylor expansion of length $m$ around $x=0$ of the function $e^x$ 
+   and also specify the remainder. 
+  \begin{solution}
+Given $m\in\n$ and $x\in \bbR$, there exists $\xi_x\in [0,x]$ such that
+\begin{equation}
+\label{eq:sinhx-taylor}
+e^x=\sum_{k=0}^m \frac{x^k}{k!} + \frac{e^{\xi_x} x^{m+1}}{(m+1)!}
+\end{equation}
+    \end{solution}
+\end{subproblem}
+
+
+
+\end{subproblem}
+
+\begin{subproblem}[2]
+Prove that for every $x\ge 0$ the following inequality holds true:
+\begin{equation}
+\label{eq:sinhx}
+\sinh x \ge x.
+\end{equation}
+  \begin{solution}
+The claim is equivalent to proving that $f(x):=e^x-e^{-x}-2x\ge 0$ for every $x\ge 0$. This follows from the fact that $f(0)=0$ and $f'(x)=e^x+e^{-x}-2\ge 0$ for every $x\ge 0$.
+    \end{solution}
+
+\end{subproblem}
+
+\begin{subproblem}[3]
+  Based on the Taylor expansion, find an approximation for $\sinh(x)$, with
+  $0\leq x\leq 10^{-3}$, so that the relative approximation 
+  error is smaller than $10^{-15}$.
+  \begin{solution}
+The idea is to use the Taylor expansion given in \eqref{eq:sinhx-taylor}. Inserting this identity in the definition of the hyperbolic sine yields
+\[
+\sinh(x)=\frac{e^x-e^{-x}}{2}=\frac{1}{2}\sum_{k=0}^m (1-(-1)^k) \frac{x^k}{k!} + \frac{e^{\xi_x} x^{m+1}+e^{\xi_{-x}} (-x)^{m+1}}{2(m+1)!}.
+\]
+The parameter $m$ gives the precision of the approximation, since $(m+1)!\to 0$ as $m\to \infty$. We will choose it later to obtain the desired tolerance. Since $1-(-1)^k=0$ if $k$ is even, we set $m=2n$ for some $n\in\n$ to be chosen later. From the above expression we obtain the new approximation given by
+\[
+y_n=\frac{1}{2}\sum_{k=0}^m (1-(-1)^k) \frac{x^k}{k!} =\sum_{j=0}^{n-1}  \frac{x^{2j+1}}{(2j+1)!},
+\]
+with remainder
+\[
+y_n-\sinh(x)=\frac{e^{\xi_x} x^{2n+1}-e^{\xi_{-x}} x^{2n+1}}{2(2n+1)!}=\frac{(e^{\xi_x} -e^{\xi_{-x}} )x^{2n+1}}{2(2n+1)!}.
+\]
+Therefore, by \eqref{eq:sinhx} and using the obvious inequalities $e^{\xi_x}\le e^x$ and $e^{\xi_{-x}}\le e^x$, the relative error can be bounded by
+\[
+\frac{|y_n-\sinh(x)|}{\sinh(x)}\le\frac{e^x x^{2n}}{(2n+1)!}.
+\]
+Calculating the right hand sides with \Matlab{} for $n=1,2,3$ and  $x=10^{-3}$ we obtain $1.7\cdot 10^{-7}$, $8.3\cdot 10^{-15}$ and $2.0\cdot 10^{-22}$, respectively.
+
+In conclusion, $y_3$ gives a relative error below $10^{-15}$, as required.
+    \end{solution}
+
+\end{subproblem}
+
+
+\end{problem}

@@ -1,0 +1,30 @@
+\begin{problem}[Lagrange interpolant]
+ 
+ Given data points $(t_i, y_i)_{i = 1}^n$, show that the Lagrange interpolant
+ \[
+  p(x) = \sum_{i = 0}^n y_i L_i(x), \quad L_i(x) := \prod_{\substack{j = 0\\ j \neq i}}^n \frac{x - t_j}{t_i - t_j}
+ \]
+
+ is given by:
+ \[
+  p(x) =  \omega(x)  \sum_{j = 0}^n \frac{y_j}{(x-t_j) \omega' (t_j)}
+ \]
+ with $\omega(x) = \prod_{j = 0}^n (x - t_j)$.
+ 
+ \begin{solution}
+ Simply exploiting the chain rule of many terms:
+  \[
+   \omega'(x) = \sum_{i = 0}^n \prod_{\substack{j = 0\\ j \neq i}}^n (x - t_j)
+  \]
+  Since $(t_i - t_j) = \delta_{i,j}$, it follows $\omega'(t_i) = \prod_{\substack{j = 0\\ j \neq i}}^n (t_i - t_j)$.
+  Therefore:
+  \begin{align*}
+  p(x) =  \omega(x)  \sum_{j = 0}^n \frac{y_j}{(x-t_j) \omega' (t_j)} = \sum_{j = 0}^n \frac{y_j}{(x-t_j) \prod_{\substack{j = 0\\ j \neq i}}^n (t_i - t_j)} \prod_{j = 0}^n (x - t_j) \\
+= \sum_{j = 0}^n \frac{y_j}{\prod_{\substack{j = 0\\ j \neq i}}^n (t_i - t_j)} \prod_{\substack{j = 0\\ j \neq i}}^n (x - t_j) = \sum_{j = 0}^n y_j \prod_{\substack{j = 0\\ j \neq i}}^n \frac{x - t_j}{t_i - t_j}.
+  \end{align*}
+
+
+ \end{solution}
+
+ 
+\end{problem}

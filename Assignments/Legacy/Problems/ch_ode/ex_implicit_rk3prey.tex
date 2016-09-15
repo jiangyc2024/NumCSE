@@ -1,0 +1,54 @@
+\begin{problem}[Implicit Runge-Kutta method \coreproblem] \label{prb:implicit_RK}
+  This problem is the analogon of \ref{prb:RK3}, \ref{PS12}, for general implicit
+  Runge-Kutta methods \lref{def:rk2}. We will adapt all routines developed for the
+  explicit method to the implicit case. This problem assumes familiarity with
+  \lref{sec:implicit-runge-kutta}, and, especially, \lref{ss:IRK} and \lref{rem:stagenewton}.
+
+  \begin{subproblem}[5] \label{subprb:RK3_1} By modifying the class
+    \verb|RKIntegrator|, design a header-only \Cpp{} class
+    \verb|implicit_RKIntegrator| which implements a general implicit RK method
+    given through a Butcher scheme \lref{eq:BS} to solve the autonomous initial value problem
+    $\dot{\Vy} = \Vf(\Vy)$, $\Vy(0) = \Vy_{0}$. The stages $\Vg_i$ as introduced
+    in \lref{eq:stages} are to be computed with the damped Newton method (see
+    \lref{sec:gedampft-newt-verf}) applied to the nonlinear system of equations
+    satisfied by the stages (see \lref{rem:stageform} and
+    \lref{rem:stagenewton}). Use the provided code \texttt{dampnewton.hpp}, that
+    is a simplified version of \lref{cpp:dampnewton}. Note that we do not
+    use the simplified Newton method as discussed in \lref{rem:stagenewton}.
+
+    In the code template \verb|implicit_rkintegrator_template.hpp| you will find all
+    the parts from \verb|rkintegrator_template.hpp| that you should reuse. In
+    fact, you only have to write the method \texttt{step} for the implicit RK.
+    
+    \cprotEnv 
+    \begin{solution} See \verb|implicit_rkintegrator.hpp|.
+    \end{solution}
+  \end{subproblem}
+  
+  \begin{subproblem}[2]
+    Examine the code in  \texttt{implicit\_rk3prey.cpp}. Write down the complete
+    Butcher scheme according to \lref{eq:BS} for the implicit Runge-Kutta method
+    defined there. Which method is it? Is it A-stable \lref{def:Astab}, L-stable
+    \lref{def:Lstab}? 
+
+    \begin{hint}
+      Scan the particular implicit Runge-Kutta single step methods presented in 
+      \lref{sec:implicit-runge-kutta}.
+    \end{hint}
+  \end{subproblem}
+  \begin{solution}
+  The Butcher scheme used corresponds to the Radau RK-SSM of order 3 
+      (see \lref{ex:RADAU} for the complete scheme). Thus, the method is A-stable and L-stable.
+  \end{solution}
+
+  \begin{subproblem}[1] \label{subprb:RK3_1} Test your implementation \verb|implicit_RKIntegrator| of general
+    implicit RK SSMs with the routine provided
+    in the file \texttt{implicit\_rk3prey.cpp} and comment on the observed order
+    of convergence.
+    
+    \cprotEnv \begin{solution} 
+      As expected, the observed order of convergence is 3  (see \lref{ex:RADAU}).
+\end{solution}
+\end{subproblem}
+
+\end{problem}

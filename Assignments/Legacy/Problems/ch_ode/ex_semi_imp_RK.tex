@@ -1,0 +1,178 @@
+\begin{problem}[Semi-implicit Runge-Kutta SSM\coreproblem]\label{prb:sirk-ssm}
+  General implicit Runge-Kutta methods as introduced in \lref{ss:IRK} entail
+  solving systems of non-linear equations for the increments, see
+  \lref{rem:stagenewton}. Semi-implicit Runge-Kutta single step methods, also
+  known as Rosenbrock-Wanner (ROW) methods \lref{eq:sirkinc} just require the solution
+  of linear systems of equations. This problem deals with a concrete ROW method,
+  its stability and aspects of implementation.
+
+  We consider the following  autonomous ODE
+\begin{align}
+ \dot{\vec{y}} = \vec{f}(\vec{y})
+\end{align}
+and discretize it with a \emph{semi-implicit} Runge-Kutta SSM (\emph{Rosenbrock method}):
+\begin{gather} \label{method:rosenbrock}
+  \begin{aligned}
+    \vec{W} \vec{k}_1 & = \vec{f}(\vec{y}_0) \\
+    \vec{W} \vec{k}_2 & = \vec{f}(\vec{y}_0 + \frac{1}{2} h \vec{k}_1) - a h \vec{J} \vec{k}_1 \\
+    \vec{y}_1 & = \vec{y}_0 + h \vec{k}_2
+  \end{aligned}
+\end{gather}
+where
+\begin{align*}
+ \vec{J} = D\vec{f}(\vec{y}_0) \\
+ \vec{W} = \vec{I} - ah \vec{J} \\
+ a = \frac{1}{2+\sqrt{2}}.
+\end{align*}
+
+% Cf. \cite{} as an extra reading.
+
+\begin{subproblem}[2]
+ Compute the stability function $S$ of the Rosenbrock method \eqref{method:rosenbrock}, that is, compute the (rational) function $S(z)$, such that
+ \begin{align*}
+  y_1 = S(z) y_0, \quad z := h \lambda,
+ \end{align*}
+ when we apply the method to perform one step of size $h$, starting from $y_0$, of the linear scalar model ODE $\dot{y} = \lambda y, \lambda \in \IC$.
+
+ \begin{solution}
+  For a scalar ODE, the Jacobian is just the derivative w.r.t. $y$, whence $J = D f(y) = f'(y) = (\lambda y)' = \lambda$. The quantity $\vec{W}$ is, therefore, a scalar quantity as well:
+  \begin{align*}
+   W = 1 - a h J = 1 - a h \lambda
+  \end{align*}
+  If we plug everything together and assume $h$ is small enough:
+  \begin{align*}
+   y_1 & = y_0 + h \frac{\vec{f}(\vec{y}_0 + \frac{1}{2} h \vec{k}_1) - a h \vec{J} \vec{k}_1}{W} \\
+   & = y_0 + h \frac{\vec{f}(\vec{y}_0 + \frac{1}{2} h \frac{\vec{f}(\vec{y}_0)}{W}) - a h \vec{J} \frac{\vec{f}(\vec{y}_0)}{W})}{W} \\
+   & = y_0 + h \frac{\lambda (\vec{y}_0 + \frac{1}{2} h \frac{\lambda \vec{y}_0}{1 - a h \lambda}) - \frac{a h \lambda^2 y_0}{1 - a h \lambda}}{1 - a h \lambda} \\
+   & = \frac{(1 - a h \lambda)^2 + h \lambda (1 - a h \lambda) + \frac{1}{2} h^2 \lambda^2 - a h^2 \lambda^2}{(1 - a h \lambda)^2} y_0 \\
+   & = \frac{(1 + a^2 z^2 - 2az) + z (1 - a z) + \frac{1}{2} z^2 - a z^2}{(1 - a z)^2} y_0 \\
+   & = \frac{1 + (1-2a) z +  (\frac{1}{2}-2a+ a^2) z^2}{(1 - a z)^2} y_0
+  \end{align*}
+  Since $\frac{1}{2}-2a+ a^2 = 0$, it follows
+  \begin{align*}
+   S(z) = \frac{1 + (1-2a) z}{(1 - a z)^2}
+  \end{align*}
+ \end{solution}
+\end{subproblem}
+
+\begin{subproblem}[3]
+ Compute the first $4$ terms of the Taylor expansion of $S(z)$ around $z = 0$. What is the maximal $q \in \IN$ such that
+ \begin{align*}
+  \lvert S(z) - \exp(z) \rvert = O(\lvert z \rvert^q)
+ \end{align*}
+ for $\lvert z \rvert \rightarrow 0$? Deduce the maximal possible 
+ order of the method \eqref{method:rosenbrock}.
+ 
+ \begin{hint}
+   The idea behind this sub-problem is elucidated in \lref{rem:stabexp}. Apply
+   \lref{lem:Sapproxexp}. 
+ \end{hint}
+
+ \begin{solution}
+  We compute:
+  \begin{align*}
+   S(0) & = 1, \\
+   S'(0) & = 1, \\
+   S''(0) & = 4a - 2 a^2, \\
+   S'''(0) & = 18a^2 - 12a^3,
+  \end{align*}
+   therefore
+   \begin{align*}
+    S(z) = 1 + z + (2a - a^2) z^2 + (3a^2 - 2a^3) z^3 + O(z^4).
+   \end{align*}
+  We can also compute the expansion of $\exp$:
+   \begin{align*}
+    \exp(z) = 1 + z + \frac{1}{2} z^2 + \frac{1}{6} z^3 + O(z^4)
+   \end{align*}
+   and since $2a - a^2 = \frac{1}{2}$ but $3a^2 - 2a^3 = \frac{1}{2}(\sqrt{2}-1) \neq \frac{1}{6}$, we have:
+ \begin{align*}
+  \lvert S(z) - \exp(z) \rvert = O(\lvert z \rvert^3)
+ \end{align*}
+ Using \ncseref{lem:Sapproxexp}, we deduce that the maximal order $q$ of the scheme is $q = 2$.
+ \end{solution}
+\end{subproblem}
+
+\begin{subproblem}[2]
+ Implement a \Cpp{} function:
+\begin{lstlisting}[language=c++]
+template <class Func, class DFunc, class StateType>
+std::vector<StateType> solveRosenbrock(
+		      const Func & f, const DFunc & df,
+		      const StateType & y0,
+		      unsigned int N, double T)
+ \end{lstlisting}
+ taking as input function handles for $\vec{f}$ and $D\vec{f}$ (e.g. as lambda
+ functions), an initial data (vector or scalar) \verb|y0| $= \vec{y}(0)$, a number
+ of steps $N$ and a final time $T$. The function returns the sequence of states generated
+ by the single step method up to $t = T$, using $N$ equidistant steps of the
+ Rosenbrock method \eqref{method:rosenbrock}.
+ 
+ \cprotEnv \begin{hint}
+  See \verb|rosenbrock_template.cpp|.
+ \end{hint}
+ 
+ \cprotEnv \begin{solution}
+  See \verb|rosenbrock.cpp|.
+ \end{solution}
+\end{subproblem}
+
+\begin{subproblem}[3]
+ Explore the order of the method \eqref{method:rosenbrock} empirically by applying it to the IVP for the limit cycle \ncseref{ex:limitcycle}:
+ \begin{align}
+  \vec{f}(\vec{y}) := \begin{bmatrix}
+                       0 & -1 \\ 1 & 0
+                      \end{bmatrix} \vec{y} + \lambda ( 1 - \lVert \vec{y} \rVert^2 ) \vec{y},
+ \end{align}
+ with $\lambda = 1$ and initial state $\vec{y_0} = [1,1]^\top$ on $[0,10]$. Use fixed timesteps of size $h = 2^{-k}, k = 4,\dots,10$ and compute a reference solution with $h = 2^{-12}$ step size. Monitor the maximal mesh error:
+ \begin{align*}
+  \max_j \lVert  \vec{y}_j - \vec{y}(t_j) \rVert_2.
+ \end{align*}
+ \cprotEnv \begin{solution}
+  The Jacobian $Df$ is:
+  \[
+  D\vec{f}(\vec{y}) = \begin{bmatrix}
+                       \lambda ( 1 - \lVert \vec{y} \rVert^2 ) - 2 \lambda y_0^2 & -1 -2 \lambda y_1 y_0 \\
+                       1 -2 \lambda y_1 y_0 & \lambda ( 1 - \lVert \vec{y} \rVert^2 ) - 2 \lambda y_1^2
+                      \end{bmatrix}.
+  \]
+  For the implementation, cf. \verb|rosenbrock.cpp|.
+ \end{solution}
+\end{subproblem}
+
+\begin{subproblem}[4]
+ Show that the method \eqref{method:rosenbrock} is $L$-stable (cf. \ncseref{par:Lstab}).
+ \begin{hint}
+To investigate the $A$-stability, calculate the complex norm of $S(z)$ on the imaginary axis $\Re{z}=0$ and apply the following maximum principle for holomorphic functions:
+
+\begin{theorem}[Maximum principle for holomorphic functions]
+ Let \[\IC^- := \{ z \in \IC \; | \; Re(z) < 0 \}.\] Let $f: D \subset \IC \rightarrow \IC$ be non-constant, defined on $\overline{\IC^-}$, and analytic in $\IC^-$. Furthermore, assume that $w := \lim_{ \lvert z \rvert \rightarrow \infty} f(z)$ exists and $w \in \IC$, then:
+ \begin{align*}
+  \forall z \in \IC^- \lvert f(z) \rvert < \sup_{\tau \in \IR} \lvert f(i \tau) \rvert.
+ \end{align*}
+\end{theorem}
+ \end{hint}
+
+ \begin{solution}
+  We start by proving that the method is $A$-stable \ncseref{par:Astab}, meaning that $S(z) < 1, \forall z \in \IC, \mathrm{Re}(z) < 0$. First of all, we can compute the complex norm of the stability function at $z = iy, y \in \IR$ as:
+  \begin{align*}
+   \lvert S(iy) \rvert^2 = \frac{\lvert 1 + (1-2a) iy \rvert^2}{\lvert(1 - a iy)^2 \rvert^2} = \frac{1+ (1-2a)^2y^2}{(1+ a^2 y^2)^2} = \frac{1+ (1-4a+4a^2)y^2}{(1+ 2a^2 y^2 + a^4 y^4)}.
+  \end{align*}
+  Notice that $1 - 4a + 4a^2 = 2a^2$, therefore:
+  \begin{align*}
+   \lvert S(iy) \rvert^2 = \frac{1+ 2 a^2 y^2}{1+ 2a^2 y^2 + a^4 y^4} < 1.
+  \end{align*}
+  The norm of the function $S$ is bounded on the imaginary axis. Observe that $\lvert S(z) \rvert \rightarrow 0, \lvert z \rvert \rightarrow \infty$, which, follows from the fact that the degree of the denominator of $S$ is bigger than the polynomial degree of the numerator.
+  Notice that $1-2a = 1-2\frac{1}{\sqrt(2)+2} = \sqrt{2} - 2$.
+  
+  The only pole of the function is at $z = 1/a$, therefore the function is holomorphic on the left complex plane.
+  
+  Applying the theorem of the hint on concludes that the absolute value of the function is bounded by $1$ on the left complex plane.
+  
+  The $L$-stability follows immediately with $A$-stability and the fact that the absolute value of the function converges to zero as $\lvert z \rvert \rightarrow \infty$.
+ \end{solution}
+\end{subproblem}
+
+
+ 
+\end{problem}
+ 

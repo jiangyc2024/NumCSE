@@ -1,0 +1,208 @@
+% ncse_new/p1_SystemsOfEquations/ch2_DirectMethodsLSE/ex_Lyapunov.tex
+% solutions require:  solveLyapunov.m
+
+
+
+\begin{problem}[Lyapunov Equation \coreproblem]\label{prb:Lyapunov}
+
+  Any linear system of equations with a finite number of unknowns can be written in the
+  ``canonical form'' $\VA\Vx=\Vb$ with a system matrix $\VA$ and a right hand side
+  vector $\Vb$. However, the LSE may be given in a different form and it may not be
+  obvious how to extract the system matrix. This task gives an intriguing example
+  and also presents an important \emph{matrix equation}, the so-called
+  \href{http://en.wikipedia.org/wiki/Lyapunov_equation}{Lyapunov Equation}. 
+
+  Given $\mathbf{A}\in \mathbb{R}^{n\times n}$, consider the equation
+  \begin{equation}
+    \label{eq:Lyapunov}
+    \VA\VX + \VX\VA^{T} = \VI
+  \end{equation}
+  with unknown $\mathbf{X}\in\mathbb{R}^{n\times n}$.
+
+\begin{subproblem}[1]\label{lpy:sp:0}
+Show that for a fixed matrix $\VA\in\bbR^{n,n}$ the mapping 
+\begin{gather*}
+  L: \left\{
+    \begin{array}[c]{ccl}
+      \bbR^{n,n} & \to & \bbR^{n,n} \\
+      \VX & \mapsto & \VA\VX + \VX\VA^{T}
+    \end{array}\right.
+\end{gather*}
+is linear.
+
+\begin{hint}
+  Recall from linear algebra the definition of a linear mapping between two vector spaces.
+\end{hint}
+  \begin{solution}
+  Take $\alpha,\beta\in\R$ and $\VX,\VY\in\bbR^{n,n}$. We readily compute
+  \[
+  \begin{split}
+  L(\alpha \VX+\beta \VY)&=A(\alpha \VX+\beta \VY)+(\alpha \VX+\beta \VY)A^T\\
+  &=\alpha A \VX+\beta A \VY+\alpha \VX A^T +\beta \VY A^T\\
+  &=\alpha (A \VX+\VX A^T)+\beta( A \VY+ \VY A^T)\\
+  &=\alpha L(\VX)+\beta L(\VY),
+  \end{split}
+  \]
+  as desired.
+  \end{solution}
+\end{subproblem}
+
+In the sequel let ${\rm vec}(\vec{M})\in\R^{n^2}$ denote the column vector
+obtained by reinterpreting the internal coefficient array of a matrix
+$M\in\R^{n,n}$ stored in column major format as the data array of a vector with
+$n^2$ components. In MATLAB, ${\rm vec}(\vec{M})$ would be the column vector
+obtained by \texttt{reshape(M,n*n,1)} or by \texttt{M(:)}. See \lref{rem:eigrs}
+for the implementation with Eigen.
+
+Problem \eqref{eq:Lyapunov} is equivalent to a linear system of equations
+  \begin{equation}
+    \label{eq:systemLyapunov}
+   \VC{\rm vec}(\VX)=\Vb
+  \end{equation}
+with system matrix $\VC\in\R^{n^2,n^2}$ and right hand side vector $\Vb\in\R^{n^2}$.
+
+\begin{subproblem}[1]\label{lpy:sp:0a}
+  Refresh yourself on the notion of ``sparse matrix'', see \lref{sec:sparse} and,
+  in particular, \lref{def:sparse}, \lref{def:sparse2}. 
+\end{subproblem}
+
+\begin{subproblem}[1]
+Determine $\VC$ and $\Vb$ from \eqref{eq:systemLyapunov} for $n=2$ and
+\[
+\VA=\begin{bmatrix}
+2 & 1 \\ -1 & 3
+\end{bmatrix}.
+\]
+
+\begin{solution}
+Write $X=\left[ \begin{smallmatrix} x_1 & x_3 \\ x_2 & x_4 \end{smallmatrix} \right]$, so that ${\rm vec}(\VX)=(x_i)_i$. A direct calculation shows that \eqref{eq:Lyapunov} is equivalent to \eqref{eq:systemLyapunov} with
+\[
+\VC=
+\begin{bmatrix}
+4 & 1 & 1 & 0 \\
+-1 & 5 & 0 & 1 \\
+-1 & 0 & 5 & 1\\
+0 & -1 & -1 & 6
+\end{bmatrix} 
+\;\text{and}\;
+\Vb=
+\begin{bmatrix}
+1 \\
+0 \\
+0\\
+1
+\end{bmatrix}.
+\]
+\end{solution}
+\end{subproblem}
+
+\begin{subproblem}[3]
+Use the Kronecker product to find a general expression for $\VC$ in terms of a general $\VA$.
+\begin{solution}
+We have $\VC=\mathbf{I}\bigotimes
+  \mathbf{A}+\mathbf{A}\bigotimes \mathbf{I}$. The first term is related to
+  $\VA\VX$, the second to $\VX\VA^{T}$. 
+\end{solution}
+\end{subproblem}
+
+\begin{subproblem}[2]
+Write a \Matlab~ function 
+\begin{center}
+  \texttt{function C = buildC (A)}
+\end{center}
+that returns the matrix $\VC$ from \eqref{eq:systemLyapunov} when given a square matrix $\VA$. (The function \texttt{kron} may be used.)
+\begin{solution}
+See Listing~\ref{mc:Lyapunov}.
+\lstinputlisting[caption={Building the matrix $\VC$ in \eqref{eq:systemLyapunov} with MATLAB}, label={mc:Lyapunov}]{\problems/ch_directmethodslse/MATLAB/buildC.m}
+
+%The use of \texttt{speye} makes the matrix \texttt{B} and the right-hand side
+%\texttt{b} sparse, the result is faster and more accurate (check the residual
+%$\|\VA\VX-\VX\VA^T-\VI\|$). 
+
+
+\end{solution}
+\end{subproblem}
+
+\begin{subproblem}[4]
+Give an upper bound (as sharp as possible) for ${\rm nnz}(\VC)$ in terms of ${\rm nnz}(\VA)$. Can $\VC$ be legitimately regarded as a sparse matrix for large $n$ even if $\VA$ is dense?
+\begin{hint}
+Run the following MATLAB code:
+
+\texttt{n=4; \\
+A=sym('A',[n,n]); \\
+I=eye(n); \\
+C=buildC(A)}
+\end{hint}
+\begin{solution}
+%The block in position $(i,j)$ of the matrix $\VC$ is given by $a_{ij}I+\delta_{ij}A$. Suppose now that $a_{ij}\neq 0$. We have two cases:
+%\begin{itemize}
+%\item Case $i\neq j$. This gives at most $n$ non-zero entries in the block in position $(i,j)$ of the matrix $\VC$, which is equal to $a_{ij}I$, and one non-zero entry in each diagonal block. This gives a total of, at most, $2n$ non-zero entries.
+%\item Case $i=j$. This gives at most one non-zero entry in each diagonal block, thus a total of, at most, $n$ non-zero entries.
+%\end{itemize}
+Note that, for general matrices $\VA$ and $\VB$ we have ${\rm nnz}(\VA\otimes \VB)={\rm nnz}(\VA){\rm nnz}(\VB)$. This follows from the fact that the block in position $(i,j)$ of the matrix $\VA\otimes \VB$ is $a_{ij}\VB$. In our case, we immediately obtain
+\[
+{\rm nnz}(\VC)={\rm nnz}(\mathbf{I}\otimes
+  \mathbf{A}+\mathbf{A}\otimes \mathbf{I})\le {\rm nnz}(\mathbf{I}\otimes
+  \mathbf{A}) +{\rm nnz}(\mathbf{A}\otimes \mathbf{I})\le 2 {\rm nnz}(\VI){\rm nnz}(\VA),
+\]
+namely
+\[
+{\rm nnz}(\VC)\le 2n {\rm nnz}(\VA).
+\]
+The optimality of this bound can be checked by taking the matrix $\VA=\left[ \begin{smallmatrix} 0 & 1 \\ 1 & 0 \end{smallmatrix} \right]$.
+
+This bound says that, in general, even if $\VA$ is not sparse, we have  ${\rm nnz}(\VA)\le 2 n^3 \ll n^4$. Therefore, $\VC$ can be regarded as a sparse matrix for any $\VA$.
+\end{solution}
+\end{subproblem}
+
+\begin{subproblem}[3]
+Implement a C++ function
+
+\texttt{Eigen::SparseMatrix<double> buildC(const MatrixXd \&A)}
+
+that builds the Eigen matrix $\VC$ from $\VA$. Make sure that initialization is done efficiently using an intermediate triplet format. Read \ncserem{sec:eigensparse} very carefully before starting.
+\begin{solution}
+See \texttt{solveLyapunov.cpp}.
+\end{solution}
+\end{subproblem}
+
+\begin{subproblem}[1]\label{subprob:12345}
+Validate the correctness of your C++ implementation of \texttt{buildC} by comparing with the equivalent Matlab function for $n=5$ and
+\[
+A=\begin{bmatrix}
+10 & 2 & 3 & 4 & 5 \\
+6 & 20 & 8 & 9 & 1\\
+1 & 2 & 30 & 4 & 5 \\
+6 & 7 & 8 & 20 & 0\\
+1 & 2 & 3 & 4 & 10
+\end{bmatrix}.
+\]
+\begin{solution}
+See \texttt{solveLyapunov.cpp}  and \texttt{solveLyapunov.m}.
+\end{solution}
+\end{subproblem}
+
+\begin{subproblem}[2]
+Write a C++ function
+
+\texttt{void solveLyapunov(const MatrixXd \& A, MatrixXd \& X)}
+
+that returns the solution of \eqref{eq:Lyapunov} in the $n\times n$-matrix $\VX$, if $A\in \R^{n,n}$.
+\begin{solution}
+See \texttt{solveLyapunov.cpp}.
+
+\emph{Remark.} Not every invertible matrix $\VA$ allows a solution: if $\VA$ and
+$-\VA$ have a common eigenvalue the system $\VC\Vx=\Vb$ is singular, try it with
+the matrix $\VA=\begin{bmatrix}0 &1\\1 & 0\end{bmatrix}$. For a more efficient
+solution of the task, see Chapter 15 of Higham's book.
+\end{solution}
+\end{subproblem}
+
+\begin{subproblem}[2]
+Test your C++ implementation of \texttt{solveLyapunov} by comparing with Matlab for the test case proposed in \ref{subprob:12345}.
+
+\begin{solution}
+See \texttt{solveLyapunov.cpp} and \texttt{solveLyapunov.m}.
+\end{solution}
+\end{subproblem}
+\end{problem}

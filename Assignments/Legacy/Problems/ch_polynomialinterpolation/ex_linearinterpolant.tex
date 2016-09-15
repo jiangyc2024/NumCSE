@@ -1,0 +1,67 @@
+\begin{problem}[Piecewise linear interpolation]
+  \lref{ex:pwlin} introduced piecewise linear interpolation as a simple linear
+  interpolation scheme. It finds an interpolant in the space spanned by the
+  so-called tent functions, which are \emph{cardinal basis functions}. Formulas
+  are given in \lref{eq:pwlinbas}. 
+
+% Recall that given a vector of nodes $t_i$, 
+%   $i = 0, \dots, n$ ($t_i \neq t_j, i \neq j$), the tent functions $b_i$ satisfy:
+%  \begin{itemize}
+%   \item the basis is local:
+%   \[
+% \supp b_i = \{ x \in \IR \; b_i(x) = 0 \} = (t_{i-1}, t_{i+1});
+%   \]
+%   \item the basis is cardinal:
+%   \[
+%     b_i(t_j) = \delta_{i,j} = \begin{cases} 1 & i = j \\ 0 & i \neq j \end{cases};
+%   \]
+%   \item $b_i$ is piecewise linear in $[t_j, t_{j+1}], \forall j$;
+%  \end{itemize}
+%  We can then define the piecewise linear interpolant $\ell$ to be a linear combination of the basis functions $b_i: \IR \rightarrow \IR$:
+%  \[
+%   \ell = \sum_{i = 0}^n y_i b_i, c_i \in \IR
+%  \]
+%  we call $c_i$ the coefficients of the representation of $\ell$ in the basis
+%  $\{ b_i \}$. Notice that an interpolant is well defined, if we provide values at
+%  each node, i.e. if we provide the data $(t_i, y_i)$.
+
+%  
+%  \begin{subproblem}[1]
+%   Think on how to represent the basis in memory.
+%   
+% \cprotEnv \begin{solution}
+%    See \verb|linearinterpolant.cpp|.
+%   \end{solution}
+%  \end{subproblem}
+%  
+ \begin{subproblem}[3]
+  Write a \Cpp{} class \verb|LinearInterpolant| representing the piecewise linear interpolant. Make sure your class has an efficient internal representation of a basis. Provide a constructor and an evaluation \verb|operator()| as described in the following template:
+  \begin{lstlisting}[language=c++]
+class LinearInterpolant {
+    public:
+        LinearInterpolant( /*  TODO: pass pairs */) {
+	    // TODO: construct your data from  (t_i, y_i)'s
+        }
+        
+        double operator() (double x) {
+            // TODO: return I(x)
+        }
+    private:
+        // Your data here
+};
+  \end{lstlisting}
+  
+  \begin{hint}
+   Recall that \Cpp{} provides containers such as \verb|std::vector| and \verb|std::pair|.
+  \end{hint}
+
+\cprotEnv \begin{solution}
+   See \verb|linearinterpolant.cpp|.
+  \end{solution}
+\end{subproblem}
+
+ \begin{subproblem}[1]
+  Test the correctness of your code.
+ \end{subproblem}
+ 
+\end{problem}
