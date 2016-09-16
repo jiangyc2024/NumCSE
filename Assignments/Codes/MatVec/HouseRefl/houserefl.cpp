@@ -21,7 +21,7 @@ void houserefl(const Eigen::VectorXd & v, Eigen::MatrixXd & Z)
 int main(int argc, char ** argv) {
     // Check what houserefl does to random vector
     srand((unsigned int) time(0));
-    unsigned int n = N;
+    unsigned int n = 6;
     if(argc >= 2) n = std::atoi(argv[1]);
 
     Eigen::VectorXd v = Eigen::VectorXd::Random(n); // Not truly random if missing srand
