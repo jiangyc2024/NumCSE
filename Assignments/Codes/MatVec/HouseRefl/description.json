@@ -1,4 +1,4 @@
 {
     "name": "HouseholderReflections",
-    "all" : ["houseref.cpp"]
+    "all" : ["houserefl.cpp"]
 }

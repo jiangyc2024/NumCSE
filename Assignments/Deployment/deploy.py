@@ -119,12 +119,15 @@ def deploy(filename, indir, outdir,
         else:
             cmd.append("-DSOLUTION=0")
 
-        cmd.append("-o")
-        cmd.append(outdir + filename)
+        #cmd.append("-o")
+        #cmd.append(outdir + filename)
 
         print("Preparing solutions/templates for '{}'".format(filename))
         print(" ".join(cmd))
-        subprocess.call(cmd)
+        
+        f = open(outdir + filename, "w")
+        subprocess.call(cmd, stdout=f)
+        f.close()
     else:
         copy(filename, indir, outdir)
 
