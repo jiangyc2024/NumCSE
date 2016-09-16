@@ -1,29 +1,18 @@
+//// 
+//// Copyright (C) 2016 SAM (D-MATH) @ ETH Zurich
+//// Author(s): lfilippo <filippo.leonardi@sam.math.ethz.ch> 
+//// Contributors: tille, jgacon
+//// This file is part of the NumCSE repository.
+//// Report issues to: https://gitlab.math.ethz.ch/NumCSE/NumCSE/issues
+////
 #include <Eigen/Dense>
 #include <iostream>
 #include <ctime>
 
-#if SOLUTION
-/* \brief Compute an ONB of the space orthogonal to $v$
- * \param[in] v vector $\in \mathbb{R}^n \setminus \{ 0 \}$
- * \param[out] Z matrix $\in \mathbb{R}^{n-1 \times n}$
- */
-#endif // SOLUTION
-/* SAM_LISTING_BEGIN_1 */
 void houserefl(const Eigen::VectorXd & v, Eigen::MatrixXd & Z)
 {
-#if SOLUTION
-    unsigned int n = v.size();
-    Eigen::VectorXd w = v.normalized();
-    Eigen::VectorXd u=w;
-    u(0) += 1;
-    Eigen::VectorXd  q=u.normalized();
-    Eigen::MatrixXd X = Eigen::MatrixXd::Identity(n, n) - 2*q*q.transpose();
-    Z = X.rightCols(n-1);
-#else // TEMPLATE
     // TODO: rewrite algorithm
-#endif // TEMPLATE
 }
-/* SAM_LISTING_END_1 */
 
 int main(int argc, char ** argv) {
     // Check what houserefl does to random vector
