@@ -20,7 +20,7 @@ This repository will host all the codes used in the lecture notes, and assignmen
 
 ## How to use
 
-In the LectureCodes you can find a folder for each code from the lecture notes script.
+In the [LectureCodes](LectureCodes/) you can find a folder for each code from the lecture notes script.
 
 There you can find different versions of the same code:
 
