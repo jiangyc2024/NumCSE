@@ -8,23 +8,28 @@
 #include "gramschmidt.hpp"
 
 using namespace Eigen;
+using namespace std;
 
 /* SAM_LISTING_BEGIN_0 */
-//! \eigen{} Function demonstrating the effect of roundoff on the result of Gram-Schmidt orthogonalization
-//! A is 10x10 special matrix the so-called Hilbert matrix: $\MAc{i}{j} = (i+j-1)^{-1}$
+//! \eigen{} Function demonstrating the effect of roundoff on the result
+//! of Gram-Schmidt orthogonalization
+//! A is 10x10 special matrix the so-called \href{https://en.wikipedia.org/wiki/Hilbert_matrix}{Hilbert matrix}:
+//! $\MAc{i}{j} = (i+j-1)^{-1}$
 void gsroundoff(MatrixXd& A){
-	MatrixXd Q = gramschmidt(A); // Gram-Schmidt orthogonalization of columns of A
-	// \Magenta{Test orthonormality} of column of Q, which should be an \cor{orthogonal}
-	// matrix according to theory
-	std::cout << std::setprecision(4) << std::fixed << "I = " 
-	<< std::endl << Q*Q.transpose() << std::endl; // Should be the identity matrix, but isn't !
-	// Eigens's internal Gram-Schmidt orthogonalization by \cor{QR-decomposition}
-	HouseholderQR<MatrixXd> qr(A.rows(),A.cols());
-	qr.compute(A); MatrixXd Q1 = qr.householderQ();
-	// Test orthonormality
-	std::cout << "I1 = " << std::endl << Q1*Q1.transpose() << std::endl;
-	// Check wheter we get the expected result
-	MatrixXd R1 = qr.matrixQR().triangularView<Upper>();
-	std::cout << std::scientific << "D = " << std::endl << A - Q1*R1 << std::endl;
+  // Gram-Schmidt orthogonalization of columns of A, see \cref{cpp:gramschmidt}
+  MatrixXd Q = gramschmidt(A); 
+  // \Magenta{Test orthonormality} of column of Q, which should be an
+  // \cor{orthogonal} matrix according to theory
+  cout << setprecision(4) << fixed << "I = " 
+       << endl << Q*Q.transpose() << endl; 
+  // \eigen's \textbf{stable} internal Gram-Schmidt orthogonalization by
+  // \cor{QR-decomposition}, see \cref{rem:QR} below
+  HouseholderQR<MatrixXd> qr(A.rows(),A.cols());
+  qr.compute(A); MatrixXd Q1 = qr.householderQ();
+  // Test orthonormality
+  cout << "I1 = " << endl << Q1*Q1.transpose() << endl;
+  // Check whether we get the expected result
+  MatrixXd R1 = qr.matrixQR().triangularView<Upper>();
+  cout << scientific << "D = " << endl << A - Q1*R1 << endl;
 }
 /* SAM_LISTING_END_0 */

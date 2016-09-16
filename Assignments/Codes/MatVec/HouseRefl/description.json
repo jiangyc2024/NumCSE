@@ -1,0 +1,4 @@
+{
+    "name": "HouseholderReflections",
+    "all" : ["houserefl.cpp"]
+}

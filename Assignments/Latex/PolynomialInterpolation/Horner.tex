@@ -1,0 +1,107 @@
+% NumCSE/Assignments/Chapters/PolynomialInterpolation/Horner.tex
+% Exercise requires:    -
+% Solution requires: horner.cpp 
+
+\begin{samproblem}*{prb:horner}{Evaluating the derivatives of interpolating polynomials (core problem)}{
+  This problem is about the Horner scheme, that is a way to efficiently evaluate a polynomial in a given point, see \cref{rem:Horner-scheme}.
+}
+
+\begin{subproblem}{sp:1}[3]
+  Using the Horner scheme, write an efficient C++ implementation of a function
+  \begin{lstlisting}[style=cpp]
+template <typename CoeffVec>
+std::pair<double,double> evaldp(const CoeffVec& c, double x);
+  \end{lstlisting}
+  which returns the pair $(p(x),p'(x))$, where $p$ is the polynomial with coefficients in \texttt{c}. 
+  The vector \texttt{c} contains the coefficient of the polynomial in the monomial basis, using Matlab convention (leading coefficient in \texttt{c[0]}).
+
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{solfile}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        See file \texttt{horner.cpp} for the full implementation:
+        \begin{samcode}[C++-code]{cpp:horner:sp:1}{Evaluating using horner scheme}
+          \lstincludecpp{./Chapters/PolynomialInterpolation/CPP/horner_partialInclusion.cpp}{0}
+        \end{samcode}
+     \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% END ================== SOLUTION ===============   %
+
+\end{subproblem}
+
+\begin{subproblem}{sp:2}[2]
+  For the sake of testing, write a naive C++ implementation of the above function
+  \begin{lstlisting}
+template <typename CoeffVec>
+std::pair<double,double> evaldp_naive(const CoeffVec& c, double x);
+  \end{lstlisting}
+  which returns the same pair $(p(x),p'(x))$. This time, $p(x)$ and $p'(x)$ should be calculated with the simple sums of the monomials 
+  constituting the polynomial.
+
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{solfile}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        See file \texttt{horner.cpp} for the full implementation:
+        \begin{samcode}[C++-code]{cpp:horner:sp:2}{Evaluating using monomial approach}
+          \lstincludecpp{./Chapters/PolynomialInterpolation/CPP/horner_partialInclusion.cpp}{1}
+        \end{samcode}
+     \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% END ================== SOLUTION ===============   %
+
+\end{subproblem}
+
+\begin{subproblem}{sp:3}[1]
+  What are the asymptotic complexities of the two implementations?
+
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{solfile}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        In both cases, the algorithm requires $\approx n$ multiplications and additions,
+        and so the asymptotic complexity is $O(n)$. The naive implementation also calls
+        the \texttt{pow()} function, which may be costly. 
+        \begin{figure}[h]
+          \centering
+          \samplot{./Chapters/PolynomialInterpolation/PICTURES/hornerRuntimes}[fig:hornerRuntimes][](0.6\textwidth)
+          \caption{Plot of the results of \ref{prb:horner:sp:4}}
+        \end{figure}
+     \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% END ================== SOLUTION ===============   %
+
+\end{subproblem}
+
+\begin{subproblem}{sp:4}[1]
+  Check the validity of the two functions and compare the runtimes for polynomials of degree up to $2^{20}-1$.
+
+  \begin{samhint}
+    Use the provided library \texttt{timer.h}:
+    \begin{lstlisting}[style=cpp]
+Timer t;
+t.start(); /* do something */ t.stop();
+double time = t.duration();
+    \end{lstlisting}
+  \end{samhint}
+
+
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{solfile}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        See file \texttt{horner.cpp} for the full implementation:
+        \begin{samcode}[C++-code]{cpp:horner:sp:4}{Suggested solution for runtime comparison}
+          \lstincludecpp{./Chapters/PolynomialInterpolation/CPP/horner_partialInclusion.cpp}{2}
+        \end{samcode}
+     \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% END ================== SOLUTION ===============   %
+
+\end{subproblem}
+
+\end{samproblem}

@@ -11,4 +11,15 @@ NumCSE:
     - make -j3
     - popd
 
-
+NumCSEClang:
+   only:
+     - master
+     - development
+   tags:
+     - clang-3.8
+   script:
+     - mkdir build
+     - pushd build
+     - cmake -DCMAKE_BUILD_TYPE=Release ..
+     - make -j3
+     - popd

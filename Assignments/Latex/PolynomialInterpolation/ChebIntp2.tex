@@ -1,0 +1,140 @@
+% NumCSE/Assignments/Latex/Chapters/PolynomialInterpolation/ChebIntp2.tex
+% Exercise requires:    -
+% Solution requires:    adaptivepolyintp.hpp adaptivepolyintpPlot.cpp plot_adaptivepolyintp.eps
+
+
+\begin{samproblem}*{prb:ChebIntp2}{Adaptive polynomial interpolation}{
+  In \cref{sec:ChebychevInterpolation} we have seen that the placement of
+  interpolation nodes is key to a good approximation by a polynomial
+  interpolant. The following \emph{greedy algorithm} attempts to find the location
+  of suitable nodes by its own:
+  \begin{quote}
+    Given a function $f:[a,b]\mapsto \mathbb{R}$ one starts
+    $\Ct:=\{\frac{1}{2}(b+a)\}$. Based on a fixed finite set
+    $\Cs\subset[a,b]$ of \emph{sampling points} one augments the set of nodes
+    according to
+    \begin{gather}\label{rb:1}
+      \Ct = \Ct \cup \left\{\operatorname*{argmax}\limits_{t\in\Cs}
+      |f(t)-\Op{I}_{\Ct}(t)|\right\}\;,
+    \end{gather}
+    where $\Op{I}_{\Ct}$ is the polynomial interpolation operator for
+    the node set $\Ct$, until 
+    \begin{gather}\label{rb:2}
+      \operatorname*{max}\limits_{t\in\Cs}
+      |f(t)-\Op{I}_{\Ct}(t)| \leq \mathtt{tol}\cdot 
+      \operatorname*{max}\limits_{t\in\Cs}
+      |f(t)|\;.
+    \end{gather}
+  \end{quote}
+}
+
+% ============== SUBPROBLEM 1
+
+\begin{subproblem}{sp:1}[3]
+  Write a C++ function 
+  \begin{lstlisting}[style=cpp]
+template <class Function>
+void adaptivepolyintp(const Function& f, double a, double b, double tol, int N, Eigen::VectorXd& t);
+  \end{lstlisting}
+  that implements the algorithm described above.
+  
+  It takes as arguments the function handle \texttt{f}, the interval bounds \texttt{a}, \texttt{b}, the
+  relative tolerance \texttt{tol}, the number \texttt{N} of \emph{equidistant} sampling points to compute the
+  error (in the interval $[a,b]$), that is,
+  \begin{gather*}
+    \Cs := \{a+(b-a)\frac{j}{N},\;j=0,\ldots,N\}\;.
+  \end{gather*}
+  and \texttt{t} will be used to save the interpolation nodes.
+
+  \begin{samhint}
+    The function \texttt{intpolyval} from \cref{barycentricformula}
+    is provided and may be used (though it may not be the most efficient way
+    to implement the function).
+  \end{samhint}
+
+  \begin{samhint}
+    You might need to convert between the types \texttt{std::vector} and \texttt{Eigen::VectorXd}.
+    This can be done as follows:
+
+    Eigen to \texttt{std} vector:
+    \begin{lstlisting}[style=cpp]
+Eigen::VectorXd v;
+std::vector<double> to_std(v.data(), v.data() + v.size());
+    \end{lstlisting}
+    and the other way round:
+    \begin{lstlisting}[style=cpp]
+std::vector<double> v;
+Eigen::Map<Eigen::VectorXd> to_eigen(v.data(), v.size());
+    \end{lstlisting}
+  \end{samhint}
+
+
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{solfile}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        See \cref{cpp:adaptivepolyintp} below.
+        For this part of the exercise you can ignore the argument \texttt{errRes} and the highlighted lines.
+     \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% END ================== SOLUTION ===============   %
+
+\end{subproblem}
+
+% ============== SUBPROBLEM 2
+
+\begin{subproblem}{sp:2}[2]
+  Extend the function from the previous sub-problem so that it reports the quantity 
+  \begin{gather}\label{AIP:1}
+    \operatorname*{max}\limits_{t\in\Cs}
+    |f(t)-\Op{T}_{\Ct}(t)| % \leq \mathtt{tol}
+  \end{gather}
+  for each intermediate set $\Ct$. 
+
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{solfile}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        \begin{samcode}[C++-code]{cpp:adaptivepolyintp}{Adaptive polynomial interpolation}
+          \small
+          \lstinputlisting[style=cpp,linebackgroundcolor={\lstdefaultcolor\lstcolorlines{16,39,40,45}}]{%
+            ./Chapters/PolynomialInterpolation/CPP/adaptivepolyintp.hpp}
+        \end{samcode}
+     \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% END ================== SOLUTION ===============   %
+
+\end{subproblem}
+
+
+% ============== SUBPROBLEM 3
+
+\begin{subproblem}{sp:3}[2]
+  For $f_{1}(t) := \sin(e^{2t})$ and $f_{2}(t) = \frac{\sqrt{t}}{1+16t^{2}}$ plot the quantity from
+  \eqref{AIP:1} versus the number of interpolation nodes. Choose plotting styles
+  that reveal the qualitative decay of this error as the number of interpolation
+  nodes is increased. Use interval $[a,b] = [0,1]$, \texttt{N=1000} sampling points,
+  tolerance \texttt{tol = 1e-6}.
+
+% BEGIN ================ SOLUTION ===============   %
+  \begin{samwriteprbpart}{solfile}
+    \begin{writeverbatim}{prbfile}
+      \begin{samsolution}
+        \begin{figure}[h]
+          \centering
+          \samplot{./Chapters/PolynomialInterpolation/PICTURES/plot_adaptivepolyintp.eps}[fig:plot_adaptivepolyintp][](0.6\textwidth)
+          \caption{The quantity from \eqref{AIP:1} versus the number of interpolation nodes.}
+        \end{figure}
+        \begin{samcode}[C++-code]{cpp:adaptivepolyintpPlot}{Plotting error of adaptivepolyintp}
+          \lstinputlisting[style=cpp]{./Chapters/PolynomialInterpolation/CPP/adaptivepolyintpPlot.cpp}
+        \end{samcode}
+     \end{samsolution}
+    \end{writeverbatim}
+  \end{samwriteprbpart}
+% END ================== SOLUTION ===============   %
+
+\end{subproblem}
+
+\end{samproblem}
