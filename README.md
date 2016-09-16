@@ -6,7 +6,7 @@ This repository will host all the codes used in the lecture notes, and assignmen
 
 - [Course webpage](https://www.sam.math.ethz.ch/~grsam/HS16/NumCSE/)
 - [Course VVZ](http://www.vvz.ethz.ch/Vorlesungsverzeichnis/lerneinheitPre.do?lerneinheitId=109126&semkez=2016W&lang=de)
-- GitLab tutorial [TODO]
+- [Git tutorial](https://gitlab.math.ethz.ch/tille/gitlab-introduction/blob/master/git/README.md)
 - [Debugger tutorial](https://gitlab.math.ethz.ch/tille/debugging-cpp-code-with-lldb)
 
 ## Project Structure
