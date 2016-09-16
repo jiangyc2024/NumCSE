@@ -180,5 +180,8 @@ include_directories(${CMAKE_SOURCE_DIR}/Utils) # oh dear
 #
 # include subdirectories
 #
-add_subdirectory(LectureCodes)
-add_subdirectory(Assignments)
+#add_subdirectory(LectureCodes)
+#add_subdirectory(Assignments)
+# TODO delete after problem with missing text has been solved!
+#      and include LectureCodes and Assignments
+add_subdirectory(Debug)
