@@ -15,7 +15,7 @@ using namespace Eigen;
 /* SAM_LISTING_BEGIN_0 */
 //! Eigen script for timing a smart and foolish way to carry out
 //! multiplication with a scaling matrix
-void scaletiming2(const std::string& font) {
+void scaletiming4() {
   int nruns = 3, minExp = 2, maxExp = 4;
   MatrixXd timings(maxExp-minExp+1,4);
   for(int i = 0; i <= maxExp-minExp; ++i){
@@ -37,9 +37,9 @@ void scaletiming2(const std::string& font) {
   std::cout << timings << std::endl;
   // Plotting times using the mathGL 
   mglGraph gr;
-  if (font.size() > 0) {
-    gr.LoadFont(font.c_str());
-  }
+  //gr.LoadFont("heros","./Fonts/");
+  gr.LoadFont("none");
+  gr.LoadFont("heros");
   gr.SetFontSizePT(6);
 
   VectorXd x = timings.col(0),
@@ -67,8 +67,7 @@ void scaletiming2(const std::string& font) {
   gr.AddLegend("D*x", " +b");
   gr.AddLegend("d.asDiagonal()*x", "dm");
   gr.Legend();
-  const std::string saveas = "sc_" + font + ".eps";
-  gr.WriteEPS(saveas.c_str());
+  gr.WriteEPS("sc4.eps");
               
   
   /*
