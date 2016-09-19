@@ -1,3 +1,10 @@
+///////////////////////////////////////////////////////
+// (c) Seminar of Applied Mathematics ETH 2016, D-MATH
+// Author: Julien Gacon
+// Co-Author: Baranidharan Mohan 
+///////////////////////////////////////////////////////
+
+
 #ifndef MGL_PLOT_H
 #define MGL_PLOT_H
 
