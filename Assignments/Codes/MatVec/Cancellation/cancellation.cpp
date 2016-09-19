@@ -20,9 +20,9 @@ int main() {
   auto x = ArrayXd::Constant(h.size(), 1.2);
 
   // Derivative
-  VectorXd g1 = (sin(x+h) - sin(x)) / h; // naive
-  VectorXd g2 = 2 * cos(x+0.5*h) * sin(0.5 * h) / h;
-  VectorXd ex = cos(x);
+  ArrayXd g1 = (sin(x+h) - sin(x)) / h; // naive
+  ArrayXd g2 = 2 * cos(x+0.5*h) * sin(0.5 * h) / h;
+  ArrayXd ex = cos(x);
 #else
   // TODO: Compute approximation of the derivative of sin(x)
 #endif
@@ -35,8 +35,8 @@ int main() {
   fig.xlabel("h");
   fig.ylabel("| f'(x_0) - g_i(x_0, h) |");
 #if SOLUTION
-  fig.plot(h.matrix(), (g1-ex).array().abs().matrix()).label("g_1");
-  fig.plot(h.matrix().tail(16), (g2-ex).array().abs().matrix().tail(16)).label("g_2");
+  fig.plot(h.matrix(), (g1-ex).abs().matrix()).label("g_1");
+  fig.plot(h.matrix().tail(16), (g2-ex).abs().matrix().tail(16)).label("g_2");
   fig.plot(h.matrix(), h.matrix(), "h;").label("O(h)");
 #else
   // TODO: Plot the error
