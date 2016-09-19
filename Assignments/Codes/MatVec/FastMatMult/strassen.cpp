@@ -4,12 +4,13 @@ using namespace Eigen;
 
 /* SAM_LISTING_BEGIN_1 */
 /** 
- * \brief Compute the Matrix product $A \times B$ using Strassen's algorithm.
- * \param[in] A Matrix $2^k \times 2^k$
- * \param[in] B Matrix $2^k \times 2^k$
- * \param[out] Matrix product of A and B of dim $2^k \times 2^k$
+ * @brief Compute the Matrix product $A \times B$ using Strassen's algorithm.
+ * @param[in] A Matrix $2^k \times 2^k$
+ * @param[in] B Matrix $2^k \times 2^k$
+ * @param[out] Matrix product of A and B of dim $2^k \times 2^k$
  */
-MatrixXd strassenMatMult(const MatrixXd& A, const MatrixXd& B) { /* SAM_SOLUTION_BEGIN */
+MatrixXd strassenMatMult(const MatrixXd& A, const MatrixXd& B) {
+#if SOLUTION
     // ensure square matrix
     assert(A.rows() == A.cols());
     // matrix dimension must be a power of 2
@@ -53,6 +54,13 @@ MatrixXd strassenMatMult(const MatrixXd& A, const MatrixXd& B) { /* SAM_SOLUTION
          Q1+Q3,
          Q0+Q2-Q1+Q5;
 
-    return C; /* SAM_SOLUTION_END */
+    return C;
+#else
+    const unsigned n = A.rows();
+
+    MatrixXd C(n,n);
+    // TODO: implement strassen's algorithm to multiply the two matrices $A$ and $B$ and return the result
+    return C;
+#endif
 }
 /* SAM_LISTING_END_1 */

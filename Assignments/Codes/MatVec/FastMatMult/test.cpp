@@ -1,9 +1,11 @@
+/* SAM_LISTING_BEGIN_1 */
 #include <iostream>
 
 #include "strassen.cpp"
 
 int main()
 {
+#if SOLUTION
     // seed random number generator
     srand((unsigned int) time(0));
     
@@ -18,4 +20,6 @@ int main()
     std::cout << "Using Strassen's method, A*B=" << AB << std::endl;
     std::cout << "Using standard method, A*B=" << AxB << std::endl;
     std::cout << "The norm of the error is " << (AB-AxB).norm() << std::endl;
+#endif
 }
+/* SAM_LISTING_END_1 */
