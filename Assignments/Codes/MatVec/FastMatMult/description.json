@@ -1,4 +1,5 @@
 {
+    "author" : "tille, lfilippo",
     "name": "Strassen",
-    "all" : ["strassen.cpp", "test.cpp", "timing.cpp"]
+    "all" : ["strassen.hpp", "test.cpp", "timing.cpp"]
 }

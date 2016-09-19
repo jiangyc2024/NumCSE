@@ -10,8 +10,8 @@
 #include <boost/accumulators/statistics/mean.hpp>
 
 #include "timer.h"
-#include "strassen.cpp"
 
+#include "strassen.hpp"
 #include "polyfit.hpp"
 
 using namespace Eigen;
@@ -33,7 +33,7 @@ static void escape (T&& p) {
 }
 
 // estimate asymptotic computational complexity
-VectorXd asymptotic_complexity(std::vector<unsigned> dims, std::vector<double>& means, 
+VectorXd asymptotic_complexity(std::vector<unsigned> dims, std::vector<double>& means,
   unsigned offset=0) {
     assert(dims.size() == means.size());
     assert(dims.size() > offset);
@@ -42,7 +42,7 @@ VectorXd asymptotic_complexity(std::vector<unsigned> dims, std::vector<double>& 
         means.size()-offset);
     VectorXd dims_ = Map<Matrix<unsigned, 1, -1>>(dims.data()+offset, 1,
         dims.size()-offset).cast<double>();
-    
+
     return polyfit(dims_.array().log().matrix(), means_.array().log().matrix(), 1);
 }
 
@@ -50,7 +50,7 @@ int main()
 {
     unsigned seed = (unsigned) time(0); // store seed for rng
     srand(seed); // seed random number generator
-    
+
     double min_runtime = 20.; // minimum runtime in seconds
     unsigned int min_iterations = 10; // repeat at least 10 times
     unsigned int max_iterations = 10000000; // repeat at most 1e7 times
@@ -64,8 +64,8 @@ int main()
     std::vector<unsigned> matrix_dims;
 
     // display header column
-    std::cout << std::setw(4) << "2^k" 
-              << std::setw(15) << "A*B" 
+    std::cout << std::setw(4) << "2^k"
+              << std::setw(15) << "A*B"
               << std::setw(15) << "Strassen" << std::endl;
 
     for(unsigned k = 4; k <= 9; k++) {
@@ -85,14 +85,14 @@ int main()
             unsigned it = 0; // iteration counter
 
             // repeat benchmark for `min_runtime` with the constraint that
-            //  the number of iterations is less then max_iterations but 
+            //  the number of iterations is less then max_iterations but
             //  at least `min_iterations`
             while (it < max_iterations
                     && (it < min_iterations
                         || sum(time_accumulator_eigen) < min_runtime)) {
                 // initialize memory for result matrix
                 MatrixXd AxB(n,n);
-                
+
                 // benchmark eigens matrix multiplication
                 timer.start(); // start timer
                 AxB=A*B; // do the multiplication
@@ -102,7 +102,7 @@ int main()
 
                 ++it; // step iteration counter
             }
-            
+
             // store accumulator for later plotting
             timings_eigen.push_back(mean(time_accumulator_eigen));
         }
@@ -110,7 +110,7 @@ int main()
             unsigned it = 0; // iteration counter
 
             // repeat benchmark for `min_runtime` with the constraint that
-            //  the number of iterations is less then max_iterations but 
+            //  the number of iterations is less then max_iterations but
             //  at least `min_iterations`
             while (it < max_iterations
                     && (it < min_iterations

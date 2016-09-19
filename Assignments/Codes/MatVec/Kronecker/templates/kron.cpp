@@ -1,6 +1,9 @@
-#include <Eigen/Dense>
 #include <iostream>
+#include <iomanip>
+
 #include <vector>
+
+#include <Eigen/Dense>
 
 #include "timer.h"
 

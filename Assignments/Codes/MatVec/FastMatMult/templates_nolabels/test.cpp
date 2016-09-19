@@ -6,9 +6,11 @@
 //// Report issues to: https://gitlab.math.ethz.ch/NumCSE/NumCSE/issues
 ////
 #include <iostream>
+#include <cmath>
 
-#include "strassen.cpp"
+#include "strassen.hpp"
 
 int main()
 {
+    // TODO: Test you implementation comparing with the Eigen built-in matrix product
 }

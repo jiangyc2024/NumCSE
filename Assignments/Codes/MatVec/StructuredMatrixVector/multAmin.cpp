@@ -79,8 +79,8 @@ void multAmin(const VectorXd & x, VectorXd & y) {
 /* SAM_LISTING_END_3 */
 
 int main(void) {
-#if SOLUTIOn
-    // Timing from 2^4 to 2^13 repeating "nruns" times
+#if SOLUTION
+    // Timing from $2^4$ to $2^13$ repeating "nruns" times
     unsigned int nruns = 10;
     std::vector<double> sizes, times_slow,
         times_slow_loops, times_fast;

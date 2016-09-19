@@ -5,9 +5,12 @@
 //// This file is part of the NumCSE repository.
 //// Report issues to: https://gitlab.math.ethz.ch/NumCSE/NumCSE/issues
 ////
-#include <Eigen/Dense>
 #include <iostream>
+#include <iomanip>
+
 #include <vector>
+
+#include <Eigen/Dense>
 
 #include "timer.h"
 
