@@ -1,13 +1,13 @@
-#include <Eigen/Dense>
 #include <iostream>
-#include <vector>
-#if SOLUTION
 #include <iomanip>
-#endif // SOLUTION
+
+#include <vector>
+
+#include <Eigen/Dense>
+
 #if INTERNAL
 #include <figure/figure.hpp>
 #endif // INTERNAL
-
 #include "timer.h"
 
 using namespace Eigen;

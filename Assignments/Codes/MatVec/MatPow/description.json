@@ -1,4 +1,5 @@
 {
     "name": "MatrixPower",
-    "all" : ["matPow.cpp"]
+    "all" : ["matPow.cpp"],
+    "solutions" : [ "matpow_timing.eps" ]
 }

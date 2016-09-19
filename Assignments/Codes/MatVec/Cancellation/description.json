@@ -1,0 +1,5 @@
+{
+    "name": "Cancellation",
+    "all" : ["cancellation.cpp"],
+    "solutions" : ["error_cancellation.eps"]
+}
