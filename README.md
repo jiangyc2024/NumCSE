@@ -17,6 +17,15 @@ This repository will host all the codes used in the lecture notes, and assignmen
 - `Assigmnents` - all codes used in the assignment. The path for each problem is:
     - for templates: `Assigmnents/Codes/<Chapter>/<ProblemName>/templates_nolabels`
     - for solutions: `Assigmnents/Codes/<Chapter>/<ProblemName>/solutions_nolabels`
+    - each one of these folder has an independent `CMake` file. Either within the cloned repository
+      or using the `Download zip` button, you shoud be able to compile and execute the 
+      codes for the problem using:
+
+```
+$ cmake .
+$ make
+$ ./executable_name
+```
 
 ## How to use
 
@@ -36,6 +45,12 @@ There you can find different versions of the same code:
 	$ make
 
 All binaries can then be found in the `bin` folder.
+
+TIP: Using:
+
+    $ make -j<number_ob_processes>
+    
+may (or may not) speed up the compilation time.
 
 __Alternative download__ [zip](https://gitlab.math.ethz.ch/NumCSE/NumCSE/repository/archive.zip?ref=master)
 

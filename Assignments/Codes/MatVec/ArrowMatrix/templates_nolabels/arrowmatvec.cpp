@@ -6,9 +6,11 @@
 //// Report issues to: https://gitlab.math.ethz.ch/NumCSE/NumCSE/issues
 ////
 #include <iostream>
-#include "timer.h"
+#include <iomanip>
 
 #include <Eigen/Dense>
+
+#include "timer.h"
 
 using namespace Eigen;
 

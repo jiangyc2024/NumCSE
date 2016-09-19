@@ -23,7 +23,11 @@ include_directories(${EIGEN3_INCLUDE_DIR})
 
 ### Strassen
 
-# make strassen
-set(SRCS strassen.cpp)
-add_executable(strassen ${SRCS})
+# make test
+set(SRCS test.cpp)
+add_executable(test ${SRCS})
+
+# make timing
+set(SRCS timing.cpp)
+add_executable(timing ${SRCS})
 
