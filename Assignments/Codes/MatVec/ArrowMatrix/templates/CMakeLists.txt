@@ -1,4 +1,4 @@
-project(Strassen)
+project(ArrowMatrix)
 cmake_minimum_required(VERSION 2.6.2)
 
 # Tested with g++ and clang
@@ -21,17 +21,9 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules)
 find_package(Eigen3 REQUIRED)
 include_directories(${EIGEN3_INCLUDE_DIR})
 
-### Strassen
+### ArrowMatrix
 
-# make strassen
-set(SRCS strassen.cpp)
-add_executable(strassen ${SRCS})
-
-# make test
-set(SRCS test.cpp)
-add_executable(test ${SRCS})
-
-# make timing
-set(SRCS timing.cpp)
-add_executable(timing ${SRCS})
+# make arrowmatvec
+set(SRCS arrowmatvec.cpp)
+add_executable(arrowmatvec ${SRCS})
 

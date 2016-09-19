@@ -1,10 +1,3 @@
-//// 
-//// Copyright (C) 2016 SAM (D-MATH) @ ETH Zurich
-//// Author(s): lfilippo <filippo.leonardi@sam.math.ethz.ch> 
-//// Contributors: tille, jgacon
-//// This file is part of the NumCSE repository.
-//// Report issues to: https://gitlab.math.ethz.ch/NumCSE/NumCSE/issues
-////
 #include <Eigen/Dense>
 
 #include <iostream>
@@ -20,6 +13,7 @@ using namespace Eigen;
 void multAminSlow(const Eigen::VectorXd & x, Eigen::VectorXd & y) {
     unsigned int n = x.size();
 
+    /* SAM_LISTING_BEGIN_1 */
     VectorXd one = Eigen::VectorXd::Ones(n);
     VectorXd linsp = VectorXd::LinSpaced(n,1,n);
     y = ( (one * linsp.transpose()).cwiseMin(linsp * one.transpose()) ) *x;
