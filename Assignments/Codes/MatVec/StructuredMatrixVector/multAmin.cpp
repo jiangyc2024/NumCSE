@@ -1,9 +1,13 @@
-#include <Eigen/Dense>
-
 #include <iostream>
+#include <iomanip>
 #include <vector>
 
+#include <Eigen/Dense>
+
 #include "timer.h"
+#if INTERNAL
+#include <figure/figure.hpp>
+#endif // INTERNAL
 
 using namespace Eigen;
 
@@ -75,29 +79,6 @@ void multAmin(const VectorXd & x, VectorXd & y) {
 /* SAM_LISTING_END_3 */
 
 int main(void) {
-#if SOLUTION
-    // Build Matrix B with dimension 10x10 such that B = inv(A)
-#endif // SOLUTION
-    unsigned int n = 10;
-    /* SAM_LISTING_BEGIN_2 */
-    MatrixXd B = MatrixXd::Zero(n,n);
-    for(unsigned int i = 0; i < n; ++i) {
-        B(i,i) = 2;
-        if(i < n-1) B(i+1,i) = -1;
-        if(i > 0) B(i-1,i) = -1;
-    }
-    B(n-1,n-1) = 1;
-    /* SAM_LISTING_END_2 */
-    std::cout << "B = " << B << std::endl;
-
-    // Check that B = inv(A) (up to machine precision)
-    VectorXd x = VectorXd::Random(n), y;
-    multAmin(B*x, y);
-    std::cout << "|y-x| = " << (y - x).norm() << std::endl;
-    multAminSlow(B*x, y);
-    std::cout << "|y-x| = " << (y - x).norm() << std::endl;
-    multAminLoops(B*x, y);
-    std::cout << "|y-x| = " << (y - x).norm() << std::endl;
 
     // Timing from 2^4 to 2^13 repeating "nruns" times
     unsigned int nruns = 10;
@@ -105,7 +86,8 @@ int main(void) {
     for(unsigned int N = (1 << 4); N <= (1 << 13); N = N << 1) {
         Timer tm_slow, tm_slow_loops, tm_fast;
         for(unsigned int r = 0; r < nruns; ++r) {
-            x = VectorXd::Random(N);
+            VectorXd x = VectorXd::Random(N);
+            VectorXd y;
 
             tm_slow.start();
             multAminSlow(x, y);
@@ -125,11 +107,56 @@ int main(void) {
         times_slow_loops.push_back( tm_slow_loops.min() );
         times_fast.push_back( tm_fast.min() );
 
-        // TODO: print times
+        std::cout << std::setw(15)
+                  << N
+                  << std::scientific << std::setprecision(3)
+                  << std::setw(15) << tm_slow.min()
+                  << std::setw(15) << tm_slow_loops.min()
+                  << std::setw(15) << tm_fast.min()
+                  << std::endl;
     }
 
 #if INTERNAL
-
+  // Plotting
+  mgl::Figure fig;
+  fig.title("Timings of multAmin");
+  fig.ranges(2, 9000, 1e-8, 1e3);
+  fig.setlog(true, true); // set loglog scale
+  fig.plot(sizes, times_slow, " r+").label("runtime");
+  fig.plot(sizes, times_slow_loops, " b+").label("runtime");
+  fig.plot(sizes, times_fast, " g+").label("runtime");
+  fig.fplot("1e-9*x^2", "k|").label("O(n^2)");
+  fig.fplot("1e-9*x", "k-").label("O(n)");
+  fig.xlabel("Vector size (n)");
+  fig.ylabel("Time [s]");
+  fig.legend(0, 1);
+  fig.save("multAmin_timing.eps");
+  fig.save("multAmin_timing.png");
 #endif // INTERNAL
 
+#if SOLUTION
+    // The following code is kust for demonstration purposes.
+    // Build Matrix B with dimension 10x10 such that B = inv(A)
+    unsigned int n = 10;
+    /* SAM_LISTING_BEGIN_2 */
+    MatrixXd B = MatrixXd::Zero(n,n);
+    for(unsigned int i = 0; i < n; ++i) {
+        B(i,i) = 2;
+        if(i < n-1) B(i+1,i) = -1;
+        if(i > 0) B(i-1,i) = -1;
+    }
+    B(n-1,n-1) = 1;
+    /* SAM_LISTING_END_2 */
+    std::cout << "B = " << std::endl
+              << B << std::endl;
+
+    // Check that B = inv(A) (up to machine precision)
+    VectorXd x = VectorXd::Random(n), y;
+    multAmin(B*x, y);
+    std::cout << "|y-x| = " << (y - x).norm() << std::endl;
+    multAminSlow(B*x, y);
+    std::cout << "|y-x| = " << (y - x).norm() << std::endl;
+    multAminLoops(B*x, y);
+    std::cout << "|y-x| = " << (y - x).norm() << std::endl;
+#endif // SOLUTION
 }

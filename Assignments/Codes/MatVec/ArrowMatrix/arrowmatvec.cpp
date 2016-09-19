@@ -1,11 +1,13 @@
 #include <iostream>
+#include <iomanip>
+
+#include <Eigen/Dense>
+
 #include "timer.h"
 #if INTERNAL
 #include <chrono>
 #include <figure/figure.hpp>
 #endif // INTERNAL
-
-#include <Eigen/Dense>
 
 using namespace Eigen;
 
@@ -152,8 +154,11 @@ void time_arrow_matrix() {
         efficient_arrow_matrix_2_times_x(d,a,x,y);
       }, 1);
 
-    std::cout << "Took:           " << elapsed.count() << " ns" << std::endl;
-    std::cout << "Efficient took: " << elapsed_efficient.count() << " ns" << std::endl;
+    std::cout << n
+              << std::scientific << std::setprecision(3)
+              << std::setw(15) << elapsed.count()
+              << std::setw(15) << elapsed_efficient.count()
+              << std::endl;
 
     timings.push_back(elapsed.count() * 10e-9);
     timings_efficient.push_back(elapsed_efficient.count() * 10e-9);
