@@ -80,37 +80,37 @@ void efficient_arrow_matrix_2_times_x(const VectorXd & d,
  * @param[out] y The vector y = A*A*x
  */
 /* SAM_LISTING_BEGIN_0 */
-void arrow_matrix_2_times_x(const VectorXd & d, const VectorXd & a,
-                              const VectorXd & x, VectorXd & y) {
-  assert(d.size() == a.size() && a.size() == x.size() &&
-         "Vector size must be the same!");
-  int n = d.size();
+void arrow_matrix_2_times_x(const VectorXd &d, const VectorXd &a,
+                            const VectorXd &x, VectorXd &y) {
+    assert(d.size() == a.size() && a.size() == x.size() &&
+           "Vector size must be the same!");
+    int n = d.size();
 
-  #if SOLUTION
-  // In this lines, we extract the blocks used to construct the matrix A.
-  #endif // SOLUTION
-  VectorXd d_head = d.head(n-1);
-  VectorXd a_head = a.head(n-1);
-  MatrixXd d_diag = d_head.asDiagonal();
+#if SOLUTION
+    // In this lines, we extract the blocks used to construct the matrix A.
+#endif // SOLUTION
+    VectorXd d_head = d.head(n-1);
+    VectorXd a_head = a.head(n-1);
+    MatrixXd d_diag = d_head.asDiagonal();
 
-  MatrixXd A(n,n);
+    MatrixXd A(n,n);
 
-  #if SOLUTION
-  // We build the matrix A using the "comma initialization": each expression separated
-  // by a comma is a "block" of the matrix we are building.
-  // d\_diag is the top left (n-1)x(n-1) block
-  // a\_head is the top right vertical vector
-  // a\_head.transpose() is the bottom left horizontal vector
-  // d(n-1) is a single element (a 1x1 matrix), on the bottom right corner
-  // This is how the matrix looks like:
-  // A = | D   | a      |
-  //     |-----+--------|
-  //     | a\^T | d(n-1) |
-  #endif // SOLUTION
-  A << d_diag,             a_head,
-       a_head.transpose(), d(n-1);
+#if SOLUTION
+    // We build the matrix A using the "comma initialization": each expression separated
+    // by a comma is a "block" of the matrix we are building.
+    // d\_diag is the top left (n-1)x(n-1) block
+    // a\_head is the top right vertical vector
+    // a\_head.transpose() is the bottom left horizontal vector
+    // d(n-1) is a single element (a 1x1 matrix), on the bottom right corner
+    // This is how the matrix looks like:
+    // A = | D   | a      |
+    //     |-----+--------|
+    //     | a\^T | d(n-1) |
+#endif // SOLUTION
+    A << d_diag,             a_head,
+         a_head.transpose(), d(n-1);
 
-  y = A*A*x;
+    y = A*A*x;
 }
 /* SAM_LISTING_END_0 */
 
