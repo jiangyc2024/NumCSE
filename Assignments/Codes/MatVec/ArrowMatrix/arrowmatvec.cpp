@@ -114,8 +114,88 @@ void arrow_matrix_2_times_x(const VectorXd &d, const VectorXd &a,
 }
 /* SAM_LISTING_END_0 */
 
+/* \brief Compute runtime of arrow matrix multiplication.
+ * Repeat tests 10 times, and ouput the minimal runtime
+ * amongst all times. Test both the inefficient and the efficient
+ * versions.
+*/
+void runtime_arrow_matrix() {
+#if SOLUTION
+    // sizes will contain the size of the matrix
+    // timings will contain the runtimes in seconds
+    /* SAM_LISTING_BEGIN_3 */
+    std::vector<double> sizes, timings, timings_eff;
+
+    std::cout << std::setw(8) << "n"
+              << std::scientific << std::setprecision(3)
+              << std::setw(15) << "original"
+              << std::setw(15) << "efficient"
+              << std::endl;
+    for (unsigned n = 4; n <= 2048; n *= 2) {
+        // Create test input using random vectors
+        Eigen::VectorXd a = Eigen::VectorXd::Random(n),
+                        d = Eigen::VectorXd::Random(n),
+                        x = Eigen::VectorXd::Random(n),
+                        y;
+        // Number of repetitions
+        unsigned int repeats = 10;
+
+        Timer timer, timer_eff;
+        for (unsigned int r = 0; r < repeats; ++r) {
+          timer.start();
+          arrow_matrix_2_times_x(d, a, x, y);
+          timer.stop();
+
+          timer_eff.start();
+          efficient_arrow_matrix_2_times_x(d, a, x, y);
+          timer_eff.stop();
+        }
+
+        sizes.push_back(n); // save vector sizes
+        timings.push_back(timer.min());
+        timings_eff.push_back(timer_eff.min());
+        std::cout << std::setw(8) << n
+                  << std::scientific << std::setprecision(3)
+                  << std::setw(15) << timer.min()
+                  << std::setw(15) << timer_eff.min()
+                  << std::endl;
+    }
+    /* SAM_LISTING_END_3 */
+#else
+    // TODO: your code here
+#endif // SOLUTION
+
 #if INTERNAL
-using duration_t = std::chrono::nanoseconds;
+  mgl::Figure fig;
+  fig.title("Timings of arrow\\_matrix\\_2\\_times\\_x");
+  fig.ranges(2, 9000, 1e-8, 1e3);
+  fig.setlog(true, true); // set loglog scale
+  fig.plot(sizes, timings, " r+").label("runtime original");
+  fig.fplot("1e-9*x^3", "k|").label("O(n^3)");
+  fig.xlabel("Vector size (n)");
+  fig.ylabel("Time [s]");
+  fig.legend(0, 1);
+  fig.save("arrowmatvec_timing.eps");
+  fig.save("arrowmatvec_timing.png");
+
+  mgl::Figure fig2;
+  fig2.title("Comparison of timings");
+  fig2.ranges(2, 9000, 1e-8, 1e3);
+  fig2.setlog(true, true); // set loglog scale
+  fig2.plot(sizes, timings, " r+").label("original");
+  fig2.plot(sizes, timings_efficient, " r+").label("efficient");
+  fig2.fplot("1e-9*x^3", "k|").label("O(n^3)");
+  fig2.fplot("1e-7*x", "k").label("O(n)");
+  fig2.xlabel("Vector size (n)");
+  fig2.ylabel("Time [s]");
+  fig2.legend(0, 1);
+  fig2.save("arrowmatvec_comparison.eps");
+  fig2.save("arrowmatvec_comparison.png");
+#endif
+}
+
+#if SOLUTION
+using duration_t = std::chrono::milliseconds;
 
 template <class Function>
 duration_t timing(const Function & F, int repeats = 10) {
@@ -138,114 +218,38 @@ duration_t timing(const Function & F, int repeats = 10) {
 
 }
 
-void time_arrow_matrix() {
-
-  std::vector<double> sizes, timings, timings_efficient;
-
-  for(int n = (1 << 5); n < (1 << 12); n = n << 1) {
-    VectorXd d = VectorXd::Random(n);
-    VectorXd a = VectorXd::Random(n);
-    VectorXd x = VectorXd::Random(n);
-    VectorXd y(n);
-    duration_t elapsed = timing([&a, &d, &x, &y] () {
-        arrow_matrix_2_times_x(d,a,x,y);
-      }, 1);
-    duration_t elapsed_efficient = timing([&a, &d, &x, &y] () {
-        efficient_arrow_matrix_2_times_x(d,a,x,y);
-      }, 1);
-
-    std::cout << n
-              << std::scientific << std::setprecision(3)
-              << std::setw(15) << elapsed.count()
-              << std::setw(15) << elapsed_efficient.count()
-              << std::endl;
-
-    timings.push_back(elapsed.count() * 10e-9);
-    timings_efficient.push_back(elapsed_efficient.count() * 10e-9);
-    sizes.push_back(n);
-  }
-
-  mgl::Figure fig;
-  fig.title("Timings of arrow\\_matrix\\_2\\_times\\_x");
-  fig.ranges(2, 9000, 1e-8, 1e3);
-  fig.setlog(true, true); // set loglog scale
-  fig.plot(sizes, timings, " r+").label("runtime");
-  fig.fplot("1e-9*x^3", "k|").label("O(n^3)");
-  fig.xlabel("Vector size (n)");
-  fig.ylabel("Time [s]");
-  fig.legend(0, 1);
-  fig.save("arrowmatvec_timing.eps");
-  fig.save("arrowmatvec_timing.png");
-
-  mgl::Figure fig2;
-  fig2.title("Comparison of timings");
-  fig2.ranges(2, 9000, 1e-8, 1e3);
-  fig2.setlog(true, true); // set loglog scale
-  fig2.plot(sizes, timings, " r+").label("original");
-  fig2.plot(sizes, timings_efficient, " r+").label("efficient");
-  fig2.fplot("1e-9*x^3", "k|").label("O(n^3)");
-  fig2.fplot("1e-7*x", "k").label("O(n)");
-  fig2.xlabel("Vector size (n)");
-  fig2.ylabel("Time [s]");
-  fig2.legend(0, 1);
-  fig2.save("arrowmatvec_comparison.eps");
-  fig2.save("arrowmatvec_comparison.png");
-}
-#endif // INTERNAL
-
-void runtime_arrow_matrix() {
-#if SOLUTION
-  // sizes will contain the size of the matrix
-  // timings will contain the runtimes in seconds
-  /* SAM_LISTING_BEGIN_3 */
-  std::vector<double> sizes, timings;
-
-  std::cout << "n" << "\t" << "time" << std::endl;
-  for (unsigned n = 4; n <= 2048; n *= 2){
-    // Create test input using random vectors
-    Eigen::VectorXd a = Eigen::VectorXd::Random(n),
-                    d = Eigen::VectorXd::Random(n),
-                    x = Eigen::VectorXd::Random(n),
-                    y;
-    Timer t;
-    t.start();
-    // Perform a single test
-    // TODO: more tests
-    arrow_matrix_2_times_x(d, a, x, y);
-    efficient_arrow_matrix_2_times_x(d, a, x, y);
-    t.stop();
-    sizes.push_back(n); // save vector sizes
-    timings.push_back(t.duration());
-
-    std::cout << n << "\t" << t.duration() << std::endl;
-  }
-  /* SAM_LISTING_END_3 */
-#else
-  // TODO: your code here
-#endif // SOLUTION
-}
-
-#if SOLUTION
 void runtime_arrow_matrix_with_chrono() {
-  std::vector<double> sizes, timings;
-  std::cout << "n" << "\t" << "time" << std::endl;
-  for (unsigned n = 4; n <= 2048; n *= 2){
-    // Create test input using random vectors
-    Eigen::VectorXd a = Eigen::VectorXd::Random(n),
-                    d = Eigen::VectorXd::Random(n),
-                    x = Eigen::VectorXd::Random(n),
-                    y;
-    Timer t;
-    t.start();
-    // Perform a single test
-    // TODO: more tests
-    arrow_matrix_2_times_x(d, a, x, y);
-    efficient_arrow_matrix_2_times_x(d, a, x, y);
-    t.stop();
-    sizes.push_back(n); // save vector sizes
-    timings.push_back(t.duration());
-    std::cout << n << "\t" << t.duration() << std::endl;
+
+    std::vector<double> sizes, timings, timings_efficient;
+
+    std::cout << std::setw(8) << "n"
+              << std::scientific << std::setprecision(3)
+              << std::setw(15) << "original"
+              << std::setw(15) << "efficient"
+              << std::endl;
+    for(int n = (1 << 5); n < (1 << 12); n = n << 1) {
+        VectorXd d = VectorXd::Random(n);
+        VectorXd a = VectorXd::Random(n);
+        VectorXd x = VectorXd::Random(n);
+        VectorXd y(n);
+        duration_t elapsed = timing([&a, &d, &x, &y] () {
+            arrow_matrix_2_times_x(d,a,x,y);
+        }, 1);
+        duration_t elapsed_efficient = timing([&a, &d, &x, &y] () {
+            efficient_arrow_matrix_2_times_x(d,a,x,y);
+        }, 1);
+
+        std::cout << n
+                  << std::scientific << std::setprecision(3)
+                  << std::setw(15) << elapsed.count()
+                  << std::setw(15) << elapsed_efficient.count()
+               << std::endl;
+
+       timings.push_back(elapsed.count() * 10e-9);
+       timings_efficient.push_back(elapsed_efficient.count() * 10e-9);
+       sizes.push_back(n);
   }
+
 }
 #endif // SOLUTION
 
@@ -263,11 +267,11 @@ int main(void) {
 
   double err = (yi - ye).norm();
 
+  std::cout << "--> Correctness test." << std::endl;
+
   std::cout << "Error: " << err << std::endl;
 
-#if INTERNAL
-  time_arrow_matrix();
-#endif // INTERNAL
+  std::cout << "--> Runtime test." << std::endl;
 
   runtime_arrow_matrix();
 #if SOLUTION
