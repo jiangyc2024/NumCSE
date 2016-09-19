@@ -32,7 +32,7 @@ static void escape (T&& p) {
     asm volatile("" :  : "g"(p) : "memory");
 }
 
-// estimate asymptotic computational complexity
+// calculate the asom
 VectorXd asymptotic_complexity(std::vector<unsigned> dims, std::vector<double>& means, 
   unsigned offset=0) {
     assert(dims.size() == means.size());
@@ -141,8 +141,7 @@ int main()
                   << std::endl;
     }
 
-    // estimate asymptotic computational complexity
-    std::cout << "Estimated asymptotic complexity:" << std::endl;
+    // calculate asymptotic complexity
     std::cout << "Eigen: O(n^" << asymptotic_complexity(matrix_dims, timings_eigen, 2)[0] << ")" << std::endl;
     std::cout << "Strassen: O(n^" << asymptotic_complexity(matrix_dims, timings_strassen, 2)[0] << ")" << std::endl;
 }

@@ -1,10 +1,3 @@
-//// 
-//// Copyright (C) 2016 SAM (D-MATH) @ ETH Zurich
-//// Author(s): lfilippo <filippo.leonardi@sam.math.ethz.ch> 
-//// Contributors: tille, jgacon
-//// This file is part of the NumCSE repository.
-//// Report issues to: https://gitlab.math.ethz.ch/NumCSE/NumCSE/issues
-////
 #include <Eigen/Dense>
 
 using namespace Eigen;
@@ -15,6 +8,7 @@ using namespace Eigen;
  * @param[in] B Matrix $2^k \times 2^k$
  * @param[out] Matrix product of A and B of dim $2^k \times 2^k$
  */
+/* SAM_LISTING_BEGIN_1 */
 MatrixXd strassenMatMult(const MatrixXd& A, const MatrixXd& B) {
     const unsigned n = A.rows();
 
@@ -22,3 +16,4 @@ MatrixXd strassenMatMult(const MatrixXd& A, const MatrixXd& B) {
     // TODO: implement strassen's algorithm to multiply the two matrices $A$ and $B$ and return the result
     return C;
 }
+/* SAM_LISTING_END_1 */

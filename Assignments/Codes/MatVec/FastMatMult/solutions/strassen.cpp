@@ -10,7 +10,6 @@ using namespace Eigen;
  */
 /* SAM_LISTING_BEGIN_1 */
 MatrixXd strassenMatMult(const MatrixXd& A, const MatrixXd& B) {
-#if SOLUTION
     // ensure square matrix
     assert(A.rows() == A.cols());
     // matrix dimension must be a power of 2
@@ -55,12 +54,5 @@ MatrixXd strassenMatMult(const MatrixXd& A, const MatrixXd& B) {
          Q0+Q2-Q1+Q5;
 
     return C;
-#else
-    const unsigned n = A.rows();
-
-    MatrixXd C(n,n);
-    // TODO: implement strassen's algorithm to multiply the two matrices $A$ and $B$ and return the result
-    return C;
-#endif
 }
 /* SAM_LISTING_END_1 */

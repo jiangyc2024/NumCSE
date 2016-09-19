@@ -1,4 +1,4 @@
 {
     "name": "Strassen",
-    "all" : ["strassen.cpp"]
+    "all" : ["strassen.cpp", "test.cpp", "timing.cpp"]
 }
