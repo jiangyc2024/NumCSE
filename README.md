@@ -37,6 +37,12 @@ There you can find different versions of the same code:
 
 All binaries can then be found in the `bin` folder.
 
+TIP: Using:
+
+    $ make -j<number_ob_processes>
+    
+may (or may not) speed up the compilation time.
+
 __Alternative download__ [zip](https://gitlab.math.ethz.ch/NumCSE/NumCSE/repository/archive.zip?ref=master)
 
 ### Third party libraries
