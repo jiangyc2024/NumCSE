@@ -79,10 +79,11 @@ void multAmin(const VectorXd & x, VectorXd & y) {
 /* SAM_LISTING_END_3 */
 
 int main(void) {
-
+#if SOLUTIOn
     // Timing from 2^4 to 2^13 repeating "nruns" times
     unsigned int nruns = 10;
-    std::vector<double> sizes, times_slow, times_slow_loops, times_fast;
+    std::vector<double> sizes, times_slow,
+        times_slow_loops, times_fast;
     for(unsigned int N = (1 << 4); N <= (1 << 13); N = N << 1) {
         Timer tm_slow, tm_slow_loops, tm_fast;
         for(unsigned int r = 0; r < nruns; ++r) {
@@ -115,6 +116,11 @@ int main(void) {
                   << std::setw(15) << tm_fast.min()
                   << std::endl;
     }
+#else // TEMPLATE
+ // TODO: Time multAminSlow and multAmin
+ // Repeat timings 10 times. Output times inseconds with
+ // scientific notation and 3 digits
+#endif //TEMPLATE
 
 #if INTERNAL
   // Plotting
@@ -122,9 +128,12 @@ int main(void) {
   fig.title("Timings of multAmin");
   fig.ranges(2, 9000, 1e-8, 1e3);
   fig.setlog(true, true); // set loglog scale
-  fig.plot(sizes, times_slow, " r+").label("runtime");
-  fig.plot(sizes, times_slow_loops, " b+").label("runtime");
-  fig.plot(sizes, times_fast, " g+").label("runtime");
+  fig.plot(sizes, times_slow, " r+")
+      .label("multAmin (slow)");
+  fig.plot(sizes, times_slow_loops, " b+")
+      .label("multAmin (slow, with loops)");
+  fig.plot(sizes, times_fast, " g+")
+      .label("multAmin");
   fig.fplot("1e-9*x^2", "k|").label("O(n^2)");
   fig.fplot("1e-9*x", "k-").label("O(n)");
   fig.xlabel("Vector size (n)");
