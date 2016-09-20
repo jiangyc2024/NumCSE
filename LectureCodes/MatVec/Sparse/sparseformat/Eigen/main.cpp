@@ -63,7 +63,7 @@ for(int i = min_i; i <= max_i ; ++i){
 	
 	
 	std::cout << tmp << std::endl;
-	std::cout << std::cout << std::scientific << std::setprecision(3) << times << std::endl;
+	std::cout << std::scientific << std::setprecision(3) << times << std::endl;
 	mgl::Figure fig2;
 	fig2.setlog(true,true);
 	fig2.setFontSize(5);
