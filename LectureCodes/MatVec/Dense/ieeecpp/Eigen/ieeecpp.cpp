@@ -1,3 +1,11 @@
+///////////////////////////////////////////////////////////////////////////
+/// Demonstration code for lecture "Numerical Methods for CSE" @ ETH Zurich
+/// (C) 2016 SAM, D-MATH
+/// Author(s): Thomas Etterlin <thomaset@student.ethz.ch>
+/// Repository: https://gitlab.math.ethz.ch/NumCSE/NumCSE/
+/// Do not remove this header.
+//////////////////////////////////////////////////////////////////////////
+/* SAM_LISTING_BEGIN_0 */
 #include <limits>
 #include <iostream>
 #include <iomanip>
@@ -9,4 +17,5 @@ int main(){
 	<< std::defaultfloat << numeric_limits<double>::max() << endl 
 	<< std::hexfloat << numeric_limits<double>::max() << endl;
 }
+/* SAM_LISTING_END_0 */
 
