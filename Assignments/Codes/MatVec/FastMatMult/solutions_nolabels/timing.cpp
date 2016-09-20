@@ -48,9 +48,9 @@ int main() {
                 timer.stop(); // stop timer
 
                 // Benchmark Stassens matrix multiplication
-                timer.start(); // start timer
+                timer_own.start(); // start timer
                 AxB=strassenMatMult(A, B); // do the multiplication
-                timer.stop(); // stop timer
+                timer_own.stop(); // stop timer
         }
 
         // Print runtime
