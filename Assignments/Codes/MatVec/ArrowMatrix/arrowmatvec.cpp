@@ -165,7 +165,7 @@ void runtime_arrow_matrix() {
     // TODO: your code here
 #endif // SOLUTION
 
-#if INTERNAL
+#if INTERNAL && SOLUTION
   mgl::Figure fig;
   fig.title("Timings of arrow\\_matrix\\_2\\_times\\_x");
   fig.ranges(2, 9000, 1e-8, 1e3);
@@ -183,7 +183,7 @@ void runtime_arrow_matrix() {
   fig2.ranges(2, 9000, 1e-8, 1e3);
   fig2.setlog(true, true); // set loglog scale
   fig2.plot(sizes, timings, " r+").label("original");
-  fig2.plot(sizes, timings_efficient, " r+").label("efficient");
+  fig2.plot(sizes, timings_eff, " r+").label("efficient");
   fig2.fplot("1e-9*x^3", "k|").label("O(n^3)");
   fig2.fplot("1e-7*x", "k").label("O(n)");
   fig2.xlabel("Vector size (n)");
