@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <iomanip>
 
 #include <Eigen/Dense>
 
@@ -35,6 +36,6 @@ void mmeigenmkl(){
 	}
 	timings(p,0)=n; timings(p,1)=t1.min();
   }
-  std::cout << timings << std::endl;
+  std::cout << std::scientific << std::setprecision(3) << timings << std::endl;
 }
 /* SAM_LISTING_END_0 */

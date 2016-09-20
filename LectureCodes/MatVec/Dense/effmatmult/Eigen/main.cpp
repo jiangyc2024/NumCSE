@@ -7,6 +7,7 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
+#include <iomanip>
 #include <cmath>
 
 #include <Eigen/Dense>
@@ -17,7 +18,7 @@
 
 int main(){
   Eigen::MatrixXd timings = dottenstiming();
-  std::cout << timings << std::endl;
+  std::cout << std::scientific << std::setprecision(3) << timings << std::endl;
   //Plotting
   mgl::Figure fig;
   fig.setFontSize(5);

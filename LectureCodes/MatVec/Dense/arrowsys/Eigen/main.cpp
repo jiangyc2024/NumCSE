@@ -7,9 +7,10 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
+#include <iomanip>
 
 #include "arrowsystiming.hpp"
 int main () {
-	std::cout << arrowsystiming() << std::endl;
+	std::cout << std::scientific << std::setprecision(3) << arrowsystiming() << std::endl;
 	return 0;
 }

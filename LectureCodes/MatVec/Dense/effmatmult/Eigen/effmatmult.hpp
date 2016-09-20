@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <iomanip>
 #include <cmath>
 
 #include <Eigen/Dense>

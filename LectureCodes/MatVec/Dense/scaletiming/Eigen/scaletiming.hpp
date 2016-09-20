@@ -9,7 +9,7 @@
 #pragma once
 
 #include <iostream>
-
+#include <iomanip>
 #include <cmath>
 
 #include <Eigen/Dense>
@@ -41,7 +41,7 @@ void scaletiming() {
     timings(i,0)=n;
     timings(i,1)=tgood.min(); timings(i,2)=tbad.min(); timings(i,3)= topt.min(); 
   }
-  std::cout << timings << std::endl;
+  std::cout << std::scientific << std::setprecision(3) << timings << std::endl;
   // Plotting times using the mathGL and the Figure class.
   mgl::Figure fig;
   fig.setFontSize(4);

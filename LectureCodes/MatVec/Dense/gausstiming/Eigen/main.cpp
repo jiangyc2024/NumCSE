@@ -7,10 +7,12 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
+#include <iomanip>
+
 #include <Eigen/Dense>
 
 int main () {
-	std::cout << gausstiming() << std::endl;
+	std::cout << std::scientific << std::setprecision(3) << gausstiming() << std::endl;
 	return 0;
 }
 

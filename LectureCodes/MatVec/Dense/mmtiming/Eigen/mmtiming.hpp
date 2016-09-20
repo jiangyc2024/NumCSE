@@ -9,6 +9,7 @@
 #pragma once
 
 #include <iostream>
+#include <iomanip>
 #include <cmath>
 
 #include <Eigen/Dense>
@@ -57,7 +58,7 @@ void mmtiming(){
 	timings(p,0)=n; timings(p,1)=t1.min(); timings(p,2)=t2.min(); 
 	timings(p,3)=t3.min(); timings(p,4)=t4.min();
   }
-  std::cout << timings << std::endl;
+  std::cout << std::scientific << std::setprecision(3) << timings << std::endl;
   //Plotting
   mgl::Figure fig;
   fig.setFontSize(4);

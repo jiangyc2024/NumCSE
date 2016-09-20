@@ -1,13 +1,14 @@
 ///////////////////////////////////////////////////////////////////////////
 /// Demonstration code for lecture "Numerical Methods for CSE" @ ETH Zurich
 /// (C) 2016 SAM, D-MATH
-/// Author(s): Thomas Etterlin <thomaset@student.ethz.ch>
+/// Author(s): 
 /// Repository: https://gitlab.math.ethz.ch/NumCSE/NumCSE/
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 
 #include <Eigen/Sparse>
 #include <iostream>
+#include <iomanip>
 #include <chrono>
 #include <vector>
 #include <cassert>
@@ -83,7 +84,7 @@ std::size_t triplet_init(const std::size_t N, const std::size_t bw) {
 int main() {
   // Half the bandwidth of band matrices
   std::size_t bw=2;
-
+  std::cout << std::scientific << std::setprecision(3);
   for(std::size_t n = 1; n <= 5; n++) {
     std::size_t N = std::pow(10, n);
     std::size_t time_triplet = triplet_init(N, bw);
