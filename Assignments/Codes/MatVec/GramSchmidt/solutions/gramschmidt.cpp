@@ -13,6 +13,7 @@ using namespace Eigen;
 /* SAM_LISTING_BEGIN_1 */
 MatrixXd gram_schmidt(const MatrixXd & A) {
     // We create a matrix Q with the same size as A
+    // and copied from A
     MatrixXd Q(A);
 
     // The first vector just gets normalized
@@ -20,11 +21,11 @@ MatrixXd gram_schmidt(const MatrixXd & A) {
 
     for(unsigned int j = 1; j < A.cols(); ++j) {
         // Replace inner loop over each previous vector in Q with fast
-        //  matrix-vector multiplication
+        // matrix-vector multiplication
         Q.col(j) -= Q.leftCols(j) * (Q.leftCols(j).transpose() * A.col(j));
 
-        // Normalize vector if possible
-        // (otherwise means colums of $\mathbf{A}$ are
+        // Normalize vector, if possible
+        // (otherwise it means colums of $\mathbf{A}$ are
         // almost linear dependant)
         double eps = std::numeric_limits<double>::denorm_min();
         if( Q.col(j).norm() <= eps * A.col(j).norm() ) {
@@ -49,10 +50,11 @@ int main(void) {
     MatrixXd Q = gram_schmidt( A );
 
     // Compute how far is $\mathbf{Q}*\mathbf{Q}^\top$ from the identity
+    // i.e. "How far is Q from being orthonormal?"
     double err = (Q*Q.transpose() - MatrixXd::Identity(n,n))
         .norm();
 
-    // Output should be identity matrix
+    // Error has to be small, but not zero (why?)
     std::cout << "Error is: "
               << err
               << std::endl;

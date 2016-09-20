@@ -19,6 +19,7 @@ using namespace Eigen;
  */
 MatrixXd gram_schmidt(const MatrixXd & A) {
     // We create a matrix Q with the same size as A
+    // and copied from A
     MatrixXd Q(A);
 
 
@@ -29,6 +30,6 @@ int main(void) {
     // Orthonormality test
     unsigned int n = 9;
     MatrixXd A = MatrixXd::Random(n,n);
-    // TODO: use gramschmidt to compute orthogonalization of
+    // TODO: use gramschmidt to compute orthonormalization of
     // the matrix $\mathbf{A}$.
 }
