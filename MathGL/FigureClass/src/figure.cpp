@@ -1,3 +1,10 @@
+///////////////////////////////////////////////////////
+// (c) Seminar of Applied Mathematics ETH 2016, D-MATH
+// Author: Julien Gacon
+// Co-Author: Baranidharan Mohan 
+///////////////////////////////////////////////////////
+
+
 # include <iostream>
 # include <utility> // pair
 # include <vector>
@@ -41,7 +48,7 @@ Figure::Figure()
     aspects_({1, 1, 1}), // normal axis, no shearing
     autoRanges_(true),
     styles_(MglStyle()),
-    fontSizePT_(6), // small font size
+    fontSizePT_(4), // small font size
     plotHeight_(800), // quadratic plot, window size depends on wheter there are labels or not!
     plotWidth_(800),
     figHeight_(-1), // set to -1: later we will check if they have been changed manually, -1 means no
@@ -385,8 +392,11 @@ void Figure::save(const std::string& file) {
   // Shorten tick marks (factor 0.01) and make subticks so small that they do not appear (factor 1000)
   gr_.SetTickLen(0.01, 1000); 
 
-  // set font to 'heros'. If the file is not available on the machine it will use the MathGL default (STIX)
-  gr_.LoadFont("heros");
+  // setting font to "none" is necessary to prevent some bugs
+  // for more information refer to MathGL's GoogleGroup
+  // TODO: find way to successfully load "heros" font. 
+  //       (usual 'LoadFont("heros", path)' doens't work properly!)
+  gr_.LoadFont("none");
   // set the font size
   gr_.SetFontSizePT(fontSizePT_);
 

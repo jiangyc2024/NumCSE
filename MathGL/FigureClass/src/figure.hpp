@@ -1,3 +1,10 @@
+///////////////////////////////////////////////////////
+// (c) Seminar of Applied Mathematics ETH 2016, D-MATH
+// Author: Julien Gacon
+// Co-Author: Baranidharan Mohan 
+///////////////////////////////////////////////////////
+
+
 # ifndef FIGURE_H
 # define FIGURE_H
 
@@ -26,7 +33,7 @@ namespace mgl {
 /* make mglData from std::vector                                    *
  * PRE: -                                                           *
  * POST: returning mglData containing the data of given std::vector */
-template<typename Scalar>
+template <typename Scalar>
 typename std::enable_if<std::is_arithmetic<Scalar>::value, mglData>::type
 make_mgldata(const std::vector<Scalar>& v) {
   std::vector<double> vd(v.begin(), v.end());
@@ -37,7 +44,7 @@ make_mgldata(const std::vector<Scalar>& v) {
  * PRE : -                                                                 *
  * POST: returning mglData containing the data of given Eigen::(Row)Vector */
 # if FIG_HAS_EIGEN
-template<typename Derived>
+template <typename Derived>
 mglData make_mgldata(const Eigen::MatrixBase<Derived>& vec) {
   assert(vec.rows() == 1 || vec.cols() == 1);
   std::vector<typename Derived::Scalar> v;
@@ -51,6 +58,14 @@ mglData make_mgldata(const Eigen::MatrixBase<Derived>& vec) {
       v[i] = vec[i];
   }
   return mglData(v.data(), v.size());
+}
+
+/* make mglData from Eigen::Array                                     *
+ * PRE : -                                                            *
+ * POST: returning mglData containing the data of given Eigen::Arrary */
+template <typename Derived>
+mglData make_mgldata(const Eigen::ArrayBase<Derived>& a) {
+  return make_mgldata(a.matrix());
 }
 # endif
 
