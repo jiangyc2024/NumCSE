@@ -10,7 +10,7 @@ NumCSE:
     - mkdir build
     - pushd build
     - cmake -DCMAKE_BUILD_TYPE=Release ..
-    - make -j3
+    - make
     - popd
 
 NumCSEClang:
@@ -26,5 +26,5 @@ NumCSEClang:
      - mkdir build
      - pushd build
      - cmake -DCMAKE_BUILD_TYPE=Release ..
-     - make -j3
+     - make
      - popd
