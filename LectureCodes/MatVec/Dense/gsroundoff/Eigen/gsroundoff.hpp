@@ -25,12 +25,12 @@ void gsroundoff(MatrixXd& A){
        << endl << Q*Q.transpose() << endl; 
   // \eigen's \textbf{stable} internal Gram-Schmidt orthogonalization by
   // \cor{QR-decomposition}, see \cref{rem:QR} below
-  HouseholderQR<MatrixXd> qr(A.rows(),A.cols());
-  qr.compute(A); MatrixXd Q1 = qr.householderQ();
+  HouseholderQR<MatrixXd> qr(A.rows(),A.cols()); // \Label[line]{gso:1}
+  qr.compute(A); MatrixXd Q1 = qr.householderQ(); // \Label[line]{gso:2}
   // Test orthonormality
   cout << "I1 = " << endl << Q1*Q1.transpose() << endl;
   // Check orthonormality and span property \eqref{gsorth:span}
-  MatrixXd R1 = qr.matrixQR().triangularView<Upper>();
-  cout << scientific << "A-Q1*R1 = " << endl << A-Q1*R1 << endl;
+  MatrixXd R1 = qr.matrixQR().triangularView<Upper>(); 
+  cout << scientific << "A-Q1*R1 = " << endl << A-Q1*R1 << endl; 
 }
 /* SAM_LISTING_END_0 */
