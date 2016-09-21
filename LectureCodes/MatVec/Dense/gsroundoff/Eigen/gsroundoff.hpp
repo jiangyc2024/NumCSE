@@ -30,7 +30,7 @@ void gsroundoff(MatrixXd& A){
   // \Magenta{Test orthonormality} of columns of Q, which should be an
   // \cor{orthogonal} matrix according to theory
   cout << setprecision(4) << fixed << "I = " 
-       << endl << Q*Q.transpose() << endl; 
+       << endl << Q.transpose()*Q << endl; 
   // \eigen's \textbf{stable} internal Gram-Schmidt orthogonalization by
   // \cor{QR-decomposition}, see \cref{rem:QR} below
   HouseholderQR<MatrixXd> qr(A.rows(),A.cols()); // \Label[line]{gso:1}
