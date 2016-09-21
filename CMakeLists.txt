@@ -53,7 +53,7 @@ add_definitions(-pedantic -Wall)
 if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
     # (this is only applicable on clang)            
     # ignore some mathgl warnings
-    add_definitions(-Wno-return-type-c-linkage -Wno-keyword-macro)
+    add_definitions(-Wno-return-type-c-linkage -Wno-keyword-macro -Wno-missing-braces)
     #set(EXTERNAL_PROJECT_CXX_FLAGS ${EXTERNAL_PROJECT_CXX_FLAGS} -Wno-return-type-c-linkage)
 endif()
 
