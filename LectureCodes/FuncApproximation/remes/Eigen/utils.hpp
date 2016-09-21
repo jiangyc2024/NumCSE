@@ -17,7 +17,7 @@ MatrixXd vander(const VectorXd& x) {
   for (int c = 0; c < n; ++c) {
     V.col(n - 1 - c) = x.array().pow(c).matrix();
   }
-  return std::move(V);
+  return V;
 }
 
 // returns f(x) = [f(x1), .., f(xn)] as Eigen::VectorXd

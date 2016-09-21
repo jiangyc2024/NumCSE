@@ -39,7 +39,7 @@ Eigen::MatrixXi readBMP(std::string filename)
 	}
 
 	fclose(f);
-	delete data;
+	delete[] data;
 
     return mat;
 }
