@@ -22,8 +22,8 @@ void remez(const Function& f, const Derivative& df, const double a, const double
   // initial guess is Chebychev alternant \eqref{remez:chebalt}
   const double h = M_PI/(d + 1);
   VectorXd xe(d + 2);
-  for (int i = 0; i < d + 2; ++i) {
-    xe(i) = (a + b)/2. + (a - b)/2.*std::cos(h*i);
+  for (unsigned i = 0; i < d + 2; ++i) {
+      xe(i) = (a + b)/2. + (a - b)/2.*std::cos(h*i);
   }
 
   VectorXd fxe = feval(f, xe); // f evaluated at alternants
