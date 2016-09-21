@@ -1,3 +1,11 @@
+///////////////////////////////////////////////////////////////////////////
+/// Demonstration code for lecture "Numerical Methods for CSE" @ ETH Zurich
+/// (C) 2016 SAM, D-MATH
+/// Author(s): Thomas Etterlin <thomaset@student.ethz.ch>
+/// Repository: https://gitlab.math.ethz.ch/NumCSE/NumCSE/
+/// Do not remove this header.
+//////////////////////////////////////////////////////////////////////////
+
 //! in-situ recursive Gaussian elimination, no pivoting
 //! right hand side in rightmost column of \Blue{$\VA$}: A.rightCols(1)
 //! be aware: back substitution is not done in this code snippet!

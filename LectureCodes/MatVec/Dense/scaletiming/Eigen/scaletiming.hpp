@@ -1,7 +1,15 @@
+///////////////////////////////////////////////////////////////////////////
+/// Demonstration code for lecture "Numerical Methods for CSE" @ ETH Zurich
+/// (C) 2016 SAM, D-MATH
+/// Author(s): Thomas Etterlin <thomaset@student.ethz.ch>
+/// Repository: https://gitlab.math.ethz.ch/NumCSE/NumCSE/
+/// Do not remove this header.
+//////////////////////////////////////////////////////////////////////////
+
 #pragma once
 
 #include <iostream>
-
+#include <iomanip>
 #include <cmath>
 
 #include <Eigen/Dense>
@@ -34,7 +42,8 @@ void scaletiming() {
     tms(i,1)=tgood.min(); tms(i,2)=tbad.min(); tms(i,3)= topt.min(); 
   }
 /* SAM_LISTING_END_0 */
-  std::cout << tms << std::endl;
+  std::cout << std::scientific << std::setprecision(3) << tms << std::endl;
+
   // Plotting times using the mathGL and the Figure class.
   mgl::Figure fig;
   fig.setFontSize(4);
