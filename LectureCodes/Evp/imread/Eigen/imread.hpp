@@ -2,15 +2,15 @@
 #include <string.h>
 #include <stdint.h>
 #include <iostream>
-
+#include <cassert>
 
 // reads a bmp file and returns a Eigen::MatrixXi formated like: 00000000bbbbbbbbggggggggrrrrrrrr
 // modfied version of http://stackoverflow.com/questions/9296059/read-pixel-value-in-bmp-file
-Eigen::MatrixXi readBMP(std::string filename)
+Eigen::MatrixXi readBMP(const std::string filename)
 {
     FILE* f = fopen(filename.c_str(), "rb");
 
-	if (f == NULL)
+	if (f == nullptr)
 	{
 		std::cerr << "Error reading file " << filename << std::endl;
 		exit(1);
@@ -20,8 +20,8 @@ Eigen::MatrixXi readBMP(std::string filename)
     fread(info, sizeof(unsigned char), 54, f); // read the 54-byte header
 
     // extract image height and width from header
-    int width = *(int*)&info[18];
-    int height = *(int*)&info[22];
+    const int width = *reinterpret_cast<int*>(&info[18]);
+    const int height = *reinterpret_cast<int*>(&info[22]);
 
 	Eigen::MatrixXi mat(height, width);
 
