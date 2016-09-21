@@ -7,7 +7,7 @@ NumCSE:
   tags:
     - gcc-5
   script:
-    - mkdir build
+    - mkdir -p build
     - pushd build
     - cmake -DCMAKE_BUILD_TYPE=Release ..
     - make
@@ -23,7 +23,7 @@ NumCSEClang:
      paths:
        - build/mathgl_install
    script:
-     - mkdir build
+     - mkdir -p build
      - pushd build
      - cmake -DCMAKE_BUILD_TYPE=Release ..
      - make
