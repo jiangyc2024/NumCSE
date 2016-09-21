@@ -7,10 +7,10 @@ NumCSE:
   tags:
     - gcc-5
   script:
-    - mkdir build
+    - mkdir -p build
     - pushd build
     - cmake -DCMAKE_BUILD_TYPE=Release ..
-    - make -j3
+    - make
     - popd
 
 NumCSEClang:
@@ -19,9 +19,12 @@ NumCSEClang:
      - development
    tags:
      - clang-3.8
+   cache:
+     paths:
+       - build/mathgl_install
    script:
-     - mkdir build
+     - mkdir -p build
      - pushd build
      - cmake -DCMAKE_BUILD_TYPE=Release ..
-     - make -j3
+     - make
      - popd
