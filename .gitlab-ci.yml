@@ -4,6 +4,8 @@ NumCSE:
 #  only:
 #    - master
 #    - development
+  tags:
+    - gcc-5
   script:
     - mkdir build
     - pushd build
