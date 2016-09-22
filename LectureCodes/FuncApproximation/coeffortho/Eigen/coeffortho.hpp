@@ -7,8 +7,8 @@ using Eigen::VectorXd;
 // IN : \texttt{t} = points in the definition of the discrete $L^2$-inner product
 //      \texttt{n} = maximal index desired
 //      \texttt{alpha}, \texttŧ{beta} are used to save coefficients of recursion 
-void coeffortho(const VectorXd& t, const int n, VectorXd& alpha, VectorXd& beta) {
-  const int m = t.size(); // maximal degree of orthogonal polynomial
+void coeffortho(const VectorXd& t, const unsigned n, VectorXd& alpha, VectorXd& beta) {
+  const unsigned m = t.size(); // maximal degree of orthogonal polynomial
   alpha = VectorXd( std::min(n-1, m-2) + 1 );
   beta = VectorXd( std::min(n-1, m-2) + 1 );
 

@@ -1,4 +1,5 @@
 {
     "name": "StructuredmatrixProduct",
-    "all" : ["multAmin.cpp"]
+    "all" : ["multAmin.cpp"],
+    "lib" : ["timer.h"]
 }
