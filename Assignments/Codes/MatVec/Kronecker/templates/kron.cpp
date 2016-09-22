@@ -18,7 +18,7 @@ using namespace Eigen;
 /* SAM_LISTING_BEGIN_1 */
 void kron(const MatrixXd & A, const MatrixXd & B,
           MatrixXd & C) {
-    // TODO: Implement the Kronecher product
+    // TODO: Implement the Kronecker product
     // Hint: Use MatrixXd::block(int, int, int, int)
     // See https://eigen.tuxfamily.org/dox/group__TutorialBlockOperations.html
 }

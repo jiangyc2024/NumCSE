@@ -1,5 +1,6 @@
 {
     "name": "MatrixPower",
     "all" : ["matPow.cpp"],
-    "solutions" : [ "matpow_timing.eps" ]
+    "solutions" : [ "matpow_timing.eps" ],
+    "lib" : ["timer.h"]
 }

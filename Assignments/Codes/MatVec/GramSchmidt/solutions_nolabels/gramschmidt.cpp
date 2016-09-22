@@ -52,9 +52,9 @@ int main(void) {
     MatrixXd A = MatrixXd::Random(n,n);
     MatrixXd Q = gram_schmidt( A );
 
-    // Compute how far is $\mathbf{Q}*\mathbf{Q}^\top$ from the identity
+    // Compute how far is $\mathbf{Q}^\top*\mathbf{Q}$ from the identity
     // i.e. "How far is Q from being orthonormal?"
-    double err = (Q*Q.transpose() - MatrixXd::Identity(n,n))
+    double err = (Q.transpose()*Q - MatrixXd::Identity(n,n))
         .norm();
 
     // Error has to be small, but not zero (why?)
