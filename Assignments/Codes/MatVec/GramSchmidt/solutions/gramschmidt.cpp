@@ -3,29 +3,28 @@
 
 using namespace Eigen;
 
-/* @brief Performs Gram-Schidt orthonormalization
+/* \brief Performs Gram-Schidt orthonormalization
  * Given a matrix $\mathbf{A}$ of linearly independent columns,
  * returns the result of a Gram-Schmidt orthonormalization.
- * Ustable GS algorithm: output is prone to cancellation issues.
- * @param[in] $\mathbf{A}$ Matrix of linearly independent columns
- * @return Matrix with ONB of $span(a_1, \cdots, a_n)$ as columns
+ * Unstable GS algorithm: output is prone to cancellation issues.
+ * \param[in] $\mathbf{A}$ Matrix of linearly independent columns
+ * \return Matrix with ONB of $span(a_1, \cdots, a_n)$ as columns
  */
 /* SAM_LISTING_BEGIN_1 */
 MatrixXd gram_schmidt(const MatrixXd & A) {
-    // We create a matrix Q with the same size as A
-    // and copied from A
+    // We create a matrix Q with the same size and data of A
     MatrixXd Q(A);
 
     // The first vector just gets normalized
     Q.col(0).normalize();
 
+    // Iterate over all other columns of A
     for(unsigned int j = 1; j < A.cols(); ++j) {
-        // Replace inner loop over each previous vector in Q with fast
-        // matrix-vector multiplication
+        // See eigen documentation for usage of col and leftCols
         Q.col(j) -= Q.leftCols(j) * (Q.leftCols(j).transpose() * A.col(j));
 
         // Normalize vector, if possible
-        // (otherwise it means colums of $\mathbf{A}$ are
+        // (otherwise it means columns of $\mathbf{A}$ are
         // almost linear dependant)
         double eps = std::numeric_limits<double>::denorm_min();
         if( Q.col(j).norm() <= eps * A.col(j).norm() ) {

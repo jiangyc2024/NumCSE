@@ -31,14 +31,13 @@ void kron(const MatrixXd & A, const MatrixXd & B,
 
 /* \brief Compute the Kronecker product applied to a vector.
  * Computes $\mathbf{y} = (\mathbf{A} \otimes \mathbf{B}) \mathbf{x}$.
- * Exploit efficient matrix-vector product.
  * \param[in] A Matrix of size $n \times n$
  * \param[in] B Matrix of size $n \times n$
  * \param[in] x Vector of dim. $n^2 \times n^2$
  * \param[out] y Vector y = kron(A,B)*x
  */
-void kron_mult(const MatrixXd & A, const MatrixXd & B,
-               const VectorXd & x, VectorXd & y) {
+void kron_mult(const MatrixXd &A, const MatrixXd &B,
+               const VectorXd &x, VectorXd &y) {
     assert(A.rows() == A.cols() &&
            A.rows() == B.rows() &&
            B.rows() == B.cols() &&
@@ -65,7 +64,7 @@ void kron_reshape(const MatrixXd & A, const MatrixXd & B,
            "Matrices A and B must be square matrices with same size!");
     unsigned int n = A.rows();
 
-    // TODO: compute y using MatrixXd::Map();
+    // TODO: compute y
     // Hint: Use MatrixXd::Map(...)
     // See https://eigen.tuxfamily.org/dox/group__TutorialMapClass.html
 }
@@ -101,7 +100,7 @@ int main(void) {
 
     // Compute using kron_reshape
     kron_reshape(A, B, x, y);
-    std::cout << "Using kron_map: y =" << std::endl
+    std::cout << "Using kron_reshape: y =" << std::endl
               << y << std::endl;
 
     // TODO: Compute runtime of kron, kron_mult and kron_reshape.

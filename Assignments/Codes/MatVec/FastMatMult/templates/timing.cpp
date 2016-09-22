@@ -18,8 +18,10 @@ int main() {
     // Minimum number of repetitions
     unsigned int repetitions = 10;
 
+
     // TODO: time Strassen and Eigen matrix multiplication
     // repeat 10 times and output the minimum runtime
     // use 3 digits and scientific notation
     /* SAM_LISTING_END_1 */
+
 }

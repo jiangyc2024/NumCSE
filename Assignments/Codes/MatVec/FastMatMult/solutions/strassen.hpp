@@ -12,12 +12,12 @@ MatrixXd strassenMatMult(const MatrixXd& A, const MatrixXd& B) {
     // Ensure square matrix
     assert(A.rows() == A.cols() && "Matrix A must be square");
     assert(B.rows() == B.cols() && "Matrix B must be square");
-    // matrix dimension must be a power of 2
+    // Matrix dimension must be a power of 2
     assert(A.rows() % 2 == 0 && "Matrix dimensions must be a power of two.");
 
     const unsigned n = A.rows();
 
-    // The function is recursive and acto on bloks of size $n/2 \times n/2$
+    // The function is recursive and acts on blocks of size $n/2 \times n/2$
     // i.e. exploits fast product of 2x2 block matrix
     if ( n==2 ) { // End of recursion
         MatrixXd C(2, 2);
@@ -50,6 +50,7 @@ MatrixXd strassenMatMult(const MatrixXd& A, const MatrixXd& B) {
     Q6 = strassenMatMult(A12 - A22, B21 + B22);
 
     MatrixXd C(n,n);
+
     C << Q0 + Q3 - Q4 + Q6,
          Q2 + Q4,
          Q1 + Q3,

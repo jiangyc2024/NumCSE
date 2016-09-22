@@ -4,6 +4,9 @@
 
 #include <Eigen/Dense>
 
+#if INTERNAL
+#include <figure/figure.hpp>
+#endif // INTERNAL
 #include "timer.h"
 
 #include "strassen.hpp"
@@ -18,9 +21,13 @@ int main() {
     // Minimum number of repetitions
     unsigned int repetitions = 10;
 
+#if INTERNAL
+    std::vector<double> sizes, eigen, own;
+#endif // INTERNAL
+
 #if SOLUTION
     // Display header column
-    std::cout << std::setw(4)  << "2^k"
+    std::cout << std::setw(4)  << "k"
               << std::setw(15) << "A*B"
               << std::setw(15) << "Strassen" << std::endl;
     for(unsigned k = 4; k <= 9; k++) {
@@ -50,13 +57,19 @@ int main() {
             // volatile double a = (AxB+AxB2).norm();
         }
 
-        // Print runtime
+        // Print runtimes
         std::cout << std::setw(4) << k // power
                   << std::setprecision(3) << std::setw(15) << std::scientific
                   << timer.min() // eigen timing
                   << std::setprecision(3) << std::setw(15) << std::scientific
                   << timer_own.min() // strassing timing
                   << std::endl;
+
+#if INTERNAL
+        sizes.push_back(n);
+        eigen.push_back(timer.min());
+        own.push_back(timer_own.min());
+#endif // INTERNAL
     }
 #else // TEMPLATE
     // TODO: time Strassen and Eigen matrix multiplication
@@ -64,4 +77,19 @@ int main() {
     // use 3 digits and scientific notation
 #endif // TEMPLATE
     /* SAM_LISTING_END_1 */
+
+#if INTERNAL
+    mgl::Figure fig;
+    fig.title("Timings of Strassen");
+    fig.ranges(2, 9000, 1e-8, 1e3);
+    fig.setlog(true, true); // set loglog scale
+    fig.plot(sizes, eigen, " r+").label("Eigen");
+    fig.plot(sizes, own, " r+").label("Strassen");
+    fig.fplot("1e-9*x^3", "k|").label("O(n^3)");
+    fig.xlabel("Vector size (n)");
+    fig.ylabel("Time [s]");
+    fig.legend(0, 1);
+    fig.save("strassen_timing.eps");
+    fig.save("strassen_timing.png");
+#endif // INTERNAL
 }
