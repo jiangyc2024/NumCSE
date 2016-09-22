@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 ///////////////////////////////////////////////////////////////////////////
 /// Demonstration code for lecture "Numerical Methods for CSE" @ ETH Zurich
 /// (C) 2016 SAM, D-MATH
@@ -8,8 +6,6 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 
-/* SAM_LISTING_BEGIN_0 */
->>>>>>> 803d788afe3ca37117cd4b86ef4b014b6b308284
 #include <iostream>
 #include <Eigen/Dense>
 
@@ -33,7 +29,7 @@ Matrix gramschmidt( const Matrix & A ) {
         Q.col(j) -= Q.leftCols(j) * (Q.leftCols(j).transpose() * A.col(j));// \Label{gscpp:op}
         // Normalize vector, if possible.
         // Otherwise colums of A must have been linearly dependent
-        if( Q.col(j).norm() <= 10e-14 * A.col(j).norm() ) { // \Label{gscpp:1}
+        if( Q.col(j).norm() <= 10e-9 * A.col(j).norm() ) { // \Label{gscpp:1}
             std::cerr << "Gram-Schmidt failed: A has lin. dep columns." << std::endl;
             break;
         } else { Q.col(j).normalize(); } // Line 7 of \eqref{GS}
