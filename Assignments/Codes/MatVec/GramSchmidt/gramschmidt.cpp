@@ -38,7 +38,7 @@ MatrixXd gram_schmidt(const MatrixXd & A) {
         }
     }
 #else // TEMPLATE
-    // TODO: Implement GramSchidt othonormatlization algorithm
+    // TODO: Implement GramSchidt othonormalization algorithm
 #endif // TEMPLATE
 
     return Q;

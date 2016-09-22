@@ -15,7 +15,7 @@ MatrixXd gram_schmidt(const MatrixXd & A) {
     // We create a matrix Q with the same size and data of A
     MatrixXd Q(A);
 
-    // TODO: Implement GramSchidt othonormatlization algorithm
+    // TODO: Implement GramSchidt othonormalization algorithm
 
     return Q;
 }
