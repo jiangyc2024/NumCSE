@@ -28,9 +28,9 @@ MatrixXcd matPow(MatrixXcd & A, unsigned int k) {
 
     // Cycle all the way up to the 1st 1 in the binary
     // representation of $k$
-    for(unsigned int j = 1; j <= ceil(log2(k)); ++j) {
+    for(unsigned int j = 1; j <= std::ceil(std::log2(k)); ++j) {
 
-      if( ( ~k & p ) == 0 ) { // if( $b_i != 0$ )
+      if( ( ~k & p ) == 0 ) { // if( $b_i \neq 0$ )
             X = X*A;
         }
 

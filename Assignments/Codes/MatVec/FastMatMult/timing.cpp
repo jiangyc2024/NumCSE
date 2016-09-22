@@ -83,7 +83,7 @@ int main() {
     fig.title("Timings of Strassen");
     fig.ranges(2, 9000, 1e-8, 1e3);
     fig.setlog(true, true); // set loglog scale
-    fig.plot(sizes, eigen, " r+").label("Eigen");
+    fig.plot(sizes, eigen, " b+").label("Eigen");
     fig.plot(sizes, own, " r+").label("Strassen");
     fig.fplot("1e-9*x^3", "k|").label("O(n^3)");
     fig.xlabel("Vector size (n)");
