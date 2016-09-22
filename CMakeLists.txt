@@ -53,7 +53,7 @@ add_definitions(-pedantic -Wall)
 if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
     # (this is only applicable on clang)            
     # ignore some mathgl warnings
-    add_definitions(-Wno-return-type-c-linkage -Wno-keyword-macro)
+    add_definitions(-Wno-return-type-c-linkage -Wno-keyword-macro -Wno-missing-braces)
     #set(EXTERNAL_PROJECT_CXX_FLAGS ${EXTERNAL_PROJECT_CXX_FLAGS} -Wno-return-type-c-linkage)
 endif()
 
@@ -121,7 +121,7 @@ if (${MATHGL2_FOUND})
 else()
   set(DOWNLOADING_MGL ON)
   message("-- Downloading MathGl")
-  if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/mathgl_binary)
+  if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/mathgl_install)
     ExternalProject_Add(
         MathGL
         URL http://downloads.sourceforge.net/mathgl/mathgl-2.3.3.tar.gz
@@ -133,7 +133,7 @@ else()
         )
   else()
     add_custom_target(MathGL)
-    message("Skipped download of mathgl because its already present. Delete `${CMAKE_CURRENT_BINARY_DIR}/mathgl_binary` to redownload it.")
+    message("Skipped download of mathgl because its already present. Delete `${CMAKE_CURRENT_BINARY_DIR}/mathgl_install` to redownload it.")
   endif()
 
   set(MATHGL2_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/mathgl_install/include)

@@ -49,14 +49,13 @@ Figure::Figure()
     autoRanges_(true),
     styles_(MglStyle()),
     fontSizePT_(4), // small font size
-    plotHeight_(800), // quadratic plot, window size depends on wheter there are labels or not!
-    plotWidth_(800),
     figHeight_(-1), // set to -1: later we will check if they have been changed manually, -1 means no
     figWidth_(-1),  //            any other value will mean that they've been changed
-    topMargin_(-1),
-    leftMargin_(-1)
-
-{}
+    plotHeight_(800), // quadratic plot, window size depends on wheter there are labels or not!
+    plotWidth_(800),
+    leftMargin_(-1),
+    topMargin_(-1)
+    {}
 
 
 /* setting height of the plot                                    *
