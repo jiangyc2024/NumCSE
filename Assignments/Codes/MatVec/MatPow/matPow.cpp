@@ -12,10 +12,10 @@
 
 using namespace Eigen;
 
-/* \brief Compute powers of a square matrix
- * Use smart binary representation
+/* \brief Compute powers of a square matrix.
+ * Use a smart binary representation.
  * \param[in,out] A square (complex) matrix. $A^k$ is stored in $A$
- * \param[in] k positive integer for $A^k$
+ * \param[in] k Positive integer for $A^k$
  */
 /* SAM_LISTING_BEGIN_1 */
 MatrixXcd matPow(MatrixXcd & A, unsigned int k) {
@@ -23,18 +23,18 @@ MatrixXcd matPow(MatrixXcd & A, unsigned int k) {
     // Identity matrix
     MatrixXcd X = MatrixXcd::Identity(A.rows(), A.cols());
 
-    // $p$ is used as binary mask to check wether
+    // $p$ is used as binary mask to check whether,
     // given $k = \sum_{i = 0}^M b_i 2^i$, $b_i = 1$
-    // (i.e. if $k$ has a 1 in the $i$-th binary digit)
-    // obtaining the binay representation of p can be done in many ways,
-    // here we use $\tilde{}k \& p$ to check if $b_i = 1$
+    // (i.e. if $k$ has a 1 in the $i$-th binary digit).
+    // Obtaining the binary representation of p can be done in many ways,
+    // here we use $\sim k \& p$ to check if $b_i = 1$
     unsigned int p = 1;
 
     // Cycle all the way up to the 1st 1 in the binary
     // representation of $k$
-    for(unsigned int j = 1; j <= ceil(log2(k)); ++j) {
+    for(unsigned int j = 1; j <= std::ceil(std::log2(k)); ++j) {
 
-      if( ( ~k & p ) == 0 ) { // if( $b_i != 0$ )
+      if( ( ~k & p ) == 0 ) { // if( $b_i \neq 0$ )
             X = X*A;
         }
 

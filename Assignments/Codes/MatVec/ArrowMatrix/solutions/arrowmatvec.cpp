@@ -7,11 +7,11 @@
 
 using namespace Eigen;
 
-/* @brief Build an "arrow matrix"
- * Given vectors $a$ and $b$, returns A*A*x in $y$, where A is build from a, d
- * @param[in] d A n-dimensional vector
- * @param[in] a A n-dimensional vector
- * @param[in] x A n-dimensional vector
+/* @brief Build an "arrow matrix" and compute A*A*y
+ * Given vectors $a$ and $d$, returns A*A*x in $y$, where A is built from a, d
+ * @param[in] d An n-dimensional vector
+ * @param[in] a An n-dimensional vector
+ * @param[in] x An n-dimensional vector
  * @param[out] y The vector y = A*A*x
  */
 /* SAM_LISTING_BEGIN_0 */
@@ -62,7 +62,7 @@ void efficient_arrow_matrix_2_times_x(const VectorXd &d,
     int n = d.size();
 
     // Notice that we can compute (A*A)*x more efficiently using
-    // A*(A*x). This is in fact performing two matrix vetor
+    // A*(A*x). This is, in fact, performing two matrix vector
     // multiplications
     // instead of a more expensive matrix-matrix multiplication.
     // Therefore, as first step, we need a way to efficiently
@@ -71,8 +71,8 @@ void efficient_arrow_matrix_2_times_x(const VectorXd &d,
     // This function computes A*x. you can use it
     // by calling A\_times\_x(x).
     // This is the syntax for lambda functions: notice the extra
-    // [variables] code. Each variable written within [] brakets
-    // will be caputred (i.e. seen) inside the lambda function
+    // [variables] code. Each variable written within [] brackets
+    // will be captured (i.e. seen) inside the lambda function.
     // Without \&, a copy of the variable will be performed.
     // Notice that A = D + H + V, s.t. A*x = D*x + H*x + V*x
     // D*x can be rewritten as d*x componentwise
@@ -81,7 +81,7 @@ void efficient_arrow_matrix_2_times_x(const VectorXd &d,
     auto A_times_x = [&a, &d, n] (const VectorXd & x) {
         // This takes care of the diagonal (D*x)
         // Notice: we use d.array() to tell Eigen to treat
-        // a vector an an array. As a result: each operation
+        // a vector as an array. As a result: each operation
         // is performed componentwise.
         VectorXd Ax = ( d.array() * x.array() ).matrix();
 
@@ -102,14 +102,12 @@ void efficient_arrow_matrix_2_times_x(const VectorXd &d,
 }
 /* SAM_LISTING_END_1 */
 
-/* \brief Compute runtime of arrow matrix multiplication.
- * Repeat tests 10 times, and ouput the minimal runtime
+/* \brief Compute the runtime of arrow matrix multiplication.
+ * Repeat tests 10 times, and output the minimal runtime
  * amongst all times. Test both the inefficient and the efficient
  * versions.
 */
 void runtime_arrow_matrix() {
-    // sizes will contain the size of the matrix
-    // timings will contain the runtimes in seconds
     /* SAM_LISTING_BEGIN_3 */
 
     std::cout << std::setw(8) << "n"
@@ -152,14 +150,15 @@ void runtime_arrow_matrix() {
 
 }
 
-// Rename long variable to duration_t (easy to change)
+// Rename long variable name to duration_t (easy to change)
 using duration_t = std::chrono::nanoseconds;
 
-/* \brief Compute runtime of $F$, repeating test 10 times
- * Will return minimal runtime
- * \tparam Function type of F, must have operator()
- * \param[in] F function for which you want to measure runtime
- * \param[in] repeats number of repetitions
+/* \brief Compute runtime of $F$, repeating test "repeats" times
+ * Will return minimal runtime.
+ * This function uses "crhono".
+ * \tparam Function type of F, must have an operator()
+ * \param[in] F Function for which you want to measure runtime.
+ * \param[in] repeats Number of repetitions.
  */
 template <class Function>
 duration_t timing(const Function & F, int repeats = 10) {
@@ -175,11 +174,11 @@ duration_t timing(const Function & F, int repeats = 10) {
         // Run function
         F();
 
-        // Stop clock (MATLAB: toc)
+        // Stop clock (MATLAB: toc) and measure difference
         duration_t elapsed = std::chrono::duration_cast<duration_t>(
                             std::chrono::high_resolution_clock::now() - start);
 
-        // Compute min
+        // Compute min between all runs
         min_elapsed = r == 0 ? elapsed : std::min(elapsed, min_elapsed);
     }
 
@@ -207,16 +206,16 @@ void runtime_arrow_matrix_with_chrono() {
         VectorXd x = VectorXd::Random(n);
         VectorXd y(n);
 
-        // Call timing, using a lambda function for F
+        // Call "timing", using a lambda function for F
         // Remember: we cannot pass arrow\_matrix\_2\_times\_x directly to timing
-        // the timing function expects a function without parameters
+        // the timing function expects a n object with operator()(void)
         duration_t elapsed = timing([&a, &d, &x, &y] () {
             arrow_matrix_2_times_x(d, a, x, y);
-        }, 1);
-        // Call timing, using a lambda function for F
+        }, 10);
+        // Call "timing", using a lambda function for F
         duration_t elapsed_efficient = timing([&a, &d, &x, &y] () {
             efficient_arrow_matrix_2_times_x(d, a, x, y);
-        }, 1);
+        }, 10);
 
         // Output timings
         std::cout << std::setw(8)<< n
@@ -256,7 +255,7 @@ int main(void) {
     std::cout << "--> Runtime test. with chrono." << std::endl;
     runtime_arrow_matrix_with_chrono();
 
-    // Final test: exit with error if error too big
+    // Final test: exit with error if error is too big
     double eps = std::numeric_limits<double>::denorm_min();
     exit(err < eps);
 }

@@ -7,11 +7,11 @@
 
 using namespace Eigen;
 
-/* @brief Build an "arrow matrix"
- * Given vectors $a$ and $b$, returns A*A*x in $y$, where A is build from a, d
- * @param[in] d A n-dimensional vector
- * @param[in] a A n-dimensional vector
- * @param[in] x A n-dimensional vector
+/* @brief Build an "arrow matrix" and compute A*A*y
+ * Given vectors $a$ and $d$, returns A*A*x in $y$, where A is built from a, d
+ * @param[in] d An n-dimensional vector
+ * @param[in] a An n-dimensional vector
+ * @param[in] x An n-dimensional vector
  * @param[out] y The vector y = A*A*x
  */
 /* SAM_LISTING_BEGIN_0 */
@@ -54,13 +54,13 @@ void efficient_arrow_matrix_2_times_x(const VectorXd &d,
 }
 /* SAM_LISTING_END_1 */
 
-/* \brief Compute runtime of arrow matrix multiplication.
- * Repeat tests 10 times, and ouput the minimal runtime
+/* \brief Compute the runtime of arrow matrix multiplication.
+ * Repeat tests 10 times, and output the minimal runtime
  * amongst all times. Test both the inefficient and the efficient
  * versions.
 */
 void runtime_arrow_matrix() {
-    // TODO: your code here
+    // TODO: your code here, time the codes
 
 }
 
@@ -90,7 +90,7 @@ int main(void) {
     std::cout << "--> Runtime test." << std::endl;
     runtime_arrow_matrix();
 
-    // Final test: exit with error if error too big
+    // Final test: exit with error if error is too big
     double eps = std::numeric_limits<double>::denorm_min();
     exit(err < eps);
 }

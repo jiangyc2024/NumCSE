@@ -46,6 +46,33 @@ There you can find different versions of the same code:
 
 All binaries can then be found in the `bin` folder.
 
+In order to compile an individual executable, type:
+
+    $ make <code-type>_<chapter>_<problem-name>_<executable-name>
+    
+Where:
+- `<code-type>` is one of:
+  - `assignment_codes`: for codes used in assignments
+  - `lecture-codes`: for codes used in the lecture notes
+- `<chapter>`: is a short name for the chapter
+- `<problem-name>`: is a short name for the problem
+- `<executable-name>`: is a short name for the executable
+    
+The corresponding executable will be located in:
+- For assignments:
+
+
+        $ ./bin/Assignments/Codes/<chapter>/<problem-name>/
+
+- For lecture codes (most of them):
+
+        $ ./bin/LectureCodes/<chapter>/<problem-name>/
+        
+    
+    or
+    
+        $ ./bin/LectureCodes/<chapter>/<sub-chapter>/<problem-name>/
+
 TIP: Using:
 
     $ make -j<number_ob_processes>

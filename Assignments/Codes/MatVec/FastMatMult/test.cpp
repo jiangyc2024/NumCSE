@@ -11,7 +11,7 @@ int main()
     // Seed the random number generator
     srand((unsigned int) time(0));
 
-    // Check algorithm for correctness
+    //// Check algorithm for correctness
 
     // Size of the matrix
     int k = 2;
@@ -23,7 +23,7 @@ int main()
 
     // Testing matrix multiplication
     MatrixXd AB = strassenMatMult(A,B);
-    // Eigen Mat multiplication
+    // Eigen Matrix multiplication
     MatrixXd AxB = A*B;
 
     std::cout << "Using Strassen's method, A*B=" << std::endl
@@ -34,6 +34,6 @@ int main()
               << (AB-AxB).norm() << std::endl;
     /* SAM_LISTING_END_1 */
 #else // TEMPLATE
-    // TODO: Test you implementation comparing with the Eigen built-in matrix product
+    // TODO: Test your implementation comparing with the Eigen built-in matrix product
 #endif // TEMPLATE
 }
