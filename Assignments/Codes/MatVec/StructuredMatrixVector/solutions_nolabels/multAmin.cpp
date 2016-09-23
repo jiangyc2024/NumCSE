@@ -75,10 +75,19 @@ void multAmin(const VectorXd & x, VectorXd & y) {
 }
 
 int main(void) {
+
     // Timing from $2^4$ to $2^13$ repeating "nruns" times
     unsigned int nruns = 10;
     std::vector<double> sizes, times_slow,
         times_slow_loops, times_fast;
+
+    std::cout << std::setw(15)
+              << N
+              << std::scientific << std::setprecision(3)
+              << std::setw(15) << "multAminSlown"
+              << std::setw(15) << "multAminLoops"
+              << std::setw(15) << "multAmin"
+              << std::endl;
     for(unsigned int N = (1 << 4); N <= (1 << 13); N = N << 1) {
         Timer tm_slow, tm_slow_loops, tm_fast;
         for(unsigned int r = 0; r < nruns; ++r) {
