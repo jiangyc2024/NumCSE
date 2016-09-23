@@ -39,7 +39,7 @@ There you can find different versions of the same code:
 
 ### Source Download and Compilation
 
-	$ git clone git@gitlab.math.ethz.ch:NumCSE/NumCSE.git
+	$ git clone https://gitlab.math.ethz.ch/NumCSE/NumCSE.git
 	$ mkdir build && cd build
 	$ cmake ..
 	$ make
