@@ -33,7 +33,7 @@ MatrixXcd matPow(MatrixXcd & A, unsigned int k) {
     // Cycle all the way up to the 1st 1 in the binary
     // representation of $k$ (this is called the "most significant bit")
     // If you are interested in other methods to compute the "most significant
-    // bit", consult the file "most_significant_bit.cpp"
+    // bit", consult the file "most\_significant\_bit.cpp"
     for(unsigned int j = 1; j <= std::ceil(std::log2(k)); ++j) {
 
       if( ( ~k & p ) == 0 ) { // if( $b_i \neq 0$ )
