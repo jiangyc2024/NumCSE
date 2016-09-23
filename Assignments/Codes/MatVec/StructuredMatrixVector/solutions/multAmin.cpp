@@ -72,43 +72,53 @@ void multAmin(const VectorXd & x, VectorXd & y) {
 /* SAM_LISTING_END_3 */
 
 int main(void) {
+    // Testing correctness of the code
+    unsigned int M = 10;
+    VectorXd xa = VectorXd::Random(M);
+    VectorXd ys, yf;
+
+    multAmin(xa, y);
+    multAminSlow(xa, y);
+    // Error should be small
+    std::cout << "|ys-yf| = " << (ys - xf).norm() << std::endl;
+
+
     /* SAM_LISTING_BEGIN_4 */
-
-    // Timing from $2^4$ to $2^13$ repeating "nruns" times
+    // Timing from $2^4$ to $2^{13}$ repeating "nruns" times
     unsigned int nruns = 10;
-    std::vector<double> sizes, times_slow,
-        times_slow_loops, times_fast;
 
+    // Header, see iomanip documentation
     std::cout << std::setw(15)
-              << N
+              << "N"
               << std::scientific << std::setprecision(3)
               << std::setw(15) << "multAminSlown"
               << std::setw(15) << "multAminLoops"
               << std::setw(15) << "multAmin"
               << std::endl;
+    // From $2^4$ to $2^{13}$
     for(unsigned int N = (1 << 4); N <= (1 << 13); N = N << 1) {
         Timer tm_slow, tm_slow_loops, tm_fast;
+        // Compute runtime many times
         for(unsigned int r = 0; r < nruns; ++r) {
             VectorXd x = VectorXd::Random(N);
             VectorXd y;
 
+            // Runtime of slow method
             tm_slow.start();
             multAminSlow(x, y);
             tm_slow.stop();
 
+            // Runtime of slow method with loops
             tm_slow_loops.start();
             multAminLoops(x, y);
             tm_slow_loops.stop();
 
+            // Runtime of fast method
             tm_fast.start();
             multAmin(x, y);
             tm_fast.stop();
         }
 
-        sizes.push_back(N);
-        times_slow.push_back( tm_slow.min() );
-        times_slow_loops.push_back( tm_slow_loops.min() );
-        times_fast.push_back( tm_fast.min() );
 
         std::cout << std::setw(15)
                   << N
@@ -121,7 +131,7 @@ int main(void) {
     /* SAM_LISTING_END_4 */
 
 
-    // The following code is kust for demonstration purposes.
+    // The following code is just for demonstration purposes.
     // Build Matrix B with dimension 10x10 such that B = inv(A)
     unsigned int n = 10;
     /* SAM_LISTING_BEGIN_2 */

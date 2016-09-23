@@ -60,6 +60,17 @@ void multAmin(const VectorXd & x, VectorXd & y) {
 }
 
 int main(void) {
+    // Testing correctness of the code
+    unsigned int M = 10;
+    VectorXd xa = VectorXd::Random(M);
+    VectorXd ys, yf;
+
+    multAmin(xa, y);
+    multAminSlow(xa, y);
+    // Error should be small
+    std::cout << "|ys-yf| = " << (ys - xf).norm() << std::endl;
+
+
  // TODO: Time multAminSlow and multAmin
  // Repeat timings 10 times. Output times inseconds with
  // scientific notation and 3 digits
