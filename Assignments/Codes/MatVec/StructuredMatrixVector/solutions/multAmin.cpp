@@ -77,16 +77,17 @@ int main(void) {
     VectorXd xa = VectorXd::Random(M);
     VectorXd ys, yf;
 
-    multAmin(xa, y);
-    multAminSlow(xa, y);
+    multAmin(xa, yf);
+    multAminSlow(xa, ys);
     // Error should be small
-    std::cout << "|ys-yf| = " << (ys - xf).norm() << std::endl;
+    std::cout << "||ys-yf|| = " << (ys - yf).norm() << std::endl;
 
 
     /* SAM_LISTING_BEGIN_4 */
     // Timing from $2^4$ to $2^{13}$ repeating "nruns" times
     unsigned int nruns = 10;
 
+    std::cout << "--> Timings:" << std::endl;
     // Header, see iomanip documentation
     std::cout << std::setw(15)
               << "N"
@@ -147,6 +148,7 @@ int main(void) {
               << B << std::endl;
 
     // Check that B = inv(A) (up to machine precision)
+    std::cout << "--> Test B = inv(A):" << std::endl;
     VectorXd x = VectorXd::Random(n), y;
     multAmin(B*x, y);
     std::cout << "|y-x| = " << (y - x).norm() << std::endl;

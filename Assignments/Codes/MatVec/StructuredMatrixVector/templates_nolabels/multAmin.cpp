@@ -65,10 +65,10 @@ int main(void) {
     VectorXd xa = VectorXd::Random(M);
     VectorXd ys, yf;
 
-    multAmin(xa, y);
-    multAminSlow(xa, y);
+    multAmin(xa, yf);
+    multAminSlow(xa, ys);
     // Error should be small
-    std::cout << "|ys-yf| = " << (ys - xf).norm() << std::endl;
+    std::cout << "||ys-yf|| = " << (ys - yf).norm() << std::endl;
 
 
  // TODO: Time multAminSlow and multAmin
