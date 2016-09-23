@@ -34,6 +34,7 @@ accumulator_t time(Function && F,
     {
         unsigned it = 0; // iteration counter
 
+        // Store value to prevent optimization
         volatile long unsigned int k = 0;
         while (it < max_iterations
                && (it < min_iterations
@@ -52,12 +53,17 @@ accumulator_t time(Function && F,
 
             ++it;
         }
+        // Prevent optimization
         std::cout << k << std::endl;
     }
 
     return time_accumulator;
 }
 
+/* \brief Find most significant bit of N
+ * Method 1: use division modulo 2^k to find if 2^k divides N
+ * Loops over all bits of N.
+ */
 template <typename T>
 inline unsigned int div_find(T N) {
     T p = 2;
@@ -71,6 +77,10 @@ inline unsigned int div_find(T N) {
     return last_one;
 }
 
+/* \brief Find most significant bit of N
+ * Method 2: use bit mask ofthe form 000...010...000
+ * Loops over all bits of k.
+ */
 template <typename T>
 inline unsigned int loop_find(T N) {
     T p = 1;
@@ -84,13 +94,18 @@ inline unsigned int loop_find(T N) {
     return last_one;
 }
 
+/* \brief Find most significant bit of N
+ * Method 3: use floating point computations
+ */
 template <typename T>
 inline int float_find(T N) {
     return std::ceil(std::log2(N));
 }
 
-template <typename T>
-inline int builtin_find(T N) {
+/* \brief  Find most significant bit of N
+ * Method 4: use builtin (GCC)
+ */
+inline int builtin_find(unsigned long int N) {
     return __builtin_clzl (N);
 }
 
@@ -98,6 +113,7 @@ int main() {
 
     std::vector<accumulator_t> accs;
 
+    // Compute timings of all the methods
     accs.push_back( time( div_find<long unsigned int>, 5 ) );
     accs.push_back( time( loop_find<long unsigned int>, 5 ) );
     accs.push_back( time( float_find<long unsigned int>, 5 ) );
