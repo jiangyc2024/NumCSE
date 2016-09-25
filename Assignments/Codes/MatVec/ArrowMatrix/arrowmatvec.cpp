@@ -291,10 +291,11 @@ int main(void) {
     d <<1., 3., 4., 5., 6.;
     VectorXd x(5);
     x << -5., 4., 6., -8., 5.;
-    VectorXd yi, ye;
+    VectorXd yi;
 
     // Run both functions
     arrow_matrix_2_times_x(a,d,x,yi);
+    VectorXd ye(yi.size());
     efficient_arrow_matrix_2_times_x(a,d,x,ye);
 
     // Compute error
