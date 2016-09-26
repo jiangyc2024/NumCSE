@@ -40,6 +40,7 @@ for(int n = 10; n <= 10*20; n += 10){
 	res(n/10-1,0) = n; res(n/10-1,1) = relerr; res(n/10-1,2) = relerrp;
 }
 // Plotting
+/* SAM_LISTING_END_0 */
 mgl::Figure fig;
 fig.setlog(false, true);
 fig.plot(res.col(0),res.col(1), " *m-").label("unperturbed matrix");
@@ -48,6 +49,5 @@ fig.xlabel("matrix size n");
 fig.ylabel("relative error");
 fig.legend(0.05,0.5);
 fig.save("wilkpert");
-/* SAM_LISTING_END_0 */
 return 0;
 }
