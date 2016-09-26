@@ -10,6 +10,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include <iostream>
 
+#ifdef __GNUC__
 #if __cplusplus >= 201103L && __GNUG__ < 5
 namespace std {
 
@@ -29,4 +30,5 @@ hexfloat(ios_base& __base)
 }
 
 }
+#endif
 #endif
