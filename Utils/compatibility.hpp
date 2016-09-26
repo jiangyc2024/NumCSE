@@ -10,7 +10,9 @@
 //////////////////////////////////////////////////////////////////////////
 #include <iostream>
 
-#ifdef __GNUC__
+#ifdef __GNUC__ // bug in gcc < 5 has incomplete iostream
+// https://gcc.gnu.org/viewcvs/gcc?view=revision&revision=215952
+#ifndef __clang__ // clang pretends to be gcc, but is working fine
 #if __cplusplus >= 201103L && __GNUG__ < 5
 namespace std {
 
@@ -24,11 +26,12 @@ defaultfloat(ios_base& __base)
 inline ios_base&
 hexfloat(ios_base& __base)
 {
-    __base.setf(ios_base::fixed | ios_base::scientific, 
+    __base.setf(ios_base::fixed | ios_base::scientific,
                 ios_base::floatfield);
     return __base;
 }
 
 }
+#endif
 #endif
 #endif
