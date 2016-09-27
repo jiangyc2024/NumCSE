@@ -18,60 +18,70 @@ constexpr unsigned int factorial(unsigned int n) {
     return n > 0 ? n * factorial( n-1 ) : 1;
 }
 
-/* \brief Compute the 1-th power of a number (i.e identity)
- * \tparam N SFINAED to accept only 1
- * \param x Number for which compute $x^N$
- * \return $x^1$
+/* This is a dummy class to avoid necessity of forward
+ * declare pow(). This is an hack, maybe there is
+ * a better way.
 */
-template <unsigned int N>
-double pow(double x,
-           // Advanced C++ template metaprogramming using SFINAE:
-           // Next line is just a dummy line: if N != 1
-           // the scruct std::enable_if<false, bool> has no
-           // type ::type, therefore compilation will fail
-           // when compilation fails, error is not thrown
-           // if another valid template is found
-           typename  std::enable_if<N == 1, bool>::type = false
-           ) {
-    // Identity
-    return x;
-}
+class _pow {
+public:
 
-/* \brief Compute the N-th power of a number, N even
- * \tparam N SFINAED to accept only even numbers
- * \param x Number for which compute $x^N$
- * \return $x^N$
-*/
-template <unsigned int N>
-double pow(double x,
-           // Advanced C++ template metaprogramming using SFINAE:
-           // Next line is just a dummy line: if N == 1 or N odd
-           // the scruct std::enable_if<false, bool> has no
-           // type ::type, therefore compilation will fail
-           // when compilation fails, error is not thrown
-           // if another valid template is found
-           typename std::enable_if<N != 1 && (N % 2 == 0), bool>::type = false) {
-    // $x^N = x^{N/2}x^{N/2}$
-    return pow<N/2>(x)*pow<N/2>(x);
-}
+    /* \brief Compute the 1-th power of a number (i.e identity)
+     * \tparam N SFINAED to accept only 1
+     * \param x Number for which compute $x^N$
+     * \return $x^1$
+     */
+    template <unsigned int N>
+    static double pow(double x,
+                      // Advanced C++ template metaprogramming using SFINAE:
+                      // Next line is just a dummy line: if N != 1
+                      // the scruct std::enable_if<false, bool> has no
+                      // type ::type, therefore compilation will fail
+                      // when compilation fails, error is not thrown
+                      // if another valid template is found
+                      typename  std::enable_if<N == 1, bool>::type = false
+                      ) {
+        // Identity
+        return x;
+    }
 
-/* \brief Compute the N-th power of a number, N odd
- * \tparam N SFINAED to accept only odd numbers
- * \param x Number for which compute $x^N$
- * \return $x^N$
-*/
-template <unsigned int N>
-double pow(double x,
-           // Advanced C++ template metaprogramming using SFINAE:
-           // Next line is just a dummy line: if N == 1 or N even
-           // the scruct std::enable_if<false, bool> has no
-           // type ::type, therefore compilation will fail
-           // when compilation fails, error is not thrown
-           // if another valid template is found
-           typename std::enable_if<N != 1 && (N % 2 != 0), bool>::type = false) {
-    // $x^N = x^{N/2-1}x^{N/2-1}x$
-    return x*pow<(N-1)/2>(x)*pow<(N-1)/2>(x);
-}
+    /* \brief Compute the N-th power of a number, N even
+     * \tparam N SFINAED to accept only even numbers
+     * \param x Number for which compute $x^N$
+     * \return $x^N$
+     */
+    template <unsigned int N>
+    static double pow(double x,
+                      // Advanced C++ template metaprogramming using SFINAE:
+                      // Next line is just a dummy line: if N == 1 or N odd
+                      // the scruct std::enable_if<false, bool> has no
+                      // type ::type, therefore compilation will fail
+                      // when compilation fails, error is not thrown
+                      // if another valid template is found
+                      typename std::enable_if<N != 0 && (N % 2 == 0), bool>::type
+                      = false) {
+        // $x^N = x^{N/2}x^{N/2}$
+        return pow<N/2>(x)*pow<N/2>(x);
+    }
+
+    /* \brief Compute the N-th power of a number, N odd
+     * \tparam N SFINAED to accept only odd numbers
+     * \param x Number for which compute $x^N$
+     * \return $x^N$
+     */
+    template <unsigned int N>
+    static double pow(double x,
+                      // Advanced C++ template metaprogramming using SFINAE:
+                      // Next line is just a dummy line: if N == 1 or N even
+                      // the scruct std::enable_if<false, bool> has no
+                      // type ::type, therefore compilation will fail
+                      // when compilation fails, error is not thrown
+                      // if another valid template is found
+                      typename std::enable_if<N != 1 && (N % 2 != 0), bool>::type
+                      = false) {
+        // $x^N = x^{N/2-1}x^{N/2-1}x$
+        return x*pow<(N-1)/2>(x)*pow<(N-1)/2>(x);
+    }
+};
 
 /* \brief Compute sinh(x) in an efficient way.
  * Use Taylor expansion with length 0.
@@ -104,8 +114,12 @@ template <unsigned int N,
 double taylor_sinh(double x) {
     // Use taylor expansion with $N-1$ terms to compute
     // the one with $N$ terms
-    return taylor_sinh<N-1>(x) + pow<2*N-1>(x) / factorial(2*N-1);
+    return taylor_sinh<N-1>(x) + _pow::pow<2*N-1>(x) / factorial(2*N-1);
 }
 
+template <unsigned int N>
+double error_bound(double x) {
+    return std::exp(x) * _pow::pow<2*N>(x)  / factorial(2*N+1);
+}
 
 // END: Advanced demonstration code
