@@ -1,6 +1,7 @@
 #include <iostream>
 #include <Eigen/Dense>
 #include <Eigen/Eigenvalues>
+#include <unsupported/Eigen/MatrixFunctions>
 
 using namespace Eigen;
 
@@ -9,7 +10,7 @@ using namespace Eigen;
  */
 #endif // SOLUTION
 /* SAM_LISTING_BEGIN_1 */
-VectorXcd getit(const MatrixXd &A, const VectorXd &x, unsigned int k) {
+VectorXd getit(const MatrixXd &A, const VectorXd &x, unsigned int k) {
 
 # if SOLUTION
     // As said in the problem formulation, we may assume that the
@@ -25,7 +26,7 @@ VectorXcd getit(const MatrixXd &A, const VectorXd &x, unsigned int k) {
 #endif // SOLTUION
     VectorXcd cx = x.cast<std::complex<double>>();
 
-# if SOLUTION
+#if SOLUTION
     // The first operator* is a matrix vector multiplication
     // with complexity $O(n^2)$.
 #endif // SOLTUION
@@ -37,14 +38,14 @@ VectorXcd getit(const MatrixXd &A, const VectorXd &x, unsigned int k) {
 #endif // SOLTUION
         (
           V.array().pow(k) *
-# if SOLUTION
+#if SOLUTION
           // In the following line, a linear system is solved, operation
           // with complexity $O(n^3)$
 #endif // SOLTUION
           (W.partialPivLu().solve(cx)).array()
-        );
+        ).matrix();
 
-    return ret;
+    return ret.real();
 }
 /* SAM_LISTING_END_1 */
 
@@ -60,15 +61,16 @@ int main() {
     unsigned int  k = 9;
 
     // Testing the implementation with some matrix
-    VectorXcd yg = getit(A, x, k);
+    VectorXd yg = getit(A, x, k);
     std::cout << "getit(A,x, k) = " << std::endl
               << yg << std::endl;
 
 #if SOLUTION
     // Checking that getit works
-    VectorXcd yp = A.pow(k)*x;
+    VectorXd yp = A.pow(k)*x;
     std::cout << "A^k x = " << std::endl
               << yp << std::endl;
-    double err = (yg - yp).norm();
+    double err = (yg - yp).norm() / yp.norm();
+    std::cout << "Relative error = " << err << std::endl;
 #endif // SOLUTION
 }
