@@ -16,10 +16,10 @@
 
 using namespace Eigen;
 
-/* \brief Compute powers of a square matrix
- * Use smart binary representation
+/* \brief Compute powers of a square matrix.
+ * Use a smart binary representation.
  * \param[in,out] A square (complex) matrix. $A^k$ is stored in $A$
- * \param[in] k positive integer for $A^k$
+ * \param[in] k Positive integer for $A^k$
  */
 MatrixXcd matPow(MatrixXcd & A, unsigned int k) {
     // TODO: implement efficient matrix power

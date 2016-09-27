@@ -20,7 +20,6 @@ using namespace std;
 template <class SpMat>
 SpMat initSparseMatrix(size_t n)
 {
-  using index_t = typename SpMat::Index;
   using scalar_t = typename SpMat::Scalar;
   vector<Eigen::Triplet<scalar_t>> triplets(5*n);
 

@@ -4,145 +4,92 @@
 
 #include <Eigen/Dense>
 
-// boost accumulators
-#include <boost/accumulators/accumulators.hpp>
-#include <boost/accumulators/statistics/stats.hpp>
-#include <boost/accumulators/statistics/mean.hpp>
-
+#if INTERNAL
+#include <figure/figure.hpp>
+#endif // INTERNAL
 #include "timer.h"
 
 #include "strassen.hpp"
-#include "polyfit.hpp"
 
-using namespace Eigen;
+int main() {
+    /* SAM_LISTING_BEGIN_1 */
+    // Store seed for rng
+    unsigned seed = (unsigned) time(0);
+     // seed random number generator
+    srand(seed);
 
-// we use accumulators to collect important characteristics
-//  like minimum-, maximum- and mean-runtime
-using namespace boost::accumulators;
+    // Minimum number of repetitions
+    unsigned int repetitions = 10;
 
-using accumulator_t = boost::accumulators::accumulator_set<
-    double, // collect number of seconds in double precision
-    stats<tag::mean> // collect mean
->;
+#if INTERNAL
+    std::vector<double> sizes, eigen, own;
+#endif // INTERNAL
 
-// tell the compiler that `p` is used in some sense and should not be
-//  optimized away
-template <typename T>
-static void escape (T&& p) {
-    asm volatile("" :  : "g"(p) : "memory");
-}
-
-// estimate asymptotic computational complexity
-VectorXd asymptotic_complexity(std::vector<unsigned> dims, std::vector<double>& means,
-  unsigned offset=0) {
-    assert(dims.size() == means.size());
-    assert(dims.size() > offset);
-    // convert std::vector<unsigned> into Eigen::VectorXd
-    VectorXd means_ = Map<Matrix<double, 1, -1>>(means.data()+offset, 1,
-        means.size()-offset);
-    VectorXd dims_ = Map<Matrix<unsigned, 1, -1>>(dims.data()+offset, 1,
-        dims.size()-offset).cast<double>();
-
-    return polyfit(dims_.array().log().matrix(), means_.array().log().matrix(), 1);
-}
-
-int main()
-{
-    unsigned seed = (unsigned) time(0); // store seed for rng
-    srand(seed); // seed random number generator
-
-    double min_runtime = 20.; // minimum runtime in seconds
-    unsigned int min_iterations = 10; // repeat at least 10 times
-    unsigned int max_iterations = 10000000; // repeat at most 1e7 times
-    Timer timer; // timer to collect runtime of each individual run
-
-    // vector that stores the timing of each benchmark case
-    std::vector<double> timings_eigen;
-    std::vector<double> timings_strassen;
-
-    // store dimension of the matrix
-    std::vector<unsigned> matrix_dims;
-
-    // display header column
-    std::cout << std::setw(4) << "2^k"
+#if SOLUTION
+    // Display header column
+    std::cout << std::setw(4)  << "k"
               << std::setw(15) << "A*B"
               << std::setw(15) << "Strassen" << std::endl;
-
     for(unsigned k = 4; k <= 9; k++) {
-        // initialize new accumulator
-        accumulator_t time_accumulator_eigen,
-                      time_accumulator_strassen;
+        unsigned int n = std::pow(2, k);
 
-        unsigned int n = pow(2,k);
-        matrix_dims.push_back(n);
-
-        // initialize random input matricies
+        // Initialize random input matricies
         MatrixXd A = MatrixXd::Random(n, n);
         MatrixXd B = MatrixXd::Random(n, n);
 
-        // benchmark with a matrix size of 2^k for `min_runtime` seconds
-        {
-            unsigned it = 0; // iteration counter
+        // Timer to collect runtime of each individual run
+        Timer timer, timer_own;
 
-            // repeat benchmark for `min_runtime` with the constraint that
-            //  the number of iterations is less then max_iterations but
-            //  at least `min_iterations`
-            while (it < max_iterations
-                    && (it < min_iterations
-                        || sum(time_accumulator_eigen) < min_runtime)) {
-                // initialize memory for result matrix
-                MatrixXd AxB(n,n);
+        for(unsigned int r = 0; r < repetitions; ++r) {
+            // initialize memory for result matrix
+            MatrixXd AxB, AxB2;
 
-                // benchmark eigens matrix multiplication
-                timer.start(); // start timer
-                AxB=A*B; // do the multiplication
-                escape(AxB); // make sure that the calculation is not optimized away
-                timer.stop(); // stop timer
-                time_accumulator_eigen(timer.duration()); // store timing
+            // Benchmark eigens matrix multiplication
+            timer.start(); // start timer
+            AxB=(A*B); // do the multiplication
+            timer.stop(); // stop timer
 
-                ++it; // step iteration counter
-            }
+            // Benchmark Stassens matrix multiplication
+            timer_own.start(); // start timer
+            AxB2=strassenMatMult(A, B); // do the multiplication
+            timer_own.stop(); // stop timer
 
-            // store accumulator for later plotting
-            timings_eigen.push_back(mean(time_accumulator_eigen));
-        }
-        {
-            unsigned it = 0; // iteration counter
-
-            // repeat benchmark for `min_runtime` with the constraint that
-            //  the number of iterations is less then max_iterations but
-            //  at least `min_iterations`
-            while (it < max_iterations
-                    && (it < min_iterations
-                        || sum(time_accumulator_strassen) < min_runtime)) {
-                // initialize memory for result matrix
-                MatrixXd AxB(n,n);
-
-                // benchmark stassens matrix multiplication
-                timer.start(); // start timer
-                AxB=strassenMatMult(A, B); // do the multiplication
-                escape(AxB); // make sure that the calculation is not optimized away
-                timer.stop(); // stop timer
-                time_accumulator_strassen(timer.duration()); // store timing
-
-                ++it; // step iteration counter
-            }
-
-            // store accumulator for later plotting
-            timings_strassen.push_back(mean(time_accumulator_strassen));
+            // volatile double a = (AxB+AxB2).norm();
         }
 
-        // print mean runtime
+        // Print runtimes
         std::cout << std::setw(4) << k // power
                   << std::setprecision(3) << std::setw(15) << std::scientific
-                  << mean(time_accumulator_eigen) // eigen timing
+                  << timer.min() // eigen timing
                   << std::setprecision(3) << std::setw(15) << std::scientific
-                  << mean(time_accumulator_strassen) // strassing timing
+                  << timer_own.min() // strassing timing
                   << std::endl;
-    }
 
-    // estimate asymptotic computational complexity
-    std::cout << "Estimated asymptotic complexity:" << std::endl;
-    std::cout << "Eigen: O(n^" << asymptotic_complexity(matrix_dims, timings_eigen, 2)[0] << ")" << std::endl;
-    std::cout << "Strassen: O(n^" << asymptotic_complexity(matrix_dims, timings_strassen, 2)[0] << ")" << std::endl;
+#if INTERNAL
+        sizes.push_back(n);
+        eigen.push_back(timer.min());
+        own.push_back(timer_own.min());
+#endif // INTERNAL
+    }
+#else // TEMPLATE
+    // TODO: time Strassen and Eigen matrix multiplication
+    // repeat 10 times and output the minimum runtime
+    // use 3 digits and scientific notation
+#endif // TEMPLATE
+    /* SAM_LISTING_END_1 */
+
+#if INTERNAL
+    mgl::Figure fig;
+    fig.title("Timings of Strassen");
+    fig.ranges(2, 9000, 1e-8, 1e3);
+    fig.setlog(true, true); // set loglog scale
+    fig.plot(sizes, eigen, " b+").label("Eigen");
+    fig.plot(sizes, own, " r+").label("Strassen");
+    fig.fplot("1e-9*x^3", "k|").label("O(n^3)");
+    fig.xlabel("Vector size (n)");
+    fig.ylabel("Time [s]");
+    fig.legend(0, 1);
+    fig.save("strassen_timing.eps");
+    fig.save("strassen_timing.png");
+#endif // INTERNAL
 }
