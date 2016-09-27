@@ -31,7 +31,7 @@ void shift(Vector & b) {
  */
 template <class Matrix, class Vector>
 void solvpermb(const Matrix & A, Vector & b, Matrix & X) {
-    // Size of b, which is size of A
+    // Size of b, which is the size of A
     int n = b.size();
     if( n != A.cols() or n != A.rows() ) {
         // Size check, error if do not match
@@ -53,13 +53,15 @@ void solvpermb(const Matrix & A, Vector & b, Matrix & X) {
 #endif // SOLUTION
 }
 
-//! \brief Compute X = inv(A)*[b_1,...,b_n], b_i = i-th cyclic shift of b in O(n^3)
-//! \param[in] A Matrix is nx
-//! \param[in] b Vector is nx1
-//! \param[out] X solution nxn matrix X = inv(A)*[b_1,...,b_n]
+/* @brief Compute X = inv(A)*[b_1,...,b_n], b_i = i-th cyclic shift of b, with complexity O(n^3)
+ * @param[in] A An nxn matrix
+ * @param[in] b An n-dimensional vector
+ * @param[in,out] X The nxn matrix X = inv(A)*[b_1,...,b_n]
+ */
+/* SAM_LISTING_BEGIN_1 */
 template <class Matrix, class Vector>
 void solvpermb_on3(const Matrix & A, Vector & b, Matrix & X) {
-    // Size of b, which is size of A
+    // Size of b, which is the size of A
     int n = b.size();
     if( n != A.cols() or n != A.rows() ) {
         // Size check, error if do not match
@@ -68,15 +70,18 @@ void solvpermb_on3(const Matrix & A, Vector & b, Matrix & X) {
     }
     X.resize(n,n);
     
-    // Notice here we reuse the LU factorization
-    Eigen::FullPivLU<Matrix> LU = A.fullPivLu();
+#if SOLUTION
+    // Notice that here we reuse the LU factorization
+    FullPivLU<Matrix> LU = A.fullPivLu();
     
     for(int l = 0; l < n; ++l) {
         X.col(l) = LU.solve(b);
         
         shift(b);
     }
+#endif // SOLUTION
 }
+/* SAM_LISTING_END_1 */
     
 int main() {
     unsigned int n = 9;
