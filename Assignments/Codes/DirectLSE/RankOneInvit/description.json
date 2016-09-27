@@ -1,0 +1,7 @@
+{
+    "name": "ArrowMatrix",
+    "all" : ["arrowmatvec.cpp",
+             "arrowmatvec_timing.eps"],
+    "solutions" : ["arrowmatvec_comparison.eps"],
+    "lib" : ["timer.h"]
+}
