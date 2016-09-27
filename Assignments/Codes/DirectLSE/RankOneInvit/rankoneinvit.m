@@ -11,4 +11,5 @@ while (abs(lnew-lmin) > tol*lmin)
    ev = ev/norm(ev);
    lnew = ev'*M*ev;
 end
+
 lmin = lnew;

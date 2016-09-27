@@ -24,7 +24,7 @@ void shift(Vector & b) {
     b(0) = temp;
 }
 
-/* @brief Compute X = inv(A)*[b_1,...,b_n], b_i = i-th cyclic shift of b
+/* @brief Compute X = inv(A)*[b_1,...,b_n], b_i = i-th cyclic shift of b, naive implementation
  * @param[in] A An nxn matrix
  * @param[in] b An n-dimensional vector
  * @param[in,out] X The nxn matrix X = inv(A)*[b_1,...,b_n]
@@ -52,6 +52,7 @@ void solvpermb(const Matrix & A, Vector & b, Matrix & X) {
     }
 #endif // SOLUTION
 }
+/* SAM_LISTING_END_0 */
 
 /* @brief Compute X = inv(A)*[b_1,...,b_n], b_i = i-th cyclic shift of b, with complexity O(n^3)
  * @param[in] A An nxn matrix
@@ -85,8 +86,8 @@ void solvpermb_on3(const Matrix & A, Vector & b, Matrix & X) {
     
 int main() {
     unsigned int n = 9;
-    // Compute with both LU and reuse LU
-    std::cout << "*** Check correctness of permutation solver" << std::endl;
+    // Compute with both solvers
+    std::cout << "*** Check that the solvers are correct" << std::endl;
     MatrixXd A = MatrixXd::Random(n,n);
     VectorXd b = VectorXd::Random(n);
     MatrixXd X;
@@ -98,29 +99,30 @@ int main() {
     std::cout << "Reusing LU: " << std::endl << X << std::endl;
     std::cout << "A*X = " << std::endl << A*X << std::endl;
     
-    // Compute runtime of different implementations of solvpermb
+    // Compute runtimes of different solvers
     std::cout << "*** Runtime comparison of naive solver vs reusing LU" << std::endl;
     unsigned int repeats = 3;
-    timer<> tm_lu, tm_reuse_lu;
+    timer<> tm_naive, tm_reuseLU;
     
     for(unsigned int p = 2; p <= 7; p++) {
-        tm_lu.reset();
-        tm_reuse_lu.reset();
+        tm_naive.reset();
+        tm_reuseLU.reset();
+        unsigned int n = pow(2,p);
+
         for(unsigned int r = 0; r < repeats; ++r) {
-            unsigned int M = pow(2,p);
-            A = MatrixXd::Random(M,M);
-            b = VectorXd::Random(M);
+            A = MatrixXd::Random(n,n);
+            b = VectorXd::Random(n);
             
-            tm_lu.start();
+            tm_naive.start();
             solvpermb(A,b,X);
-            tm_lu.stop();
+            tm_naive.stop();
             
-            tm_reuse_lu.start();
+            tm_reuseLU.start();
             solvpermb_on3(A,b,X);
-            tm_reuse_lu.stop();
+            tm_reuseLU.stop();
         }
         
-        std::cout << "Naive solver took: " << tm_lu.avg().count() / 1000000. << " ms" << std::endl;
-        std::cout << "Reusing LU took: "   << tm_reuse_lu.avg().count() / 1000000. << " ms" << std::endl;
+        std::cout << "Naive solver took: " << tm_naive.avg().count() / 1000000. << " ms for n = " << n << std::endl;
+        std::cout << "Reusing LU took: "   << tm_reuseLU.avg().count() / 1000000. << " ms for n = " << n << std::endl;
     }
 }
