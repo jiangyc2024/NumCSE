@@ -1,11 +1,17 @@
+#include <iostream>
+
 #include <Eigen/Dense>
 #include <Eigen/LU>
 
-#include <iostream>
 #include "timer.h"
 
-//! \brief Circular shift (downwards) of b
-//! \param[in,out] b Vector is nx1, shifted downwards
+using namespace Eigen;
+
+/* @brief Circular shift (downwards) of b
+ * \param[in] b An n-dimensional vector
+ * \param[out] b The input n-dimensional vector shifted downwards
+ */
+/* SAM_LISTING_BEGIN_0 */
 template <class Vector>
 void shift(Vector & b) {
     typedef typename Vector::Scalar Scalar;
@@ -18,10 +24,11 @@ void shift(Vector & b) {
     b(0) = temp;
 }
 
-//! \brief Compute X = inv(A)*[b_1,...,b_n], b_i = i-th cyclic shift of b
-//! \param[in] A Matrix is nx
-//! \param[in] b Vector is nx1
-//! \param[out] X solution nxn matrix X = inv(A)*[b_1,...,b_n]
+/* @brief Compute X = inv(A)*[b_1,...,b_n], b_i = i-th cyclic shift of b
+ * @param[in] A An nxn matrix
+ * @param[in] b An n-dimensional vector
+ * @param[in,out] X The nxn matrix X = inv(A)*[b_1,...,b_n]
+ */
 template <class Matrix, class Vector>
 void solvpermb(const Matrix & A, Vector & b, Matrix & X) {
     // Size of b, which is size of A
@@ -32,12 +39,18 @@ void solvpermb(const Matrix & A, Vector & b, Matrix & X) {
         return;
     }
     X.resize(n,n);
-    
+
+#if SOLUTION
+    // For each loop iteration:
+    // 1. solve the linear system Ax = b,
+    // 2. store the result in a column of X
+    // 3. and shift b by one element for the next iteration.
     for(int l = 0; l < n; ++l) {
         X.col(l) = A.fullPivLu().solve(b);
         
         shift(b);
     }
+#endif // SOLUTION
 }
 
 //! \brief Compute X = inv(A)*[b_1,...,b_n], b_i = i-th cyclic shift of b in O(n^3)
