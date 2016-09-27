@@ -105,17 +105,25 @@ Optional:
 
 Some package may be missing on your machine.
 
-On a fresh install of *Ubuntu*:
+- On a fresh install of *Ubuntu*:
 
     sudo apt-get install git cmake libpng++-dev freeglut3-dev libboost-dev-all
     
-On *Mac OS X*:
+- On *Mac OS X*:
 
-If you are missing CMake or boost on Mac OS X, the easiest way to obtain those packages is via [Homebrew](http://brew.sh/).
+If you are missing `CMake` or `boost` on Mac OS X, the easiest way to obtain those packages is via [Homebrew](http://brew.sh/).
 After Homebrew has been installed, you can install CMake and boost:
 
     brew install boost
     brew install cmake
+    
+If you are missing `zlib` (not tested):
+
+    xcode-select --install
+
+of (if above doesn't work):
+
+    brew install zlib-devel
 
 #### `fatal error: mgl2/mgl.h: No such file or directory`
 
