@@ -1,0 +1,5 @@
+{
+    "name": "SolvePermb",
+    "all" : ["solvepermb.cpp"],
+    "lib" : ["timer.h"]
+}
