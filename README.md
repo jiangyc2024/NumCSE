@@ -124,6 +124,10 @@ If you are missing `zlib` (not tested):
 of (if above doesn't work):
 
     brew install zlib-devel
+    
+If `libpng`is missing:
+
+    brew install libpng
 
 #### `fatal error: mgl2/mgl.h: No such file or directory`
 
