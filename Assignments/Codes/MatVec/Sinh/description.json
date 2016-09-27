@@ -4,5 +4,6 @@
     "email" : "",
 
     "name": "Sinh",
-    "all" : [ "sinh.cpp" ]
+    "all" : [ "sinh.cpp" ],
+    "solution" : [ "sinh_stable.hpp" ]
 }
