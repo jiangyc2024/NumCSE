@@ -1,7 +1,5 @@
 {
-    "name": "ArrowMatrix",
-    "all" : ["arrowmatvec.cpp",
-             "arrowmatvec_timing.eps"],
-    "solutions" : ["arrowmatvec_comparison.eps"],
+    "name": "RankOneInvit",
+    "all" : ["rankoneinvit.cpp"],
     "lib" : ["timer.h"]
 }

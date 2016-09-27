@@ -74,6 +74,7 @@ void rankoneinvit_fast(const VectorXd & d, const double & tol, double & lmin)
 }
 /* SAM_LISTING_END_1 */
 
+/* SAM_LISTING_BEGIN_2 */ 
 int main() {
     srand((unsigned int) time(0));
     double tol = 1e-3;
@@ -116,3 +117,4 @@ int main() {
         std::cout << "The fast method took: " << tm_fast.min().avg().count() / 1000000. << " ms for n = " << n << std::endl;
     }
 }
+/* SAM_LISTING_END_2 */
