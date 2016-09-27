@@ -1,0 +1,5 @@
+{
+    "name": "RankOneInvit",
+    "all" : ["rankoneinvit.cpp"],
+    "lib" : ["timer.h"]
+}
