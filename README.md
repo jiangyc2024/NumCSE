@@ -86,10 +86,45 @@ __Alternative download__ [zip](https://gitlab.math.ethz.ch/NumCSE/NumCSE/reposit
 
 Dependencies / Requirements
 
-- C++ compiler (C++11 support required)
+Required:
+- C++ compiler (C++11 support required), tested only with gcc and clang
 - git
 - cmake
-- mathgl
+- mathgl (requires libpng, opengl and zlib)
 - eigen
-- [gmp]
-- [mpfr]
+- boost
+Optional:
+- gmp
+- mpfr
+- MKL
+
+### F.A.Q.
+
+#### `Unable to find the required Boost libraries`
+#### `Could NOT find ZLIB` or `Could not find PNG`
+
+Some package may be missing on your machine.
+
+On a fresh install of *Ubuntu*:
+
+    sudo apt-get install git cmake libpng++-dev freeglut3-dev libboost-dev-all
+    
+On *Mac OS X*:
+
+If you are missing CMake or boost on Mac OS X, the easiest way to obtain those packages is via [Homebrew](http://brew.sh/).
+After Homebrew has been installed, you can install CMake and boost:
+
+    brew install boost
+    brew install cmake
+
+#### `fatal error: mgl2/mgl.h: No such file or directory`
+
+MathGL installation missing (possibly because of previous point) or corrupted:
+- make sure all dependencies are satisfied (in particular libpng, zlib, opengl), see previous point
+- remove the possibly broken MathGL installation:
+
+
+        cd build
+        rm -R mathgl_install
+
+- clone a fresh copy of the repository
