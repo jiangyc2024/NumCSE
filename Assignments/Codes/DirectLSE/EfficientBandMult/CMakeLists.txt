@@ -1,11 +1,11 @@
 include_directories(../../../Utils)
 
-add_executable_numcse(solution efficientbandmult.cpp)
-get_target_name_numcse(solution SOLUTION)
+add_executable_numcse(solution3 efficientbandmult.cpp)
+get_target_name_numcse(solution3 SOLUTION)
 target_compile_definitions(${SOLUTION} PRIVATE SOLUTION=3 INTERNAL=1)
 
-add_executable_numcse(solution efficientbandmult.cpp)
-get_target_name_numcse(solution SOLUTION)
+add_executable_numcse(solution2 efficientbandmult.cpp)
+get_target_name_numcse(solution2 SOLUTION)
 target_compile_definitions(${SOLUTION} PRIVATE SOLUTION=2 INTERNAL=1)
 
 add_executable_numcse(solution efficientbandmult.cpp)
