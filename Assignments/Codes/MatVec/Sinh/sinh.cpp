@@ -9,14 +9,14 @@
 int main() {
 
     // Lambda function, call with sinh(x)
-    /* SAM_LISING_BEGIN_1 */
+    /* SAM_LISTING_BEGIN_1 */
     auto sinh = [] (double x) {
         double t = std::exp(x);
         return .5 * (t - 1./t);
     };
-    /* SAM_LISING_END_1 */
+    /* SAM_LISTING_END_1 */
 
-    /* SAM_LISING_BEGIN_2 */
+    /* SAM_LISTING_BEGIN_2 */
 #if SOLUTION
     std::cout << "--> Realitve error of varoious implementations:" << std::endl;
     std::cout << std::setw(10) << "k"
@@ -34,7 +34,7 @@ int main() {
         double mySinh = sinh(x);
         // The "standard" sinh
         double stdSinh = std::sinh(x);
-        // The stable sinh (look at the file "sinh_stable.hpp" if
+        // The stable sinh (look at the file "sinh\_stable.hpp" if
         // interested in advanced C++)
         double taylorSinh = taylor_sinh<3>(x);
 
@@ -68,7 +68,7 @@ int main() {
               << std::setw(15) << error_bound<4>(x) << std::endl;
 
 #else // TEMPLATE
-    // TODO: compute relative error for $10^{-k}, k  =1,...10$
+    // TODO: compute relative error for $10^{-k}, k  = 1,\dots,10$
 #endif // TEMPLATE
-    /* SAM_LISING_END_2 */
+    /* SAM_LISTING_END_2 */
 }

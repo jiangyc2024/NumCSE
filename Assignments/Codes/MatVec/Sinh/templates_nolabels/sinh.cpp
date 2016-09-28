@@ -13,7 +13,6 @@
 int main() {
 
     // Lambda function, call with sinh(x)
-    /* SAM_LISING_BEGIN_1 */
     auto sinh = [] (double x) {
         double t = std::exp(x);
         return .5 * (t - 1./t);
