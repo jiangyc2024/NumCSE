@@ -1,31 +1,38 @@
+#include <iostream>
+#include <iomanip>
+
 #include <Eigen/Dense>
 
-#include <figure/figure.hpp>
 
 using namespace Eigen;
 
-/* SAM_LISTING_BEGIN_1 */
 int main() {
-  auto h = ArrayXd::LinSpaced(21, -20, 0).unaryExpr([] (const double i) {
-    return std::pow(10, i);
-  });
-  auto x = ArrayXd::Constant(h.size(), 1.2);
+    /* SAM_LISTING_BEGIN_1 */
+    ArrayXd h = ArrayXd::LinSpaced(21, -20, 0.)
+        .unaryExpr([] (double i) {
+            return std::pow(10., i);
+        });
+    ArrayXd x = ArrayXd::Constant(h.size(), 1.2);
 
-  // Derivative
-  ArrayXd g1 = (sin(x+h) - sin(x)) / h; // naive
-  ArrayXd g2 = 2 * cos(x+0.5*h) * sin(0.5 * h) / h;
-  ArrayXd ex = cos(x);
+    // Derivative
+    ArrayXd g1 = (sin(x +h) - sin(x)) / h; // naive
+    ArrayXd g2 = 2 * cos(x+0.5*h) * sin(0.5 * h) / h; // better
+    ArrayXd ex = cos(x);
 
-  // Plot
-  mgl::Figure fig;
-  fig.setlog(true, true);
-  fig.legend();
-  fig.title("Error of approximation of f'(x_0)");
-  fig.xlabel("h");
-  fig.ylabel("| f'(x_0) - g_i(x_0, h) |");
-  fig.plot(h.matrix(), (g1-ex).abs().matrix()).label("g_1");
-  fig.plot(h.matrix().tail(16), (g2-ex).abs().matrix().tail(16)).label("g_2");
-  fig.plot(h.matrix(), h.matrix(), "h;").label("O(h)");
-  fig.save("error_cancellation.eps");
+    std::cout << std::setw(15) << "h"
+              << std::setw(15) << "exact"
+              << std::setw(15) << "cancellation"
+              << std::setw(15) << "error"
+              << std::setw(15) << "improved"
+              << std::setw(15) << "error" << std::endl;
+    for(unsigned int i = 0; i < h.size(); ++i) {
+        std::cout << std::setw(15) << h(i)
+                  << std::setw(15) << ex(i)
+                  << std::setw(15) << g1(i)
+                  << std::setw(15) << std::abs(g1(i) - ex(i))
+                  << std::setw(15) << g2(i)
+                  << std::setw(15) << std::abs(g2(i) - ex(i)) << std::endl;
+    }
+    /* SAM_LISTING_END_1 */
+
 }
-/* SAM_LISTING_END_1 */

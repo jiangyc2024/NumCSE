@@ -15,8 +15,8 @@
 using namespace Eigen;
 
 /* @brief Circular shift (downwards) of b
- * \param[in] b An n-dimensional vector
- * \param[out] b The input n-dimensional vector shifted downwards
+ * @param[in] b An n-dimensional vector
+ * @param[out] b The input n-dimensional vector shifted downwards
  */
 template <class Vector>
 void shift(Vector & b) {
@@ -30,7 +30,8 @@ void shift(Vector & b) {
     b(0) = temp;
 }
 
-/* @brief Compute X = inv(A)*[b_1,...,b_n], b_i = i-th cyclic shift of b, naive implementation
+/* @brief Compute $X = inv(A)*[b_1,...,b_n], b_i = i$-th cyclic shift of $b$.
+ * Function with naive implementation.
  * @param[in] A An nxn matrix
  * @param[in] b An n-dimensional vector
  * @param[in,out] X The nxn matrix X = inv(A)*[b_1,...,b_n]
@@ -57,7 +58,8 @@ void solvpermb(const Matrix & A, Vector & b, Matrix & X) {
     }
 }
 
-/* @brief Compute X = inv(A)*[b_1,...,b_n], b_i = i-th cyclic shift of b, with complexity O(n^3)
+/* @brief Compute $X = inv(A)*[b_1,...,b_n], b_i = i$-th cyclic shift of $b$,
+ * Function has complexity $O(n^3)$
  * @param[in] A An nxn matrix
  * @param[in] b An n-dimensional vector
  * @param[in,out] X The nxn matrix X = inv(A)*[b_1,...,b_n]
@@ -92,7 +94,8 @@ int main() {
     MatrixXd X;
     std::cout << "b = " << std::endl << b << std::endl;
     solvpermb(A,b,X);
-    std::cout << "Direct porting from MATLAB (naive solver): " << std::endl << X << std::endl;
+    std::cout << "Direct porting from MATLAB (naive solver): "
+              << std::endl << X << std::endl;
     std::cout << "A*X = " << std::endl << A*X << std::endl;
     solvpermb_on3(A,b,X);
     std::cout << "Reusing LU: " << std::endl << X << std::endl;
