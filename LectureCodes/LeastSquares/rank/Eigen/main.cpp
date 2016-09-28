@@ -25,4 +25,4 @@ int main() {
        << (A.transpose() * A).fullPivLu().rank() << endl;
   return 0;
 }
-/* SAM_LISTING_END_0 *
+/* SAM_LISTING_END_0 */
