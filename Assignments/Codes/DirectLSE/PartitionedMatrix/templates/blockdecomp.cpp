@@ -1,5 +1,7 @@
-#include <Eigen/Dense>
 #include <iostream>
+#include <iomanip>
+
+#include <Eigen/Dense>
 
 #include "timer.h"
 

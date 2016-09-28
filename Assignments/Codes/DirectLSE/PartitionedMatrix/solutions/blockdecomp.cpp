@@ -1,5 +1,7 @@
-#include <Eigen/Dense>
 #include <iostream>
+#include <iomanip>
+
+#include <Eigen/Dense>
 
 #include "timer.h"
 
@@ -22,7 +24,7 @@ void solvelse(const MatrixXd & R,
             && n == v.size() && n+1  == bb.size()
             && "Size mismatch!");
 
-    TriangularView<MatrixXd, Upper> triR = R.triangularView<Upper>();
+    const TriangularView<const MatrixXd, Upper> & triR = R.triangularView<Upper>();
 
     // $s$ is the Schur complement and, in this case, is a scalar
     // also b_s is a scalar
@@ -115,12 +117,12 @@ int main() {
 
             // Time of own implementation
             tm_own.start();
-            solvelse(R, v, u, bb, x);
+            solvelse(R, v, u, bb, xe);
             tm_own.stop();
 
             // Time of eigen
             tm_eigen_lu.start();
-            solvelse_lu(R, v, u, bb, x);
+            solvelse_lu(R, v, u, bb, xo);
             tm_eigen_lu.stop();
         }
 
