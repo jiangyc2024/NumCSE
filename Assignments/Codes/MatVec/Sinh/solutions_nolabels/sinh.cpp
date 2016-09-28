@@ -18,9 +18,7 @@ int main() {
         double t = std::exp(x);
         return .5 * (t - 1./t);
     };
-    /* SAM_LISING_END_1 */
 
-    /* SAM_LISING_BEGIN_2 */
     std::cout << "--> Realitve error of varoious implementations:" << std::endl;
     std::cout << std::setw(10) << "k"
               << std::setw(15) << "own"
@@ -70,5 +68,4 @@ int main() {
     std::cout << std::setw(10) << "4"
               << std::setw(15) << error_bound<4>(x) << std::endl;
 
-    /* SAM_LISING_END_2 */
 }

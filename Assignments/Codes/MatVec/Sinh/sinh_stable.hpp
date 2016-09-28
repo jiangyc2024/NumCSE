@@ -12,7 +12,7 @@
  * \param[in] n an integer $n \geq 0$.
  * \return $n!$
  */
-constexpr unsigned int factorial(unsigned int n) {
+inline constexpr unsigned int factorial(unsigned int n) {
     // If $n > 0$ then $n! = n \cdot (n-1)!$
     // else
     return n > 0 ? n * factorial( n-1 ) : 1;
@@ -31,7 +31,7 @@ public:
      * \return $x^1$
      */
     template <unsigned int N>
-    static double pow(double x,
+    inline static double pow(double x,
                       // Advanced C++ template metaprogramming using SFINAE:
                       // Next line is just a dummy line: if N != 1
                       // the scruct std::enable_if<false, bool> has no
@@ -50,7 +50,7 @@ public:
      * \return $x^N$
      */
     template <unsigned int N>
-    static double pow(double x,
+    inline static double pow(double x,
                       // Advanced C++ template metaprogramming using SFINAE:
                       // Next line is just a dummy line: if N == 1 or N odd
                       // the scruct std::enable_if<false, bool> has no
@@ -60,7 +60,8 @@ public:
                       typename std::enable_if<N != 0 && (N % 2 == 0), bool>::type
                       = false) {
         // $x^N = x^{N/2}x^{N/2}$
-        return pow<N/2>(x)*pow<N/2>(x);
+        double y = pow<N/2>(x);
+        return y*y;
     }
 
     /* \brief Compute the N-th power of a number, N odd
@@ -69,7 +70,7 @@ public:
      * \return $x^N$
      */
     template <unsigned int N>
-    static double pow(double x,
+    inline static double pow(double x,
                       // Advanced C++ template metaprogramming using SFINAE:
                       // Next line is just a dummy line: if N == 1 or N even
                       // the scruct std::enable_if<false, bool> has no
@@ -79,7 +80,8 @@ public:
                       typename std::enable_if<N != 1 && (N % 2 != 0), bool>::type
                       = false) {
         // $x^N = x^{N/2-1}x^{N/2-1}x$
-        return x*pow<(N-1)/2>(x)*pow<(N-1)/2>(x);
+        double y = pow<(N-1)/2>(x);
+        return x*y*y;
     }
 };
 
@@ -95,7 +97,7 @@ template <unsigned int N,
           // if N != 0, type does not exist and
           // template instantiation fails, error is not thrown
           typename std::enable_if<N == 0, bool>::type = true >
-double taylor_sinh (double x) {
+inline double taylor_sinh (double x) {
     // Taylor expansion with empty sum is 0
     return 0;
 }
@@ -111,14 +113,14 @@ template <unsigned int N,
           // if N == 0, type does not exist and
           // template instantiation fails, error is not thrown
           typename std::enable_if<(N > 0), bool>::type = false >
-double taylor_sinh(double x) {
+inline double taylor_sinh(double x) {
     // Use taylor expansion with $N-1$ terms to compute
     // the one with $N$ terms
     return taylor_sinh<N-1>(x) + _pow::pow<2*N-1>(x) / factorial(2*N-1);
 }
 
 template <unsigned int N>
-double error_bound(double x) {
+inline double error_bound(double x) {
     return std::exp(x) * _pow::pow<2*N>(x)  / factorial(2*N+1);
 }
 
