@@ -1,36 +1,39 @@
-#include <Eigen/Dense>
-#include <Eigen/Sparse>
 #include <iostream>
 #include <vector>
 
+#include <Eigen/Dense>
+#include <Eigen/Sparse>
+
 using namespace Eigen;
-using namespace std;
 
-//! \brief Compute the matrix C from A.
-//! \param[in] A Matrix $n \times n$
-//! \param[out] C MatrixXd with $C=A\otimes I+I\otimes A$.
-
+/* @brief Compute the matrix C from A
+ * \param[in] A An nxn matrix
+ * \param[out] C The (n^2)x(n^2) matrix from A\otimes I+I\otimes A
+ */
+/* SAM_LISTING_BEGIN_0 */
 SparseMatrix<double> buildC(const MatrixXd &A)
 {
-    int n=A.rows();
-    
-    Eigen::SparseMatrix<double> C(n*n,n*n);
+    // Initialisation
+    int n = A.rows();
+    SparseMatrix<double> C(n*n,n*n);
     std::vector<Triplet<double> > triplets;
-    MatrixXd I=MatrixXd::Identity(n,n);
+    MatrixXd I = MatrixXd::Identity(n,n);
 
-    for (int i=0; i<n; i++) {
-      for (int j=0; j<n; j++) {
-        if (i==j){
-          for (int k1=0; k1<n; k1++) {
-            for (int k2=0; k2<n; k2++) {
+#if SOLUTION
+    for(int i=0; i<n; i++) {
+      for(int j=0; j<n; j++) {
+	// Set diagonal
+        if(i == j) {
+          for(int k1=0; k1<n; k1++) {
+            for(int k2=0; k2<n; k2++) {
               Triplet<double>
-              triplet(i*n+k1,j*n+k2,A(i,j)*I(k1,k2)+A(k1,k2));
+              triplet(i*n+k1, j*n+k2, A(i,j)*I(k1,k2)+A(k1,k2));
               triplets.push_back(triplet);
              }
           }
-        }
-        else {
-          for (int k=0; k<n ; k++) {
+	// Set other cells
+        } else {
+          for(int k=0; k<n ; k++) {
             Triplet<double> triplet(i*n+k,j*n+k,A(i,j));
             triplets.push_back(triplet);
           }
@@ -39,45 +42,52 @@ SparseMatrix<double> buildC(const MatrixXd &A)
     }
     C.setFromTriplets(triplets.begin(), triplets.end());
     C.makeCompressed();
+
     return C;
+#endif // SOLUTION
 }
+/* SAM_LISTING_END_0 */
 
-//! \brief Solve the Lyapunov system
-//! \param[in] A Matrix $n \times n$
-//! \param[out] X MatrixXd, the solution.
-
+/* @brief Solve the Lyapunov system
+ * \param[in] A An nxn matrix
+ * \param[out] X The nxn solution matrix
+ */
+/* SAM_LISTING_BEGIN_1 */
 void solveLyapunov(const MatrixXd &A, MatrixXd &X)
 {
-    int n=A.rows();
-    SparseMatrix <double> C;
-    C=buildC(A);
-    MatrixXd I=MatrixXd::Identity(n,n);
+    // Initialisation
+    int n = A.rows();
+    SparseMatrix <double> C = buildC(A);
+    MatrixXd I = MatrixXd::Identity(n,n);
     VectorXd b(n*n);
-    b=Map<MatrixXd>(I.data(),n*n,1);
+    b = Map<MatrixXd>(I.data(),n*n,1);
     VectorXd vecX(n*n);
-    SparseLU<SparseMatrix <double> > solver;
-    solver.compute(C) ;
-    vecX = solver.solve(b);
-    X=Map<MatrixXd>(vecX.data(),n,n);
-}
 
-int main(){
-    
-    // test buildC
-    int n=5;
+#if SOLUTION
+    SparseLU<SparseMatrix <double> > solver;
+    solver.compute(C);
+    vecX = solver.solve(b);
+    X = Map<MatrixXd>(vecX.data(),n,n);
+#endif // SOLUTION
+}
+/* SAM_LISTING_END_1 */
+
+int main() {
+    unsigned int n = 5;
+    // Initialisation
     MatrixXd A(n,n);
-    A<<10, 2, 3, 4, 5, 6, 20, 8, 9, 1, 1, 2, 30, 4, 5, 6, 7, 8, 20, 0, 1, 2, 3, 4, 10;
+    A << 10, 2, 3, 4, 5, 6, 20, 8, 9, 1, 1, 2, 30, 4, 5, 6, 7, 8, 20, 0, 1, 2, 3, 4, 10;
     
-    SparseMatrix <double> C;
-    C=buildC(A);
-    cout<<"C= "<<C<<endl;
+    // Test 'buildC'
+    SparseMatrix <double> C = buildC(A);
+    std::cout << "C = " << C << std::endl;
     
-    // solve lynear system
+    // Test 'solveLyapunov'
     MatrixXd X(n,n);
     solveLyapunov(A,X);
-    cout<<"X= "<<X<<endl;
-    MatrixXd I=MatrixXd::Identity(n,n);
+    std::cout << "X = " << X << std::endl;
     
-    // test to verify the solution
-    cout<<(A*X+X*A.transpose()-I).norm()<<endl;
+    // Verify the solution if you obtain zero
+    MatrixXd I = MatrixXd::Identity(n,n);
+    std::cout << "Correct if close to 0: "  << (A*X + X*A.transpose() - I).norm() << std::endl;
 }

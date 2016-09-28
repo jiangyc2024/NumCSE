@@ -1,5 +1,4 @@
 {
-    "name": "RankOneInvit",
-    "all" : ["rankoneinvit.cpp"],
-    "lib" : ["timer.h"]
+    "name": "Lyapunov",
+    "all" : ["lyapunov.cpp"]
 }
