@@ -7,6 +7,7 @@
 ////
 #include <iostream>
 #include <iomanip>
+#include <vector>
 
 #include <Eigen/Dense>
 #include <Eigen/LU>
@@ -98,7 +99,7 @@ public:
         // trough a resistance. This will be also part of the r.h.s.
         voltage_topology S;
         S.reserve(4);
-        S.push_back(voltage(6, 16, W));
+        S.push_back(voltage(6, 16, V));
         S.push_back(voltage(7, 17, 0));
         S.push_back(voltage(11,17, 0));
         S.push_back(voltage(14,17, 0));
@@ -127,7 +128,7 @@ public:
         // ($R$ is the  resistence between node $i$ and ground/source
         // node, $V$ is voltage at sink or source) and to its own diagonal with $R$
         b = MatrixXd::Zero(nnodes, 1);
-        for(volatge & volt: S) {
+        for(voltage & volt: S) {
             // Shift index down by 1 and get voltage in W2
             int i = std::get<0>(volt) - 1;
             double source_voltage = std::get<2>(volt);
@@ -154,8 +155,8 @@ public:
 
         // Create $u$: the vector in $A+u*v^\top$
         VectorXd u = VectorXd::Zero(nnodes);
-        u(13) = -std::sqrt{f};
-        u(14) = std::sqrt{f};
+        u(13) = -std::sqrt(f);
+        u(14) = std::sqrt(f);
         // Here: v = u
 
         // Use SMW formula to compute $(A + u \cdot u^\top)^{-1} \cdot b$.
@@ -175,8 +176,8 @@ public:
         // Compute the current $I = \Delta W_{16,5} / R$
         // and then impedance $= V / I$.
         // Here $\Delta W_{16,5} = W_{16} - x_5 = V - x_5$.
-        return W * R / (W - x(5));
-    };
+        return V * R / (V - x(5));
+    }
 private:
     PartialPivLU<MatrixXd> lu; //< Store LU decomp. of matrix $A$.
     double R, V; //< Resistance $R$ and source voltage $W$.
@@ -220,10 +221,12 @@ int main(void) {
     tmr_compute.stop();
     // Output time
     std::cout << "Building time: "
-              << std::scientific << std::precision(3)
+              << std::setprecision(3)
+              << std::scientific
               << tmr_build.duration() << " s" << std::endl;
     std::cout << "Compute time: "
-              << std::scientific << std::precision(3)
+              << std::setprecision(3)
+              << std::scientific
               << tmr_compute.duration() << " s" << std::endl;
 
 }

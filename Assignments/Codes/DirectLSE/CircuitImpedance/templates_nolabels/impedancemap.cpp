@@ -7,6 +7,7 @@
 ////
 #include <iostream>
 #include <iomanip>
+#include <vector>
 
 #include <Eigen/Dense>
 #include <Eigen/LU>
@@ -59,7 +60,7 @@ public:
     double operator()(double Rx) {
         // TODO: use SMW formula to compute the solution of $A_{R_x} x = b$
         // Compute and return the impedance of the system.
-    };
+    }
 private:
     PartialPivLU<MatrixXd> lu; //< Store LU decomp. of matrix $A$.
     double R, V; //< Resistance $R$ and source voltage $W$.
