@@ -9,7 +9,6 @@
 #include <limits>
 #include <Eigen/Dense>
 
-using namespace stf;
 using Eigen::MatrixXd;
 
 /* SAM_LISTING_BEGIN_0 */
@@ -20,9 +19,9 @@ int main() {
   // << initialization of matrix $\to$ \cref{par:eigeninit}
   A << 1, 1, sqrt(eps), 0, 0, sqrt(eps);
   // Output rank of \Blue{$\VA^{\top}\VA$}
-  cout << "Rank of A: " << A.fullPivLu().rank() << endl
-       << "Rank of A^TA: "
-       << (A.transpose() * A).fullPivLu().rank() << endl;
+  std::cout << "Rank of A: " << A.fullPivLu().rank() << std::endl
+            << "Rank of A^TA: "
+            << (A.transpose() * A).fullPivLu().rank() << std::endl;
   return 0;
 }
 /* SAM_LISTING_END_0 */
