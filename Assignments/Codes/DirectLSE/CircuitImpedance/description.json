@@ -4,6 +4,6 @@
     "email" : "",
 
     "name": "ImpedanceMap",
-    "all" : ["impedancemap.cpp", "rcircuit.pdf"],
+    "all" : ["impedancemap.cpp", "rcircuit.eps"],
     "lib" : ["timer.h"]
 }
