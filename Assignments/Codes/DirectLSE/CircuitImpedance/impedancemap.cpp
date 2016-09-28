@@ -22,36 +22,46 @@ typedef std::tuple<int, int, double>    voltage;
 // Vector containing a voltage object for each node connected to sink or source.
 typedef std::vector< voltage >          voltage_topology;
 
-//! \brief Class implementing the topology of the circuit (cf. Figure)
-//! Computes impedance of the entire circuit (between node 16 and 17) exploiting
-//! the SMW formula for the inversion of low rank perturbations of a matrix A0,
-//! whose factorization in known in advance
+/* \brief Class implementing the topology of the circuit (cf. Figure)
+ * Computes impedance of the entire circuit (between node 16 and 17) exploiting
+ * the SMW formula for the inversion of low rank perturbations of a matrix A0,
+ * whose factorization in known in advance
+ */
 /* SAM_LISTING_BEGIN_1 */
 class ImpedanceMap {
     std::size_t nnodes; //< Number of nodes in the circuit
 public:
-    //! \brief Constructor: Build system matrix and r.h.s. and perform a LU decomposition
-    //! The LU decomposition is stored in 'lu' and can be reused in the SMW formula
-    //! to avoid expensive matrix solves for repeated usages of the operator()
-    //! \param R Resistance (in Ohm) value of $R$
-    //! \param W Source voltage $W$ at node 16 (in Volt), ground is set to 0V at node 17
-    ImpedanceMap(double R, double W) : R(R), W(W) {
+    /* \brief Build system matrix and r.h.s. and perform a LU decomposition
+     * The LU decomposition is stored in 'lu' and can be
+     * reused in the SMW formula
+     * to avoid expensive matrix solves
+     * for repeated usages of the operator()
+     * \param R Resistance (in Ohm) value of $R$
+     * \param V Source voltage $V$ at node $16$ (in Volt),
+     *          ground is set to $0V$ at node $17$
+     */
+    ImpedanceMap(double R, double V) : R(R), V(V) {
 #if SOLUTION
-        // In the following, instead of specifying directly the entries of A\_0 and of r.h.s.
-        // we define some auxiliary structure and automatically generate the right entries for
+        // In the following, instead of specifying directly
+        // the entries of A\_0 and of r.h.s.
+        // we define some auxiliary structure and automatically
+        // generate the right entries for
         // the structures we specify.
         // This way: we avoid silly mistakes, avoid a very long list of matrix
         // entries have a flexible way (we may easily change the topology)
         // and automatically take care of shifting the indices
-        // Of course, if you want, you can manually put each entry in the matrix and r.h.s.
+        // Of course, if you want, you can manually put each
+        // entry in the matrix and r.h.s.
         // The result is the same.
 
         // Number of nodes
         nnodes = 15;
 
         // We implement the topology of the resistances by pushing each
-        // Resistance between node i < j in a std::vector of pair $(i,j) \in \mathbb{N}^2$
-        // This way we can automatically build a symmetric matrix, take care of indexing
+        // Resistance between node i < j in a std::vector of
+        // pair $(i,j) \in \mathbb{N}^2$
+        // This way we can automatically build a symmetric
+        // matrix, take care of indexing
         // and avoid mistakes during the matrix filling
         resistor_topology T;
         T.reserve(23);
@@ -78,10 +88,9 @@ public:
         T.push_back(resistor(10,11));
         T.push_back(resistor(11,12));
         T.push_back(resistor(12,13));
-        // Default matrix entries set to one (will be a "varistor")
-        T.push_back(resistor(14,15));
+        // The "base" matrix $A_0$ will have no resistance between 14 and 15
 
-        // We implement voltage ground and source topology by
+        // We implement voltage ground and sources by
         // specifying which node is connected to ground/source
         // trough a resistance. This will be also part of the r.h.s.
         voltage_topology S;
@@ -109,73 +118,77 @@ public:
         }
 
         // Fill in the rest (source and ground), i.e.
-        // components with $\Delta W_{i,j}$ with j > 15
-        // Each node i connected to ground or source contributes
-        // to the rhs with R * W (R resistence between node i and ground/source
-        // node, W is voltage at sink or source) and to its own diagonal with R
-        rhs = MatrixXd::Zero(nnodes, 1);
+        // components with $\Delta W_{i,j}$ with $j > 15$.
+        // Each node $i$ connected to ground or source contributes
+        // to the r.h.s $b$ with $R \cdot V$
+        // ($R$ is the  resistence between node $i$ and ground/source
+        // node, $V$ is voltage at sink or source) and to its own diagonal with $R$
+        b = MatrixXd::Zero(nnodes, 1);
         for(volatge & volt: S) {
             // Shift index down by 1 and get voltage in W2
             int i = std::get<0>(volt) - 1;
-            double  W2 = std::get<2>(volt);
-            // Add voltage to r.h.s. (resistance assumed to be R)
-            rhs(i) += W2;
+            double source_voltage = std::get<2>(volt);
+            // Add voltage to r.h.s. (resistance assumed to be $R$)
+            b(i) += source_voltage;
             // Add resistance to matrix diagonal: contribution of source current
+            // scaled by $R$.
             A0(i,i) += 1;
         }
 
         // Precompute the 'lu' factorization of A0
         lu = A0.lu();
 #else // TEMPLATE
-        // TODO: build the matrix A_0 and compute its lu factorization. Compute the
-        // right hand side and store it in rhs.
+        // TODO: build the matrix $A_0$.
+        // Compute lu factorization of $A_0$.
+        // Store LU factorization in 'lu'.
+        // Compute the right hand side and store it in 'b'.
 #endif // TEMPLATE
     };
 
-    //! \brief Compute the impedance given the resistance $R_x$
-    //! Use SMW formula for low rank perturbations to reuse LU
-    //! factorization.
-    //! \param Rx Resistence $R_x > 0$ of the varistor between node 14 and 15
-    //! \return impedance $W / I$ of the system $A_{R_x}$
+    /* \brief Compute the impedance given the resistance $R_x$.
+     * Use SMW formula for low rank perturbations to reuse LU
+     * factorization.
+     * \param Rx Resistence $R_x > 0$ between node 14 and 15
+     * \return Impedance $V / I$ of the system $A_{R_x}$
+     */
     double operator()(double Rx) {
 #if SOLUTION
         // Store the scaled factor for convenience
         double f = R/Rx;
 
-        // There are many ways to create the same matrix u*v
-        // Create $U$: the 15x2 matrix in $A+UV$
+        // Create $u$: the vector in $A+u*v^\top$
         VectorXd u = VectorXd::Zero(nnodes);
         u(13) = -std::sqrt{f};
         u(14) = std::sqrt{f};
-        // v = u
+        // Here: v = u
 
-        // Use SMW formula to compute $(A + u \cdot u^\top)^{-1} \cdot rhs$.
+        // Use SMW formula to compute $(A + u \cdot u^\top)^{-1} \cdot b$.
         // Formula:
-        // $A^{-1} * rhs - A^{-1}*u**(I+V*A^{-1}*U)^{-1}V*A^{-1}rhs$
+        // $A^{-1} * b - A^{-1}*u**(I+V*A^{-1}*U)^{-1}V*A^{-1} b$
 
-        // Start by precomputing $A^{-1} rhs$, needed twice
-        VectorXd Ainvrhs = lu.solve(rhs);
+        // Start by precomputing $A^{-1} b$, needed twice
+        VectorXd Ainvrhs = lu.solve(b);
         // Then, precompute A^{-1} u$, needed twice
         VectorXd Ainvu = lu.solve(u);
-        // Then, compute alpha, 2x2 matrix whose inverse is cheap
+        // Then, compute alpha. Alpha is just a number.
         double alpha = 1 + u.dot(Ainvu);
-        // Put the formula toghether, x is a 15x1 column vector containing voltages
-        // at each node (except 16,17, prescribed)
+        // Put the formula toghether, x is a column vector containing voltages
+        // at each node (except 16 and 17, which are prescribed)
         VectorXd x = Ainvrhs - Ainvu * u.dot(Ainvrhs) / alpha;
 
         // Compute the current $I = \Delta W_{16,5} / R$
-        // and then impedance $= W / I$.
-        // Here $\Delta W_{16,5} = (W - x_5)$.
+        // and then impedance $= V / I$.
+        // Here $\Delta W_{16,5} = W_{16} - x_5 = V - x_5$.
         return W * R / (W - x(5));
+#else // TEMPLATE
+        // TODO: use SMW formula to compute the solution of $A_{R_x} x = b$
+        // Compute and return the impedance of the system.
+#endif // TEMPLATE
     };
 private:
-    PartialPivLU<MatrixXd> lu; //< Store LU decomposition of matrix A
-    double R, W; //< Resistance R and source voltage W
-    VectorXd rhs; //< Store r.h.s. vector prescribing sink and source voltages
-#else // TEMPLATE
-    // TODO: use SMW formula to compute the solution of A_{R_x} x = rhs
-    // and compute impedance of the system
-#endif // TEMPLATE
+    PartialPivLU<MatrixXd> lu; //< Store LU decomp. of matrix $A$.
+    double R, V; //< Resistance $R$ and source voltage $W$.
+    VectorXd b; //< R.h.s vector prescribing sink/source voltages.
 };
 /* SAM_LISTING_END_1 */
 

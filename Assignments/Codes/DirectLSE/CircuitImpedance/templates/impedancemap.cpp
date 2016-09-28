@@ -19,32 +19,44 @@ typedef std::tuple<int, int, double>    voltage;
 // Vector containing a voltage object for each node connected to sink or source.
 typedef std::vector< voltage >          voltage_topology;
 
-//! \brief Class implementing the topology of the circuit (cf. Figure)
-//! Computes impedance of the entire circuit (between node 16 and 17) exploiting
-//! the SMW formula for the inversion of low rank perturbations of a matrix A0,
-//! whose factorization in known in advance
+/* \brief Class implementing the topology of the circuit (cf. Figure)
+ * Computes impedance of the entire circuit (between node 16 and 17) exploiting
+ * the SMW formula for the inversion of low rank perturbations of a matrix A0,
+ * whose factorization in known in advance
+ */
 /* SAM_LISTING_BEGIN_1 */
 class ImpedanceMap {
     std::size_t nnodes; //< Number of nodes in the circuit
 public:
-    //! \brief Constructor: Build system matrix and r.h.s. and perform a LU decomposition
-    //! The LU decomposition is stored in 'lu' and can be reused in the SMW formula
-    //! to avoid expensive matrix solves for repeated usages of the operator()
-    //! \param R Resistance (in Ohm) value of $R$
-    //! \param W Source voltage $W$ at node 16 (in Volt), ground is set to 0V at node 17
+    /* \brief Build system matrix and r.h.s. and perform a LU decomposition
+     * The LU decomposition is stored in 'lu' and can be
+     * reused in the SMW formula
+     * to avoid expensive matrix solves
+     * for repeated usages of the operator()
+     * \param R Resistance (in Ohm) value of $R$
+     * \param W Source voltage $W$ at node $16$ (in Volt),
+     *          ground is set to $0V$ at node $17$
+     */
     ImpedanceMap(double R, double W) : R(R), W(W) {
-        // TODO: build the matrix A_0 and compute its lu factorization. Compute the
-        // right hand side and store it in rhs.
+        // TODO: build the matrix $A_0$.
+        // Compute lu factorization of $A_0$.
+        // Compute the right hand side and store it in b.
     };
 
-    //! \brief Compute the impedance given the resistance $R_x$
-    //! Use SMW formula for low rank perturbations to reuse LU
-    //! factorization.
-    //! \param Rx Resistence $R_x > 0$ of the varistor between node 14 and 15
-    //! \return impedance $W / I$ of the system $A_{R_x}$
+    /* \brief Compute the impedance given the resistance $R_x$.
+     * Use SMW formula for low rank perturbations to reuse LU
+     * factorization.
+     * \param Rx Resistence $R_x > 0$ between node 14 and 15
+     * \return Impedance $W / I$ of the system $A_{R_x}$
+     */
     double operator()(double Rx) {
-    // TODO: use SMW formula to compute the solution of A_{R_x} x = rhs
-    // and compute impedance of the system
+        // TODO: use SMW formula to compute the solution of $A_{R_x} x = b$
+        // Compute and return the impedance of the system.
+    };
+private:
+    PartialPivLU<MatrixXd> lu; //< Store LU decomp. of matrix $A$.
+    double R, W; //< Resistance $R$ and source voltage $W$.
+    VectorXd b; //< R.h.s vector prescribing sink/source voltages.
 };
 /* SAM_LISTING_END_1 */
 
