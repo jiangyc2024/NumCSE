@@ -34,20 +34,21 @@ public:
      * to avoid expensive matrix solves
      * for repeated usages of the operator()
      * \param R Resistance (in Ohm) value of $R$
-     * \param W Source voltage $W$ at node $16$ (in Volt),
+     * \param V Source voltage $V$ at node $16$ (in Volt),
      *          ground is set to $0V$ at node $17$
      */
-    ImpedanceMap(double R, double W) : R(R), W(W) {
+    ImpedanceMap(double R, double V) : R(R), V(V) {
         // TODO: build the matrix $A_0$.
         // Compute lu factorization of $A_0$.
-        // Compute the right hand side and store it in b.
+        // Store LU factorization in 'lu'.
+        // Compute the right hand side and store it in 'b'.
     };
 
     /* \brief Compute the impedance given the resistance $R_x$.
      * Use SMW formula for low rank perturbations to reuse LU
      * factorization.
      * \param Rx Resistence $R_x > 0$ between node 14 and 15
-     * \return Impedance $W / I$ of the system $A_{R_x}$
+     * \return Impedance $V / I$ of the system $A_{R_x}$
      */
     double operator()(double Rx) {
         // TODO: use SMW formula to compute the solution of $A_{R_x} x = b$
@@ -55,7 +56,7 @@ public:
     };
 private:
     PartialPivLU<MatrixXd> lu; //< Store LU decomp. of matrix $A$.
-    double R, W; //< Resistance $R$ and source voltage $W$.
+    double R, V; //< Resistance $R$ and source voltage $W$.
     VectorXd b; //< R.h.s vector prescribing sink/source voltages.
 };
 /* SAM_LISTING_END_1 */

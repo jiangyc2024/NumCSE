@@ -35,10 +35,10 @@ public:
      * to avoid expensive matrix solves
      * for repeated usages of the operator()
      * \param R Resistance (in Ohm) value of $R$
-     * \param W Source voltage $W$ at node $16$ (in Volt),
+     * \param V Source voltage $V$ at node $16$ (in Volt),
      *          ground is set to $0V$ at node $17$
      */
-    ImpedanceMap(double R, double W) : R(R), W(W) {
+    ImpedanceMap(double R, double V) : R(R), V(V) {
         // In the following, instead of specifying directly
         // the entries of A\_0 and of r.h.s.
         // we define some auxiliary structure and automatically
@@ -85,10 +85,9 @@ public:
         T.push_back(resistor(10,11));
         T.push_back(resistor(11,12));
         T.push_back(resistor(12,13));
-        // Default matrix entries set to one (will be a "varistor")
-        T.push_back(resistor(14,15));
+        // The "base" matrix $A_0$ will have no resistance between 14 and 15
 
-        // We implement voltage ground and source topology by
+        // We implement voltage ground and sources by
         // specifying which node is connected to ground/source
         // trough a resistance. This will be also part of the r.h.s.
         voltage_topology S;
@@ -116,18 +115,20 @@ public:
         }
 
         // Fill in the rest (source and ground), i.e.
-        // components with $\Delta W_{i,j}$ with j > 15
-        // Each node i connected to ground or source contributes
-        // to the b with R * W (R resistence between node i and ground/source
-        // node, W is voltage at sink or source) and to its own diagonal with R
+        // components with $\Delta W_{i,j}$ with $j > 15$.
+        // Each node $i$ connected to ground or source contributes
+        // to the r.h.s $b$ with $R \cdot V$
+        // ($R$ is the  resistence between node $i$ and ground/source
+        // node, $V$ is voltage at sink or source) and to its own diagonal with $R$
         b = MatrixXd::Zero(nnodes, 1);
         for(volatge & volt: S) {
             // Shift index down by 1 and get voltage in W2
             int i = std::get<0>(volt) - 1;
-            double  W2 = std::get<2>(volt);
-            // Add voltage to r.h.s. (resistance assumed to be R)
-            b(i) += W2;
+            double source_voltage = std::get<2>(volt);
+            // Add voltage to r.h.s. (resistance assumed to be $R$)
+            b(i) += source_voltage;
             // Add resistance to matrix diagonal: contribution of source current
+            // scaled by $R$.
             A0(i,i) += 1;
         }
 
@@ -139,41 +140,40 @@ public:
      * Use SMW formula for low rank perturbations to reuse LU
      * factorization.
      * \param Rx Resistence $R_x > 0$ between node 14 and 15
-     * \return Impedance $W / I$ of the system $A_{R_x}$
+     * \return Impedance $V / I$ of the system $A_{R_x}$
      */
     double operator()(double Rx) {
         // Store the scaled factor for convenience
         double f = R/Rx;
 
-        // There are many ways to create the same matrix u*v
-        // Create $U$: the 15x2 matrix in $A+UV$
+        // Create $u$: the vector in $A+u*v^\top$
         VectorXd u = VectorXd::Zero(nnodes);
         u(13) = -std::sqrt{f};
         u(14) = std::sqrt{f};
-        // v = u
+        // Here: v = u
 
-        // Use SMW formula to compute $(A + u \cdot u^\top)^{-1} \cdot rhs$.
+        // Use SMW formula to compute $(A + u \cdot u^\top)^{-1} \cdot b$.
         // Formula:
-        // $A^{-1} * b - A^{-1}*u**(I+V*A^{-1}*U)^{-1}V*A^{-1}rhs$
+        // $A^{-1} * b - A^{-1}*u**(I+V*A^{-1}*U)^{-1}V*A^{-1} b$
 
-        // Start by precomputing $A^{-1} rhs$, needed twice
+        // Start by precomputing $A^{-1} b$, needed twice
         VectorXd Ainvrhs = lu.solve(b);
         // Then, precompute A^{-1} u$, needed twice
         VectorXd Ainvu = lu.solve(u);
-        // Then, compute alpha, 2x2 matrix whose inverse is cheap
+        // Then, compute alpha. Alpha is just a number.
         double alpha = 1 + u.dot(Ainvu);
         // Put the formula toghether, x is a column vector containing voltages
         // at each node (except 16 and 17, which are prescribed)
         VectorXd x = Ainvrhs - Ainvu * u.dot(Ainvrhs) / alpha;
 
         // Compute the current $I = \Delta W_{16,5} / R$
-        // and then impedance $= W / I$.
-        // Here $\Delta W_{16,5} = (W - x_5)$.
+        // and then impedance $= V / I$.
+        // Here $\Delta W_{16,5} = W_{16} - x_5 = V - x_5$.
         return W * R / (W - x(5));
     };
 private:
     PartialPivLU<MatrixXd> lu; //< Store LU decomp. of matrix $A$.
-    double R, W; //< Resistance $R$ and source voltage $W$.
+    double R, V; //< Resistance $R$ and source voltage $W$.
     VectorXd b; //< R.h.s vector prescribing sink/source voltages.
 };
 /* SAM_LISTING_END_1 */
