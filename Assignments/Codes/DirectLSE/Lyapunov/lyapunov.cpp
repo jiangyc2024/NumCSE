@@ -72,6 +72,7 @@ void solveLyapunov(const MatrixXd &A, MatrixXd &X)
 }
 /* SAM_LISTING_END_1 */
 
+/* SAM_LISTING_BEGIN_2 */
 int main() {
     unsigned int n = 5;
     // Initialisation
@@ -91,3 +92,4 @@ int main() {
     MatrixXd I = MatrixXd::Identity(n,n);
     std::cout << "Correct if close to 0: "  << (A*X + X*A.transpose() - I).norm() << std::endl;
 }
+/* SAM_LISTING_END_2 */
