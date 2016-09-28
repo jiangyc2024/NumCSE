@@ -22,7 +22,7 @@ template <class Vector>
 void shift(Vector & b) {
     typedef typename Vector::Scalar Scalar;
     int n = b.size();
-    
+
     Scalar temp = b(n-1);
     for(int k = n-2; k >= 0; --k) {
         b(k+1) = b(k);
@@ -63,9 +63,9 @@ void solvpermb_on3(const Matrix & A, Vector & b, Matrix & X) {
         return;
     }
     X.resize(n,n);
-    
+
 }
-    
+
 int main() {
     unsigned int n = 9;
     // Compute with both solvers
@@ -80,12 +80,12 @@ int main() {
     solvpermb_on3(A,b,X);
     std::cout << "Reusing LU: " << std::endl << X << std::endl;
     std::cout << "A*X = " << std::endl << A*X << std::endl;
-    
+
     // Compute runtimes of different solvers
     std::cout << "*** Runtime comparison of naive solver vs reusing LU" << std::endl;
     unsigned int repeats = 3;
-    timer<> tm_naive, tm_reuseLU;
-    
+    Timer tm_naive, tm_reuseLU;
+
     for(unsigned int p = 2; p <= 7; p++) {
         tm_naive.reset();
         tm_reuseLU.reset();
@@ -94,17 +94,19 @@ int main() {
         for(unsigned int r = 0; r < repeats; ++r) {
             A = MatrixXd::Random(n,n);
             b = VectorXd::Random(n);
-            
+
             tm_naive.start();
             solvpermb(A,b,X);
             tm_naive.stop();
-            
+
             tm_reuseLU.start();
             solvpermb_on3(A,b,X);
             tm_reuseLU.stop();
         }
-        
-        std::cout << "Naive solver took: " << tm_naive.avg().count() / 1000000. << " ms for n = " << n << std::endl;
-        std::cout << "Reusing LU took: "   << tm_reuseLU.avg().count() / 1000000. << " ms for n = " << n << std::endl;
+
+        std::cout << "Naive solver took: "
+                  << tm_naive.min() / 1000000. << " ms for n = " << n << std::endl;
+        std::cout << "Reusing LU took: "
+                  << tm_reuseLU.min() / 1000000. << " ms for n = " << n << std::endl;
     }
 }
