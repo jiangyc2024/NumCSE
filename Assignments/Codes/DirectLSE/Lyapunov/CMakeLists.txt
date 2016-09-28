@@ -1,13 +1,13 @@
 include_directories(../../../Utils)
 
-add_executable_numcse(solution2 rankoneinvit.cpp)
+add_executable_numcse(solution2 lyapunov.cpp)
 get_target_name_numcse(solution2 SOLUTION)
 target_compile_definitions(${SOLUTION} PRIVATE SOLUTION=2 INTERNAL=1)
 
-add_executable_numcse(solution rankoneinvit.cpp)
+add_executable_numcse(solution lyapunov.cpp)
 get_target_name_numcse(solution SOLUTION)
 target_compile_definitions(${SOLUTION} PRIVATE SOLUTION=1 INTERNAL=1)
 
-add_executable_numcse(template rankoneinvit.cpp)
+add_executable_numcse(template lyapunov.cpp)
 get_target_name_numcse(template TEMPLATE)
 target_compile_definitions(${TEMPLATE} PRIVATE SOLUTION=0 INTERNAL=1)
