@@ -18,11 +18,12 @@ using namespace std;
 void rowcolaccesstiming(void)
 {
   const int K = 3; // Number of repetitions
-  const int N_min = 4; // Smalles matrix size 16
+  const int N_min = 5; // Smalles matrix size 32
   const int N_max = 13; // Scan until matrix size of 8192
-  unsigned long n = (1L << N_min); 
+  unsigned long n = (1L << N_min);
+  Eigen::MatrixXd times(N_max-N_min+1,3);
   
-  for(int l=4; l<= N_max; l++, n*=2) {
+  for(int l=N_min; l<= N_max; l++, n*=2) {
     Eigen::MatrixXd A = Eigen::MatrixXd::Random(n,n);
     double t1 = 1000.0;
     for(int k=0;k<K;k++) {
@@ -40,8 +41,9 @@ void rowcolaccesstiming(void)
       double t = (double)duration_cast<microseconds>(toc-tic).count()/1E6;
       t2 = std::min(t2,t);
     }
-    cout << "n= " << n << ", t(row)= " << t1 << ", t(col) " << t2 << endl;
+    times(l-N_min,0) = n;	times(l-N_min,1) = t1;	times(l-N_min,2) = t2;
   }
+  std::cout << times << std::endl;
 }
 /* SAM_LISTING_END_1 */
 
