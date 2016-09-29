@@ -11,6 +11,8 @@ std::complex<double> myroot( std::complex<double> w ) {
     double u = w.real();
     double v = w.imag();
 
+    // TODO: problem 1c: construct x and y as functions of u and v
+
     if (v==0) return sqrt(u);
 
     if (u > 0) {
