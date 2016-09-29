@@ -112,7 +112,7 @@ public:
             // into the diagonal of both nodes
             A0(i,i) += 1;
             A0(j,j) += 1;
-            // Fill the off diagonal (negative part in \Delta W_{i,j},
+            // Fill the off diagonal (negative part in $\Delta W_{i,j}$,
             // the matrix is kept symmetric
             A0(i,j) -= 1;
             A0(j,i) -= 1;
@@ -123,7 +123,8 @@ public:
         // Each node $i$ connected to ground or source contributes
         // to the r.h.s $b$ with $R \cdot V$
         // ($R$ is the  resistence between node $i$ and ground/source
-        // node, $V$ is voltage at sink or source) and to its own diagonal with $R$
+        // node, $V$ is voltage at sink or source)
+        // and to its own diagonal with $R$
         b = MatrixXd::Zero(nnodes, 1);
         for(voltage & volt: S) {
             // Shift index down by 1 and get voltage in W2
@@ -169,7 +170,7 @@ public:
 
         // Start by precomputing $A^{-1} b$, needed twice
         VectorXd Ainvrhs = lu.solve(b);
-        // Then, precompute A^{-1} u$, needed twice
+        // Then, precompute $A^{-1} u$, needed twice
         VectorXd Ainvu = lu.solve(u);
         // Then, compute alpha. Alpha is just a number.
         double alpha = 1 + u.dot(Ainvu);

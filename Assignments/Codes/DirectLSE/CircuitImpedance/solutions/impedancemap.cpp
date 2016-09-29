@@ -109,7 +109,7 @@ public:
             // into the diagonal of both nodes
             A0(i,i) += 1;
             A0(j,j) += 1;
-            // Fill the off diagonal (negative part in \Delta W_{i,j},
+            // Fill the off diagonal (negative part in $\Delta W_{i,j}$,
             // the matrix is kept symmetric
             A0(i,j) -= 1;
             A0(j,i) -= 1;
@@ -159,7 +159,7 @@ public:
 
         // Start by precomputing $A^{-1} b$, needed twice
         VectorXd Ainvrhs = lu.solve(b);
-        // Then, precompute A^{-1} u$, needed twice
+        // Then, precompute $A^{-1} u$, needed twice
         VectorXd Ainvu = lu.solve(u);
         // Then, compute alpha. Alpha is just a number.
         double alpha = 1 + u.dot(Ainvu);

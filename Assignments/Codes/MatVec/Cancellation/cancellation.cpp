@@ -23,6 +23,9 @@ int main() {
     ArrayXd g2 = 2 * cos(x+0.5*h) * sin(0.5 * h) / h; // better
     ArrayXd ex = cos(x);
 
+    //// Print error
+
+    // Table header
     std::cout << std::setw(15) << "h"
               << std::setw(15) << "exact"
               << std::setw(15) << "cancellation"
@@ -30,6 +33,7 @@ int main() {
               << std::setw(15) << "improved"
               << std::setw(15) << "error" << std::endl;
     for(unsigned int i = 0; i < h.size(); ++i) {
+        // Table entries
         std::cout << std::setw(15) << h(i)
                   << std::setw(15) << ex(i)
                   << std::setw(15) << g1(i)
