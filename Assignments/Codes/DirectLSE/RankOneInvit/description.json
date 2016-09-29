@@ -1,4 +1,9 @@
 {
+
+    "author" : "dcasati",
+    "email" : "",
+    "contributors" : "",
+
     "name": "RankOneInvit",
     "all" : ["rankoneinvit.cpp"],
     "lib" : ["timer.h"]

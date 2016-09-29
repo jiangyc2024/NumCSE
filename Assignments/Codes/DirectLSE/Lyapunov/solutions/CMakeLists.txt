@@ -1,4 +1,4 @@
-project(RankOneInvit)
+project(Lyapunov)
 cmake_minimum_required(VERSION 2.6.2)
 
 # Tested with g++ and clang
@@ -21,9 +21,9 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules)
 find_package(Eigen3 REQUIRED)
 include_directories(${EIGEN3_INCLUDE_DIR})
 
-### RankOneInvit
+### Lyapunov
 
-# make rankoneinvit
-set(SRCS rankoneinvit.cpp)
-add_executable(rankoneinvit ${SRCS})
+# make lyapunov
+set(SRCS lyapunov.cpp)
+add_executable(lyapunov ${SRCS})
 
