@@ -7,7 +7,6 @@
 //! \return the square root of w with non negative real and imaginary parts
 /* SAM_LISTING_BEGIN_1 */
 std::complex<double> myroot( std::complex<double> w ) {
-    /* SAM_LISTING_BEGIN_1 */
     // TODO: Implement complex root without cancellation risk
 }
 /* SAM_LISTING_END_1 */
