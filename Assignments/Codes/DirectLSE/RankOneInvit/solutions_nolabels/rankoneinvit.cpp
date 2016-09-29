@@ -114,10 +114,10 @@ int main() {
         }
 
         std::cout << "The slow method took: "
-                  << tm_slow.min() / 1000000.
-                  << " ms for n = " << n << std::endl;
+                  << tm_slow.min()
+                  << " s for n = " << n << std::endl;
         std::cout << "The fast method took: "
-                  << tm_fast.min() / 1000000.
-                  << " ms for n = " << n << std::endl;
+                  << tm_fast.min()
+                  << " s for n = " << n << std::endl;
     }
 }

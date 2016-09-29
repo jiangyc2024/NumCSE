@@ -106,8 +106,8 @@ int main() {
 
     // Header
     std::cout << std::setw(15) << "M"
-              << std::setw(15) << "own"
-              << std::setw(15) << "eigen"
+              << std::setw(15) << "time own [s]]"
+              << std::setw(15) << "time eigen [s]]"
               << std::endl;
     for(unsigned int p = 2; p <= 10; p++) {
         unsigned int M = pow(2,p);
@@ -133,8 +133,8 @@ int main() {
 
         // Print table
         std::cout << std::setw(15) << M
-                  << std::setw(15) << tm_own.min() / 1000000.
-                  << std::setw(15) << tm_eigen_lu.min() / 1000000.
+                  << std::setw(15) << tm_own.min()
+                  << std::setw(15) << tm_eigen_lu.min()
                   << std::endl;
     }
 }
