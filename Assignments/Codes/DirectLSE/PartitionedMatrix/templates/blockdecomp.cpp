@@ -22,12 +22,13 @@ void solvelse(const MatrixXd & R,
 }
 /* SAM_LISTING_END_1 */
 
-//! \brief Use Eigen's LU-solver to solve Ax = y
-//! \param[in] R MatrixXd is nxn and upper triangular
-//! \param[in] v VectorXd is nx1
-//! \param[in] u VectorXd is nx1
-//! \param[in] bb vector is (n+1)x1 and is stacked (b, \beta)^T =: b
-//! \param[out] x solution A*bb = x
+/* \brief Use Eigen's LU-solver to solve Ax = y
+ * \param[in] R MatrixXd is nxn and upper triangular
+ * \param[in] v VectorXd is nx1
+ * \param[in] u VectorXd is nx1
+ * \param[in] bb vector is (n+1)x1 and is stacked $(b, \beta)^T =: b$
+ * \param[out] x solution A*bb = x
+ */
 /* SAM_LISTING_BEGIN_2 */
 void solvelse_lu(const MatrixXd & R,
                  const VectorXd & v, const VectorXd & u,
@@ -44,7 +45,8 @@ int main() {
     int n = 9;
 
     // Random test vectors
-    Eigen::MatrixXd R = Eigen::MatrixXd::Random(n,n).triangularView<Eigen::Upper>();
+    Eigen::MatrixXd R = Eigen::MatrixXd::Random(n,n)
+        .triangularView<Eigen::Upper>();
     Eigen::VectorXd v = Eigen::VectorXd::Random(n);
     Eigen::VectorXd u = Eigen::VectorXd::Random(n);
     Eigen::VectorXd bb = Eigen::VectorXd::Random(n+1);

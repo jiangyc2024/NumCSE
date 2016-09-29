@@ -126,7 +126,8 @@ public:
         // Each node $i$ connected to ground or source contributes
         // to the r.h.s $b$ with $R \cdot V$
         // ($R$ is the  resistence between node $i$ and ground/source
-        // node, $V$ is voltage at sink or source) and to its own diagonal with $R$
+        // node, $V$ is voltage at sink or source)
+        // and to its own diagonal with $R$
         b = MatrixXd::Zero(nnodes, 1);
         for(voltage & volt: S) {
             // Shift index down by 1 and get voltage in W2
