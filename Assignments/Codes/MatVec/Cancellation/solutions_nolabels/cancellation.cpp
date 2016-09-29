@@ -14,16 +14,18 @@
 using namespace Eigen;
 
 int main() {
+    // Array of values of $h$
     ArrayXd h = ArrayXd::LinSpaced(21, -20, 0.)
         .unaryExpr([] (double i) {
             return std::pow(10., i);
         });
+    // Dummy array where to evaluate the derivative (1.2)
     ArrayXd x = ArrayXd::Constant(h.size(), 1.2);
 
     // Derivative
     ArrayXd g1 = (sin(x +h) - sin(x)) / h; // naive
     ArrayXd g2 = 2 * cos(x+0.5*h) * sin(0.5 * h) / h; // better
-    ArrayXd ex = cos(x);
+    ArrayXd ex = cos(x); // exact
 
     //// Print error
 

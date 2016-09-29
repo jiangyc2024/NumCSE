@@ -14,7 +14,7 @@
 int main() {
 
     // Lambda function, call with sinh(x)
-    auto sinh = [] (double x) {
+    auto sinh_unstable = [] (double x) {
         double t = std::exp(x);
         return .5 * (t - 1./t);
     };
@@ -32,7 +32,7 @@ int main() {
         double x = std::pow<double>(10., -k);
 
         // Our own lambda function
-        double mySinh = sinh(x);
+        double mySinh = sinh_unstable(x);
         // The "standard" sinh
         double stdSinh = std::sinh(x);
         // The stable sinh (look at the file "sinh\_stable.hpp" if
