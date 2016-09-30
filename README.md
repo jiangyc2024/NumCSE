@@ -143,6 +143,6 @@ MathGL installation missing (possibly because of previous point) or corrupted:
 
 ### `dyld: Library not loaded: @rpath/libmgl.7.4.0.dylib`
 
-Known issue:
+Known issue (Mac OS X):
 - run `cmake .` and `make` twice
 - if this doesn't fix problem: try with clean `clone`
