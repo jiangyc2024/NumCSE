@@ -1,6 +1,45 @@
 project(Strassen)
 cmake_minimum_required(VERSION 2.8)
 
+#
+# setup compiler
+#
+# use c++11
+if(CMAKE_VERSION VERSION_GREATER 3.1.0 OR CMAKE_VERSION VERSION_EQUAL 3.1.0)
+    # only valid for new platforms
+    set(CMAKE_CXX_STANDARD 11)
+else()
+    if (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+	# for older cmake versions
+	# (note, this CXX flag is only valid for clang and gcc, for MSVC it is not needed)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+    endif()
+endif()
+
+# enable some warnings
+add_definitions(-pedantic -Wall)
+
+# disable some warnings
+if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+    # (this is only applicable on clang)            
+    # ignore some mathgl warnings
+    add_definitions(-Wno-return-type-c-linkage -Wno-keyword-macro -Wno-missing-braces)
+    #set(EXTERNAL_PROJECT_CXX_FLAGS ${EXTERNAL_PROJECT_CXX_FLAGS} -Wno-return-type-c-linkage)
+endif()
+
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    # disable some warnings on gcc
+    if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 6)
+        add_definitions(-Wno-ignored-attributes -Wno-misleading-indentation)
+        #set(EXTERNAL_PROJECT_CXX_FLAGS ${EXTERNAL_PROJECT_CXX_FLAGS} -Wno-ignored-attributes -Wno-misleading-indentation)
+    endif()
+endif()
+
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    add_definitions(-Wno-deprecated-declarations -Wno-unknown-pragmas)
+    #set(EXTERNAL_PROJECT_CXX_FLAGS ${EXTERNAL_PROJECT_CXX_FLAGS} -Wno-deprecated-declarations)
+endif()
+
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake-modules/")
 
 include(ExternalProject)
