@@ -3,9 +3,7 @@
 
 #include <Eigen/Dense>
 
-#if INTERNAL
 #include <figure/figure.hpp>
-#endif // INTERNAL
 
 using namespace Eigen;
 
@@ -49,7 +47,6 @@ int main() {
     // Print the error of each computation
 #endif // TEMPLATE
 
-#if INTERNAL && SOLUTION
     // Plot
     mgl::Figure fig;
     fig.setlog(true, true);
@@ -57,9 +54,12 @@ int main() {
     fig.title("Error of approximation of f'(x_0)");
     fig.xlabel("h");
     fig.ylabel("| f'(x_0) - g_i(x_0, h) |");
+#if SOLUTION
     fig.plot(h.matrix(), (g1-ex).abs().matrix()).label("g_1");
     fig.plot(h.matrix().tail(16), (g2-ex).abs().matrix().tail(16)).label("g_2");
     fig.plot(h.matrix(), h.matrix(), "h;").label("O(h)");
     fig.save("error_cancellation.eps");
-#endif // INTERNAL && SOLUTION
+#else // TEMPLATE
+    // TODO: plot errors and save figure
+#endif // TEMPLATE
 }
