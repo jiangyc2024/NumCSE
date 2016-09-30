@@ -6,8 +6,8 @@
 
 using namespace Eigen;
 
-/* @brief Compute lmin from vector d, naive implementation
- * @param[in] d An n-dimensional vector
+/* @brief Compute $l_{min}$ from vector $d$, naive implementation
+ * @param[in] d An $n$-dimensional vector
  * @param[in] tol Scalar of type 'double', the tolerance
  * @param[out] lmin Scalar of type 'double'
  */
@@ -34,15 +34,17 @@ void rankoneinvit(const VectorXd & d, const double & tol, double & lmin)
         lnew = ev.transpose()*M*ev;
 
         tm_slow.stop();
-#endif // SOLUTION
+#else // TEMPLATE
+    // TODO: compute $l_{min}$ from vector $d$
+#endif // TEMPLATE
     }
 
     lmin = lnew;
 }
 /* SAM_LISTING_END_0 */
 
-/* @brief Compute lmin from vector d, optimized implementation
- * @param[in] d An n-dimensional vector
+/* @brief Compute $l_{min}$ from vector $d$, optimized implementation
+ * @param[in] d An $n$-dimensional vector
  * @param[in] tol Scalar of type 'double', the tolerance
  * @param[out] lmin Scalar of type 'double'
  */
@@ -66,18 +68,20 @@ void rankoneinvit_fast(const VectorXd & d, const double & tol, double & lmin)
 	// Here we solve the linear system
 	// with the Sherman-Morrison-Woodbury formula
 	// in the case of rank-1 perturbations.
-        // This holds from M = diag(d) + ev*ev^t
+        // This holds from $M = diag(d) + ev*ev^t$
         VectorXd Aib = dinv.cwiseProduct(ev);
         double temp = ev.transpose()*Aib;
         ev = Aib*(1-temp)/(1+temp);
 
         ev.normalize();
 	// Better than the corresponding naive implementation.
-        // This holds from M = diag(d) + ev*ev^t, too
+        // This holds from $M = diag(d) + ev*ev^t$, too
         lnew = ev.transpose()*d.cwiseProduct(ev) + pow(ev.transpose()*ev0,2);
 
         tm_fast.stop();
-#endif // SOLUTION
+#else // TEMPLATE
+    // TODO: compute $l_{min}$ from vector $d$ using Sherman-Morrison-Woodbury formula
+#endif // TEMPLATE
     }
 
     lmin=lnew;

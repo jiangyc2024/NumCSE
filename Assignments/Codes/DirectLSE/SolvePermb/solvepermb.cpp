@@ -8,7 +8,7 @@
 
 using namespace Eigen;
 
-/* @brief Circular shift (downwards) of b
+/* @brief Circular shift (downwards) of $b$
  * @param[in,out] b The input $n$-dimensional vector shifted downwards
  */
 void shift(VectorXd & b) {
