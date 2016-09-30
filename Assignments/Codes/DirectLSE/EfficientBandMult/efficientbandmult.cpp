@@ -86,7 +86,9 @@ void solvelseA(const Vector & a, const Vector & b, const Vector & r, Vector & x)
     int n = r.size();
     Vector c(n-1,0);
     Vector d(n,  2);
+    Vector y;
     x = r;
+    y = r;
       
 #if SOLUTION
     // Plain vectors are enough:
@@ -94,13 +96,13 @@ void solvelseA(const Vector & a, const Vector & b, const Vector & r, Vector & x)
     for(int i = 0; i < n-2; ++i) {
 	c(i+1) = -b(i)/d(i)*a(i);
 	d(i+1) -= c(i)/d(i)*a(i);
-	r(i+1) -= c(i)/d(i)*r(i);
-	r(i+2) -= b(i)/d(i)*r(i);
+	y(i+1) -= c(i)/d(i)*y(i);
+	y(i+2) -= b(i)/d(i)*y(i);
     }
 
-    x(n-1) = r(n-1) / d(n-1);
+    x(n-1) = y(n-1) / d(n-1);
     for(int i = n-2; i >= 0; --i) {
-	x(i) = (r(i) - a(i)*x(i+1)) / d(i);
+	x(i) = (y(i) - a(i)*x(i+1)) / d(i);
     }
 #else // TEMPLATE
     // TODO: solve system $r = A*x$ using Gaussian elimination
@@ -125,8 +127,11 @@ void solvelseAEigen(const Vector & a, const Vector & b, const Vector & r, Vector
     // We reserve 3 nonzero entries per row for Gaussian fill-in
     SparseMatrix<Scalar> A(n,n);
     A.reserve(3);
-    A.diagonal(+1) = a;
-    A.diagonal(-2) = b;
+    for(unsigned int i = 0; i < n; ++i) {
+        A.insert(i,i) = 2;
+        if(i < n-1) A.insert(i,i+1) = a(i);
+        if(i >= 2)  A.insert(i,i-2) = b(i-2);
+    }
     A.makeCompressed();
     
 #if SOLUTION
