@@ -13,7 +13,7 @@ using namespace Eigen;
 /* SAM_LISTING_BEGIN_0 */
 SparseMatrix<double> buildC(const MatrixXd &A)
 {
-    // Initialisation
+    // Initialization
     int n = A.rows();
     SparseMatrix<double> C(n*n,n*n);
     std::vector<Triplet<double> > triplets;
@@ -55,7 +55,7 @@ SparseMatrix<double> buildC(const MatrixXd &A)
 /* SAM_LISTING_BEGIN_1 */
 void solveLyapunov(const MatrixXd &A, MatrixXd &X)
 {
-    // Initialisation
+    // Initialization
     int n = A.rows();
     SparseMatrix <double> C = buildC(A);
     MatrixXd I = MatrixXd::Identity(n,n);
@@ -74,8 +74,8 @@ void solveLyapunov(const MatrixXd &A, MatrixXd &X)
 
 /* SAM_LISTING_BEGIN_2 */
 int main() {
+    // Initialization
     unsigned int n = 5;
-    // Initialisation
     MatrixXd A(n,n);
     A << 10, 2, 3, 4, 5, 6, 20, 8, 9, 1, 1, 2, 30, 4, 5, 6, 7, 8, 20, 0, 1, 2, 3, 4, 10;
     

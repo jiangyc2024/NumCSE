@@ -21,11 +21,11 @@ void shift(VectorXd & b) {
     b(0) = temp;
 }
 
-/* @brief Compute $X = inv(A)*[b_1,...,b_n], b_i = i$-th cyclic shift of $b$.
+/* @brief Compute $X = A^{-1}*[b_1,...,b_n],\; b_i = i$-th cyclic shift of $b$.
  * Function with naive implementation.
  * @param[in] A An $n \times n$ matrix
  * @param[in] b An $n$-dimensional vector
- * @param[out] X The $n \times n$ matrix $X = inv(A)*[b_1,...,b_n]$
+ * @param[out] X The $n \times n$ matrix $X = A^{-1}*[b_1,...,b_n]$
  */
 /* SAM_LISTING_BEGIN_0 */
 void solvpermb(const MatrixXd & A, VectorXd & b, MatrixXd & X) {
@@ -51,11 +51,11 @@ void solvpermb(const MatrixXd & A, VectorXd & b, MatrixXd & X) {
 }
 /* SAM_LISTING_END_0 */
 
-/* @brief Compute $X = inv(A)*[b_1,...,b_n], b_i = i$-th cyclic shift of $b$,
+/* @brief Compute $X = A^{-1}*[b_1,...,b_n],\; b_i = i$-th cyclic shift of $b$,
  * Function has complexity $O(n^3)$
  * @param[in] A An $n \times n$ matrix
  * @param[in] b An $n$-dimensional vector
- * @param[out] X The $n \times n$ matrix $X = inv(A)*[b_1,...,b_n]$
+ * @param[out] X The $n \times n$ matrix $X = A^{-1}*[b_1,...,b_n]$
  */
 /* SAM_LISTING_BEGIN_1 */
 void solvpermb_on3(const MatrixXd & A, VectorXd & b, MatrixXd & X) {
@@ -75,7 +75,7 @@ void solvpermb_on3(const MatrixXd & A, VectorXd & b, MatrixXd & X) {
         shift(b);
     }
 #else // TEMPLATE
-    // TODO: efficiently solve system $inv(A)*B$
+    // TODO: efficiently solve system $A^{-1}*B$
 #endif // TEMPLATE
 }
 /* SAM_LISTING_END_1 */
@@ -84,7 +84,6 @@ int main() {
     unsigned int n = 9;
     // Compute with both solvers
     std::cout << "--> Check that the solvers are correct" << std::endl;
-
     MatrixXd A = MatrixXd::Random(n,n);
     VectorXd b = VectorXd::Random(n);
     MatrixXd Xi, Xr, X;

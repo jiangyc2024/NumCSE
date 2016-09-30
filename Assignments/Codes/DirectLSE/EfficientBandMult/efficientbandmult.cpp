@@ -114,19 +114,17 @@ void solvelseAEigen(const Vector & a, const Vector & b, const Vector & r, Vector
     typedef typename Vector::Scalar Scalar;
     unsigned int n = r.size();
     
-    // Fill in matrix: we reserve 3 nonzero entries per row for Gaussian fill in
+    // Fill in matrix:
+    // We reserve 3 nonzero entries per row for Gaussian fill in
     SparseMatrix<Scalar> A(n,n);
     A.reserve(3);
-    for(unsigned int i = 0; i < n; ++i) {
-        A.insert(i,i) = 2;
-        if(i < n-1) A.insert(i,i+1) = a(i);
-        if(i >= 2)  A.insert(i,i-2) = b(i-2);
-    }
+    A.diagonal(+1) = a;
+    A.diagonal(-2) = b;
     A.makeCompressed();
     
 #if SOLUTION
     // Call SparseLU
-    SparseLU< SparseMatrix<Scalar> >   solver;
+    SparseLU< SparseMatrix<Scalar> > solver;
     solver.analyzePattern(A); 
     solver.compute(A);
     x = solver.solve(r);
