@@ -90,19 +90,19 @@ int main() {
     MatrixXd Xi, Xr, X;
 
     // std::cout << "b = " << std::endl
-              // << b << std::endl;
+    // << b << std::endl;
 
     solvpermb(A,b,Xi);
     // std::cout << "Direct porting from MATLAB (naive solver): "
-              // << std::endl << X << std::endl;
+    // << std::endl << X << std::endl;
     // std::cout << "A*X = " << std::endl
-              // << A*X << std::endl;
+    // << A*X << std::endl;
 
     solvpermb_on3(A,b,Xr);
     // std::cout << "Reusing LU: " << std::endl
-              // << X << std::endl;
+    // << X << std::endl;
     // std::cout << "A*X = " << std::endl
-              // << A*X << std::endl;
+    // << A*X << std::endl;
 
     std::cout << "Error = " << (Xi - Xr).norm() << std::endl;
 

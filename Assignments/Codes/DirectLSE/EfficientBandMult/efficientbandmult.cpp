@@ -79,39 +79,23 @@ void solvelseAupper(const Vector & a, const Vector & r, Vector & x) {
 template <class Vector>
 void solvelseA(const Vector & a, const Vector & b, const Vector & r, Vector & x) {
     // Set up dimensions
-    typedef typename Vector::Scalar Scalar;
     int n = r.size();
+    Vector c(n-1,0);
+    Vector d(n,  2);
     x = r;
-    
-    // Fill in matrix: we reserve 5 nonzero entries per row for Gaussian fill in
-    SparseMatrix<Scalar> A(n,n);
-    A.reserve(5);
-    for(int i = 0; i < n; ++i) {
-        A.insert(i,i) = 2;
-        if(i < n-1) A.insert(i,i+1) = a(i);
-        if(i >= 2)  A.insert(i,i-2) = b(i-2);
-    }
-    A.makeCompressed();
-    
+      
 #if SOLUTION
-    // 1st stage: Gaussian elimination
-    for(int i = 0; i < n-1; ++i) {
-        for(int k = i+1; k < std::min(i+3,n); ++k) {
-            Scalar fac = A.coeffRef(k,i)/A.coeffRef(i,i);
-            for(int l = i; l < std::min(i+3,n); ++l) {
-                A.coeffRef(k,l) -= fac * A.coeffRef(i,l);
-            }
-            x(k) -= fac * x(i);
-        }
+    // Simple vectors are enough: fill-in is confined to a single lower off-diagonal, which can be held in vector c.
+    for(int i = 0; i < n-2; ++i) {
+	c(i+1) = -b(i)/d(i)*a(i);
+	d(i+1) -= c(i)/d(i)*a(i);
+	r(i+1) -= c(i)/d(i)*r(i);
+	r(i+2) -= b(i)/d(i)*r(i);
     }
-    
-    // 2nd stage: backwards substitution
-    x(n-1) /= A.coeffRef(n-1,n-1);
+
+    x(n-1) = r(n-1) / d(n-1);
     for(int i = n-2; i >= 0; --i) {
-        for(int k = i+1; k < std::min(i+3,n); ++k) {
-            x(i) -= x(k)*A.coeffRef(i,k);
-        }
-        x(i) /= A.coeffRef(i,i);
+	x(i) = (r(i) - a(i)*x(i+1)) / d(i);
     }
 #endif // SOLUTION
 }
