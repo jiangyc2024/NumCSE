@@ -92,6 +92,7 @@ Required:
 - cmake
 - mathgl (requires libpng, opengl and zlib)
 - eigen
+
 Optional:
 - boost
 - gmp
