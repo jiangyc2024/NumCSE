@@ -1,0 +1,9 @@
+{
+    "author" : "",
+    "contributors" : "",
+    "email" : "",
+
+    "name": "ImpedanceMap",
+    "all" : ["impedancemap.cpp", "rcircuit.eps"],
+    "lib" : ["timer.h"]
+}

@@ -1,0 +1,9 @@
+{
+    "author" : "dcasati",
+    "email" : "",
+    "contributors" : "",
+
+
+    "name": "Lyapunov",
+    "all" : ["lyapunov.cpp"]
+}

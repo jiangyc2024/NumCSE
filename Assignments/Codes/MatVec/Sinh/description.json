@@ -1,0 +1,9 @@
+{
+    "author" : "lfilippo",
+    "contributors" : "",
+    "email" : "",
+
+    "name": "Sinh",
+    "all" : [ "sinh.cpp" ],
+    "solution" : [ "sinh_stable.hpp" ]
+}

@@ -36,9 +36,9 @@ void arrow_matrix_2_times_x(const VectorXd &d, const VectorXd &a,
 
 /* @brief Build an "arrow matrix"
  * Given vectors $a$ and $b$, returns A*A*x in $y$, where A is build from a,d
- * @param[in] d A n-dimensional vector
- * @param[in] a A n-dimensional vector
- * @param[in] x A n-dimensional vector
+ * @param[in] d An n-dimensional vector
+ * @param[in] a An n-dimensional vector
+ * @param[in] x An n-dimensional vector
  * @param[out] y The vector y = A*A*x
  */
 /* SAM_LISTING_BEGIN_1 */

@@ -1,0 +1,4 @@
+{
+    "name": "EfficientBandMult",
+    "all" : ["efficientbandmult.cpp"]
+}
