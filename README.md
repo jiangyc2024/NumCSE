@@ -92,8 +92,9 @@ Required:
 - cmake
 - mathgl (requires libpng, opengl and zlib)
 - eigen
-- boost
+
 Optional:
+- boost
 - gmp
 - mpfr
 - MKL
@@ -140,3 +141,9 @@ MathGL installation missing (possibly because of previous point) or corrupted:
         rm -R mathgl_install
 
 - clone a fresh copy of the repository
+
+### `dyld: Library not loaded: @rpath/libmgl.7.4.0.dylib`
+
+Known issue (Mac OS X):
+- run `cmake .` and `make` twice
+- if this doesn't fix problem: try with clean `clone`

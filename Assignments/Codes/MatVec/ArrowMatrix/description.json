@@ -1,4 +1,8 @@
 {
+    "author" : "",
+    "contributors" : "",
+    "email" : "",
+    
     "name": "ArrowMatrix",
     "all" : ["arrowmatvec.cpp",
              "arrowmatvec_timing.eps"],

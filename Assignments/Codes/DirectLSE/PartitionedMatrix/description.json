@@ -1,0 +1,9 @@
+{
+    "author" : "",
+    "contributors" : "",
+    "email" : "",
+
+    "name": "PartitionedMatrix",
+    "all" : ["blockdecomp.cpp"],
+    "lib" : ["timer.h"]
+}

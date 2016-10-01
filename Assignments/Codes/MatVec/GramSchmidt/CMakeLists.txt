@@ -1,7 +1,3 @@
-find_package(Boost REQUIRED)
-
-include_directories("${Boost_INCLUDE_DIRS}")
-
 add_executable_numcse(solution gramschmidt.cpp)
 get_target_name_numcse(solution SOLUTION)
 target_compile_definitions(${SOLUTION} PRIVATE SOLUTION=1 INTERNAL=1)
