@@ -1,3 +1,10 @@
+///////////////////////////////////////////////////////////////////////////
+/// Demonstration code for lecture "Numerical Methods for CSE" @ ETH Zurich
+/// (C) 2016 SAM, D-MATH
+/// Author(s): Ralf Hiptmair (hiptmair@sam.math.ethz.ch)
+/// Repository: https://gitlab.math.ethz.ch/NumCSE/NumCSE/
+/// Do not remove this header.
+//////////////////////////////////////////////////////////////////////////
 # include <Eigen/Dense>
 
 using Eigen::VectorXd;
@@ -10,7 +17,7 @@ using Eigen::MatrixXd;
 // dense matrices built for both QR-factors (expensive!)
 std::pair<MatrixXd,MatrixXd> qr_decomp_full(const MatrixXd& A) {
   Eigen::HouseholderQR<MatrixXd> qr(A);
-  MatrixXd Q = qr.householderQ();
+  MatrixXd Q = qr.householderQ(); // \Label[line]{cqr:f1}
   MatrixXd R = qr.matrixQR().template triangularView<Eigen::Upper>();
   return std::pair<MatrixXd,MatrixXd>(Q,R);
 }
