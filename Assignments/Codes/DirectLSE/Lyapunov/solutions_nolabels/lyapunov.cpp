@@ -13,13 +13,13 @@
 
 using namespace Eigen;
 
-/* @brief Compute the matrix C from A
- * \param[in] A An nxn matrix
- * \param[out] C The (n^2)x(n^2) matrix from A\otimes I+I\otimes A
+/* @brief Compute the matrix $C$ from $A$
+ * \param[in] A An $n \times n$ matrix
+ * \param[out] C The $(n^2) \times (n^2)$ matrix from $A\otimes I+I\otimes A$
  */
 SparseMatrix<double> buildC(const MatrixXd &A)
 {
-    // Initialisation
+    // Initialization
     int n = A.rows();
     SparseMatrix<double> C(n*n,n*n);
     std::vector<Triplet<double> > triplets;
@@ -52,12 +52,12 @@ SparseMatrix<double> buildC(const MatrixXd &A)
 }
 
 /* @brief Solve the Lyapunov system
- * \param[in] A An nxn matrix
- * \param[out] X The nxn solution matrix
+ * \param[in] A An $n \times n$ matrix
+ * \param[out] X The $n \times n$ solution matrix
  */
 void solveLyapunov(const MatrixXd &A, MatrixXd &X)
 {
-    // Initialisation
+    // Initialization
     int n = A.rows();
     SparseMatrix <double> C = buildC(A);
     MatrixXd I = MatrixXd::Identity(n,n);
@@ -72,8 +72,8 @@ void solveLyapunov(const MatrixXd &A, MatrixXd &X)
 }
 
 int main() {
+    // Initialization
     unsigned int n = 5;
-    // Initialisation
     MatrixXd A(n,n);
     A << 10, 2, 3, 4, 5, 6, 20, 8, 9, 1, 1, 2, 30, 4, 5, 6, 7, 8, 20, 0, 1, 2, 3, 4, 10;
     
