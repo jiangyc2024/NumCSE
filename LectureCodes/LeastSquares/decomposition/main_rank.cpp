@@ -14,23 +14,24 @@ using namespace Eigen;
 using namespace std;
 
 int main(void) {
-  // Initialize a random matrix
-  const int m_init=19,n_init=14,r=6;
+    // Initialize a random matrix
+    const int m_init=19,n_init=14,r=6;
 
-  MatrixXd A = MatrixXd::Zero(m_init,n_init);
-  for (int j =0; j<r; j++) A += VectorXd::Random(m_init)*RowVectorXd::Random(n_init);
+    MatrixXd A = MatrixXd::Zero(m_init,n_init);
+    for (int j =0; j<r; j++) {
+        A += VectorXd::Random(m_init)*RowVectorXd::Random(n_init);
+    }
+    cout << "rank_eigen(A) = " << rank_eigen(A) << endl;
+    cout << "rank_ncse(A) = " << rank_ncse(A) << endl;
+    MatrixXd Z = nullspace(A);
+    int dz = Z.cols();
 
-  cout << "rank_eigen(A) = " << rank_eigen(A) << endl;
-  cout << "rank_ncse(A) = " << rank_ncse(A) << endl;
-  MatrixXd Z = nullspace(A);
-  int dz = Z.cols();
-  cout << "ONB of kernel of A (dim = " << dz << ") = " << endl << Z << endl;
-  cout << "|I-Z^T*Z| = " << (MatrixXd::Identity(dz,dz)-Z.transpose()*Z).norm() << endl;
-  cout << "|A*Z| = " << (A*Z).norm() << endl;
+    cout << "ONB of kernel of A (dim = " << dz << ") = " << endl << Z << endl;
+    cout << "|I-Z^T*Z| = " << (MatrixXd::Identity(dz,dz)-Z.transpose()*Z).norm() << endl;
+    cout << "|A*Z| = " << (A*Z).norm() << endl;
 
-  MatrixXd B = rangespace(A);
-  int r = B.cols();
-  cout << "ONB of range space of A (dim = " << r << ") = " << endl << B << endl;
-  
-  return 0;
+    MatrixXd B = rangespace(A);
+    cout << "ONB of range space of A (dim = " << r << ") = " << endl << B.cols() << endl;
+
+    return 0;
 }
