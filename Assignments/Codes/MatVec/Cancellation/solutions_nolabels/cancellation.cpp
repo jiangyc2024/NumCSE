@@ -10,6 +10,7 @@
 
 #include <Eigen/Dense>
 
+#include <figure/figure.hpp>
 
 using namespace Eigen;
 
@@ -46,4 +47,15 @@ int main() {
                   << std::setw(15) << std::abs(g2(i) - ex(i)) << std::endl;
     }
 
+    // Plot
+    mgl::Figure fig;
+    fig.setlog(true, true);
+    fig.legend();
+    fig.title("Error of approximation of f'(x_0)");
+    fig.xlabel("h");
+    fig.ylabel("| f'(x_0) - g_i(x_0, h) |");
+    fig.plot(h.matrix(), (g1-ex).abs().matrix()).label("g_1");
+    fig.plot(h.matrix().tail(16), (g2-ex).abs().matrix().tail(16)).label("g_2");
+    fig.plot(h.matrix(), h.matrix(), "h;").label("O(h)");
+    fig.save("error_cancellation.eps");
 }

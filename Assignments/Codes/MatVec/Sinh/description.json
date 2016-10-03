@@ -5,5 +5,5 @@
 
     "name": "Sinh",
     "all" : [ "sinh.cpp" ],
-    "solution" : [ "sinh_stable.hpp" ]
+    "solutions" : [ "sinh_stable.hpp" ]
 }
