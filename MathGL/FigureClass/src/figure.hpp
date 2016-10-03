@@ -417,7 +417,9 @@ MglPlot& Figure::spy(const Eigen::SparseMatrix<Scalar>& A, const std::string& st
 template <typename Scalar, typename xVector, typename yVector>
 MglPlot& Figure::triplot(const Eigen::Matrix<Scalar, -1, -1, Eigen::RowMajor>& T, const xVector& x, const yVector& y, std::string style) 
 {
-  mglData Td(T.rows(), T.cols(), T.data()),
+  Eigen::Matrix<double, -1, -1, Eigen::RowMajor> T_double = T.template cast<double>();
+
+  mglData Td(T_double.rows(), T_double.cols(), T_double.data()),
           xd(x.data(), x.size()),
           yd(y.data(), y.size());
 
@@ -450,7 +452,7 @@ MglPlot& Figure::triplot(const Eigen::Matrix<Scalar, -1, -1, Eigen::RowMajor>& T
 template <typename Scalar, typename xVector, typename yVector>
 MglPlot& Figure::triplot(const Eigen::Matrix<Scalar, -1, -1, Eigen::ColMajor>& T, const xVector& x, const yVector& y, std::string style) 
 {
-  Eigen::Matrix<double, -1, -1, Eigen::RowMajor> TRow(T);
+  Eigen::Matrix<Scalar, -1, -1, Eigen::RowMajor> TRow(T);
   return triplot(TRow, x, y, style);
 }
 
