@@ -36,5 +36,5 @@ int main(int, char**) {
 
     /* SAM_LISTING_BEGIN_2 */
     // TODO: test the code GSIt using the given data
-    /* SAM_LISTING_BEGIN_2 */
+    /* SAM_LISTING_END_2 */
 }

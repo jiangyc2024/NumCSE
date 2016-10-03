@@ -20,11 +20,11 @@ using namespace Eigen;
  */
 void GSIt(const MatrixXd & A, const VectorXd & b,
           VectorXd & x, double rtol) {
-    auto U = Eigen::TriangularView<MatrixXd, StrictlyUpper>(A);
-    auto L = Eigen::TriangularView<MatrixXd, StrictlyLower>(A);
+    const auto U = TriangularView<const MatrixXd, StrictlyUpper>(A);
+    const auto L = TriangularView<const MatrixXd, StrictlyLower>(A);
 
-    auto UpD = Eigen::TriangularView<MatrixXd, Upper>(A);
-    auto LpD = Eigen::TriangularView<MatrixXd, Lower>(A);
+    const auto UpD = TriangularView<const MatrixXd, Upper>(A);
+    const auto LpD = TriangularView<const MatrixXd, Lower>(A);
 
     // A temporary vector to store result of iteration
     VectorXd temp(x.size());
@@ -48,7 +48,9 @@ void GSIt(const MatrixXd & A, const VectorXd & b,
         // Absolute error
         err = (*xold - *xnew).norm();
 #if VERBOSE
-        std::cout << k++ << "\t& " << err << "\t\\\\" << std::endl;
+        std::cout << std::setw(10) << k++
+                  << std::setw(15) << std::setprecision(3) << std::scientific
+                  << err << std::endl;
 #endif // VERBOSE
 
         // Swap role of previous/next iteration

@@ -15,11 +15,11 @@ void GSIt(const MatrixXd & A, const VectorXd & b,
           VectorXd & x, double rtol) {
     /* SAM_LISTING_BEGIN_1 */
 #if SOLUTION
-    auto U = Eigen::TriangularView<MatrixXd, StrictlyUpper>(A);
-    auto L = Eigen::TriangularView<MatrixXd, StrictlyLower>(A);
+    const auto U = TriangularView<const MatrixXd, StrictlyUpper>(A);
+    const auto L = TriangularView<const MatrixXd, StrictlyLower>(A);
 
-    auto UpD = Eigen::TriangularView<MatrixXd, Upper>(A);
-    auto LpD = Eigen::TriangularView<MatrixXd, Lower>(A);
+    const auto UpD = TriangularView<const MatrixXd, Upper>(A);
+    const auto LpD = TriangularView<const MatrixXd, Lower>(A);
 
     // A temporary vector to store result of iteration
     VectorXd temp(x.size());
@@ -44,10 +44,11 @@ void GSIt(const MatrixXd & A, const VectorXd & b,
         err = (*xold - *xnew).norm();
 #if VERBOSE
 #if INTERNAL
-        std::cout << std::setw(10) << k++
-                  << std::setw(15) << err << std::endl;
-#else // EXTERNAL
         std::cout << k++ << "\t& " << err << "\t\\\\" << std::endl;
+#else // EXTERNAL
+        std::cout << std::setw(10) << k++
+                  << std::setw(15) << std::setprecision(3) << std::scientific
+                  << err << std::endl;
 #endif // EXTERNAL
 #endif // VERBOSE
 
@@ -89,5 +90,5 @@ int main(int, char**) {
 #else // TEMPLATE
     // TODO: test the code GSIt using the given data
 #endif // TEMPLATE
-    /* SAM_LISTING_BEGIN_2 */
+    /* SAM_LISTING_END_2 */
 }

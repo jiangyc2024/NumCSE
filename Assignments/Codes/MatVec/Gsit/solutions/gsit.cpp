@@ -14,11 +14,11 @@ using namespace Eigen;
 void GSIt(const MatrixXd & A, const VectorXd & b,
           VectorXd & x, double rtol) {
     /* SAM_LISTING_BEGIN_1 */
-    auto U = Eigen::TriangularView<MatrixXd, StrictlyUpper>(A);
-    auto L = Eigen::TriangularView<MatrixXd, StrictlyLower>(A);
+    const auto U = TriangularView<const MatrixXd, StrictlyUpper>(A);
+    const auto L = TriangularView<const MatrixXd, StrictlyLower>(A);
 
-    auto UpD = Eigen::TriangularView<MatrixXd, Upper>(A);
-    auto LpD = Eigen::TriangularView<MatrixXd, Lower>(A);
+    const auto UpD = TriangularView<const MatrixXd, Upper>(A);
+    const auto LpD = TriangularView<const MatrixXd, Lower>(A);
 
     // A temporary vector to store result of iteration
     VectorXd temp(x.size());
@@ -42,7 +42,9 @@ void GSIt(const MatrixXd & A, const VectorXd & b,
         // Absolute error
         err = (*xold - *xnew).norm();
 #if VERBOSE
-        std::cout << k++ << "\t& " << err << "\t\\\\" << std::endl;
+        std::cout << std::setw(10) << k++
+                  << std::setw(15) << std::setprecision(3) << std::scientific
+                  << err << std::endl;
 #endif // VERBOSE
 
         // Swap role of previous/next iteration
@@ -76,5 +78,5 @@ int main(int, char**) {
     double residual = (A*x - b).norm();
 
     std::cout << "Residual = " << residual << std::endl;
-    /* SAM_LISTING_BEGIN_2 */
+    /* SAM_LISTING_END_2 */
 }
