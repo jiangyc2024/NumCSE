@@ -3,6 +3,6 @@
     "contributors" : "",
     "email" : "",
 
-    "name": "EigMatPow",
-    "all" : [ "getit.cpp" ]
+    "name": "Gsit",
+    "all" : [ "gsit.cpp" ]
 }
