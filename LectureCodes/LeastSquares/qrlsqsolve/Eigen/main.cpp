@@ -17,12 +17,13 @@ int main()
     VectorXd b(4);
     b << 3, 3, 4, 0;
 
-    VectorXd x;
-    double res;
-    qrlsqsolve(A, b, x, res);
-
-    cout << "x = " << endl << x << endl;
-    cout << "res = " << res << endl;
+    VectorXd x,x1;
+    double res,res1;
+    res = qrlsqsolve(A, b, x);
+    res1 = lsqsolve_eigen(A,b,x1);
+    
+    cout << "x = " << endl << x << ", res = " << res << endl;
+    cout << "x1 = " << endl << x1 << ", res1 = " << res << endl;
 
     return 0;
 }

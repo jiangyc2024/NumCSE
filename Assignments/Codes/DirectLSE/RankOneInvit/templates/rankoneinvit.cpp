@@ -6,39 +6,43 @@
 
 using namespace Eigen;
 
-/* @brief Compute lmin from vector d, naive implementation
- * @param[in] d An n-dimensional vector
+/* @brief Compute $l_{min}$ from vector $d$, naive implementation
+ * @param[in] d An $n$-dimensional vector
  * @param[in] tol Scalar of type 'double', the tolerance
  * @param[out] lmin Scalar of type 'double'
  */
 /* SAM_LISTING_BEGIN_0 */
 void rankoneinvit(const VectorXd & d, const double & tol, double & lmin)
 {
+    // Initialization
     VectorXd ev = d;
     lmin = 0;
     double lnew = d.cwiseAbs().minCoeff();
 
     while(abs(lnew-lmin)>tol*lmin) {
+    // TODO: compute $l_{min}$ from vector $d$
     }
 
     lmin = lnew;
 }
 /* SAM_LISTING_END_0 */
 
-/* @brief Compute lmin from vector d, optimized implementation
- * @param[in] d An n-dimensional vector
+/* @brief Compute $l_{min}$ from vector $d$, optimized implementation
+ * @param[in] d An $n$-dimensional vector
  * @param[in] tol Scalar of type 'double', the tolerance
  * @param[out] lmin Scalar of type 'double'
  */
 /* SAM_LISTING_BEGIN_1 */
 void rankoneinvit_fast(const VectorXd & d, const double & tol, double & lmin)
 {
+    // Initialization
     VectorXd ev=d;
     lmin=0;
     double lnew=d.cwiseAbs().minCoeff();
 
     VectorXd dinv=(1/d.array()).matrix();
     while (abs(lnew-lmin)>tol*lmin) {
+    // TODO: compute $l_{min}$ from vector $d$ using Sherman-Morrison-Woodbury formula
     }
 
     lmin=lnew;
@@ -47,6 +51,7 @@ void rankoneinvit_fast(const VectorXd & d, const double & tol, double & lmin)
 
 /* SAM_LISTING_BEGIN_2 */
 int main() {
+    // Initialization
     srand((unsigned int) time(0));
     double tol = 1e-3;
     double lmin;

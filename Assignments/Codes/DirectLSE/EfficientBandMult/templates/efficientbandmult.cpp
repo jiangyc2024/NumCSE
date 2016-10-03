@@ -6,11 +6,11 @@
 
 using namespace Eigen;
 
-/* @brief Compute y = A*x with A banded matrix with diagonal structure
- * \param[in] a An (n-1)-dimensional vector for the upper diagonal
- * \param[in] b An (n-2)-dimensional vector for the second lower diagonal
- * \param[in] x An n-dimensional vector for Ax = y
- * \param[out] y The n-dimensional vector y = Ax
+/* @brief Compute $y = A*x$ with A banded matrix with diagonal structure
+ * \param[in] a An $(n-1)$-dimensional vector for the upper diagonal
+ * \param[in] b An $(n-2)$-dimensional vector for the second lower diagonal
+ * \param[in] x An $n$-dimensional vector for $Ax = y$
+ * \param[out] y The $n$-dimensional vector $y = Ax$
  */
 /* SAM_LISTING_BEGIN_0 */
 template <class Vector>
@@ -21,15 +21,16 @@ void multAx(const Vector & a, const Vector & b, const Vector & x, Vector & y) {
         std::cerr << "Error: size mismatch!" << std::endl;
         return;
     }
-    y.resize(n); // Ensure y has size n
+    y.resize(n);
     
+    // TODO: compute $y = A*x$ with $A$ banded matrix
 }
 /* SAM_LISTING_END_0 */
 
-/* @brief Solve y = A*x with A banded matrix with upper triangular sparse structure
- * \param[in] a An (n-1)-dimensional vector for the upper diagonal
- * \param[in] r An n-dimensional vector for Ax = r
- * \param[out] x The n-dimensional vector from Ax = r
+/* @brief Solve $r = A*x$ with $A$ banded matrix with upper triangular sparse structure
+ * \param[in] a An $(n-1)$-dimensional vector for the upper diagonal
+ * \param[in] r An $n$-dimensional vector for $Ax = r$
+ * \param[out] x The $n$-dimensional vector from $Ax = r$
  */
 /* SAM_LISTING_BEGIN_1 */
 template <class Vector>
@@ -38,41 +39,36 @@ void solvelseAupper(const Vector & a, const Vector & r, Vector & x) {
     unsigned int n = r.size();
     x.resize(n);
     
+    // TODO: solve system $r = A*x$ with $A$ upper triangular matrix
 }
 /* SAM_LISTING_END_1 */
 
-/* @brief Solve y = A*x with A banded matrix using Gaussian-elimination (no pivot)
- * \param[in] a An (n-1)-dimensional vector for the upper diagonal
- * \param[in] b An (n-2)-dimensional vector for the second lower diagonal
- * \param[in] r An n-dimensional vector for Ax = r
- * \param[out] x The n-dimensional vector from Ax = r
+/* @brief Solve $r = A*x$ with $A$ banded matrix using Gaussian elimination (no pivot)
+ * \param[in] a An $(n-1)$-dimensional vector for the upper diagonal
+ * \param[in] b An $(n-2)$-dimensional vector for the second lower diagonal
+ * \param[in] r An $n$-dimensional vector for $Ax = r$
+ * \param[out] x The $n$-dimensional vector from $Ax = r$
  */
 /* SAM_LISTING_BEGIN_2 */
 template <class Vector>
 void solvelseA(const Vector & a, const Vector & b, const Vector & r, Vector & x) {
     // Set up dimensions
-    typedef typename Vector::Scalar Scalar;
     int n = r.size();
+    Vector c(n-1,0);
+    Vector d(n,  2);
+    Vector y;
     x = r;
-    
-    // Fill in matrix: we reserve 5 nonzero entries per row for Gaussian fill in
-    SparseMatrix<Scalar> A(n,n);
-    A.reserve(5);
-    for(int i = 0; i < n; ++i) {
-        A.insert(i,i) = 2;
-        if(i < n-1) A.insert(i,i+1) = a(i);
-        if(i >= 2)  A.insert(i,i-2) = b(i-2);
-    }
-    A.makeCompressed();
-    
+    y = r;
+      
+    // TODO: solve system $r = A*x$ using Gaussian elimination
 }
 /* SAM_LISTING_END_2 */
 
-/* @brief Solve y = A*x with A banded matrix using Eigen::SparseLU
- * \param[in] a An (n-1)-dimensional vector for the upper diagonal
- * \param[in] b An (n-2)-dimensional vector for the second lower diagonal
- * \param[in] r An n-dimensional vector for Ax = r
- * \param[out] x The n-dimensional vector from Ax = r
+/* @brief Solve $r = A*x$ with $A$ banded matrix using Eigen::SparseLU
+ * \param[in] a An $(n-1)$-dimensional vector for the upper diagonal
+ * \param[in] b An $(n-2)$-dimensional vector for the second lower diagonal
+ * \param[in] r An $n$-dimensional vector for $Ax = r$
+ * \param[out] x The $n$-dimensional vector from $Ax = r$
  */
 /* SAM_LISTING_BEGIN_3 */
 template <class Vector>
@@ -81,7 +77,8 @@ void solvelseAEigen(const Vector & a, const Vector & b, const Vector & r, Vector
     typedef typename Vector::Scalar Scalar;
     unsigned int n = r.size();
     
-    // Fill in matrix: we reserve 3 nonzero entries per row for Gaussian fill in
+    // Fill in matrix:
+    // We reserve 3 nonzero entries per row for Gaussian fill-in
     SparseMatrix<Scalar> A(n,n);
     A.reserve(3);
     for(unsigned int i = 0; i < n; ++i) {
@@ -91,6 +88,7 @@ void solvelseAEigen(const Vector & a, const Vector & b, const Vector & r, Vector
     }
     A.makeCompressed();
     
+    // TODO: solve system $r = A*x$ using Eigen::SparseLU
 }
 /* SAM_LISTING_END_3 */
 
@@ -105,24 +103,24 @@ int main() {
     
     std::cout << "Original: " << y << std::endl;
     
-    // Compute y = A*inv(A)*y
+    // Compute $y = A*A^{-1}*y$
     solvelseAupper(a,y,x);
     multAx(a,b,x,y);
     
     // Should be the same as before
     std::cout << "Upper: " << y << std::endl;
     
-    // Random b for own and Eigen-based solver
+    // Random $b$ for own and Eigen-based solver
     b = VectorXd::Random(n-2);
 
-    // Compute y = A*inv(A)*y
+    // Compute $y = A*A^{-1}*y$
     solvelseA(a,b,y,x);
     multAx(a,b,x,y);
     
     // Should be the same as before
     std::cout << "Own: " << y << std::endl;
     
-    // Compute y = A*inv(A)*y
+    // Compute $y = A*A^{-1}*y$
     solvelseAEigen(a,b,y,x);
     multAx(a,b,x,y);
     
