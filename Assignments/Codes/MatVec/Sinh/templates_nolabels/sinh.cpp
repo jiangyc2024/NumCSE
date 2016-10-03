@@ -13,7 +13,7 @@
 int main() {
 
     // Lambda function, call with sinh(x)
-    auto sinh = [] (double x) {
+    auto sinh_unstable = [] (double x) {
         double t = std::exp(x);
         return .5 * (t - 1./t);
     };

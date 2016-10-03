@@ -92,8 +92,8 @@ Required:
 - cmake
 - mathgl (requires libpng, opengl and zlib)
 - eigen
-- boost
 Optional:
+- boost
 - gmp
 - mpfr
 - MKL
@@ -107,7 +107,7 @@ Some package may be missing on your machine.
 
 - On a fresh install of *Ubuntu*:
 
-    sudo apt-get install git cmake libpng++-dev freeglut3-dev libboost-dev-all
+        sudo apt-get install git cmake libpng++-dev freeglut3-dev libboost-all-dev
     
 - On *Mac OS X*:
 

@@ -6,14 +6,15 @@
 
 using namespace Eigen;
 
-/* @brief Compute lmin from vector d, naive implementation
- * @param[in] d An n-dimensional vector
+/* @brief Compute $l_{min}$ from vector $d$, naive implementation
+ * @param[in] d An $n$-dimensional vector
  * @param[in] tol Scalar of type 'double', the tolerance
  * @param[out] lmin Scalar of type 'double'
  */
 /* SAM_LISTING_BEGIN_0 */
 void rankoneinvit(const VectorXd & d, const double & tol, double & lmin)
 {
+    // Initialization
     VectorXd ev = d;
     lmin = 0;
     double lnew = d.cwiseAbs().minCoeff();
@@ -22,28 +23,35 @@ void rankoneinvit(const VectorXd & d, const double & tol, double & lmin)
 #if SOLUTION
         Timer tm_slow;
         tm_slow.start();
+
         lmin = lnew;
         MatrixXd M = d.asDiagonal();
+
         M += ev*ev.transpose();
         ev = M.lu().solve(ev);
+
         ev.normalize();
         lnew = ev.transpose()*M*ev;
+
         tm_slow.stop();
-#endif // SOLUTION
+#else // TEMPLATE
+    // TODO: compute $l_{min}$ from vector $d$
+#endif // TEMPLATE
     }
 
     lmin = lnew;
 }
 /* SAM_LISTING_END_0 */
 
-/* @brief Compute lmin from vector d, optimized implementation
- * @param[in] d An n-dimensional vector
+/* @brief Compute $l_{min}$ from vector $d$, optimized implementation
+ * @param[in] d An $n$-dimensional vector
  * @param[in] tol Scalar of type 'double', the tolerance
  * @param[out] lmin Scalar of type 'double'
  */
 /* SAM_LISTING_BEGIN_1 */
 void rankoneinvit_fast(const VectorXd & d, const double & tol, double & lmin)
 {
+    // Initialization
     VectorXd ev=d;
     lmin=0;
     double lnew=d.cwiseAbs().minCoeff();
@@ -59,17 +67,21 @@ void rankoneinvit_fast(const VectorXd & d, const double & tol, double & lmin)
 
 	// Here we solve the linear system
 	// with the Sherman-Morrison-Woodbury formula
-	// in the case of rank-1 perturbations
+	// in the case of rank-1 perturbations.
+        // This holds from $M = diag(d) + ev*ev^t$
         VectorXd Aib = dinv.cwiseProduct(ev);
         double temp = ev.transpose()*Aib;
-        ev = Aib*(1-temp/(1+temp));
+        ev = Aib*(1-temp)/(1+temp);
 
         ev.normalize();
-	// Better than the corresponding naive implementation
+	// Better than the corresponding naive implementation.
+        // This holds from $M = diag(d) + ev*ev^t$, too
         lnew = ev.transpose()*d.cwiseProduct(ev) + pow(ev.transpose()*ev0,2);
 
         tm_fast.stop();
-#endif // SOLUTION
+#else // TEMPLATE
+    // TODO: compute $l_{min}$ from vector $d$ using Sherman-Morrison-Woodbury formula
+#endif // TEMPLATE
     }
 
     lmin=lnew;
@@ -78,6 +90,7 @@ void rankoneinvit_fast(const VectorXd & d, const double & tol, double & lmin)
 
 /* SAM_LISTING_BEGIN_2 */
 int main() {
+    // Initialization
     srand((unsigned int) time(0));
     double tol = 1e-3;
     double lmin;

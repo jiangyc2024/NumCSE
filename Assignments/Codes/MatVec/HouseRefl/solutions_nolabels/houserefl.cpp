@@ -19,7 +19,7 @@ void houserefl(const Eigen::VectorXd & v, Eigen::MatrixXd & Z)
     Eigen::VectorXd w = v.normalized();
     Eigen::VectorXd u=w;
     u(0) += 1;
-    Eigen::VectorXd  q=u.normalized();
+    Eigen::VectorXd q = u.normalized();
     Eigen::MatrixXd X = Eigen::MatrixXd::Identity(n, n) - 2*q*q.transpose();
     Z = X.rightCols(n-1);
 }

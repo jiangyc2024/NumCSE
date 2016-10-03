@@ -9,6 +9,7 @@
 
 using namespace Eigen;
 
+/* SAM_LISTING_BEGIN_2 */
 // Models a resistance between node i,j with i < j
 // (in principle, it can handle different resistances)
 typedef std::pair< int, int>            resistor;
@@ -20,6 +21,7 @@ typedef std::vector< resistor >         resistor_topology;
 typedef std::tuple<int, int, double>    voltage;
 // Vector containing a voltage object for each node connected to sink or source.
 typedef std::vector< voltage >          voltage_topology;
+/* SAM_LISTING_BEGIN_2 */
 
 /* \brief Class implementing the topology of the circuit (cf. Figure)
  * Computes impedance of the entire circuit (between node 16 and 17) exploiting
@@ -193,9 +195,6 @@ int main(void) {
               << std::setw(30) << "R_x [Ohm]"
               << std::endl;
     // Table content: print impedance for various resistance values
-    std::cout << std::setw(30) << IM(0)
-              << std::setw(30) << 0
-              << std::endl;
     std::cout << std::setw(30) << IM(0.1)
               << std::setw(30) << 0.1
               << std::endl;

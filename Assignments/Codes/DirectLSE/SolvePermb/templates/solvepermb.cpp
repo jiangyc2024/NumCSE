@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 
 #include <Eigen/Dense>
 #include <Eigen/LU>
@@ -45,7 +46,7 @@ void solvpermb(const MatrixXd & A, VectorXd & b, MatrixXd & X) {
  * @param[out] X The $n \times n$ matrix $X = inv(A)*[b_1,...,b_n]$
  */
 /* SAM_LISTING_BEGIN_1 */
-void solvpermb_on3(const Matrix & A, Vector & b, Matrix & X) {
+void solvpermb_on3(const MatrixXd & A, VectorXd & b, MatrixXd & X) {
     // Size of b, which is the size of A
     int n = b.size();
     assert( n == A.cols() && n == A.rows()
@@ -59,58 +60,64 @@ void solvpermb_on3(const Matrix & A, Vector & b, Matrix & X) {
 int main() {
     unsigned int n = 9;
     // Compute with both solvers
-    std::cout << "*** Check that the solvers are correct" << std::endl;
+    std::cout << "--> Check that the solvers are correct" << std::endl;
 
     MatrixXd A = MatrixXd::Random(n,n);
     VectorXd b = VectorXd::Random(n);
-    MatrixXd X;
+    MatrixXd Xi, Xr, X;
 
-    std::cout << "b = " << std::endl
-              << b << std::endl;
+    // std::cout << "b = " << std::endl
+              // << b << std::endl;
 
-    solvpermb(A,b,X);
-    std::cout << "Direct porting from MATLAB (naive solver): "
-              << std::endl << X << std::endl;
-    std::cout << "A*X = " << std::endl
-              << A*X << std::endl;
+    solvpermb(A,b,Xi);
+    // std::cout << "Direct porting from MATLAB (naive solver): "
+              // << std::endl << X << std::endl;
+    // std::cout << "A*X = " << std::endl
+              // << A*X << std::endl;
 
-    solvpermb_on3(A,b,X);
-    std::cout << "Reusing LU: " << std::endl
-              << X << std::endl;
-    std::cout << "A*X = " << std::endl
-              << A*X << std::endl;
+    solvpermb_on3(A,b,Xr);
+    // std::cout << "Reusing LU: " << std::endl
+              // << X << std::endl;
+    // std::cout << "A*X = " << std::endl
+              // << A*X << std::endl;
+
+    std::cout << "Error = " << (Xi - Xr).norm() << std::endl;
 
     // Compute runtimes of different solvers
-    std::cout << "*** Runtime comparison of naive solver vs reusing LU" << std::endl;
+    std::cout << "--> Runtime comparison of naive solver vs reusing LU" << std::endl;
     unsigned int repeats = 3;
 
     // Header
-    std::cout << std::setw(10) << "n"
-              << std::setw(10) << "time no reuse [s]"
-              << std::setw(10) << "time reuse [s]"
+    std::cout << std::setw(20) << "n"
+              << std::setw(20) << "time no reuse [s]"
+              << std::setw(20) << "time reuse [s]"
               << std::endl;
 
+    // Loop over matrix size
     for(unsigned int p = 2; p <= 7; ++p) {
+        // Timers
         Timer tm_naive, tm_reuseLU;
         unsigned int n = pow(2,p);
 
+        // Repeat test many times
         for(unsigned int r = 0; r < repeats; ++r) {
             A = MatrixXd::Random(n,n);
             b = VectorXd::Random(n);
 
+            // Compute runtime with inefficient solver
             tm_naive.start();
             solvpermb(A,b,X);
             tm_naive.stop();
-
+            // Compute runtime reusing LU factorisation
             tm_reuseLU.start();
             solvpermb_on3(A,b,X);
             tm_reuseLU.stop();
         }
-
-        std::cout << std::setw(10) << n
+        // Print runtimes
+        std::cout << std::setw(20) << n
                   << std::scientific << std::setprecision(3)
-                  << std::setw(10) << tm_naive.min()
-                  << std::setw(10) << tm_reuseLU.min()
+                  << std::setw(20) << tm_naive.min()
+                  << std::setw(20) << tm_reuseLU.min()
                   << std::endl;
     }
 }

@@ -80,9 +80,6 @@ int main(void) {
               << std::setw(30) << "R_x [Ohm]"
               << std::endl;
     // Table content: print impedance for various resistance values
-    std::cout << std::setw(30) << IM(0)
-              << std::setw(30) << 0
-              << std::endl;
     std::cout << std::setw(30) << IM(0.1)
               << std::setw(30) << 0.1
               << std::endl;
