@@ -35,6 +35,20 @@ private:
     index_t maxcols; // Number of non-empty columns
     index_t m,n; // Number of rows, number of columns
 };
+
+/* @brief Retrieve value of cell $(i,j)$
+ * \param[in] i Row index
+ * \param[in] j Column index
+ * \param[out] val Value of cell $(i,j)$
+ */
+double EllpackMat::operator() (index_t i, index_t j) const {
+    assert(0 <= i && i < m && 0 <= j && j < n && "Index out of bounds!");
+    
+    for(index_t l = i*maxcols; l < (i+1)*maxcols; ++l) {
+        if( col[l] == j ) return val[l];
+    }
+    return 0;
+}
 /* SAM_LISTING_END_0 */
 
 /* @brief Constructor of class EllpackMat from vector of triplets
@@ -81,39 +95,21 @@ EllpackMat::EllpackMat(const Triplets & triplets, index_t m, index_t n)
                "You did not reserve enough columns!");
     }
 #else // TEMPLATE
-    // TODO: implement the constructor building class EllpackMat from vector of triplets
+    // TODO: implement the constructor of class EllpackMat from vector of triplets
 #endif // TEMPLATE
 }
 /* SAM_LISTING_END_1 */
 
-//! \brief Retrieve value of entry at index (i,j)
-//! \param[in] i row index i
-//! \param[in] j column index j
-//! \return value at (i,j)
-/* @brief Solve the Lyapunov system
- * \param[in] A An $n \times n$ matrix
- * \param[out] X The $n \times n$ solution matrix
+/* @brief Compute $y = Ax$ exploiting the Ellpack format
+ * \param[in] x Vector of matrix-vector multiplication
+ * \param[out] y Vector from $y = Ax$
  */
 /* SAM_LISTING_BEGIN_2 */
-double EllpackMat::operator() (index_t i, index_t j) const {
-    assert(0 <= i && i < m && 0 <= j && j < n && "Index out of bounds!");
-    
-    for(index_t l = i*maxcols; l < (i+1)*maxcols; ++l) {
-        if( col[l] == j ) return val[l];
-    }
-    return 0;
-}
-/* SAM_LISTING_END_2 */
-
-//! \brief Computes (*this)*x
-//! \param[in] x vector x for mat-vec mult
-//! \param[out] y result y = (*this)*x
 void EllpackMat::mvmult(const Vector &x, Vector &y) const {
     assert(x.size() == n && "Incompatible vector x size!");
     assert(y.size() == m && "Incompatible vector y size!");
     
-    // TODO: problem 2b: implement operation y = this*x
-    
+#if SOLUTION
     for(index_t i = 0; i < m; ++i) {
         y(i) = 0;
         for(index_t l = i*maxcols; l < (i+1)*maxcols; ++l) {
@@ -121,17 +117,22 @@ void EllpackMat::mvmult(const Vector &x, Vector &y) const {
             y(i) += x(col[l]) * val[l];
         }
     }
+#else // TEMPLATE
+    // TODO: implement operation $y = Ax$
+#endif // TEMPLATE
 }
+/* SAM_LISTING_END_2 */
 
-//! \brief Computes (*this)'*x, A' is transposed
-//! \param[in] x vector x for mat-vec mult
-//! \param[out] y result y = (*this)'*x
+/* @brief Compute $y = A_t x$ exploiting the Ellpack format, where $A$ is transposed
+ * \param[in] x Vector of matrix-vector multiplication
+ * \param[out] y Vector from $y = Ax$
+ */
+/* SAM_LISTING_BEGIN_3 */
 void EllpackMat::mtvmult(const Vector &x, Vector &y) const {
     assert(x.size() == m && "Incompatible vector x size!");
     assert(y.size() == n && "Incompatible vector y size!");
     
-    // TODO: problem 2c: implement operation y = this^T*x
-    
+#if SOLUTION
     y = Vector::Zero(n);
     for(index_t i = 0; i < m; ++i) {
         for(index_t l = i*maxcols; l < (i+1)*maxcols; ++l) {
@@ -139,8 +140,15 @@ void EllpackMat::mtvmult(const Vector &x, Vector &y) const {
             y(col[l]) += x(i) * val[l];
         }
     }
+#else // TEMPLATE
+    // TODO: implement operation $y = A^t x$
+#endif // TEMPLATE
 }
+/* SAM_LISTING_END_3 */
 
+/* SAM_LISTING_BEGIN_4 */
+/* @brief Test previous solutions
+ */
 int main(int, char**) {
     // Vector of triplets
     Triplets triplets;
@@ -152,7 +160,7 @@ int main(int, char**) {
     // Reserve space for triplets
     triplets.reserve(ntriplets);
     
-    // Fill in some triplet
+    // Fill in some triplets
     triplets.push_back(Triplet(1,2,4));
     triplets.push_back(Triplet(0,0,5));
     triplets.push_back(Triplet(1,2,6));
@@ -163,27 +171,34 @@ int main(int, char**) {
     triplets.push_back(Triplet(2,1,11));
     triplets.push_back(Triplet(1,0,12));
 
-    // Build matrix (Eigen Sparse)
+    // Build Eigen::SparseMatrix
     SparseMatrix<double> S(m,n);
     S.setFromTriplets(triplets.begin(), triplets.end());
     
     // Build Ellpack matrix
     EllpackMat E(triplets, m, n);
     
-    //// PROBLEM 2 TEST
-    std::cout << "*** PROBLEM 2, testing:" << std::endl;
-    std::cout << " ------------- Test of y = A^t*x ------------- " << std::endl;
+    //// TEST
+    std::cout << " ------------- Test of y = A*x --------------- " << std::endl;
     VectorXd x(6);
     x << 4,5,6,7,8,9;
+    VectorXd Sx = S*x;
+    std::cout << "Sparse S*x ="  << std::endl << Sx << std::endl;
     VectorXd Ex = VectorXd::Zero(m);
     E.mvmult(x, Ex);
-    std::cout << "Sparse S*x =" << std::endl << S*x << std::endl;
     std::cout << "Ellpack E*x =" << std::endl << Ex << std::endl;
-    std::cout << " ------------- Test of x = A*y ------------- " << std::endl;
+    VectorXd diff = Sx - Ex;
+    std::cout << "l2-norm of the difference = " << sqrt(inner_product(diff, diff+6, diff, 0.0L)) << std::endl;
+
+    std::cout << " ------------- Test of y = A^t*x ------------- " << std::endl;
     VectorXd y(3);
-    y << 1,2,3;
-    VectorXd Ey = VectorXd::Zero(n);
-    E.mtvmult(y, Ey);
-    std::cout << "Sparse S^T*y =" << std::endl << S.transpose()*y  << std::endl;
-    std::cout << "Ellpack E^T*y =" << std::endl << Ey << std::endl;
+    x << 1,2,3;
+    VectorXd Stx = S.transpose()*x;
+    std::cout << "Sparse S^t*x ="  << std::endl << Stx  << std::endl;
+    VectorXd Etx = VectorXd::Zero(n);
+    E.mtvmult(x, Etx);
+    std::cout << "Ellpack E^t*x =" << std::endl << Etx << std::endl;
+    VectorXd diff = Stx - Etx;
+    std::cout << "l2-norm of the difference = " << sqrt(inner_product(diff, diff+3, diff, 0.0L)) << std::endl;
 }
+/* SAM_LISTING_END_4 */

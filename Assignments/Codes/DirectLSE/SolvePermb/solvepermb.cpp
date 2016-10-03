@@ -80,6 +80,8 @@ void solvpermb_on3(const MatrixXd & A, VectorXd & b, MatrixXd & X) {
 }
 /* SAM_LISTING_END_1 */
 
+/* @brief Test previous solutions
+ */
 int main() {
     unsigned int n = 9;
     // Compute with both solvers
