@@ -1,12 +1,11 @@
+#include <iostream>
+#include <Eigen/Dense>
+#include <Eigen/Sparse>
+#include <cassert>
 
-# include <iostream>
-# include <Eigen/Dense>
-# include <mgl2/mgl.h>
+#include <mgl2/mgl.h>
 
-
-
-
-void TriPlot(Eigen::Matrix<double, -1, -1, Eigen::RowMajor> &T, Eigen::VectorXd &x, Eigen::VectorXd &y){
+void TriPlot(Eigen::Matrix<double, -1, -1, Eigen::RowMajor> &T, const Eigen::VectorXd &x, const Eigen::VectorXd &y){
 	mglGraph gr;
 	mglData xd(x.data(), x.size()),
 			yd(y.data(), y.size()),
@@ -20,26 +19,254 @@ void TriPlot(Eigen::Matrix<double, -1, -1, Eigen::RowMajor> &T, Eigen::VectorXd 
 	gr.WriteEPS("meshplot_cpp.eps");
 	
 }
-void TriPlot(Eigen::MatrixXd &T, Eigen::VectorXd &x, Eigen::VectorXd &y){
+void TriPlot(Eigen::MatrixXd &T, const Eigen::VectorXd &x, const Eigen::VectorXd &y){
 	// NOTE: MathGL's mglData constructor needs the matrix in RowMajor!
 	Eigen::Matrix<double, -1, -1, Eigen::RowMajor> TRow(T);
 	TriPlot(TRow,x,y);
 }
 
 
-int main()
-{
+#include <vector>
+void processmesh(const Eigen::MatrixXi &T, Eigen::MatrixXi & E, Eigen::MatrixXi &Eb){
+	
+	// Number of nodes of the triangular mesh
+	int N = T.maxCoeff()+1;
+	// Number of triangles of the mesh 
+	int M = T.rows();
+	
+	std::vector<Eigen::Triplet< int> > triplets;
+	triplets.reserve(3*M);
+	// loop over all triangles
+	for(int k = 0; k < M; ++k){
+		// loop over all possible  edge combinations
+		for(int i = 0; i < 2; ++i){
+			for(int j = i+1; j < 3; ++j){
+				if(T(k,i) < T(k,j))	// insert combinations sorted
+					triplets.push_back({T(k,i) ,T(k,j), 1});
+				else
+					triplets.push_back({T(k,j) ,T(k,i), 1});
+			}
+		}
+	}
+	
+	// build sparse Matrix
+	Eigen::SparseMatrix<int> A(N,N);
+	std::cout << N << std::endl;
+	/*for(auto it:triplets){
+		std::cout << "{" << it.row() <<"," << it.col() << "," << it.value() << "}\n";
+	}*/
+	A.setFromTriplets(triplets.begin(), triplets.end());
+	std::cout << A << std::endl;
+	
+	// Iteration over non-zero elements
+	std::vector<int> e;
+	std::vector<int> eb;
+	// works only for col major
+	for(int i = 0; i < A.outerSize(); ++i){
+		for(Eigen::SparseMatrix<int>::InnerIterator it(A, i); it; ++it){
+			if(it.value() == 1){	// boundary edge
+				eb.push_back(it.row());
+				eb.push_back(it.col());
+			}
+			e.push_back(it.row());
+			e.push_back(it.col());
+		}
+	}
+	E = Eigen::Matrix<int, -1, -1,Eigen::RowMajor>::Map(e.data(), e.size()/2, 2);
+	Eb = Eigen::Matrix<int, -1, -1,Eigen::RowMajor>::Map(eb.data(), eb.size()/2, 2); // still transformation to rowmajor
+	std::cout << "E\n" << E << std::endl<< std::endl << "Eb\n" << Eb << std::endl;
+	
+}
+
+void getinfo(const Eigen::MatrixXi &T, const Eigen::MatrixXi & E, Eigen::MatrixXi &ET){
+	// Number of edges
+	int L = E.rows();
+	// Number of nodes of the triangular mesh
+	int N = T.maxCoeff()+1;
+	
+	std::vector<Eigen::Triplet< int> > triplets;
+	triplets.reserve(L);
+	for(int i = 0; i < L; ++i){
+		triplets.push_back({E(i,0), E(i,1), i});
+		triplets.push_back({E(i,1), E(i,0), i});	// symmetrical
+	}
+	// build sparse Matrix
+	Eigen::SparseMatrix<int> A(N,N);
+	A.setFromTriplets(triplets.begin(), triplets.end());
+	
+	std::vector<int> ET_data;
+	for(int i = 0; i < T.rows(); ++i){
+		ET_data.push_back(A.coeff( T(i,1),T(i,2) ));
+		ET_data.push_back(A.coeff( T(i,0),T(i,2) ));
+		ET_data.push_back(A.coeff( T(i,0),T(i,1) ));
+		
+		
+	}
+	ET = Eigen::Matrix<int, -1, -1,Eigen::RowMajor>::Map(ET_data.data(), ET_data.size()/3, 3); // still transformation to rowmajor
+	std::cout << "ET\n" << ET << std::endl;
+	//std::cout << "size" << N << std::endl;
+}
+
+
+void refinemesh(const Eigen::VectorXd& x, const Eigen::VectorXd& y, const Eigen::MatrixXi& T, Eigen::VectorXd& x_ref, Eigen::VectorXd& y_ref, Eigen::MatrixXi &T_ref){
+	Eigen::MatrixXi E, Eb, ET;
+	processmesh(T,E,Eb);
+	
+	x_ref.resize(x.size() + E.rows());
+	y_ref.resize(y.size() + E.rows());
+	x_ref.head(x.size()) = x;
+	y_ref.head(y.size()) = y;
+	for(int i = 0; i < E.rows(); ++i){
+		x_ref(i+x.size()) = ( x(E(i,0)) + x(E(i,1)) )/2.0;
+		y_ref(i+y.size()) = ( y(E(i,0)) + y(E(i,1)) )/2.0;
+	}
+	
+	getinfo(T, E, ET);
+	
+	assert(T.rows() == ET.rows());
+	
+	// Build a new list of triangles
+	int Nt = T.rows();
+	int Nv = x.size();
+	T_ref.resize(4*Nt, 3);
+	
+	std::cout << "T=" << std::endl;
+	std::cout << T << std::endl;
+	std::cout << "ET=" << std::endl;
+	std::cout << ET << std::endl;
+	
+	for(int i = 0; i < Nt; ++i){
+		T_ref(4*i,0) = T(i,0); T_ref(4*i,1) = ET(i,1) + Nv; T_ref(4*i,2) = ET(i,2) + Nv;
+		T_ref(4*i+1,0) = T(i,1); T_ref(4*i+1,1) = ET(i,0) + Nv; T_ref(4*i+1,2) = ET(i,2) + Nv;
+		T_ref(4*i+2,0) = T(i,2); T_ref(4*i+2,1) = ET(i,0) + Nv; T_ref(4*i+2,2) = ET(i,1) + Nv;
+		T_ref(4*i+3,0) = ET(i,1) + Nv; T_ref(4*i+3,1) = ET(i,1) + Nv; T_ref(4*i+3,2) = ET(i,2) + Nv;
+		
+	}
+	std::cout << "T_ref=\n" << T_ref << std::endl;
+}
+
+
+#include <algorithm>
+#include <iterator>
+void smoothmesh(const Eigen::VectorXd& x, const Eigen::VectorXd& y, const Eigen::MatrixXi& T, Eigen::VectorXd& xs, Eigen::VectorXd& ys){
+
+	// Number of nodes of the mesh
+	int Nv = x.size();
+	Eigen::MatrixXi E, Eb;
+	processmesh(T,E,Eb);
+	int Ne = E.rows();
+	
+	std::vector<int> bd_nodes(Eb.data(), Eb.data() + Eb.size());
+	std::sort(bd_nodes.begin(), bd_nodes.end());
+	auto last = std::unique(bd_nodes.begin(), bd_nodes.end());
+	bd_nodes.erase(last, bd_nodes.end());
+	
+	// get boundary nodes
+	Eigen::VectorXd x_bd(bd_nodes.size()), y_bd(bd_nodes.size());
+	int counter = 0;
+	for(auto idx : bd_nodes){
+		x_bd(counter) = x(idx);
+		y_bd(counter) = y(idx);
+		++counter;
+	}
+	// get interior nodes
+	std::vector<int> int_nodes;
+	int_nodes.reserve(Nv-bd_nodes.size());
+	
+	std::vector<int> idx_all(Nv);
+	std::iota(idx_all.begin(), idx_all.end(), 0);
+	
+	std::set_difference(idx_all.begin(), idx_all.end(), bd_nodes.begin(), bd_nodes.end(), int_nodes.begin());
+	
+	// inverse map to original node position
+	std::vector<int> int_nodes_inv(int_nodes.size());
+	std::iota(int_nodes_inv.begin(), int_nodes_inv.end(), 0);
+	
+	std::sort(int_nodes_inv.begin(), int_nodes_inv.end(),
+				[&int_nodes](size_t a, size_t b){ return int_nodes[a] < int_nodes[b];});
+	
+	
+	
+	Eigen::VectorXd x_int(Nv - bd_nodes.size()), y_int(Nv - bd_nodes.size());
+	counter = 0;
+	for(auto idx : int_nodes){
+		x_int(counter) = x(idx);
+		y_int(counter) = y(idx);
+		++counter;
+	}
+	
+	std::cout << "test" << std::endl;
+	
+	
+	// Counting neighbours and insert $-1$ entries
+	std::vector<Eigen::Triplet<int> > triplets;
+	triplets.reserve(2*1000);
+	Eigen::VectorXi neighbours(Nv);
+	for(int i = 0; i < E.rows(); ++i){
+		triplets.push_back({1,1,1});
+		std::cout << i << " / " << E.rows() << std::endl;
+		std::cout << int_nodes_inv[E(i,0)]<<" " << int_nodes_inv[E(i,1)] << std::endl;
+		triplets.push_back({int_nodes_inv[E(i,0)], int_nodes_inv[E(i,1)], -1});
+		triplets.push_back({int_nodes_inv[E(i,1)], int_nodes_inv[E(i,0)], -1});
+		//++neighbours(int_nodes_inv[E(i, 0)]);
+		//++neighbours(int_nodes_inv[E(i, 1)]);
+	}
+	
+	
+	
+	
+	// back transformation
+}
+
+
+
+// code is ported from Matlab --> not very inteligent...
+
+
+int main(){
+	
+	// 
+	//	Initalization of mesh
+	//
   	Eigen::VectorXd x(10), y(10);
 	x << 1.0,0.60,0.12,0.81,0.63,0.09,0.27,0.54,0.95,0.96;
 	y << 0.15,0.97,0.95,0.48,0.80,0.14,0.42,0.91,0.79,0.95;
 	
 	// specify triangles through indices of their vertices
-	Eigen::MatrixXd T(11,3);
+	Eigen::MatrixXi T(11,3);
 	T << 7, 1, 2,   5, 6, 2,    4, 1, 7,    6, 7, 2,
 		6, 4, 7,   6, 5, 0,    3, 6, 0,    8, 4, 3, 
 		3, 4, 6,   8, 1, 4,    9, 1, 8;
 
-	TriPlot(T, x, y);
+	Eigen::MatrixXd T_tmp(T.cast<double>());
+	
+	mgl::Figure fig1;
+	fig1.triplot(T,x,y,"bF");
+	
+
+
+	TriPlot(T_tmp, x, y);
+	// Number of nodes of the mesh
+	unsigned int N = x.size();
+	// Number of triangles of the mesh
+	unsigned int M = T.rows();
+	
+	Eigen::MatrixXi E, Eb, ET;
+	processmesh(T,E,Eb);
+	getinfo(T, E, ET);
+	
+	Eigen::VectorXd x_ref, y_ref;
+	Eigen::MatrixXi T_ref;
+	
+	refinemesh(x, y, T, x_ref, y_ref, T_ref);
+	std::cout << std::endl << "x=\n" << x_ref << std::endl << "y=\n" << y_ref << std::endl << T_ref << std::endl;
+	
+	
+	Eigen::MatrixXd T_tmp2(T_ref.cast<double>());
+	TriPlot(T_tmp2, x_ref, y_ref);
+	
+	Eigen::VectorXd xs, ys;
+	smoothmesh(x_ref, y_ref, T_ref, xs, ys);
 	
 	return 0;
 }
