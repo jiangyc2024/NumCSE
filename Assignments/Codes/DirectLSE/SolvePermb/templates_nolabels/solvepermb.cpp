@@ -60,6 +60,8 @@ void solvpermb_on3(const MatrixXd & A, VectorXd & b, MatrixXd & X) {
     // TODO: efficiently solve system $A^{-1}*B$
 }
 
+/* @brief Test previous solutions
+ */
 int main() {
     unsigned int n = 9;
     // Compute with both solvers
