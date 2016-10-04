@@ -42,11 +42,11 @@ SparseMatrix<double> buildC(const MatrixXd &A)
     }
     C.setFromTriplets(triplets.begin(), triplets.end());
     C.makeCompressed();
-
-    return C;
 #else // TEMPLATE
     // TODO: compute $C$ from $A$
 #endif // TEMPLATE
+
+	return C;
 }
 /* SAM_LISTING_END_0 */
 
