@@ -14,7 +14,7 @@ using namespace Eigen;
 /* @brief Build the lower triangular matrix $n \times n$ $A$ from vector $a$.
  * Each column of $A$ contains one element of $a$.
  * \param[in] a An $n$-dimensional vector to build the lower triangular matrix $A$
- * \param[out] A The $n \times n$ lower triangular matrix from $a$.
+ * \param[out] A The $n \times n$ lower triangular matrix from $a$
  */
 /* SAM_LISTING_BEGIN_0 */
 MatrixXd buildA(const VectorXd & a)

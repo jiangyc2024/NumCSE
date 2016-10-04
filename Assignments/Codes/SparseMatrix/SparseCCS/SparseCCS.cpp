@@ -11,64 +11,81 @@
 
 using namespace Eigen;
 
-/* @brief Build the lower triangular matrix $n \times n$ $A$ from vector $a$.
- * Each column of $A$ contains one element of $a$.
- * \param[in] a An $n$-dimensional vector to build the lower triangular matrix $A$
- * \param[out] A The $n \times n$ lower triangular matrix from $a$.
+/* @brief Compute the CCS format of matrix $A$
+ * \param[in] A An $n \times n$ matrix
+ * \param[out] val Vector of nonzero values of $A$
+ * \param[out] row_ind Row indices of each element of 'val'
+ * \param[out] col_ptr Indices of the elements in 'val' which start a column of $A$
  */
 /* SAM_LISTING_BEGIN_0 */
-void CCS(const MatrixXd & a, VectorXd & val, VectorXd & row_ind, VectorXd & col_ptr)
+void CCS(const MatrixXd & A, VectorXd & val, VectorXd & row_ind, VectorXd & col_ptr)
 {
     // Initialization
-    int n = a.size();
+    int n = A.size();
     MatrixXd A(n,n);
 
 #if SOLUTION
+	// Number of rows and columns
+	m = A.rows();
+	n = A.cols();
 
-        //get the number of rows and columns
-        m = A.rows();
-		n = A.cols();
-
-		//find the number of nonzero entries in the matrix
-		int NNZ = 0;
-		for(int i=0; i<m; ++i){//each row
-			for(int j=0; j<n; ++j){//each column
-				if(a(i,j) != 0){
-					++NNZ;
-				}
+	// Number of nonzero entries
+	int NNZ = 0;
+	for(int i=0; i<m; ++i) { // Row iterator
+		for(int j=0; j<n; ++j) { // Col iterator
+			if(A(i,j) != 0) {
+				++NNZ;
 			}
 		}
+	}
 
-		//allocate memory for val and col_idx
-		val.resize(NNZ);
-		row_ind.resize(NNZ);
+	// Initialization
+	val.resize(NNZ);
+	row_ind.resize(NNZ);
+	col_ptr.resize(n);
+	col_ptr(0) = 0;
 
-		//allocate memory for row_ptr
-		col_ptr.resize(n);
-		col_ptr(0) = 0;
-
-		//store the matrix in CRS format
-		int index = 0;// point to the next position in val to store the value
-		for(int j=0; j<n; ++j){ //col iterator
-			for(int i=0; i<n; ++i){ //row iterator
-				if(a(i,j) != 0){
-					//add the value to val
-					val(index) = a(i,j);
-					//record the row index in row_ind
-					row_ind(index) = i;
-					++index;
-				}
+	// Store $A$ in CRS format
+	int index = 0;
+	for(int j=0; j<n; ++j) { // Col iterator
+		for(int i=0; i<m; ++i) { // Row iterator
+			if(A(i,j) != 0) {
+				// Record the value to 'val'
+				val(index) = A(i,j);
+				// Record the row index to 'row_ind'
+				row_ind(index) = i;
+				++index;
 			}
-			//update col_ptr
-			col_ptr(j+1) = index;
 		}
+		// Update 'col_ptr'
+		col_ptr(j+1) = index;
+	}
 #else // TEMPLATE
-    // TODO: build the lower triangular matrix $A$ from $a$
+    // TODO: compute the CCS format of matrix $A$
 #endif // TEMPLATE
 
 	return A;
 }
 /* SAM_LISTING_END_0 */
+
+/* @brief Compute the CCS format of matrix $A$
+ * \param[in] A An $n \times n$ matrix
+ * \param[out] val Vector of nonzero values of $A$
+ * \param[out] row_ind Row indices of each element of 'val'
+ * \param[out] col_ptr Indices of the elements in 'val' which start a column of $A$
+ */
+/* SAM_LISTING_BEGIN_1 */
+void CCS(const MatrixXd & A, VectorXd & val, VectorXd & row_ind, VectorXd & col_ptr)
+{
+    // Initialization
+    int n = A.size();
+    MatrixXd A(n,n);
+
+
+
+	return A;
+}
+/* SAM_LISTING_END_1 */
 
 /* @brief Solve $Ax = b$.
  * Function with naive implementation.
