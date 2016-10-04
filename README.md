@@ -62,16 +62,14 @@ Where:
 The corresponding executable will be located in:
 - For assignments:
 
-
         $ ./bin/Assignments/Codes/<chapter>/<problem-name>/
 
 - For lecture codes (most of them):
 
         $ ./bin/LectureCodes/<chapter>/<problem-name>/
         
-    
     or
-    
+    	
         $ ./bin/LectureCodes/<chapter>/<sub-chapter>/<problem-name>/
 
 TIP: Using:
