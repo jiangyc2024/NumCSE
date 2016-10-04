@@ -13,13 +13,14 @@
 
 using namespace Eigen;
 
-/* @brief Compute $l_{min}$ from vector $d$, naive implementation
+/* @brief Compute $l_{min}$ from vector $d$
+ * Naive implementation
  * @param[in] d An $n$-dimensional vector
  * @param[in] tol Scalar of type 'double', the tolerance
  * @param[out] lmin Scalar of type 'double'
  */
-void rankoneinvit(const VectorXd & d, const double & tol, double & lmin)
-{
+void rankoneinvit(const VectorXd & d,
+                  const double & tol, double & lmin) {
     // Initialization
     VectorXd ev = d;
     lmin = 0;
@@ -32,12 +33,14 @@ void rankoneinvit(const VectorXd & d, const double & tol, double & lmin)
     lmin = lnew;
 }
 
-/* @brief Compute $l_{min}$ from vector $d$, optimized implementation
+/* @brief Compute $l_{min}$ from vector $d$
+ * Optimized implementation
  * @param[in] d An $n$-dimensional vector
  * @param[in] tol Scalar of type 'double', the tolerance
  * @param[out] lmin Scalar of type 'double'
  */
-void rankoneinvit_fast(const VectorXd & d, const double & tol, double & lmin)
+void rankoneinvit_fast(const VectorXd & d,
+                       const double & tol, double & lmin)
 {
     // Initialization
     VectorXd ev=d;
@@ -46,14 +49,13 @@ void rankoneinvit_fast(const VectorXd & d, const double & tol, double & lmin)
 
     VectorXd dinv=(1/d.array()).matrix();
     while (std::abs(lnew-lmin)>tol*lmin) {
-    // TODO: compute $l_{min}$ from vector $d$ using Sherman-Morrison-Woodbury formula
+        // TODO: compute $l_{min}$ from vector $d$
+        // using Sherman-Morrison-Woodbury formula
     }
 
     lmin=lnew;
 }
 
-/* @brief Test previous solutions
- */
 int main() {
     // Initialization
     srand((unsigned int) time(0));
@@ -63,15 +65,19 @@ int main() {
 
     // Compute with both implementations
     VectorXd d = VectorXd::Random(n);
-    std::cout << "Direct porting from MATLAB (naive implementation): " << std::endl;
+    std::cout << "Direct porting from MATLAB "
+              <<"(naive implementation): "
+              << std::endl;
     rankoneinvit(d,tol,lmin);
     std::cout << "lmin = " << lmin << std::endl;
     std::cout << "Fast implementation: " << std::endl;
     rankoneinvit_fast(d,tol,lmin);
     std::cout << "lmin = " << lmin << std::endl;
 
-    // Compare runtimes of different implementations of rankoneinvit
-    std::cout << "*** Runtime comparison of two implementations" << std::endl;
+    // Compare runtimes of different
+    // implementations of rankoneinvit
+    std::cout << "*** Runtime comparison of two implementations"
+              << std::endl;
     unsigned int repeats = 3;
     Timer tm_slow, tm_fast;
 
