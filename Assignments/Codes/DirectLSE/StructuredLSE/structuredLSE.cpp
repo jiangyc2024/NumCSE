@@ -105,11 +105,11 @@ int main() {
 	// Number of repetitions
     unsigned int repeats = 3;
 
-
+#if INTERNAL
     // sizes will contain the size of the matrix
     // timings will contain the runtimes in seconds
     std::vector<double> sizes, timings, timings_eff;
-
+#endif
 
     // Header
     std::cout << std::setw(20) << "n"
@@ -138,12 +138,12 @@ int main() {
             tm_fast.stop();
         }
 
-
+#if INTERNAL
         // Save results in a vector
         sizes.push_back(n); // save vector sizes
         timings.push_back(tm_naive.min());
         timings_eff.push_back(tm_fast.min());
-
+#endif
 
         // Print runtimes
         std::cout << std::setw(20) << n
@@ -153,7 +153,7 @@ int main() {
                   << std::endl;
     }
 
-
+#if INTERNAL
     mgl::Figure fig;
     fig.title("Timings of naive solver");
     fig.ranges(2, 9000, 1e-8, 1e3);
@@ -179,5 +179,5 @@ int main() {
     fig2.legend(0, 1);
     fig2.save("structuredLSE_comparison.eps");
     fig2.save("structuredLSE_comparison.png");
-
+#endif
 }
