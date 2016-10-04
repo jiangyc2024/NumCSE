@@ -6,9 +6,13 @@
 
 using namespace Eigen;
 
+<<<<<<< HEAD
 using Triplet_new  = Triplet<double>;
 using Triplets = std::vector<Triplet_new>;
 using Vector = VectorXd;
+=======
+using Triplets = std::vector<Triplet<double>>;
+>>>>>>> 7e5943746d87615b92ea15fa71b52c92f102e77e
 using index_t = std::ptrdiff_t;
 
 /* @brief Class representing a sparse matrix in Ellpack format
@@ -20,20 +24,23 @@ using index_t = std::ptrdiff_t;
 class EllpackMat {
 public:
     EllpackMat(const Triplets & triplets, index_t m, index_t n);
-    
+
     double operator() (index_t i, index_t j) const;
-    
-    void mvmult(const Vector &x, Vector &y) const;
-    
-    void mtvmult(const Vector &x, Vector &y) const;
+
+    void mvmult(const VectorXd &x, VectorXd &y) const;
+
+    void mtvmult(const VectorXd &x, VectorXd &y) const;
 
 private:
-    std::vector<double>  val; // Vector containing values corresponding to entries in 'col'
-    std::vector<index_t> col; // Vector containing column indices of the entries in 'val'.
-    // The position of a cell in 'val' and 'col' is determined by its row number and original position in 'triplets'
-    
-    index_t maxcols; // Number of non-empty columns
-    index_t m,n; // Number of rows, number of columns
+    std::vector<double>  val; //< Vector containing values
+    // corresponding to entries in 'col'
+    std::vector<index_t> col; //< Vector containing column
+    // indices of the entries in 'val'.
+    // The position of a cell in 'val' and 'col'
+    // is determined by its row number and original position in 'triplets'
+
+    index_t maxcols; //< Number of non-empty columns
+    index_t m,n; //< Number of rows, number of columns
 };
 
 /* @brief Retrieve value of cell $(i,j)$
@@ -43,7 +50,7 @@ private:
  */
 double EllpackMat::operator() (index_t i, index_t j) const {
     assert(0 <= i && i < m && 0 <= j && j < n && "Index out of bounds!");
-    
+
     for(index_t l = i*maxcols; l < (i+1)*maxcols; ++l) {
         if( col[l] == j ) return val[l];
     }
@@ -57,7 +64,8 @@ double EllpackMat::operator() (index_t i, index_t j) const {
  * \param[in] n Number of columns of matrix $A$
  */
 /* SAM_LISTING_BEGIN_1 */
-EllpackMat::EllpackMat(const Triplets & triplets, index_t m, index_t n)
+EllpackMat::EllpackMat(const Triplets & triplets,
+                       index_t m, index_t n)
     : m(m), n(n) {
 #if SOLUTION
     // Find maxcols, number of non-empty columns
@@ -67,35 +75,53 @@ EllpackMat::EllpackMat(const Triplets & triplets, index_t m, index_t n)
     std::fill(counters.begin(), counters.end(), 0);
     // 'maxcols' starts with no entry for each row
     maxcols = 0;
+<<<<<<< HEAD
     // Loop over each triplet and increment the corresponding counter, updating maxcols if necessary
     for(const Triplet_new& tr: triplets) {
+=======
+    // Loop over each triplet and increment the
+    // corresponding counter, updating maxcols if necessary
+    for(const Triplet<double>& tr: triplets) {
+>>>>>>> 7e5943746d87615b92ea15fa71b52c92f102e77e
         if(++counters[tr.row()] > maxcols) maxcols = counters[tr.row()];
     }
-    std::cout << "Maxcols: " << maxcols << std::endl;
-        
+    std::cout << "Maxcols: " << maxcols
+              << std::endl;
+
     // Reserve space
     col.resize(m*maxcols,-1);
     val.resize(m*maxcols,0);
-    
+
     // Loop over each triplet and find a column where to put the value
+<<<<<<< HEAD
     for(const Triplet_new& tr : triplets) {
         assert(0 <= tr.row() && tr.row() < m && 0 <= tr.col() && tr.col() < n &&
                "Index out of bounds!");
         
+=======
+    for(const Triplet<double>& tr : triplets) {
+        assert(0 <= tr.row() && tr.row() < m
+               && 0 <= tr.col() && tr.col() < n
+               && "Index out of bounds!");
+
+>>>>>>> 7e5943746d87615b92ea15fa71b52c92f102e77e
         index_t l;
         for(l = tr.row()*maxcols; l < (tr.row()+1)*maxcols; ++l) {
-            // Store the current triplet in the first empty position between 'tr.row()*maxcols' and '(tr.row()+1)*maxcols - 1'
+            // Store the current triplet in the first
+            // empty position between 'tr.row()*maxcols'
+            // and '(tr.row()+1)*maxcols - 1'
             if( col[l] == -1 ) {
                 col[l] = tr.col();
                 val[l] = tr.value();
                 break;
             }
         }
-        assert(l < (tr.row()+1)*maxcols &&
-               "You did not reserve enough columns!");
+        assert(l < (tr.row()+1)*maxcols
+               && "You did not reserve enough columns!");
     }
 #else // TEMPLATE
-    // TODO: implement the constructor of class EllpackMat from vector of triplets
+    // TODO: implement the constructor of class
+    // EllpackMat from vector of triplets
 #endif // TEMPLATE
 }
 /* SAM_LISTING_END_1 */
@@ -105,10 +131,10 @@ EllpackMat::EllpackMat(const Triplets & triplets, index_t m, index_t n)
  * \param[out] y Vector from $y = Ax$
  */
 /* SAM_LISTING_BEGIN_2 */
-void EllpackMat::mvmult(const Vector &x, Vector &y) const {
+void EllpackMat::mvmult(const VectorXd &x, VectorXd &y) const {
     assert(x.size() == n && "Incompatible vector x size!");
     assert(y.size() == m && "Incompatible vector y size!");
-    
+
 #if SOLUTION
     for(index_t i = 0; i < m; ++i) {
         y(i) = 0;
@@ -128,12 +154,12 @@ void EllpackMat::mvmult(const Vector &x, Vector &y) const {
  * \param[out] y Vector from $y = Ax$
  */
 /* SAM_LISTING_BEGIN_3 */
-void EllpackMat::mtvmult(const Vector &x, Vector &y) const {
+void EllpackMat::mtvmult(const VectorXd &x, VectorXd &y) const {
     assert(x.size() == m && "Incompatible vector x size!");
     assert(y.size() == n && "Incompatible vector y size!");
-    
+
 #if SOLUTION
-    y = Vector::Zero(n);
+    y = VectorXd::Zero(n);
     for(index_t i = 0; i < m; ++i) {
         for(index_t l = i*maxcols; l < (i+1)*maxcols; ++l) {
             if( col[l] == -1 ) break;
@@ -152,15 +178,16 @@ void EllpackMat::mtvmult(const Vector &x, Vector &y) const {
 int main(int, char**) {
     // Vector of triplets
     Triplets triplets;
-    
+
     // Data
     unsigned int m = 3, n = 6;
     unsigned int ntriplets = 9;
-    
+
     // Reserve space for triplets
     triplets.reserve(ntriplets);
-    
+
     // Fill in some triplets
+<<<<<<< HEAD
     triplets.push_back(Triplet_new(1,2,4));
     triplets.push_back(Triplet_new(0,0,5));
     triplets.push_back(Triplet_new(1,2,6));
@@ -170,15 +197,27 @@ int main(int, char**) {
     triplets.push_back(Triplet_new(2,2,10));
     triplets.push_back(Triplet_new(2,1,11));
     triplets.push_back(Triplet_new(1,0,12));
+=======
+    triplets.push_back(Triplet<double>(1,2,4));
+    triplets.push_back(Triplet<double>(0,0,5));
+    triplets.push_back(Triplet<double>(1,2,6));
+    triplets.push_back(Triplet<double>(2,5,7));
+    triplets.push_back(Triplet<double>(0,4,8));
+    triplets.push_back(Triplet<double>(1,3,9));
+    triplets.push_back(Triplet<double>(2,2,10));
+    triplets.push_back(Triplet<double>(2,1,11));
+    triplets.push_back(Triplet<double>(1,0,12));
+>>>>>>> 7e5943746d87615b92ea15fa71b52c92f102e77e
 
     // Build Eigen::SparseMatrix
     SparseMatrix<double> S(m,n);
     S.setFromTriplets(triplets.begin(), triplets.end());
-    
+
     // Build Ellpack matrix
     EllpackMat E(triplets, m, n);
-    
+
     //// TEST
+<<<<<<< HEAD
 
     std::cout << " ------------- Test of y = A*x --------------- " << std::endl;
     Vector x(6);
@@ -199,5 +238,38 @@ int main(int, char**) {
     E.mtvmult(x, Etx);
     std::cout << "Ellpack E^t*x =" << std::endl << Etx << std::endl;
     std::cout << "l2-norm of the difference = " << (Stx - Etx) * (Stx - Etx) << std::endl;
+=======
+    std::cout << " ------------- Test of y = A*x --------------- "
+              << std::endl;
+    VectorXd x(6);
+    x << 4,5,6,7,8,9;
+    VectorXd Sx = S*x;
+    std::cout << "Sparse S*x =  "  << std::endl
+              << Sx << std::endl;
+    VectorXd Ex = VectorXd::Zero(m);
+    E.mvmult(x, Ex);
+    std::cout << "Ellpack E*x = " << std::endl
+              << Ex << std::endl;
+    VectorXd diff = Sx - Ex;
+    std::cout << "l2-norm of the difference = "
+              << diff.norm()
+              << std::endl;
+
+    std::cout << " ------------- Test of y = A^t*x ------------- "
+              << std::endl;
+    VectorXd y(3);
+    x << 1,2,3;
+    VectorXd Stx = S.transpose()*x;
+    std::cout << "Sparse S^t*x ="  << std::endl
+              << Stx  << std::endl;
+    VectorXd Etx = VectorXd::Zero(n);
+    E.mtvmult(x, Etx);
+    std::cout << "Ellpack E^t*x =" << std::endl
+              << Etx << std::endl;
+    diff = Stx - Etx;
+    std::cout << "l2-norm of the difference = "
+              << diff.norm()
+              << std::endl;
+>>>>>>> 7e5943746d87615b92ea15fa71b52c92f102e77e
 }
 /* SAM_LISTING_END_4 */
