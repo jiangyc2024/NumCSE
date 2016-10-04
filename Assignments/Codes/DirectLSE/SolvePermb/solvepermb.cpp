@@ -46,7 +46,7 @@ void solvpermb(const MatrixXd & A, VectorXd & b, MatrixXd & X) {
         shift(b);
     }
 #else // TEMPLATE
-    // TODO: solve system $inv(A)*B$
+    // TODO: solve system $A^{-1}*B$
 #endif // TEMPLATE
 }
 /* SAM_LISTING_END_0 */
@@ -75,7 +75,7 @@ void solvpermb_on3(const MatrixXd & A, VectorXd & b, MatrixXd & X) {
         shift(b);
     }
 #else // TEMPLATE
-    // TODO: efficiently solve system $A^{-1}*B$
+    // TODO: solve system $A^{-1}*B$ efficiently
 #endif // TEMPLATE
 }
 /* SAM_LISTING_END_1 */
@@ -128,7 +128,7 @@ int main() {
             A = MatrixXd::Random(n,n);
             b = VectorXd::Random(n);
 
-            // Compute runtime with inefficient solver
+            // Compute runtime with naive solver
             tm_naive.start();
             solvpermb(A,b,X);
             tm_naive.stop();
