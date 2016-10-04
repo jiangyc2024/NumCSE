@@ -423,6 +423,8 @@ MglPlot& Figure::triplot(const Eigen::Matrix<Scalar, -1, -1, Eigen::RowMajor>& T
           xd(x.data(), x.size()),
           yd(y.data(), y.size());
 
+  bool draw_numbers = false; // draw numbers on the vertices
+
   // if the ranges are set to auto set the new ranges 
   if(autoRanges_){
     setRanges(xd, yd, 0.); // the 0 stands no top+bottom margin
@@ -442,10 +444,16 @@ MglPlot& Figure::triplot(const Eigen::Matrix<Scalar, -1, -1, Eigen::RowMajor>& T
     if ( std::find(style.begin(), style.end(), 'F') == style.end() ) {
       style += "#";
     }
+
+    std::string::size_type enumerate = style.find('?');
+    if (enumerate != std::string::npos) {
+      draw_numbers = true;
+      //style.erase(enumerate);
+    }
   }
 
   // put the x-y data in the plot queue
-  plots_.emplace_back(std::unique_ptr<MglTriPlot>(new MglTriPlot(Td, xd, yd, style)));
+  plots_.emplace_back(std::unique_ptr<MglTriPlot>(new MglTriPlot(Td, xd, yd, style, draw_numbers)));
   return *plots_.back().get();
 }
 
