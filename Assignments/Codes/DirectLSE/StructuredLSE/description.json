@@ -1,0 +1,10 @@
+{
+    "author" : "",
+    "email" : "",
+    "contributors" : "",
+
+    "name": "StructuredLSE",
+    "all" : ["structuredLSE.cpp",
+             "structuredLSE_timing.eps"],
+    "lib" : ["timer.h"]
+}
