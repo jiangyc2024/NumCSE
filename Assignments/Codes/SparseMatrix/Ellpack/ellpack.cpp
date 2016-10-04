@@ -6,8 +6,8 @@
 
 using namespace Eigen;
 
-using Triplet  = Triplet<double>;
-using Triplets = std::vector<Triplet>;
+using Triplet_new  = Triplet<double>;
+using Triplets = std::vector<Triplet_new>;
 using Vector = VectorXd;
 using index_t = std::ptrdiff_t;
 
@@ -68,7 +68,7 @@ EllpackMat::EllpackMat(const Triplets & triplets, index_t m, index_t n)
     // 'maxcols' starts with no entry for each row
     maxcols = 0;
     // Loop over each triplet and increment the corresponding counter, updating maxcols if necessary
-    for(const Triplet& tr: triplets) {
+    for(const Triplet_new& tr: triplets) {
         if(++counters[tr.row()] > maxcols) maxcols = counters[tr.row()];
     }
     std::cout << "Maxcols: " << maxcols << std::endl;
@@ -78,7 +78,7 @@ EllpackMat::EllpackMat(const Triplets & triplets, index_t m, index_t n)
     val.resize(m*maxcols,0);
     
     // Loop over each triplet and find a column where to put the value
-    for(const Triplet& tr : triplets) {
+    for(const Triplet_new& tr : triplets) {
         assert(0 <= tr.row() && tr.row() < m && 0 <= tr.col() && tr.col() < n &&
                "Index out of bounds!");
         
@@ -161,15 +161,15 @@ int main(int, char**) {
     triplets.reserve(ntriplets);
     
     // Fill in some triplets
-    triplets.push_back(Triplet(1,2,4));
-    triplets.push_back(Triplet(0,0,5));
-    triplets.push_back(Triplet(1,2,6));
-    triplets.push_back(Triplet(2,5,7));
-    triplets.push_back(Triplet(0,4,8));
-    triplets.push_back(Triplet(1,3,9));
-    triplets.push_back(Triplet(2,2,10));
-    triplets.push_back(Triplet(2,1,11));
-    triplets.push_back(Triplet(1,0,12));
+    triplets.push_back(Triplet_new(1,2,4));
+    triplets.push_back(Triplet_new(0,0,5));
+    triplets.push_back(Triplet_new(1,2,6));
+    triplets.push_back(Triplet_new(2,5,7));
+    triplets.push_back(Triplet_new(0,4,8));
+    triplets.push_back(Triplet_new(1,3,9));
+    triplets.push_back(Triplet_new(2,2,10));
+    triplets.push_back(Triplet_new(2,1,11));
+    triplets.push_back(Triplet_new(1,0,12));
 
     // Build Eigen::SparseMatrix
     SparseMatrix<double> S(m,n);
@@ -179,26 +179,25 @@ int main(int, char**) {
     EllpackMat E(triplets, m, n);
     
     //// TEST
+
     std::cout << " ------------- Test of y = A*x --------------- " << std::endl;
-    VectorXd x(6);
+    Vector x(6);
     x << 4,5,6,7,8,9;
-    VectorXd Sx = S*x;
+    Vector Sx = S*x;
     std::cout << "Sparse S*x ="  << std::endl << Sx << std::endl;
-    VectorXd Ex = VectorXd::Zero(m);
+    Vector Ex = Vector::Zero(m);
     E.mvmult(x, Ex);
     std::cout << "Ellpack E*x =" << std::endl << Ex << std::endl;
-    VectorXd diff = Sx - Ex;
-    std::cout << "l2-norm of the difference = " << sqrt(inner_product(diff, diff+6, diff, 0.0L)) << std::endl;
+    std::cout << "l2-norm of the difference = " << (Sx - Ex) * (Sx - Ex) << std::endl;
 
     std::cout << " ------------- Test of y = A^t*x ------------- " << std::endl;
-    VectorXd y(3);
+    Vector y(3);
     x << 1,2,3;
-    VectorXd Stx = S.transpose()*x;
+    Vector Stx = S.transpose()*x;
     std::cout << "Sparse S^t*x ="  << std::endl << Stx  << std::endl;
-    VectorXd Etx = VectorXd::Zero(n);
+    Vector Etx = Vector::Zero(n);
     E.mtvmult(x, Etx);
     std::cout << "Ellpack E^t*x =" << std::endl << Etx << std::endl;
-    VectorXd diff = Stx - Etx;
-    std::cout << "l2-norm of the difference = " << sqrt(inner_product(diff, diff+3, diff, 0.0L)) << std::endl;
+    std::cout << "l2-norm of the difference = " << (Stx - Etx) * (Stx - Etx) << std::endl;
 }
 /* SAM_LISTING_END_4 */

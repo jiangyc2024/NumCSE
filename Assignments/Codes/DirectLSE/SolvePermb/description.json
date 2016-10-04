@@ -1,8 +1,7 @@
 {
-    "author" : "dcasati",
+    "author" : "",
     "email" : "",
     "contributors" : "",
-
 
     "name": "SolvePermb",
     "all" : ["solvepermb.cpp"],
