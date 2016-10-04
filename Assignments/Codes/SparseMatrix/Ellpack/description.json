@@ -1,0 +1,4 @@
+{
+    "name": "Ellpack",
+    "all" : ["ellpack.cpp"]
+}
