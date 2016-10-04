@@ -69,6 +69,8 @@ void solveLyapunov(const MatrixXd &A, MatrixXd &X)
 /* SAM_LISTING_END_1 */
 
 /* SAM_LISTING_BEGIN_2 */
+/* @brief Test previous solutions
+ */
 int main() {
     // Initialization
     unsigned int n = 5;

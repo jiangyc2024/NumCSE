@@ -25,7 +25,7 @@ void rankoneinvit(const VectorXd & d, const double & tol, double & lmin)
     lmin = 0;
     double lnew = d.cwiseAbs().minCoeff();
 
-    while(abs(lnew-lmin)>tol*lmin) {
+    while(std::abs(lnew-lmin)>tol*lmin) {
     // TODO: compute $l_{min}$ from vector $d$
     }
 
@@ -45,13 +45,15 @@ void rankoneinvit_fast(const VectorXd & d, const double & tol, double & lmin)
     double lnew=d.cwiseAbs().minCoeff();
 
     VectorXd dinv=(1/d.array()).matrix();
-    while (abs(lnew-lmin)>tol*lmin) {
+    while (std::abs(lnew-lmin)>tol*lmin) {
     // TODO: compute $l_{min}$ from vector $d$ using Sherman-Morrison-Woodbury formula
     }
 
     lmin=lnew;
 }
 
+/* @brief Test previous solutions
+ */
 int main() {
     // Initialization
     srand((unsigned int) time(0));

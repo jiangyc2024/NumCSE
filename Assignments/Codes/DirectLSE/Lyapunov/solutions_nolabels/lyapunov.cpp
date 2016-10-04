@@ -71,6 +71,8 @@ void solveLyapunov(const MatrixXd &A, MatrixXd &X)
     X = Map<MatrixXd>(vecX.data(),n,n);
 }
 
+/* @brief Test previous solutions
+ */
 int main() {
     // Initialization
     unsigned int n = 5;

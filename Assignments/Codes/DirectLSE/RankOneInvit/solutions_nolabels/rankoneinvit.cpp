@@ -25,7 +25,7 @@ void rankoneinvit(const VectorXd & d, const double & tol, double & lmin)
     lmin = 0;
     double lnew = d.cwiseAbs().minCoeff();
 
-    while(abs(lnew-lmin)>tol*lmin) {
+    while(std::abs(lnew-lmin)>tol*lmin) {
         Timer tm_slow;
         tm_slow.start();
 
@@ -57,7 +57,7 @@ void rankoneinvit_fast(const VectorXd & d, const double & tol, double & lmin)
     double lnew=d.cwiseAbs().minCoeff();
 
     VectorXd dinv=(1/d.array()).matrix();
-    while (abs(lnew-lmin)>tol*lmin) {
+    while (std::abs(lnew-lmin)>tol*lmin) {
         Timer tm_fast;
         tm_fast.start();
 
@@ -83,6 +83,8 @@ void rankoneinvit_fast(const VectorXd & d, const double & tol, double & lmin)
     lmin=lnew;
 }
 
+/* @brief Test previous solutions
+ */
 int main() {
     // Initialization
     srand((unsigned int) time(0));

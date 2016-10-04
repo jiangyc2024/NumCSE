@@ -45,6 +45,8 @@ void solveLyapunov(const MatrixXd &A, MatrixXd &X)
     // TODO: solve Lyapunov
 }
 
+/* @brief Test previous solutions
+ */
 int main() {
     // Initialization
     unsigned int n = 5;
