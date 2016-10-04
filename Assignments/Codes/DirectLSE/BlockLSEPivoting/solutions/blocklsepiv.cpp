@@ -55,7 +55,7 @@ VectorXd solveA(const VectorXd & d1_, const VectorXd & d2_,
            && 2*n == b_.size()
            && "Size mismatch!");
 
-    /* SAM_LISTING_BEGIN_1 */
+    /* SAM_LISTING_BEGIN_2 */
     ArrayXd c1 = c_, c2 = c_, d1 = d1_, d2 = d2_, b = b_;
 
     double eps = std::numeric_limits<double>::epsilon();

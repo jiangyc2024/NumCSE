@@ -50,7 +50,7 @@ VectorXd solveA(const VectorXd & d1_, const VectorXd & d2_,
            && 2*n == b_.size()
            && "Size mismatch!");
 
-    /* SAM_LISTING_BEGIN_1 */
+    /* SAM_LISTING_BEGIN_2 */
     // TODO: efficiently solve system using partial pivotisation
 
     return VectorXd(2*n);
