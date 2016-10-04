@@ -120,7 +120,7 @@ int main() {
             A = MatrixXd::Random(n,n);
             b = VectorXd::Random(n);
 
-            // Compute runtime with inefficient solver
+            // Compute runtime with naive solver
             tm_naive.start();
             solvpermb(A,b,X);
             tm_naive.stop();

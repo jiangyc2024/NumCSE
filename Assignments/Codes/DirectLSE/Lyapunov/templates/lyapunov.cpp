@@ -21,6 +21,8 @@ SparseMatrix<double> buildC(const MatrixXd &A)
     MatrixXd I = MatrixXd::Identity(n,n);
 
     // TODO: compute $C$ from $A$
+
+	return C;
 }
 /* SAM_LISTING_END_0 */
 

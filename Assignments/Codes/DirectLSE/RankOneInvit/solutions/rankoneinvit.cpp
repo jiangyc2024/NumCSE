@@ -63,16 +63,16 @@ void rankoneinvit_fast(const VectorXd & d,
         lmin = lnew;
         VectorXd ev0 = ev;
 
-	// Here we solve the linear system
-	// with the Sherman-Morrison-Woodbury formula
-	// in the case of rank-1 perturbations.
+		// Here we solve the linear system
+		// with the Sherman-Morrison-Woodbury formula
+		// in the case of rank-1 perturbations.
         // This holds from $M = diag(d) + ev*ev^t$
         VectorXd Aib = dinv.cwiseProduct(ev);
         double temp = ev.transpose()*Aib;
         ev = Aib*(1-temp)/(1+temp);
 
         ev.normalize();
-	// Better than the corresponding naive implementation.
+		// Better than the corresponding naive implementation.
         // This holds from $M = diag(d) + ev*ev^t$, too
         lnew = ev.transpose()*d.cwiseProduct(ev)
             + pow(ev.transpose()*ev0,2);

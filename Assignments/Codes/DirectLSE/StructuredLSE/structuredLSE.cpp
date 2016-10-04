@@ -85,8 +85,6 @@ void solveA_fast(const VectorXd & a, const VectorXd & b, VectorXd & x) {
 }
 /* SAM_LISTING_END_2 */
 
-/* @brief Test previous solutions
- */
 int main() {
     unsigned int n = 9;
     // Compute with both solvers

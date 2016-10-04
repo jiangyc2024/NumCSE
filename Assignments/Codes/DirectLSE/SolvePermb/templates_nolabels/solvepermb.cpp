@@ -41,7 +41,7 @@ void solvpermb(const MatrixXd & A, VectorXd & b, MatrixXd & X) {
             && "Error: size mismatch!");
     X.resize(n,n);
 
-    // TODO: solve system $inv(A)*B$
+    // TODO: solve system $A^{-1}*B$
 }
 
 /* @brief Compute $X = A^{-1}*[b_1,...,b_n],\; b_i = i$-th cyclic shift of $b$,
@@ -57,7 +57,7 @@ void solvpermb_on3(const MatrixXd & A, VectorXd & b, MatrixXd & X) {
             && "Error: size mismatch!");
     X.resize(n,n);
 
-    // TODO: efficiently solve system $A^{-1}*B$
+    // TODO: solve system $A^{-1}*B$ efficiently
 }
 
 /* @brief Test previous solutions
@@ -108,7 +108,7 @@ int main() {
             A = MatrixXd::Random(n,n);
             b = VectorXd::Random(n);
 
-            // Compute runtime with inefficient solver
+            // Compute runtime with naive solver
             tm_naive.start();
             solvpermb(A,b,X);
             tm_naive.stop();

@@ -20,31 +20,27 @@ using namespace Eigen;
 /* SAM_LISTING_BEGIN_0 */
 void CCS(const MatrixXd & A, VectorXd & val, VectorXd & row_ind, VectorXd & col_ptr)
 {
-    // Initialization
-    int n = A.size();
-    MatrixXd A(n,n);
-
-#if SOLUTION
 	// Number of rows and columns
 	m = A.rows();
 	n = A.cols();
 
 	// Number of nonzero entries
-	int NNZ = 0;
+	int nnz = 0;
 	for(int i=0; i<m; ++i) { // Row iterator
 		for(int j=0; j<n; ++j) { // Col iterator
 			if(A(i,j) != 0) {
-				++NNZ;
+				++nnz;
 			}
 		}
 	}
 
 	// Initialization
-	val.resize(NNZ);
-	row_ind.resize(NNZ);
+	val.resize(nnz);
+	row_ind.resize(nnz);
 	col_ptr.resize(n);
 	col_ptr(0) = 0;
 
+#if SOLUTION
 	// Store $A$ in CRS format
 	int index = 0;
 	for(int j=0; j<n; ++j) { // Col iterator
@@ -68,20 +64,19 @@ void CCS(const MatrixXd & A, VectorXd & val, VectorXd & row_ind, VectorXd & col_
 }
 /* SAM_LISTING_END_0 */
 
-/* @brief Compute the CCS format of matrix $A$
+/* @brief Compute the CCS format of matrix $A$ using Eigen methods
  * \param[in] A An $n \times n$ matrix
  * \param[out] val Vector of nonzero values of $A$
  * \param[out] row_ind Row indices of each element of 'val'
  * \param[out] col_ptr Indices of the elements in 'val' which start a column of $A$
  */
 /* SAM_LISTING_BEGIN_1 */
-void CCS(const MatrixXd & A, VectorXd & val, VectorXd & row_ind, VectorXd & col_ptr)
+void CCS_eigen(const MatrixXd & A, VectorXd & val, VectorXd & row_ind, VectorXd & col_ptr)
 {
-    // Initialization
-    int n = A.size();
-    MatrixXd A(n,n);
-
-
+	A.makeCompressed();
+	val = A.valuePtr(); // Pointer to values
+	row_ind = A.innerIndextr();  // Pointer to indices
+	col_ptr = A.outerIndexPtr(); // Pointer to first indices of each inner vector
 
 	return A;
 }
@@ -135,99 +130,28 @@ void solveA_fast(const VectorXd & a, const VectorXd & b, VectorXd & x) {
 }
 /* SAM_LISTING_END_2 */
 
-/* @brief Test previous solutions
- */
 int main() {
-    unsigned int n = 9;
-    // Compute with both solvers
-    std::cout << "--> Check that the solvers are correct" << std::endl;
-    VectorXd a = VectorXd::Random(n);
-    VectorXd b = VectorXd::Random(n);
-    VectorXd x1, x2, x;
+    // Initialization
+    unsigned int n = 6;
+    MatrixXd A(n,n);
+	// Poisson matrix
+    A <<  4, -1,  0, -1,  0,  0,
+         -1,  4, -1,  0, -1,  0,
+          0, -1,  4,  0,  0, -1,
+         -1,  0,  0,  4, -1,  0,
+          0, -1,  0, -1,  4, -1,
+		  0,  0, -1,  0, -1,  4;
+	VectorXd val_1, row_ind_1, col_ptr_1;
+	VectorXd val_2, row_ind_2, col_ptr_2;
 
-    solveA(a,b,x1);
-    solveA_fast(a,b,x2);
+    // Test 'CCS'
+    CCS(A, val_1, row_ind_1, col_ptr_1);
 
-    std::cout << "Error = " << (x1 - x2).norm() << std::endl;
+    // Test 'CCS_eigen'
+    CCS_eigen(A, val_2, row_ind_2, col_ptr_2);
 
-    // Compute runtimes of different solvers
-    std::cout << "--> Runtime comparison of naive vs fast solver" << std::endl;
-	// Number of repetitions
-    unsigned int repeats = 3;
-
-
-    // sizes will contain the size of the matrix
-    // timings will contain the runtimes in seconds
-    std::vector<double> sizes, timings, timings_eff;
-
-
-    // Header
-    std::cout << std::setw(20) << "n"
-              << std::setw(20) << "time naive [s]"
-              << std::setw(20) << "time fast [s]"
-              << std::endl;
-
-    // Loop over matrix size
-    for(unsigned int k = 4; k <= 12; ++k) {
-        // Timers
-        Timer tm_naive, tm_fast;
-        unsigned int n = pow(2,k);
-
-        // Repeat test many times
-        for(unsigned int r = 0; r < repeats; ++r) {
-            a = VectorXd::Random(n);
-            b = VectorXd::Random(n);
-
-            // Compute runtime with naive solver
-            tm_naive.start();
-            solveA(a,b,x);
-            tm_naive.stop();
-            // Compute runtime with efficient solver
-            tm_fast.start();
-            solveA_fast(a,b,x);
-            tm_fast.stop();
-        }
-
-
-        // Save results in a vector
-        sizes.push_back(n); // save vector sizes
-        timings.push_back(tm_naive.min());
-        timings_eff.push_back(tm_fast.min());
-
-
-        // Print runtimes
-        std::cout << std::setw(20) << n
-                  << std::scientific << std::setprecision(3)
-                  << std::setw(20) << tm_naive.min()
-                  << std::setw(20) << tm_fast.min()
-                  << std::endl;
-    }
-
-
-    mgl::Figure fig;
-    fig.title("Timings of naive solver");
-    fig.ranges(2, 9000, 1e-8, 1e3);
-    fig.setlog(true, true); // set loglog scale
-    fig.plot(sizes, timings, " r+").label("original");
-    fig.fplot("1e-9*x^3", "k|").label("O(n^3)");
-    fig.xlabel("Vector size (n)");
-    fig.ylabel("Time [s]");
-    fig.legend(0, 1);
-    fig.save("structuredLSE_timing.eps");
-    fig.save("structuredLSE_timing.png");
-
-    mgl::Figure fig2;
-    fig2.title("Comparison of timings");
-    fig2.ranges(2, 9000, 1e-8, 1e3);
-    fig2.setlog(true, true); // set loglog scale
-    fig2.plot(sizes, timings, " r+").label("original");
-    fig2.plot(sizes, timings_eff, " b+").label("efficient");
-    fig2.fplot("1e-9*x^3", "k|").label("O(n^3)");
-    fig2.fplot("1e-7*x", "k-").label("O(n)");
-    fig2.xlabel("Vector size (n)");
-    fig2.ylabel("Time [s]");
-    fig2.legend(0, 1);
-    fig2.save("structuredLSE_comparison.eps");
-    fig2.save("structuredLSE_comparison.png");
-
+    // Verify that the solutions are the same
+    std::cout << "l2-norm of the difference between val = " << (val_1 - val_2).norm() << std::endl;
+	std::cout << "l2-norm of the difference between row_ind = " << (row_ind_1 - row_ind_2).norm() << std::endl;
+	std::cout << "l2-norm of the difference between col_ptr = " << (col_ptr_1 - col_ptr_2).norm() << std::endl;
 }

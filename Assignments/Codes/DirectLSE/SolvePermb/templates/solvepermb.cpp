@@ -35,7 +35,7 @@ void solvpermb(const MatrixXd & A, VectorXd & b, MatrixXd & X) {
             && "Error: size mismatch!");
     X.resize(n,n);
 
-    // TODO: solve system $inv(A)*B$
+    // TODO: solve system $A^{-1}*B$
 }
 /* SAM_LISTING_END_0 */
 
@@ -53,7 +53,7 @@ void solvpermb_on3(const MatrixXd & A, VectorXd & b, MatrixXd & X) {
             && "Error: size mismatch!");
     X.resize(n,n);
 
-    // TODO: efficiently solve system $A^{-1}*B$
+    // TODO: solve system $A^{-1}*B$ efficiently
 }
 /* SAM_LISTING_END_1 */
 
@@ -105,7 +105,7 @@ int main() {
             A = MatrixXd::Random(n,n);
             b = VectorXd::Random(n);
 
-            // Compute runtime with inefficient solver
+            // Compute runtime with naive solver
             tm_naive.start();
             solvpermb(A,b,X);
             tm_naive.stop();

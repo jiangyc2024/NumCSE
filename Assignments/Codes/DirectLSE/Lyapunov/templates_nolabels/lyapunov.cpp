@@ -27,6 +27,8 @@ SparseMatrix<double> buildC(const MatrixXd &A)
     MatrixXd I = MatrixXd::Identity(n,n);
 
     // TODO: compute $C$ from $A$
+
+	return C;
 }
 
 /* @brief Solve the Lyapunov system

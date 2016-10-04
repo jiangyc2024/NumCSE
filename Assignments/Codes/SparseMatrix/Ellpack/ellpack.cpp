@@ -156,8 +156,6 @@ void EllpackMat::mtvmult(const VectorXd &x, VectorXd &y) const {
 /* SAM_LISTING_END_3 */
 
 /* SAM_LISTING_BEGIN_4 */
-/* @brief Test previous solutions
- */
 int main(int, char**) {
     // Vector of triplets
     Triplets triplets;
@@ -197,7 +195,7 @@ int main(int, char**) {
     Vector Ex = Vector::Zero(m);
     E.mvmult(x, Ex);
     std::cout << "Ellpack E*x =" << std::endl << Ex << std::endl;
-    std::cout << "Squared l2-norm of the difference = " << (Sx - Ex) * (Sx - Ex) << std::endl;
+    std::cout << "l2-norm of the difference = " << (Sx - Ex).norm() << std::endl;
 
     std::cout << " ------------- Test of y = A^t*x ------------- " << std::endl;
     Vector y(3);
@@ -207,6 +205,6 @@ int main(int, char**) {
     Vector Etx = Vector::Zero(n);
     E.mtvmult(x, Etx);
     std::cout << "Ellpack E^t*x =" << std::endl << Etx << std::endl;
-    std::cout << "Squared l2-norm of the difference = " << (Stx - Etx) * (Stx - Etx) << std::endl;
+    std::cout << "l2-norm of the difference = " << (Stx - Etx).norm() << std::endl;
 }
 /* SAM_LISTING_END_4 */

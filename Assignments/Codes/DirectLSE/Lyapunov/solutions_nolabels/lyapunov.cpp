@@ -49,7 +49,7 @@ SparseMatrix<double> buildC(const MatrixXd &A)
     C.setFromTriplets(triplets.begin(), triplets.end());
     C.makeCompressed();
 
-    return C;
+	return C;
 }
 
 /* @brief Solve the Lyapunov system
