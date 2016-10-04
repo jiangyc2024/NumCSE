@@ -82,54 +82,6 @@ void CCS_eigen(const MatrixXd & A, VectorXd & val, VectorXd & row_ind, VectorXd 
 }
 /* SAM_LISTING_END_1 */
 
-/* @brief Solve $Ax = b$.
- * Function with naive implementation.
- * @param[in] a An $n$-dimensional vector to build the lower triangular matrix $A$
- * @param[in] b An $n$-dimensional vector
- * @param[out] x The $n$-dimensional vector $x = A^{-1}*b$
- */
-/* SAM_LISTING_BEGIN_1 */
-void solveA(const VectorXd & a, const VectorXd & b, VectorXd & x) {
-    // Size of b, which is the size of a
-    int n = b.size();
-    assert( n == a.size()
-            && "Error: size mismatch!");
-    x.resize(n);
-
-#if SOLUTION
-	MatrixXd A = buildA(a);
-    x = A.fullPivLu().solve(b);
-#else // TEMPLATE
-    // TODO: solve system $A^{-1}*B$
-#endif // TEMPLATE
-}
-/* SAM_LISTING_END_1 */
-
-/* @brief Solve $Ax = b$.
- * Function with efficient implementation, using the solution of subproblem 4.
- * @param[in] a An $n$-dimensional vector to build the lower triangular matrix $A$
- * @param[in] b An $n$-dimensional vector
- * @param[out] x The $n$-dimensional vector $x = A^{-1}*b$
- */
-/* SAM_LISTING_BEGIN_2 */
-void solveA_fast(const VectorXd & a, const VectorXd & b, VectorXd & x) {
-    // Size of b, which is the size of a
-    int n = b.size();
-    assert( n == a.size()
-            && "Error: size mismatch!");
-    x.resize(n);
-
-#if SOLUTION
-    x(0) = b(0)/a(0);
-    for(int i=1; i<n; i++) {
-		x(i) = (b(i) - b(i-1))/a(i);
-	}
-#else // TEMPLATE
-    // TODO: solve system $A^{-1}*B$ efficiently
-#endif // TEMPLATE
-}
-/* SAM_LISTING_END_2 */
-
 int main() {
     // Initialization
     unsigned int n = 6;
