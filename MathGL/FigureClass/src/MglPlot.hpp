@@ -180,11 +180,12 @@ private:
 
 class MglTriPlot : public MglPlot {
 public:
-  MglTriPlot(const mglData& Td, const mglData& xd, const mglData& yd, const std::string& style) 
+  MglTriPlot(const mglData& Td, const mglData& xd, const mglData& yd, const std::string& style, const bool draw_numbers) 
     : MglPlot(style)
     , Td_(Td)
     , xd_(xd)
     , yd_(yd)
+    , draw_numbers_(draw_numbers)
   {}
 
   bool is_3d() {
@@ -196,12 +197,16 @@ public:
     if (legend_.size() > 0) {
       gr->AddLegend(legend_.c_str(), style_.c_str());
     }
+    if (draw_numbers_) {
+      gr->Label(xd_, yd_, "%n");
+    }
   }
 
 private:
   mglData Td_;
   mglData xd_;
   mglData yd_;
+  bool draw_numbers_;
 };
 
 

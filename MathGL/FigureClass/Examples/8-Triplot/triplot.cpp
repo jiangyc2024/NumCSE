@@ -13,8 +13,9 @@ T << 7, 1, 2,   5, 6, 2,    4, 1, 7,    6, 7, 2,
      3, 4, 6,   8, 1, 4,    9, 1, 8;
 
 mgl::Figure fig;
-fig.triplot(T, x, y, "bF"); // fully colored blue mesh
-fig.triplot(T, x, y, "k").label("Mesh"); // drawing triangulation with black lines
+//fig.triplot(T, x, y, "bF"); // fully colored blue mesh
+fig.triplot(T, x, y, "b?").label("Mesh"); // drawing triangulation with numbers
+fig.plot(x, y, " *r"); // mark vertices
 fig.legend();
 fig.save("mesh");
 
