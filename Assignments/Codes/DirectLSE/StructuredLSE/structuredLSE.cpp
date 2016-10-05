@@ -25,10 +25,10 @@ MatrixXd buildA(const VectorXd & a)
 
 #if SOLUTION
     for(int j=0; j<n; j++) {
-		for(int i=j; i<n; i++) {
-			A(i,j) = a(j);
-		}
+	for(int i=j; i<n; i++) {
+	    A(i,j) = a(j);
 	}
+     }
 #else // TEMPLATE
     // TODO: build the lower triangular matrix $A$ from $a$
 #endif // TEMPLATE

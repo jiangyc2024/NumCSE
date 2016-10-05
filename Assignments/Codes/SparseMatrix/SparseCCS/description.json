@@ -4,5 +4,5 @@
     "contributors" : "",
 
     "name": "SparseCCS",
-    "all" : ["SparseCCS.cpp"]
+    "all" : ["sparseCCS.cpp"]
 }
