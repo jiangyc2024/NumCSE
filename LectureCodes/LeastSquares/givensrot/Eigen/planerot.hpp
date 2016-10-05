@@ -15,7 +15,7 @@ using namespace Eigen;
 
 /* SAM_LISTING_BEGIN_0 */
 //! plane (2D) Givens rotation avoiding cancellation
-void planerot(const VectorXd& a, MatrixXd& G, VectorXd& x){
+void planerot(const Vector2d& a, Matrix2d& G, Vector2d& x){
 	if(a(1) != 0){
 		double r = a.norm();
 		G.row(0) = a.transpose() / r;
