@@ -43,12 +43,12 @@ void CCS(const MatrixXd & A, VectorXd & val, VectorXd & row_ind, VectorXd & col_
 			if(A(i,j) != 0) {
 				// Record the value to 'val'
 				val(index) = A(i,j);
-				// Record the row index to 'row_ind'
+				// Record the row index to '$row_ind$'
 				row_ind(index) = i;
 				++index;
 			}
 		}
-		// Update 'col_ptr'
+		// Update '$col_ptr$'
 		col_ptr(j+1) = index;
 	}
 
@@ -91,7 +91,7 @@ int main() {
     // Test 'CCS'
     CCS(A, val_1, row_ind_1, col_ptr_1);
 
-    // Test 'CCS_eigen'
+    // Test '$CCS_eigen$'
     CCS_eigen(A, val_2, row_ind_2, col_ptr_2);
 
     // Verify that the solutions are the same
