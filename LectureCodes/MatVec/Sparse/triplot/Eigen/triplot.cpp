@@ -4,8 +4,8 @@
 #include <cassert>
 
 #include <figure/figure.hpp>
-
-#include <mgl2/mgl.h>
+/*
+//#include <mgl2/mgl.h>
 
 void TriPlot(Eigen::Matrix<double, -1, -1, Eigen::RowMajor> &T, const Eigen::VectorXd &x, const Eigen::VectorXd &y){
 	mglGraph gr;
@@ -26,7 +26,7 @@ void TriPlot(Eigen::MatrixXd &T, const Eigen::VectorXd &x, const Eigen::VectorXd
 	Eigen::Matrix<double, -1, -1, Eigen::RowMajor> TRow(T);
 	TriPlot(TRow,x,y);
 }
-
+*/
 
 #include <vector>
 void processmesh(const Eigen::MatrixXi &T, Eigen::MatrixXi & E, Eigen::MatrixXi &Eb){
@@ -352,7 +352,10 @@ int main(){
 	smoothmesh(x_ref, y_ref, T_ref, xs, ys);
 	
 	mgl::Figure fig2;
-	fig2.triplot(T_ref,xs,ys,"b");
+	fig2.setFontSize(8);
+	fig2.triplot(T_ref,xs,ys,"b?").label("Mesh");
+	fig2.plot(xs,ys," *r");
+	fig2.legend();
 	fig2.save("refine1");
 	
 	
