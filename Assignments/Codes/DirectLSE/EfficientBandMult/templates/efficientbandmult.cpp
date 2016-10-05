@@ -92,8 +92,6 @@ void solvelseAEigen(const Vector & a, const Vector & b, const Vector & r, Vector
 }
 /* SAM_LISTING_END_3 */
 
-/* @brief Test previous solutions
- */
 int main() {
     unsigned int n = 9;
     // Compute with all three solvers

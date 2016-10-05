@@ -129,8 +129,6 @@ void solvelseAEigen(const Vector & a, const Vector & b, const Vector & r, Vector
     x = solver.solve(r);
 }
 
-/* @brief Test previous solutions
- */
 int main() {
     unsigned int n = 9;
     // Compute with all three solvers
