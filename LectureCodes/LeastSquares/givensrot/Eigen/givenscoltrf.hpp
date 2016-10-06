@@ -21,8 +21,8 @@ using namespace Eigen;
 void givenscoltrf(const VectorXd& aIn, MatrixXd& Q, VectorXd& aOut){
 	unsigned int n = aIn.size();
 	Q.setIdentity(); // Assemble rotations in matrix, alternative see Rem.~\ref{rem:orthstore}
-	MatrixXd G(2,2);
-	VectorXd tmp(2), xDummy(2);
+	Matrix2d G;
+	Vector2d tmp, xDummy;
 	aOut = aIn;
 	for(int j = 1; j < n; ++j){
 		tmp(0) = aOut(0); tmp(1) = aOut(j);
