@@ -266,24 +266,144 @@ void smoothmesh(const Eigen::VectorXd& x, const Eigen::VectorXd& y, const Eigen:
 	A_int.setFromTriplets(triplets_int.begin(), triplets_int.end());
 	Eigen::SparseMatrix<double> A_bd(Ni,Nb);
 	A_bd.setFromTriplets(triplets_bd.begin(), triplets_bd.end());
+	// Compute rhs -A_bd*x and -A_bd*y and concatenate them to allow
+	// solving only once
+	Eigen::MatrixXd rhs(x_bd.size(),2);
+	rhs << x_bd, y_bd;
+	rhs.applyOnTheLeft(-A_bd);
 	// Instatiate solver
 	Eigen::SparseLU<Eigen::SparseMatrix<double> > solver;
 	// Indicate that the pattern of the input matrix is symmetric
 	solver.isSymmetric(true);
-	// Solve the linear system of equations with the corresponding rhs
+	// Compute decomposition
 	solver.compute(A_int);
-	Eigen::VectorXd x_int = solver.solve(-A_bd*x_bd);
-	Eigen::VectorXd y_int = solver.solve(-A_bd*y_bd);
+	// Solve the linear system of equations with the corresponding rhs
+	Eigen::MatrixXd xy_int = solver.solve(rhs);
 	// Back transformation of boundary nodes (still in the same place)
 	xs = x;
 	ys = y;
 	// Back transformation with the invers mapping
 	for(int i = 0; i < Ni; ++i){
-		xs(nodes_map_inv[i]) = x_int(i);
-		ys(nodes_map_inv[i]) = y_int(i);
+		xs(nodes_map_inv[i]) = xy_int(i,0);
+		ys(nodes_map_inv[i]) = xy_int(i,1);
 	}
 }
 /* SAM_LISTING_END_3 */
 
 
+/* SAM_LISTING_BEGIN_4 */
+//! @brief Copy of smoothmesh for the analysis of the runtimg, see ADDED FOR ANALYIS
+//! @param[out] additionally returns A_int and rhs for timings or spy-plots
+void smoothmesh_analysis(const Eigen::VectorXd& x, const Eigen::VectorXd& y, const Eigen::MatrixXi& T, Eigen::VectorXd& xs, Eigen::VectorXd& ys, Eigen::SparseMatrix<double>& A_int_out, Eigen::MatrixXd& rhs_out){
+	// Number of nodes of the mesh
+	int Nv = x.size();
+	// Instantiate needed matrices for passing by reference
+	Eigen::MatrixXi E, Eb;
+	// Extract the edge information of a mesh
+	// E and Eb are matrices whose rows contain the numbers of the 
+	// endpoints of edges
+	processmesh(T,E,Eb);
+	// Initialize a vector containing all boundary nodes indices
+	std::vector<int> bd_nodes(Eb.data(), Eb.data() + Eb.size());
+	// erase the duplicates
+	std::sort(bd_nodes.begin(), bd_nodes.end());
+	auto last = std::unique(bd_nodes.begin(), bd_nodes.end());
+	bd_nodes.erase(last, bd_nodes.end());
+	// Number of boundary nodes
+	int Nb = bd_nodes.size();
+	// get the coordinates of the boundary nodes
+	Eigen::VectorXd x_bd(Nb ), y_bd(Nb);
+	int counter = 0;
+	for(auto idx : bd_nodes){
+		x_bd(counter) = x(idx);
+		y_bd(counter) = y(idx);
+		++counter;
+	}
+	// Get interior nodes
+	std::vector<int> int_nodes;
+	// Number of interior nodes
+	int Ni = Nv-Nb;
+	int_nodes.reserve(Ni);
+	// Create a vector with {$0,1,2, \ldots, \texttt{Nv}-1$}
+	std::vector<int> nodes_map(Nv);
+	std::iota(nodes_map.begin(), nodes_map.end(), 0);
+	// Use the function set_difference to obtain the interior nodes
+	std::set_difference(nodes_map.begin(), nodes_map.end(), bd_nodes.begin(), bd_nodes.end(), std::inserter(int_nodes, int_nodes.begin()));
+	// Inverse map from new positions to old position/index in the matrix
+	// nodes_map_inv[i] returns old position/index of i in the matrix, wheras
+	// i is the new position/index
+	// nodes_map is partioned in [interior indices, extorior indices]
+	std::vector<int> nodes_map_inv(int_nodes.begin(), int_nodes.end());
+	nodes_map_inv.insert(nodes_map_inv.end(), bd_nodes.begin(), bd_nodes.end());
+	// Map to original/old node position
+	// reuse the above vector nodes_map
+	// a lambda function is used in the sort function to get the map
+	std::sort(nodes_map.begin(), nodes_map.end(),
+			[&nodes_map_inv](size_t a, size_t b){
+				 return nodes_map_inv[a] < nodes_map_inv[b];});
+	// Triplet vectors for initializing a sparse matrix
+	std::vector<Eigen::Triplet<int> > triplets_int;	// interior
+	std::vector<Eigen::Triplet<int> > triplets_bd;	// exterior
+	// Reserve space for the interior nodes following from the
+	// euler characteristics, overestimation since boundary of
+	// interior triangulation is not known
+	triplets_int.reserve( 2*(3*Ni-3) );
+	// Reserve some space for boundary part
+	triplets_bd.reserve(Nb);
+	// Keeps track of $\sharp S(i)$
+	Eigen::VectorXi neighbours(Nv);
+	neighbours.setZero();
+	// Assemble the (symmetric) interior graph laplacian (triplets_int)
+	// and the exterior graph laplacian (not symmetric)
+	for(int i = 0; i < E.rows(); ++i){
+		int idx1 = nodes_map[E(i,0)];
+		int idx2 = nodes_map[E(i,1)];
+		if(idx1 < Ni && idx2 < Ni){	// edge belongs to interior area
+			triplets_int.push_back({idx1, idx2, -1});
+			triplets_int.push_back({idx2, idx1, -1});
+		}
+		else if(idx1 < Ni){	// only 1st edge node belongs to interior area
+			triplets_bd.push_back({idx1, idx2-Ni, -1});
+		}
+		else if(idx2 < Ni){	// only 2nd edge node belongs to interior area
+			triplets_bd.push_back({idx2, idx1-Ni, -1});
 
+		}
+		++neighbours(idx1);
+		++neighbours(idx2);
+	}
+	// Insert $\sharp S(i)$ on the diagonal of the interior matrix
+	for(int i = 0; i < Ni; ++i)	// interior
+		triplets_int.push_back({i,i,neighbours(i)});
+	// Build matrices from Triplets
+	Eigen::SparseMatrix<double> A_int(Ni,Ni);
+	A_int.setFromTriplets(triplets_int.begin(), triplets_int.end());
+	Eigen::SparseMatrix<double> A_bd(Ni,Nb);
+	A_bd.setFromTriplets(triplets_bd.begin(), triplets_bd.end());
+	// Compute rhs -A_bd*x and -A_bd*y and concatenate them to allow
+	// solving only once
+	Eigen::MatrixXd rhs(x_bd.size(),2);
+	rhs << x_bd, y_bd;
+	rhs.applyOnTheLeft(-A_bd);
+	// Instatiate solver
+	Eigen::SparseLU<Eigen::SparseMatrix<double> > solver;
+	// Indicate that the pattern of the input matrix is symmetric
+	solver.isSymmetric(true);
+	// Compute decomposition
+	solver.compute(A_int);
+	// Solve the linear system of equations with the corresponding rhs
+	Eigen::MatrixXd xy_int = solver.solve(rhs);
+	// Back transformation of boundary nodes (still in the same place)
+	xs = x;
+	ys = y;
+	// Back transformation with the invers mapping
+	for(int i = 0; i < Ni; ++i){
+		xs(nodes_map_inv[i]) = xy_int(i,0);
+		ys(nodes_map_inv[i]) = xy_int(i,1);
+	}
+	// ADDED FOR ANALYIS
+	// Output for analysis
+	A_int_out = A_int,
+	rhs_out = rhs;
+}
+/* SAM_LISTING_END_4 */
