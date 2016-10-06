@@ -21,8 +21,8 @@ using namespace Eigen;
 void qrgivens(const MatrixXd& A, MatrixXd& Q, MatrixXd& R){
 	unsigned int n = A.rows();
 	Q.setIdentity(); // Assemble rotations in matrix, alternative see Rem.~\ref{rem:orthstore}
-	MatrixXd G(2,2);
-	VectorXd tmp(2), xDummy(2);
+	Matrix2d G;
+	Vector2d tmp, xDummy;
 	R = A;
 	for(int i = 0; i < n-1; ++i){
 		for(int j = n-1; j > i; --j){
