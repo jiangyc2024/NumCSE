@@ -19,16 +19,16 @@ struct Triplet {
   // Default constructor
   Triplet()
   : i(0), j(0), v(0) { }
-   
+
   // Constructor taking indexes i and j and a value v
   Triplet(std::size_t i_, std::size_t j_, scalar v_)
     : i(i_), j(j_), v(v_) { }
-    
+
     std::size_t i, j; // row and col
     scalar v; // value @ (row,col)
 };
 #else // TEMPLATE
-    // TODO: write Triplet if you want to use this structure for TripletMatrix
+// TODO: write Triplet if you want to use this structure for TripletMatrix
 #endif // TEMPLATE
 
 /* @brief Defines a matrix stored in triplet format (using the Triplet<scalar> class.
@@ -42,26 +42,27 @@ template <class scalar>
 struct TripletMatrix {
 #if SOLUTION
   std::size_t rows, cols; // Sizes: nrows and ncols
-  std::vector<Triplet<scalar>> triplets; 
-  
+  std::vector<Triplet<scalar>> triplets;
+#else // TEMPLATE
+    // TODO: put members here
+#endif // TEMPLATE
+
   /* @brief Converts *this to an eigen (dense) function
-   * Loops over all triplets and add value to zero matrix 
+   * Loops over all triplets and add value to zero matrix
    * WARNING: May fill in a lot of nonzeros if n,m large
    * @return Matrix of Dynamic size and scalar type
    */
   Matrix<scalar, -1, -1> densify() const {
+#if SOLUTION
     Matrix<scalar, -1, -1> M = Matrix<scalar, -1, -1>::Zero(rows, cols);
     for(auto it = triplets.begin(); it != triplets.end(); ++it) {
       M(it->i, it->j) += it->v;
     }
     return M;
-  }
 #else // TEMPLATE
-    // TODO: insert here members and methods of TripletMatrix
-    
-    // densify() prototype (to be deleted in order to solve the subproblem)
-    Matrix<scalar, -1, -1> densify() const;
+    // TODO: return the "dense" version of "*this"
 #endif // TEMPLATE
+  }
 };
 /* SAM_LISTING_END_1 */
 
@@ -75,7 +76,7 @@ template <class scalar>
 struct ColValPair {
   ColValPair(std::size_t col_, scalar v_)
     : col(col_), v(v_) { }
-    
+
   /* @brief Comparison operator for std::sort and std::lower\_bound
    * Basic sorting operator < for use with std::functions (i.e. for ordering according to first component (col)
    * We keep the column values sorted, either by sorting after insertion of by sorted insertion
@@ -84,7 +85,7 @@ struct ColValPair {
   bool operator<(const ColValPair& other) const {
     return this->col < other.col;
   }
- 
+
   std::size_t col; // Col index
   scalar v; // Scalar value at col
 };
@@ -104,13 +105,17 @@ struct CRSMatrix {
 #if SOLUTION
   std::size_t rows, cols; // Size of the matrix rows, cols
   std::vector< std::vector< ColValPair<scalar> > > row_pt; // Vector containing, for each row, al vector of (col, value) pairs (CRS format)
-  
+#else // TEMPLATE
+    // TODO: imsert members here
+#endif // TEMPLATE
+
   /* @brief Converts *this to an eigen (dense) function
-   * Loops over all rows and add value at col to zero matrix 
+   * Loops over all rows and add value at col to zero matrix
    * WARNING: May fill in a lot of nonzeros if n,m large
    * @return Matrix of Dynamic size and scalar type
    */
   Matrix<scalar, -1, -1> densify() const {
+#if SOLUTION
     Matrix<scalar, -1, -1> M = Matrix<scalar, -1, -1>::Zero(rows, cols);
     std::size_t i = 0;
     for(auto it = row_pt.begin(); it != row_pt.end(); ++it) {
@@ -120,13 +125,10 @@ struct CRSMatrix {
       ++i;
     }
     return M;
-  }
 #else // TEMPLATE
-    // TODO: insert here members and methods to CRSMatrix
-
-    // densify() prototype (to be deleted in order to solve the subproblem)
-    Matrix<scalar, -1, -1> densify() const;
+    // TODO: convert "*this" to a dense matrix
 #endif // TEMPLATE
+  }
 };
 /* SAM_LISTING_END_3 */
 
@@ -147,20 +149,20 @@ void tripletToCRS(const TripletMatrix<scalar>& T, CRSMatrix<scalar>& C) {
   C.rows = T.rows;
   C.cols = T.cols;
   C.row_pt.resize(C.rows);
-    
+
   // Loop over all triplets
   for(auto triplet_it = T.triplets.begin(); triplet_it != T.triplets.end(); ++triplet_it) {
-    // Store row (containing ColValPairs for this row) inside row\_pt 
+    // Store row (containing ColValPairs for this row) inside row\_pt
   	std::vector<ColValPair<scalar>>& row = C.row_pt.at(triplet_it->i); // Notice the reference!
     // Create a ColVal pair that must be inserted somewhere
     ColValPair<scalar> col_val(triplet_it->j, triplet_it->v);
     // Find the place (as iterator) where to insert col\_val, i.e. the first place where col\_val < C.row\_pt.at(i)
     // WARNING: Costly call
     // returns an iterator to a ColValPair in row
-    auto lb_it = std::lower_bound(row.begin(), row.end(), col_val);  
+    auto lb_it = std::lower_bound(row.begin(), row.end(), col_val);
     // If lower bound has already a col (and is not end()) with some value, just add the value to the column, othervise insert it
     if(lb_it != row.end() && lb_it->col == triplet_it->j) {
-      lb_it->v += triplet_it->v; 
+      lb_it->v += triplet_it->v;
     } else {
       // WARNING: Costly call (loops over all rows in the worst-case scenario)
       row.insert(lb_it, col_val);
@@ -187,7 +189,7 @@ void tripletToCRS_sortafter(const TripletMatrix<scalar>& T, CRSMatrix<scalar>& C
   C.rows = T.rows;
   C.cols = T.cols;
   C.row_pt.resize(C.rows);
-  
+
   // Loops over all triplets and push them at the ritgh place (cheap)
   for(auto triplets_it = T.triplets.begin(); triplets_it != T.triplets.end(); ++triplets_it) {
     ColValPair<scalar> cp(triplets_it->j, triplets_it->v);
@@ -240,10 +242,10 @@ std::ostream & operator<<(std::ostream& o, const CRSMatrix<double>& S) {
 int main() {
   //// Correctness test
   std::size_t nrows = 7, ncols = 5, ntriplets = 9;
- 
+
   TripletMatrix<double> T;
-  CRSMatrix<double> C,D;
-  
+  CRSMatrix<double> C, D;
+
 #if SOLUTION
   T.rows = nrows;
   T.cols = ncols;
@@ -251,16 +253,17 @@ int main() {
 #else // TEMPLATE
     // TODO: construct T here
 #endif // TEMPLATE
+
   for(std::size_t i = 0; i < ntriplets; ++i) {
 #if SOLUTION
-    // Test unordered triplets, random and maybe repeated triplets
+    // Test unordered triplets, random and possibly repeated triplets
     T.triplets.push_back(Triplet<double>(rand() % nrows, rand() % ncols, rand() % 1000));
 #else // TEMPLATE
     // TODO: Use this loop to push back triplets in your matrix
     // Insert triplet with arguments: (rand() % nrows, rand() % ncols, rand() % 1000))
 #endif // TEMPLATE
   }
-    
+
   std::cout << "***Test conversion with random matrices***" << std::endl;
   tripletToCRS(T, C);
 #if SOLUTION
@@ -268,14 +271,18 @@ int main() {
 #else // TEMPLATE
     // TODO: if you implemented densify(), compute Frobenius norm of T - C
 #endif // TEMPLATE
-  std::cout << "T = " << std::endl << T << std::endl;
-  std::cout << "C = " << std::endl << C << std::endl;
+  // std::cout << "T = " << std::endl
+            // << T << std::endl;
+  // std::cout << "C = " << std::endl
+            // << C << std::endl;
 
 #if SOLUTION
+  // Alternative solution
   tripletToCRS_sortafter(T, D);
   std::cout << "--> Frobenius norm of T - D: " << (T.densify()-D.densify()).norm() << std::endl;
-  std::cout << "D = " << std::endl << D << std::endl;
-    
+  // std::cout << "D = "
+            // << std::endl << D << std::endl;
+
   // Big benefit of how we defined our functions: can add new triplets to the old ones:
   std::cout << "***Test addition with random matrices***" << std::endl;
   TripletMatrix<double> T2;
@@ -283,66 +290,65 @@ int main() {
   T2.cols = ncols;
   T2.triplets.reserve(ntriplets); // Always reserve space if you can
   for(std::size_t i = 0; i < ntriplets; ++i) {
-    // Test unordered triplets, random and maybe repeated triplets
+    // Test unordered triplets, random and possibly repeated triplets
     T2.triplets.push_back(Triplet<double>(rand() % nrows, rand() % ncols, rand() % 1000));
   }
   tripletToCRS(T2, C);
   tripletToCRS_sortafter(T2, D);
-  std::cout << "T = " << std::endl << T << std::endl;
-  std::cout << "T2 = " << std::endl << T2 << std::endl;
-  std::cout << "C = " << std::endl << C << std::endl;
-  std::cout << "D = " << std::endl << D << std::endl;
-  
+  std::cout << "T = " << std::endl
+            << T << std::endl;
+  std::cout << "T2 = " << std::endl
+            << T2 << std::endl;
+  std::cout << "C = " << std::endl
+            << C << std::endl;
+  std::cout << "D = " << std::endl
+            << D << std::endl;
+
   // Runtime test
   bool noruntime = false; // Skip runtime measurments
   bool noaddition = true; // Do not test addition of new triplets
-    
+
   if(noruntime) {
       return 0;
   }
   std::cout << "***Runtime test***" << std::endl;
- 
-/* SAM_LISTING_BEGIN_5 */	
+
+/* SAM_LISTING_BEGIN_5 */
   // Play around with this parameters (also introducing lambda functions)
   auto frows = [](std::size_t M) { return 2*M; };
   auto fcols = [](std::size_t M) { return M; };
   auto ftriplets = [](std::size_t M) { return M*5; };
-  
+
   // Do some timings
-//Timer t;
   Timer sortafter_timer, insertsort_timer;
   for(std::size_t M = 2; M < 1024; M *= 2) {
     std::cout << "Runtime for " << M << "x" << M/2 << " matrix (with nnz(A) <= " << M << "):" << std::endl;
     TripletMatrix<double> A;
-    CRSMatrix<double> B;
-          
+    CRSMatrix<double> B, E;
+
     A.rows = frows(M); // nrows
     A.cols = fcols(M); //ncols
     A.triplets.reserve(ftriplets(M));
     for(std::size_t i = 0; i < ftriplets(M); ++i) {
       A.triplets.push_back(Triplet<double>(rand() % A.rows, rand() % A.cols, rand() % 1000));
     }
-          
-  //t.start();
-  //tripletToCRS(A, B);
-  //t.stop();
-  //std::cout << "tripletToCRS took: " << t.duration() << " s." << std::endl;
+
     insertsort_timer.start();
     tripletToCRS(A, B);
-    if(!noaddition){ 
+    if(!noaddition){
       tripletToCRS(A, B);
     }
     insertsort_timer.stop();
-          
+
     sortafter_timer.start();
     tripletToCRS_sortafter(A, E);
     if(!noaddition) {
       tripletToCRS_sortafter(A, E);
-    }	
+    }
     sortafter_timer.stop();
     std::cout << "Insertsort took: " << insertsort_timer.duration() << " s." << std::endl;
     std::cout << "Sortafter took:  " << sortafter_timer.duration()  << " s." << std::endl;
   }
 #endif
-/* SAM_LISTING_END_5 */	
+/* SAM_LISTING_END_5 */
 }
