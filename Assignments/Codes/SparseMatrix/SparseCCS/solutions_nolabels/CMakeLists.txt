@@ -146,8 +146,8 @@ include_directories(${FIGURE_INCLUDE_DIR}/..)
 
 ### SparseCCS
 
-# make SparseCCS
-set(SRCS SparseCCS.cpp)
-add_executable(SparseCCS ${SRCS})
-target_link_libraries(SparseCCS Figure ${MATHGL2_LIBRARIES})
+# make sparseCCS
+set(SRCS sparseCCS.cpp)
+add_executable(sparseCCS ${SRCS})
+target_link_libraries(sparseCCS Figure ${MATHGL2_LIBRARIES})
 

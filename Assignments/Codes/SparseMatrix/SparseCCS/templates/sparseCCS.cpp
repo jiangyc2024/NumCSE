@@ -34,27 +34,7 @@ void CCS(const MatrixXd & A, VectorXd & val, VectorXd & row_ind, VectorXd & col_
 	row_ind.resize(nnz);
 	col_ptr.resize(n);
 
-#if SOLUTION
-	// Store $A$ in CCS format
-	int index = 0;
-	for(int j=0; j<n; ++j) { // Col iterator
-
-		// Update 'col\_ptr'
-		col_ptr(j) = index;
-
-		for(int i=0; i<m; ++i) { // Row iterator
-			if(A(i,j) != 0) {
-				// Record the value to 'val'
-				val(index) = A(i,j);
-				// Record the row index to 'row\_ind'
-				row_ind(index) = i;
-				++index;
-			}
-		}
-	}
-#else // TEMPLATE
     // TODO: compute the CCS format of matrix $A$
-#endif // TEMPLATE
 }
 /* SAM_LISTING_END_0 */
 

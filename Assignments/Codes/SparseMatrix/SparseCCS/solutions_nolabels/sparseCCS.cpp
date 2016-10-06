@@ -1,3 +1,10 @@
+//// 
+//// Copyright (C) 2016 SAM (D-MATH) @ ETH Zurich
+//// Author(s): lfilippo <filippo.leonardi@sam.math.ethz.ch> 
+//// Contributors: tille, jgacon, dcasati
+//// This file is part of the NumCSE repository.
+//// Report issues to: https://gitlab.math.ethz.ch/NumCSE/NumCSE/issues
+////
 #include <iostream>
 #include <iomanip>
 
@@ -12,7 +19,6 @@ using namespace Eigen;
  * \param[out] row\_ind Row indices of each element of 'val'
  * \param[out] col\_ptr Indices of the elements in 'val' which start a column of $A$
  */
-/* SAM_LISTING_BEGIN_0 */
 void CCS(const MatrixXd & A, VectorXd & val, VectorXd & row_ind, VectorXd & col_ptr)
 {
 	// Number of rows and columns
@@ -34,7 +40,6 @@ void CCS(const MatrixXd & A, VectorXd & val, VectorXd & row_ind, VectorXd & col_
 	row_ind.resize(nnz);
 	col_ptr.resize(n);
 
-#if SOLUTION
 	// Store $A$ in CCS format
 	int index = 0;
 	for(int j=0; j<n; ++j) { // Col iterator
@@ -52,11 +57,7 @@ void CCS(const MatrixXd & A, VectorXd & val, VectorXd & row_ind, VectorXd & col_
 			}
 		}
 	}
-#else // TEMPLATE
-    // TODO: compute the CCS format of matrix $A$
-#endif // TEMPLATE
 }
-/* SAM_LISTING_END_0 */
 
 int main() {
     // Initialization
@@ -76,7 +77,6 @@ int main() {
 
 /* @brief Compute the CCS format of matrix $A$ using Eigen methods
  */
-/* SAM_LISTING_BEGIN_1 */
 	double *  val_2;
 	int * row_ind_2;
 	int * col_ptr_2;
@@ -88,7 +88,6 @@ int main() {
 	val_2 = As.valuePtr(); // Pointer to values
 	row_ind_2 = As.innerIndexPtr(); // Pointer to indices
 	col_ptr_2 = As.outerIndexPtr(); // Pointer to first indices of each inner vector
-/* SAM_LISTING_END_1 */
 
 	// Verify that the solutions are the same
 	// Compute l2-norm of the differences between the CCS vectors

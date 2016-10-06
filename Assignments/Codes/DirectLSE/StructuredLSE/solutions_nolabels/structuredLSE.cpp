@@ -26,10 +26,10 @@ MatrixXd buildA(const VectorXd & a)
     MatrixXd A(n,n);
 
     for(int j=0; j<n; j++) {
-		for(int i=j; i<n; i++) {
-			A(i,j) = a(j);
-		}
+	for(int i=j; i<n; i++) {
+	    A(i,j) = a(j);
 	}
+     }
 
 	return A;
 }

@@ -34,7 +34,6 @@ void CCS(const MatrixXd & A, VectorXd & val, VectorXd & row_ind, VectorXd & col_
 	row_ind.resize(nnz);
 	col_ptr.resize(n);
 
-#if SOLUTION
 	// Store $A$ in CCS format
 	int index = 0;
 	for(int j=0; j<n; ++j) { // Col iterator
@@ -52,9 +51,6 @@ void CCS(const MatrixXd & A, VectorXd & val, VectorXd & row_ind, VectorXd & col_
 			}
 		}
 	}
-#else // TEMPLATE
-    // TODO: compute the CCS format of matrix $A$
-#endif // TEMPLATE
 }
 /* SAM_LISTING_END_0 */
 
