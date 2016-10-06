@@ -14,7 +14,7 @@ using namespace Eigen;
 
 /* SAM_LISTING_BEGIN_0 */
 //! Solving the overdetermined linear system of equations
-//! \Blue{$\VA\Vx=\Vb$} by solving \cor{normal equations} \eqref{eq:normeq}
+//! \Blue{$\VA\Vx=\Vb$} by solving \cor{normal equations} \eqref{lsq:normeq}
 //! The least squares solution is returned by value
 VectorXd normeqsolve(const MatrixXd &A,const VectorXd &b) {
   if (b.size() != A.rows()) throw runtime_error("Dimension mismatch");

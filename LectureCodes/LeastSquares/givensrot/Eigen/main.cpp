@@ -19,10 +19,10 @@ int main () {
 	std::cout << "#####################################" << std::endl;
 	std::cout << "Test of planerot" << std::endl;
 	std::cout << "#####################################" << std::endl;
-	Eigen::VectorXd a(2);
+	Eigen::Vector2d a;
 	a << 2,1;
-	Eigen::MatrixXd G(2,2);
-	Eigen::VectorXd x(2);
+	Eigen::Matrix2d G;
+	Eigen::Vector2d x;
 	planerot(a, G, x);	
 	std::cout << "a=\n" << a << std::endl << "G=\n" << G << std::endl << "x=\n" << x << std::endl;
 	std::cout << "Error norm (Gx-a) = " << (G*a-x).norm() << std::endl;

@@ -47,11 +47,16 @@ There you can find different versions of the same code:
 
 All binaries can then be found in the `bin` folder.
 
-In order to compile an individual executable, type:
+In order to compile an individual executable, you can recover the list of all possible targets of `make`.
+This can be done by typing:
 
-    $ make <code-type>_<chapter>_<problem-name>_<executable-name>
-    
-Where:
+    $ cmake --build . --target help
+
+Then you can choose a target and run:
+
+    $ make <target>
+
+Targets will be in the format `<code-type>_<chapter>_<problem-name>_<executable-name>`, where:
 - `<code-type>` is one of:
   - `assignment_codes`: for codes used in assignments
   - `lecture-codes`: for codes used in the lecture notes
@@ -62,16 +67,14 @@ Where:
 The corresponding executable will be located in:
 - For assignments:
 
-
         $ ./bin/Assignments/Codes/<chapter>/<problem-name>/
 
 - For lecture codes (most of them):
 
         $ ./bin/LectureCodes/<chapter>/<problem-name>/
         
-    
     or
-    
+    	
         $ ./bin/LectureCodes/<chapter>/<sub-chapter>/<problem-name>/
 
 TIP: Using:
