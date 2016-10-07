@@ -80,13 +80,13 @@ trip_vec COO_prod(const trip_vec &A, const trip_vec &B)
 /* SAM_LISTING_BEGIN_2 */
 trip_vec COO_prod(const trip_vec &A, const trip_vec &B)
 {
-	A = std::sort(std::begin(A), std::end(A), [&](const auto& a1, const auto& a2) {return a1.col() > a2.col();});
-	B = std::sort(std::begin(B), std::end(B), [&](const auto& b1, const auto& b2) {return b1.row() > b2.row();});
+	std::sort(A.begin(), A.end(), [&](const trip& a1, const trip& a2) {return a1.col() < a2.col();});
+	std::sort(B.begin(), B.end(), [&](const trip& b1, const trip& b2) {return b1.row() < b2.row();});
 	// Complexity: O(n_A*log(n_A) + n_B*log(n_B))
 
 	std::vector<int> vec(A.size() + B.size());
-  	auto it = std::set_intersection(std::begin(A), std::end(A), std::begin(A), std::end(B), std::begin(vec),
-			      [&](const auto& a, const auto& b) {return a.col() > b.row();}));
+  	auto it = std::set_intersection(A.begin(), A.end(), B.begin(), B.end(), vec.begin(),
+			      [&](const auto& a, const auto& b) {return a.col() < b.row();});
 	vec.resize(it - vec.begin());
 
 	for(it=vec.begin(); it!=vec.end(); ++it) {
