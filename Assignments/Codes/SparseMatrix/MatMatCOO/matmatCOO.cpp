@@ -84,12 +84,24 @@ trip_vec COO_prod(const trip_vec &A, const trip_vec &B)
 	std::sort(B.begin(), B.end(), [&](const trip& b1, const trip& b2) {return b1.row() < b2.row();});
 	// Complexity: O(n_A*log(n_A) + n_B*log(n_B))
 
-	std::vector<int> vec(A.size() + B.size());
-  	auto it = std::set_intersection(A.begin(), A.end(), B.begin(), B.end(), vec.begin(),
-			      [&](const auto& a, const auto& b) {return a.col() < b.row();});
-	vec.resize(it - vec.begin());
+  //std::vector<int> vec(A.size() + B.size());
+  //auto it = std::set_intersection(A.begin(), A.end(), B.begin(), B.end(), vec.begin(),
+  //		      [&](const auto& a, const auto& b) {return a.col() < b.row();});
+  //vec.resize(it - vec.begin());
+	int i_A = 0, i_B = 0;
+	std::vector<int> intersect;
+	while(i_A != A.size() && i_B != B.size())
+	{
+		if(A[i_A].col() < B[i_B].row()) ++i_A;
+		else if(B[i_B].row() < A[i_A].col()) ++i_B;
+		else {
+		  intersect.push_back(A[i_A].col()); // intersect.push_back(B[i_B].row());
+		  ++i_A; ++i_B;
+		}
+	}
+	// Complexity: O(max(nnz(A),nnz(B)))
 
-	for(it=vec.begin(); it!=vec.end(); ++it) {
+  /*for(it=vec.begin(); it!=vec.end(); ++it) {
 		
 		auto A_it = std::find_if(std::begin(A), std::end(A),
 						[&](const auto& a){return a.col() == *it;});
@@ -105,7 +117,27 @@ trip_vec COO_prod(const trip_vec &A, const trip_vec &B)
 					break;
 				} else {
 					trip triplet(*a_it.row(), *b_it.col(), (*a_it.value)*(*b_it.value()));
-				C.push_back(triplet);
+					C.push_back(triplet);
+				}
+			}
+		}
+	}*/
+	int k_A = 0, k_B = 0;
+	for(int i=0; i<intersect.size(); ++i) {
+
+		for(int i_A=k_A; i_A<A.size(); ++i_A) {
+			if(A[i_A] != intersect[i]) {
+				k_A = i_A;
+				break;
+			}
+			for(int i_B=k_B; i_B<B.size(); ++i_B) {
+				if(B[i_B] != intersect[i]) {
+					k_B = i_B;
+					break;
+				} else {
+					trip triplet(A[i_A].row(), B[i_B].col(), A[i_A].value()*B[i_B].value());
+					C.push_back(triplet);
+				}
 			}
 		}
 	}
@@ -115,4 +147,3 @@ trip_vec COO_prod(const trip_vec &A, const trip_vec &B)
 }
 // Complexity: O(n*log(n) + O(nnz(A*B))
 /* SAM_LISTING_END_2 */
-
