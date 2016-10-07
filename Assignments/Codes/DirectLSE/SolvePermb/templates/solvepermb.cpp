@@ -8,7 +8,7 @@
 
 using namespace Eigen;
 
-/* @brief Circular shift (downwards) of b
+/* @brief Circular shift (downwards) of $b$
  * @param[in,out] b The input $n$-dimensional vector shifted downwards
  */
 void shift(VectorXd & b) {
@@ -21,11 +21,11 @@ void shift(VectorXd & b) {
     b(0) = temp;
 }
 
-/* @brief Compute $X = inv(A)*[b_1,...,b_n], b_i = i$-th cyclic shift of $b$.
+/* @brief Compute $X = A^{-1}*[b_1,...,b_n],\; b_i = i$-th cyclic shift of $b$.
  * Function with naive implementation.
  * @param[in] A An $n \times n$ matrix
  * @param[in] b An $n$-dimensional vector
- * @param[out] X The $n \times n$ matrix $X = inv(A)*[b_1,...,b_n]$
+ * @param[out] X The $n \times n$ matrix $X = A^{-1}*[b_1,...,b_n]$
  */
 /* SAM_LISTING_BEGIN_0 */
 void solvpermb(const MatrixXd & A, VectorXd & b, MatrixXd & X) {
@@ -35,15 +35,15 @@ void solvpermb(const MatrixXd & A, VectorXd & b, MatrixXd & X) {
             && "Error: size mismatch!");
     X.resize(n,n);
 
-    // TODO: solve system $inv(A)*B$
+    // TODO: solve system $A^{-1}*B$
 }
 /* SAM_LISTING_END_0 */
 
-/* @brief Compute $X = inv(A)*[b_1,...,b_n], b_i = i$-th cyclic shift of $b$,
+/* @brief Compute $X = A^{-1}*[b_1,...,b_n],\; b_i = i$-th cyclic shift of $b$,
  * Function has complexity $O(n^3)$
  * @param[in] A An $n \times n$ matrix
  * @param[in] b An $n$-dimensional vector
- * @param[out] X The $n \times n$ matrix $X = inv(A)*[b_1,...,b_n]$
+ * @param[out] X The $n \times n$ matrix $X = A^{-1}*[b_1,...,b_n]$
  */
 /* SAM_LISTING_BEGIN_1 */
 void solvpermb_on3(const MatrixXd & A, VectorXd & b, MatrixXd & X) {
@@ -53,7 +53,7 @@ void solvpermb_on3(const MatrixXd & A, VectorXd & b, MatrixXd & X) {
             && "Error: size mismatch!");
     X.resize(n,n);
 
-    // TODO: efficiently solve system $inv(A)*B$
+    // TODO: solve system $A^{-1}*B$ efficiently
 }
 /* SAM_LISTING_END_1 */
 
@@ -61,25 +61,24 @@ int main() {
     unsigned int n = 9;
     // Compute with both solvers
     std::cout << "--> Check that the solvers are correct" << std::endl;
-
     MatrixXd A = MatrixXd::Random(n,n);
     VectorXd b = VectorXd::Random(n);
     MatrixXd Xi, Xr, X;
 
     // std::cout << "b = " << std::endl
-              // << b << std::endl;
+    // << b << std::endl;
 
     solvpermb(A,b,Xi);
     // std::cout << "Direct porting from MATLAB (naive solver): "
-              // << std::endl << X << std::endl;
+    // << std::endl << X << std::endl;
     // std::cout << "A*X = " << std::endl
-              // << A*X << std::endl;
+    // << A*X << std::endl;
 
     solvpermb_on3(A,b,Xr);
     // std::cout << "Reusing LU: " << std::endl
-              // << X << std::endl;
+    // << X << std::endl;
     // std::cout << "A*X = " << std::endl
-              // << A*X << std::endl;
+    // << A*X << std::endl;
 
     std::cout << "Error = " << (Xi - Xr).norm() << std::endl;
 
@@ -104,7 +103,7 @@ int main() {
             A = MatrixXd::Random(n,n);
             b = VectorXd::Random(n);
 
-            // Compute runtime with inefficient solver
+            // Compute runtime with naive solver
             tm_naive.start();
             solvpermb(A,b,X);
             tm_naive.stop();

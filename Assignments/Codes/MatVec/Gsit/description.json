@@ -1,0 +1,8 @@
+{
+    "author" : "lfilippo",
+    "contributors" : "",
+    "email" : "",
+
+    "name": "Gsit",
+    "all" : [ "gsit.cpp" ]
+}
