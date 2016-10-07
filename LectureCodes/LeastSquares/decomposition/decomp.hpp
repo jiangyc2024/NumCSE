@@ -37,7 +37,7 @@ std::pair<MatrixXd,MatrixXd> qr_decomp_eco(const MatrixXd& A) {
 /* SAM_LISTING_BEGIN_1 */
 # include <Eigen/SVD>
 
-// Computation of (full) SVD \Blue{$\VA=\VU\Sigmabf\VV^\herm$} $\to$ \cref{def:SVD}
+// Computation of (full) SVD \Blue{$\VA=\VU\Sigmabf\VV^\herm$} $\to$ \cref{thm:svd}
 // SVD factors are returned as dense matrices in natural order
 std::tuple<MatrixXd,MatrixXd,MatrixXd> svd_full(const MatrixXd& A) {
   Eigen::JacobiSVD<MatrixXd> svd(A, Eigen::ComputeFullU | Eigen::ComputeFullV);
