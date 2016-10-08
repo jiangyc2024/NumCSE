@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <iostream>
 #include <numeric>
+#include <set>
 #include <vector>
 
 #include <Eigen/Dense>
@@ -89,13 +90,13 @@ trip_vec COO_prod(const trip_vec &A, const trip_vec &B)
   //		      [&](const auto& a, const auto& b) {return a.col() < b.row();});
   //vec.resize(it - vec.begin());
 	int i_A = 0, i_B = 0;
-	std::vector<int> intersect;
+	std::set<int> intersect;
 	while(i_A != A.size() && i_B != B.size())
 	{
 		if(A[i_A].col() < B[i_B].row()) ++i_A;
 		else if(B[i_B].row() < A[i_A].col()) ++i_B;
 		else {
-		  intersect.push_back(A[i_A].col()); // intersect.push_back(B[i_B].row());
+		  intersect.insert(A[i_A].col()); // intersect.insert(B[i_B].row());
 		  ++i_A; ++i_B;
 		}
 	}
@@ -103,9 +104,9 @@ trip_vec COO_prod(const trip_vec &A, const trip_vec &B)
 
   /*for(it=vec.begin(); it!=vec.end(); ++it) {
 		
-		auto A_it = std::find_if(std::begin(A), std::end(A),
+		auto A_it = std::find_if(A.begin(), A.end(),
 						[&](const auto& a){return a.col() == *it;});
-		auto B_it = std::find_if(std::begin(B), std::end(B),
+		auto B_it = std::find_if(B.begin(), B.end(),
 						[&](const auto& b){return b.row() == *it;});
 
 		for(auto& a_it: A_it) {
@@ -122,23 +123,29 @@ trip_vec COO_prod(const trip_vec &A, const trip_vec &B)
 			}
 		}
 	}*/
-	int k_A = 0, k_B = 0;
-	for(int i=0; i<intersect.size(); ++i) {
+	trip_vec::iterator A_it = A.begin();
+	trip_vec::iterator B_it = B.begin();
+	for(auto& i: intersect) {
 
-		for(int i_A=k_A; i_A<A.size(); ++i_A) {
-			if(A[i_A] != intersect[i]) {
-				k_A = i_A;
+		A_it = std::find_if(A_it, A.end(),
+					[&](const auto& a){return a.col() == i;});
+		B_it = std::find_if(B_it, B.end(),
+					[&](const auto& b){return b.row() == i;});
+		
+		while(A_it != A.end()) {
+			if(*A_it != i) {
 				break;
 			}
-			for(int i_B=k_B; i_B<B.size(); ++i_B) {
-				if(B[i_B] != intersect[i]) {
-					k_B = i_B;
+			while(B_it != B.end()) {
+				if(*B_it != i) {
 					break;
 				} else {
 					trip triplet(A[i_A].row(), B[i_B].col(), A[i_A].value()*B[i_B].value());
 					C.push_back(triplet);
 				}
 			}
+			++A_it;
+			++B_it;
 		}
 	}
 	// Complexity: O(nnz(A*B))
