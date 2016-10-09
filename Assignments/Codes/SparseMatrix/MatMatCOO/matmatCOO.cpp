@@ -175,12 +175,19 @@ int main() {
     // Compute with standard matrix multiplication and both new multipliers
     std::cout << "--> Check that the multipliers are correct" << std::endl;
     trip_vec C_eigen, C_naive, C_effic;
-
+	
 	C_eigen = COO(A * B);
     C_naive = COOprod_naive(A_COO, B_COO);
     C_effic = COOprod_effic(A_COO, B_COO);
 
-  //std::cout << "Error = " << (x1 - x2).norm() << std::endl;
+	for(int i=0; i<n; ++i) {
+		for(int j=0; j<n; ++j) {
+			
+			
+		}
+	}
+
+    std::cout << "Error = " << (x1 - x2).norm() << std::endl;
 
     // Compute runtimes of different multipliers
     std::cout << "--> Runtime comparison of naive vs efficient multiplier" << std::endl;
@@ -189,36 +196,47 @@ int main() {
 
     // Header
     std::cout << std::setw(20) << "n"
+		      << std::setw(20) << "time eigen [s]"
               << std::setw(20) << "time naive [s]"
               << std::setw(20) << "time effic [s]"
               << std::endl;
 
     // Loop over matrix size
-/*    for(unsigned int k = 4; k <= 12; ++k) {
+    for(unsigned int k = 4; k <= 12; ++k) {
         // Timers
-        Timer tm_naive, tm_effic;
+        Timer tm_eigen, tm_naive, tm_effic;
         unsigned int n = pow(2,k);
 
         // Repeat test many times
         for(unsigned int r = 0; r < repeats; ++r) {
-            a = VectorXd::Random(n);
-            b = VectorXd::Random(n);
+            // Initialization
+			A = MatrixXd::Random(n,n);
+            B = MatrixXd::Random(n,n);
+			
+			// COO format
+			trip_vec A_COO = COO(A);
+			trip_vec B_COO = COO(B);
 
+            // Compute runtime with Eigen solver
+            tm_eigen.start();
+            C_eigen = COO(A * B);
+            tm_eigen.stop();
             // Compute runtime with naive solver
             tm_naive.start();
-            solveA(a,b,x);
+            C_naive = COOprod_naive(A_COO, B_COO);
             tm_naive.stop();
             // Compute runtime with efficient solver
             tm_effic.start();
-            solveA_effic(a,b,x);
+            C_effic = COOprod_effic(A_COO, B_COO);
             tm_effic.stop();
         }
 
         // Print runtimes
         std::cout << std::setw(20) << n
                   << std::scientific << std::setprecision(3)
+				  << std::setw(20) << tm_eigen.min()
                   << std::setw(20) << tm_naive.min()
                   << std::setw(20) << tm_effic.min()
                   << std::endl;
-    }*/
+    }
 }
