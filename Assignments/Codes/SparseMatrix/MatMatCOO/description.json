@@ -1,0 +1,9 @@
+{
+    "author" : "",
+    "email" : "",
+    "contributors" : "",
+
+    "name": "MatMatCOO",
+    "all" : ["matmatCOO.cpp"],
+    "lib" : ["timer.h"]
+}
