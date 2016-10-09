@@ -20,21 +20,23 @@ using trip_vec = std::vector<trip>;
 trip_vec COO(const MatrixXd &A)
 {
     // Initialization
-    int n = A.rows();
+    int m = A.rows();
+	int n = A.cols();
     trip_vec triplets;
 
 	// Number of nonzero entries
-	int nnz = A.nonzeros();
-	triplets.resize(nnz);
+  //int nnz = A.nonzeros();
+  //triplets.resize(nnz);
 
 #if SOLUTION
-	int k = 0;
+  //int k = 0;
 	for(int i=0; i<m; ++i) { // Row iterator
 		for(int j=0; j<n; ++j) { // Col iterator
 			if(A(i,j) != 0) {
 				trip triplet(i, j, A(i,j));
-              	triplets(k) = triplet;
-				++k;
+              //triplets[k] = triplet;
+			  //++k;
+				triplets.push_back(triplet);
              }
 		}
 	}
@@ -53,7 +55,7 @@ trip_vec COO(const MatrixXd &A)
  * @param[out] C_trips The $nnz(C)$-dimensional vector of triplets forming matrix $C = AB$
  */
 /* SAM_LISTING_BEGIN_1 */
-trip_vec COO_prod(const trip_vec &A, const trip_vec &B)
+trip_vec COOprod(const trip_vec &A, const trip_vec &B)
 {
     // Initialization
     trip_vec C;
@@ -61,7 +63,7 @@ trip_vec COO_prod(const trip_vec &A, const trip_vec &B)
 	for(auto const& a: A) {
 		for(auto const& b: B) {
 			if(a.col() == b.row()) {
-				trip triplet(a.row(), b.col(), a.value*b.value());
+				trip triplet(a.row(), b.col(), a.value()*b.value());
 				C.push_back(triplet);
 			}
 		}
@@ -79,8 +81,11 @@ trip_vec COO_prod(const trip_vec &A, const trip_vec &B)
  * @param[out] C_trips The $nnz(C)$-dimensional vector of triplets forming matrix $C = AB$
  */
 /* SAM_LISTING_BEGIN_2 */
-trip_vec COO_prod(const trip_vec &A, const trip_vec &B)
+trip_vec COOprod_fast(const trip_vec &A, const trip_vec &B)
 {
+	// Initialization
+    trip_vec C;
+	
 	std::sort(A.begin(), A.end(), [&](const trip& a1, const trip& a2) {return a1.col() < a2.col();});
 	std::sort(B.begin(), B.end(), [&](const trip& b1, const trip& b2) {return b1.row() < b2.row();});
 	// Complexity: O(n_A*log(n_A) + n_B*log(n_B))
@@ -154,3 +159,5 @@ trip_vec COO_prod(const trip_vec &A, const trip_vec &B)
 }
 // Complexity: O(n*log(n) + O(nnz(A*B))
 /* SAM_LISTING_END_2 */
+
+
