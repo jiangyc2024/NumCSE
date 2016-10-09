@@ -231,7 +231,7 @@ int main() {
               << std::setw(20) << "time effic [s]"
               << std::endl;
 
-/*    // Loop over matrix size
+    // Loop over matrix size
     for(unsigned int k = 4; k <= 12; ++k) {
         // Timers
         Timer tm_eigen, tm_naive, tm_effic;
@@ -268,5 +268,5 @@ int main() {
                   << std::setw(20) << tm_naive.min()
                   << std::setw(20) << tm_effic.min()
                   << std::endl;
-    }*/
+    }
 }
