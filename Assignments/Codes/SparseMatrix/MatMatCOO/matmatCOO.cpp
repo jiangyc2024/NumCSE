@@ -127,7 +127,7 @@ TripVec COOprod_effic(TripVec &A, TripVec &B)
 	
   //std::vector<int> vec(A.size() + B.size());
   //auto it = std::set_intersection(A.begin(), A.end(), B.begin(), B.end(), vec.begin(),
-  //		       [&](const Trip& a, const Trip& b) {return a.col() < b.row();});
+  //		      [&](const Trip& a, const Trip& b) {return a.col() < b.row();});
   //vec.resize(it - vec.begin());
 	int i_A = 0, i_B = 0;
 	std::set<int> intersect;
@@ -142,31 +142,33 @@ TripVec COOprod_effic(TripVec &A, TripVec &B)
 	}
 	// Complexity: O(max(nnz(A),nnz(B)))
 	
-	TripVec::iterator A_it = A.begin();
-	TripVec::iterator B_it = B.begin();
-	for(auto& i: intersect) {
+	TripVec::iterator A_idx = A.begin();
+	TripVec::iterator B_idx = B.begin();
+	for(auto i: intersect) {
 
-		A_it = std::find_if(A_it, A.end(),
+		A_idx = std::find_if(A_idx, A.end(),
 					[&](const Trip& a){return a.col() == i;});
-		B_it = std::find_if(B_it, B.end(),
+		B_idx = std::find_if(B_idx, B.end(),
 					[&](const Trip& b){return b.row() == i;});
 		
-		while(A_it != A.end()) {
+		TripVec::iterator A_it;
+		TripVec::iterator B_it;
+		for(A_it=A_idx; A_it!=A.end(); ++A_it) {
 			if(A_it->col() != i) {
 				break;
 			} else {
-				while(B_it != B.end()) {
+				for(B_it=B_idx; B_it!=B.end(); ++B_it) {
 					if(B_it->row() != i) {
 						break;
 					} else {
 						Trip triplet(A_it->row(), B_it->col(), (A_it->value())*(B_it->value()));
 						C.push_back(triplet);
-						++B_it;
 					}
 				}
-				++A_it;
 			}
 		}
+		A_idx = A_it;
+		B_idx = B_it;
 	}
 //#else // TEMPLATE
     // TODO: compute matrix product $AB$ in COO format (efficient multiplier)
@@ -182,18 +184,18 @@ int main() {
     // Initialization
     unsigned int n = 6;
     MatrixXd A(n,n), B(n,n);
-    A <<  4, -1,  0, -1,  0,  0,
-         -1,  4, -1,  0, -1,  0,
-          0, -1,  4,  0,  0, -1,
-         -1,  0,  0,  4, -1,  0,
-          0, -1,  0, -1,  4, -1,
-		  0,  0, -1,  0, -1,  4;
-    B <<  0, -1,  2, -1,  0,  3,
-         -1,  4, -1,  0, -1,  0,
-          2, -1,  0,  0,  0, -1,
-         -1,  0,  0,  4, -1,  0,
-          0, -1,  0, -1,  0, -1,
-		  3,  0, -1,  0, -1,  4;
+    A << 1, 0, 0, 0, 0, 1,
+         1, 0, 0, 0, 0, 1,
+         1, 0, 0, 0, 0, 1,
+         1, 0, 0, 0, 0, 1,
+         1, 0, 0, 0, 0, 1,
+		 1, 0, 0, 0, 0, 1;
+    B << 1, 1, 1, 1, 1, 1,
+         0, 0, 0, 0, 0, 0,
+         0, 0, 0, 0, 0, 0,
+         0, 0, 0, 0, 0, 0,
+         0, 0, 0, 0, 0, 0,
+		 1, 1, 1, 1, 1, 1;
 		  
 	// COO format
 	TripVec A_COO = Mat2COO(A);
@@ -229,7 +231,7 @@ int main() {
               << std::setw(20) << "time effic [s]"
               << std::endl;
 
-    // Loop over matrix size
+/*    // Loop over matrix size
     for(unsigned int k = 4; k <= 12; ++k) {
         // Timers
         Timer tm_eigen, tm_naive, tm_effic;
@@ -266,5 +268,5 @@ int main() {
                   << std::setw(20) << tm_naive.min()
                   << std::setw(20) << tm_effic.min()
                   << std::endl;
-    }
+    }*/
 }
