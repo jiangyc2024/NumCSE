@@ -81,7 +81,7 @@ trip_vec COOprod(const trip_vec &A, const trip_vec &B)
  * @param[out] C_trips The $nnz(C)$-dimensional vector of triplets forming matrix $C = AB$
  */
 /* SAM_LISTING_BEGIN_2 */
-trip_vec COOprod_fast(const trip_vec &A, const trip_vec &B)
+trip_vec COOprod_fast(trip_vec &A, trip_vec &B)
 {
 	// Initialization
     trip_vec C;
@@ -89,10 +89,10 @@ trip_vec COOprod_fast(const trip_vec &A, const trip_vec &B)
 	std::sort(A.begin(), A.end(), [&](const trip& a1, const trip& a2) {return a1.col() < a2.col();});
 	std::sort(B.begin(), B.end(), [&](const trip& b1, const trip& b2) {return b1.row() < b2.row();});
 	// Complexity: O(n_A*log(n_A) + n_B*log(n_B))
-
+	
   //std::vector<int> vec(A.size() + B.size());
   //auto it = std::set_intersection(A.begin(), A.end(), B.begin(), B.end(), vec.begin(),
-  //		      [&](const auto& a, const auto& b) {return a.col() < b.row();});
+  //		       [&](const trip& a, const trip& b) {return a.col() < b.row();});
   //vec.resize(it - vec.begin());
 	int i_A = 0, i_B = 0;
 	std::set<int> intersect;
@@ -106,46 +106,25 @@ trip_vec COOprod_fast(const trip_vec &A, const trip_vec &B)
 		}
 	}
 	// Complexity: O(max(nnz(A),nnz(B)))
-
-  /*for(it=vec.begin(); it!=vec.end(); ++it) {
-		
-		auto A_it = std::find_if(A.begin(), A.end(),
-						[&](const auto& a){return a.col() == *it;});
-		auto B_it = std::find_if(B.begin(), B.end(),
-						[&](const auto& b){return b.row() == *it;});
-
-		for(auto& a_it: A_it) {
-			if(*a_it.col() != *it) {
-				break;
-			}
-			for(auto& b_it: B_it) {
-				if(*b_it.row() != *it) {
-					break;
-				} else {
-					trip triplet(*a_it.row(), *b_it.col(), (*a_it.value)*(*b_it.value()));
-					C.push_back(triplet);
-				}
-			}
-		}
-	}*/
+	
 	trip_vec::iterator A_it = A.begin();
 	trip_vec::iterator B_it = B.begin();
 	for(auto& i: intersect) {
 
 		A_it = std::find_if(A_it, A.end(),
-					[&](const auto& a){return a.col() == i;});
+					[&](const trip& a){return a.col() == i;});
 		B_it = std::find_if(B_it, B.end(),
-					[&](const auto& b){return b.row() == i;});
+					[&](const trip& b){return b.row() == i;});
 		
 		while(A_it != A.end()) {
-			if(*A_it != i) {
+			if(A_it->col() != i) {
 				break;
 			}
 			while(B_it != B.end()) {
-				if(*B_it != i) {
+				if(B_it->row() != i) {
 					break;
 				} else {
-					trip triplet(A[i_A].row(), B[i_B].col(), A[i_A].value()*B[i_B].value());
+					trip triplet(A_it->row(), B_it->col(), (A_it->value())*(B_it->value()));
 					C.push_back(triplet);
 				}
 			}
@@ -160,4 +139,7 @@ trip_vec COOprod_fast(const trip_vec &A, const trip_vec &B)
 // Complexity: O(n*log(n) + O(nnz(A*B))
 /* SAM_LISTING_END_2 */
 
-
+int main() {
+	
+	
+}
