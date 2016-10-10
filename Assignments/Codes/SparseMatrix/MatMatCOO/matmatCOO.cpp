@@ -77,7 +77,7 @@ MatrixXd COO2Mat(const TripVec &A)
 /* @brief Build random binary matrix $A$ as Eigen::MatrixXd
  * @param[in] m Number of desired rows for $A$
  * @param[in] n Number of desired cols for $A$
- * @param[in] d Desired density ($nnz/(m*n)$) for $A$
+ * @param[in] d Maximum density ($nnz/(m*n)$) for $A$
  * @param[out] A An $m \times n$ random binary matrix
  */
 MatrixXd randMat(int m, int n, double d)
@@ -87,6 +87,8 @@ MatrixXd randMat(int m, int n, double d)
 
 	int nnz = round(m * n * d);
 
+	// We allow to draw a couple $(i,j)$ multiple times:
+	// Density 'd' is an upper bound for the final density of $A$
 	for(int k=0; k<nnz; ++k) {
 		int i = ceil(std::rand()/RAND_MAX*m);
 		int j = ceil(std::rand()/RAND_MAX*n);
@@ -237,16 +239,15 @@ int main() {
 #if INTERNAL
     // sizes   will contain the size of the matrix
     // timings will contain the runtimes in seconds
-    std::vector<double> sizes, timings_eigen, timings_naive, timings_effic;
+    std::vector<double> sizes, timings_naive, timings_effic;
 #endif
     
     // Compute runtimes of different multipliers for products between sparse matrices
-    std::cout << "--> Runtime comparison of eigen vs naive vs efficient multiplier" << std::endl;
+    std::cout << "--> Runtime comparison of naive vs efficient multiplier" << std::endl;
     std::cout << "--> Product between sparse matrices" << std::endl;
 
     // Header
     std::cout << std::setw(20) << "n"
-		      << std::setw(20) << "time eigen [s]"
               << std::setw(20) << "time naive [s]"
               << std::setw(20) << "time effic [s]"
               << std::endl;
@@ -254,7 +255,7 @@ int main() {
     // Loop over matrix size
     for(unsigned int k = 4; k <= 10; ++k) {
         // Timers
-        Timer tm_eigen, tm_naive, tm_effic;
+        Timer tm_naive, tm_effic;
         unsigned int n = pow(2,k);
 
         // Repeat test many times
@@ -267,10 +268,6 @@ int main() {
 			TripVec A_COO = Mat2COO(A);
 			TripVec B_COO = Mat2COO(B);
 
-            // Compute runtime with Eigen solver
-            tm_eigen.start();
-            C_eigen = Mat2COO(A * B);
-            tm_eigen.stop();
             // Compute runtime with naive solver
             tm_naive.start();
             C_naive = COOprod_naive(A_COO, B_COO);
@@ -284,7 +281,6 @@ int main() {
 #if INTERNAL
         // Save results in a vector
         sizes.push_back(n); // Save vector sizes
-        timings_eigen.push_back(tm_eigen.min());
         timings_naive.push_back(tm_naive.min());
         timings_effic.push_back(tm_effic.min());
 #endif
@@ -292,7 +288,6 @@ int main() {
         // Print runtimes
         std::cout << std::setw(20) << n
                   << std::scientific << std::setprecision(3)
-				  << std::setw(20) << tm_eigen.min()
                   << std::setw(20) << tm_naive.min()
                   << std::setw(20) << tm_effic.min()
                   << std::endl;
@@ -300,75 +295,65 @@ int main() {
     
 #if INTERNAL
     mgl::Figure fig1;
-    fig1.title("Timings of Eigen solver -- sparse matrices");
+    fig1.title("Timings of naive solver -- sparse matrices");
     fig1.ranges(2, 9000, 1e-8, 1e3);
     fig1.setlog(true, true); // set loglog scale
-    fig1.plot(sizes, timings_eigen, " r+").label("Eigen");
+    fig1.plot(sizes, timings_naive, " r+").label("naive");
     fig1.fplot("1e-9*x^3", "k|").label("O(n^3)");
     fig1.xlabel("Matrix size (n)");
     fig1.ylabel("Time [s]");
     fig1.legend(0, 1);
-    fig1.save("matmatCOO_timing_sparse_eigen.eps");
-    fig1.save("matmatCOO_timing_sparse_eigen.png");
+    fig1.save("matmatCOO_timing_sparse_naive.eps");
+    fig1.save("matmatCOO_timing_sparse_naive.png");
 
     mgl::Figure fig2;
-    fig2.title("Timings of naive solver -- sparse matrices");
+    fig2.title("Timings of efficient solver -- sparse matrices");
     fig2.ranges(2, 9000, 1e-8, 1e3);
     fig2.setlog(true, true); // set loglog scale
-    fig2.plot(sizes, timings_naive, " r+").label("naive");
+    fig2.plot(sizes, timings_effic, " r+").label("efficient");
     fig2.fplot("1e-9*x^3", "k|").label("O(n^3)");
     fig2.xlabel("Matrix size (n)");
     fig2.ylabel("Time [s]");
     fig2.legend(0, 1);
-    fig2.save("matmatCOO_timing_sparse_naive.eps");
-    fig2.save("matmatCOO_timing_sparse_naive.png");
-    
+    fig2.save("matmatCOO_timing_sparse_effic.eps");
+    fig2.save("matmatCOO_timing_sparse_effic.png");
+
     mgl::Figure fig3;
-    fig3.title("Timings of efficient solver -- sparse matrices");
+    fig3.title("Comparison of timings -- sparse matrices");
     fig3.ranges(2, 9000, 1e-8, 1e3);
     fig3.setlog(true, true); // set loglog scale
-    fig3.plot(sizes, timings_effic, " r+").label("efficient");
+    fig3.plot(sizes, timings_naive, " r+").label("naive");
+    fig3.plot(sizes, timings_effic, " b+").label("efficient");
     fig3.fplot("1e-9*x^3", "k|").label("O(n^3)");
+    fig3.fplot("1e-8*x^2", "k-").label("O(n^2)");
+    fig3.fplot("1e-7*x", "k:").label("O(n)");
     fig3.xlabel("Matrix size (n)");
     fig3.ylabel("Time [s]");
     fig3.legend(0, 1);
-    fig3.save("matmatCOO_timing_sparse_effic.eps");
-    fig3.save("matmatCOO_timing_sparse_effic.png");
-
-    mgl::Figure fig4;
-    fig4.title("Comparison of timings -- sparse matrices");
-    fig4.ranges(2, 9000, 1e-8, 1e3);
-    fig4.setlog(true, true); // set loglog scale
-    fig4.plot(sizes, timings_eigen, " g+").label("Eigen");
-    fig4.plot(sizes, timings_naive, " r+").label("naive");
-    fig4.plot(sizes, timings_effic, " b+").label("efficient");
-    fig4.fplot("1e-9*x^3", "k|").label("O(n^3)");
-    fig4.fplot("1e-8*x^2", "k-").label("O(n^2)");
-    fig4.fplot("1e-7*x", "k:").label("O(n)");
-    fig4.xlabel("Matrix size (n)");
-    fig4.ylabel("Time [s]");
-    fig4.legend(0, 1);
-    fig4.save("matmatCOO_comparison_sparse.eps");
-    fig4.save("matmatCOO_comparison_sparse.png");
+    fig3.save("matmatCOO_comparison_sparse.eps");
+    fig3.save("matmatCOO_comparison_sparse.png");
 #endif
+
+    sizes.clear();
+    timings_naive.clear();
+    timings_effic.clear();
 
 //-----------------------------------------------------------------------------------------------
 
     // Compute runtimes of different multipliers for products between sparse OR dense matrices
-    std::cout << "--> Runtime comparison of eigen vs naive vs efficient multiplier" << std::endl;
+    std::cout << "--> Runtime comparison of naive vs efficient multiplier" << std::endl;
     std::cout << "--> Product between sparse OR dense matrices" << std::endl;
 
     // Header
     std::cout << std::setw(20) << "n"
-		      << std::setw(20) << "time eigen [s]"
               << std::setw(20) << "time naive [s]"
               << std::setw(20) << "time effic [s]"
               << std::endl;
 
     // Loop over matrix size
-    for(unsigned int k = 4; k <= 10; ++k) {
+    for(unsigned int k = 4; k <= 8; ++k) {
         // Timers
-        Timer tm_eigen, tm_naive, tm_effic;
+        Timer tm_naive, tm_effic;
         unsigned int n = pow(2,k);
 
         // Repeat test many times
@@ -381,10 +366,6 @@ int main() {
 			TripVec A_COO = Mat2COO(A);
 			TripVec B_COO = Mat2COO(B);
 
-            // Compute runtime with Eigen solver
-            tm_eigen.start();
-            C_eigen = Mat2COO(A * B);
-            tm_eigen.stop();
             // Compute runtime with naive solver
             tm_naive.start();
             C_naive = COOprod_naive(A_COO, B_COO);
@@ -398,7 +379,6 @@ int main() {
 #if INTERNAL
         // Save results in a vector
         sizes.push_back(n); // Save vector sizes
-        timings_eigen.push_back(tm_eigen.min());
         timings_naive.push_back(tm_naive.min());
         timings_effic.push_back(tm_effic.min());
 #endif
@@ -406,63 +386,49 @@ int main() {
         // Print runtimes
         std::cout << std::setw(20) << n
                   << std::scientific << std::setprecision(3)
-				  << std::setw(20) << tm_eigen.min()
                   << std::setw(20) << tm_naive.min()
                   << std::setw(20) << tm_effic.min()
                   << std::endl;
     }
 
 #if INTERNAL
+        mgl::Figure fig4;
+        fig4.title("Timings of naive solver -- sparse/dense matrices");
+        fig4.ranges(2, 9000, 1e-8, 1e3);
+        fig4.setlog(true, true); // set loglog scale
+        fig4.plot(sizes, timings_naive, " r+").label("naive");
+        fig4.fplot("1e-9*x^3", "k|").label("O(n^3)");
+        fig4.xlabel("Matrix size (n)");
+        fig4.ylabel("Time [s]");
+        fig4.legend(0, 1);
+        fig4.save("matmatCOO_timing_spardense_naive.eps");
+        fig4.save("matmatCOO_timing_spardense_naive.png");
+
         mgl::Figure fig5;
-        fig5.title("Timings of Eigen solver -- sparse/dense matrices");
+        fig5.title("Timings of efficient solver -- sparse/dense matrices");
         fig5.ranges(2, 9000, 1e-8, 1e3);
         fig5.setlog(true, true); // set loglog scale
-        fig5.plot(sizes, timings_eigen, " r+").label("Eigen");
+        fig5.plot(sizes, timings_effic, " r+").label("efficient");
         fig5.fplot("1e-9*x^3", "k|").label("O(n^3)");
         fig5.xlabel("Matrix size (n)");
         fig5.ylabel("Time [s]");
         fig5.legend(0, 1);
-        fig5.save("matmatCOO_timing_spardense_eigen.eps");
-        fig5.save("matmatCOO_timing_spardense_eigen.png");
+        fig5.save("matmatCOO_timing_spardense_effic.eps");
+        fig5.save("matmatCOO_timing_spardense_effic.png");
 
         mgl::Figure fig6;
-        fig6.title("Timings of naive solver -- sparse/dense matrices");
+        fig6.title("Comparison of timings -- sparse/dense matrices");
         fig6.ranges(2, 9000, 1e-8, 1e3);
         fig6.setlog(true, true); // set loglog scale
         fig6.plot(sizes, timings_naive, " r+").label("naive");
+        fig6.plot(sizes, timings_effic, " b+").label("efficient");
         fig6.fplot("1e-9*x^3", "k|").label("O(n^3)");
+        fig6.fplot("1e-8*x^2", "k-").label("O(n^2)");
+        fig6.fplot("1e-7*x", "k:").label("O(n)");
         fig6.xlabel("Matrix size (n)");
         fig6.ylabel("Time [s]");
         fig6.legend(0, 1);
-        fig6.save("matmatCOO_timing_spardense_naive.eps");
-        fig6.save("matmatCOO_timing_spardense_naive.png");
-
-        mgl::Figure fig7;
-        fig7.title("Timings of efficient solver -- sparse/dense matrices");
-        fig7.ranges(2, 9000, 1e-8, 1e3);
-        fig7.setlog(true, true); // set loglog scale
-        fig7.plot(sizes, timings_effic, " r+").label("efficient");
-        fig7.fplot("1e-9*x^3", "k|").label("O(n^3)");
-        fig7.xlabel("Matrix size (n)");
-        fig7.ylabel("Time [s]");
-        fig7.legend(0, 1);
-        fig7.save("matmatCOO_timing_spardense_effic.eps");
-        fig7.save("matmatCOO_timing_spardense_effic.png");
-
-        mgl::Figure fig8;
-        fig8.title("Comparison of timings -- sparse/dense matrices");
-        fig8.ranges(2, 9000, 1e-8, 1e3);
-        fig8.setlog(true, true); // set loglog scale
-        fig8.plot(sizes, timings_eigen, " g+").label("Eigen");
-        fig8.plot(sizes, timings_naive, " r+").label("naive");
-        fig8.plot(sizes, timings_effic, " b+").label("efficient");
-        fig8.fplot("1e-9*x^3", "k|").label("O(n^3)");
-        fig8.fplot("1e-8*x^2", "k-").label("O(n^2)");
-        fig8.fplot("1e-7*x", "k:").label("O(n)");
-        fig8.xlabel("Matrix size (n)");
-        fig8.ylabel("Time [s]");
-        fig8.legend(0, 1);
-        fig8.save("matmatCOO_comparison_spardense.eps");
-        fig8.save("matmatCOO_comparison_spardense.png");
+        fig6.save("matmatCOO_comparison_spardense.eps");
+        fig6.save("matmatCOO_comparison_spardense.png");
 #endif
 }
