@@ -1,0 +1,8 @@
+{
+    "author" : "",
+    "email" : "",
+    "contributors" : "",
+
+    "name": "GridFunction",
+    "all" : ["grid_function.cpp"]
+}
