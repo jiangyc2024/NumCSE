@@ -3,6 +3,7 @@
 #include "sspowitstep.hpp"
 #include "sspowitstep1.hpp"
 #include "sspowitstep2.hpp"
+#include "sspowitstepg.hpp"
 
 void printVectors(const Eigen::VectorXd &v, const Eigen::VectorXd &w)
 {
@@ -39,6 +40,9 @@ int main()
 	w = w0;
 	sspowitstep2(v,w);
 	printVectors(v,w);
+
+	Eigen::MatrixXd B = Eigen::MatrixXd::Random(n,n);
+	Eigen::MatrixXd V = sspowitstepg(A, B);
 }
 
 
