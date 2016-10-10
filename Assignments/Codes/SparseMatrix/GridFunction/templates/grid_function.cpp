@@ -40,6 +40,7 @@ inline index_t to_vector_index(index_t i,
  * \param[in] size The size if the grid
  * \return Sparse matrix representing linear operator $L$.
  */
+/* SAM_LISTING_BEGIN_1 */
 template <int s>
 SparseMatrix<double> build_matrix(const Matrix<double, s, s> & S,
                                  const shape_t & size) {
@@ -53,15 +54,18 @@ SparseMatrix<double> build_matrix(const Matrix<double, s, s> & S,
     // TODO: build sparse matrix A
     return SparseMatrix<double>(N,N);
 }
+/* SAM_LISTING_END_1 */
 
 /* \brief Evaluate function f at the coordinates of X and store values in X
  * Computes $(X)_{i,j} = f(i-1,j-1)$ (-1 subracted because indices start at 0).
  * \param[in,out] X Matrix where values of X will be stored, must have correct size
  * \param[in] f A function taking two indices (i,j) and returning a value.
  */
+/* SAM_LISTING_BEGIN_2 */
 void eval(MatrixXd & X, std::function<double(index_t,index_t)> f) {
     // TODO:implement an evaluation function
 }
+/* SAM_LISTING_END_2 */
 
 /* \brief Computes vec(Y) = A * vec(X)
  * Multiply the sparse matrix times vec(X) and store result in vec(Y)
@@ -69,6 +73,7 @@ void eval(MatrixXd & X, std::function<double(index_t,index_t)> f) {
  * \param[in] X a n*m "grid" matrix
  * \param[out] Y a n*m "grid" matrix s.t. vec(Y) = A*vec(X)
  */
+/* SAM_LISTING_BEGIN_4 */
 void mult(const SparseMatrix<double> & A, const MatrixXd & X, MatrixXd & Y) {
     assert( A.rows() == X.rows()*X.cols() &&
             A.cols() == X.rows()*X.cols() &&
@@ -78,6 +83,7 @@ void mult(const SparseMatrix<double> & A, const MatrixXd & X, MatrixXd & Y) {
 
     // TODO: compute vec(Y) = A*vec(X)
 }
+/* SAM_LISTING_END_3 */
 
 /* \brief Solves vec(Y) = A * vec(X) for X
  * Solve the linear system given by the sparse matrix A and r.h.s Y
@@ -85,6 +91,7 @@ void mult(const SparseMatrix<double> & A, const MatrixXd & X, MatrixXd & Y) {
  * \param[in] Y a n*m "grid" matrix
  * \param[out] X a n*m "grid" matrix s.t. vec(Y) = A*vec(X)
  */
+/* SAM_LISTING_BEGIN_4 */
 void solve(const SparseMatrix<double> & A, const MatrixXd & Y, MatrixXd & X) {
     assert( A.rows() == Y.rows()*Y.cols() &&
             A.cols() == Y.rows()*Y.cols() &&
@@ -97,6 +104,7 @@ void solve(const SparseMatrix<double> & A, const MatrixXd & Y, MatrixXd & X) {
 
     // TODO: solve system vec(Y) = A*vec(X)
 }
+/* SAM_LISTING_END_4 */
 
 int main(int argc, char** argv) {
     // Size of the *grid" matrices X and Y
