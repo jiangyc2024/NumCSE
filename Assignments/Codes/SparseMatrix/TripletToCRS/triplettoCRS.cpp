@@ -8,14 +8,15 @@
 
 using namespace Eigen;
 
-#if SOLUTION
 /* @brief Structure holding a triplet in format (row, col, value)
  * For convenience, we provide a void constructor and a init constructor. All members are public
  * Used in the TripletMatrix class to provide a nice wrapper for a triplet
  * @tparam scalar represents the type of the triplet (e.g. double)
  */
+/* SAM_LISTING_BEGIN_0 */
 template <class scalar>
 struct Triplet {
+#if SOLUTION
   // Default constructor
   Triplet()
   : i(0), j(0), v(0) { }
@@ -24,12 +25,13 @@ struct Triplet {
   Triplet(std::size_t i_, std::size_t j_, scalar v_)
     : i(i_), j(j_), v(v_) { }
 
-    std::size_t i, j; // row and col
+    std::size_t i, j; // Row and col
     scalar v; // value @ (row,col)
-};
 #else // TEMPLATE
-// TODO: write Triplet if you want to use this structure for TripletMatrix
+  // TODO: write Triplet if you want to use this structure for TripletMatrix
 #endif // TEMPLATE
+};
+/* SAM_LISTING_END_0 */
 
 /* @brief Defines a matrix stored in triplet format (using the Triplet<scalar> class.
  * Triplets may be duplicated and in *any* order. If there is a multiple triplet for (row,col) pair, we assume
@@ -42,38 +44,23 @@ template <class scalar>
 struct TripletMatrix {
 #if SOLUTION
   std::size_t rows, cols; // Sizes: nrows and ncols
-  std::vector<Triplet<scalar>> triplets;
+  std::vector<Triplet<scalar> > triplets;
 #else // TEMPLATE
-    // TODO: put members here
+  // TODO: put members here
 #endif // TEMPLATE
 
-  /* @brief Converts *this to an eigen (dense) function
-   * Loops over all triplets and add value to zero matrix
-   * WARNING: May fill in a lot of nonzeros if n,m large
-   * @return Matrix of Dynamic size and scalar type
-   */
-  Matrix<scalar, -1, -1> densify() const {
-#if SOLUTION
-    Matrix<scalar, -1, -1> M = Matrix<scalar, -1, -1>::Zero(rows, cols);
-    for(auto it = triplets.begin(); it != triplets.end(); ++it) {
-      M(it->i, it->j) += it->v;
-    }
-    return M;
-#else // TEMPLATE
-    // TODO: return the "dense" version of "*this"
-#endif // TEMPLATE
-  }
+  Matrix<scalar, -1, -1> densify();
 };
 /* SAM_LISTING_END_1 */
 
+/* SAM_LISTING_BEGIN_2 */
 /* @brief Structure holding a pair column index-value to be used in CRS format
  * Provides handy constructor and comparison operators.
  * @tparam scalar represents the scalar type of the value stored (e.g. double)
  */
-/* SAM_LISTING_BEGIN_2 */
-#if SOLUTION
 template <class scalar>
 struct ColValPair {
+#if SOLUTION
   ColValPair(std::size_t col_, scalar v_)
     : col(col_), v(v_) { }
 
@@ -88,10 +75,10 @@ struct ColValPair {
 
   std::size_t col; // Col index
   scalar v; // Scalar value at col
-};
 #else // TEMPLATE
-    // TODO: write ColValPair if you want to use this structure for CRSMatrix
+  // TODO: write ColValPair if you want to use this structure for CRSMatrix
 #endif // TEMPLATE
+};
 /* SAM_LISTING_END_2 */
 
 /* @brief Defines a matrix stored in CRS format (using the ColValPair<scalar> struct.
@@ -109,28 +96,61 @@ struct CRSMatrix {
     // TODO: imsert members here
 #endif // TEMPLATE
 
-  /* @brief Converts *this to an eigen (dense) function
-   * Loops over all rows and add value at col to zero matrix
-   * WARNING: May fill in a lot of nonzeros if n,m large
-   * @return Matrix of Dynamic size and scalar type
-   */
-  Matrix<scalar, -1, -1> densify() const {
+  Matrix<scalar, -1, -1> densify();
+};
+/* SAM_LISTING_END_3 */
+
+/* @brief Converts *this to an eigen (dense) function
+ * Loops over all triplets and add value to zero matrix
+ * WARNING: May fill in a lot of nonzeros if n,m large
+ * @return Matrix of Dynamic size and scalar type
+ */
+/* SAM_LISTING_BEGIN_4 */
+TripletMatrix::Matrix<scalar, -1, -1> densify() const {
+  // Initialization
+  Matrix<scalar, -1, -1> M = Matrix<scalar, -1, -1>::Zero(rows, cols);
+
 #if SOLUTION
-    Matrix<scalar, -1, -1> M = Matrix<scalar, -1, -1>::Zero(rows, cols);
-    std::size_t i = 0;
-    for(auto it = row_pt.begin(); it != row_pt.end(); ++it) {
-      for(auto it2 = it->begin(); it2 != it->end(); ++it2) {
-        M(i, it2->col) = it2->v;
-      }
-      ++i;
+  for(auto it = triplets.begin(); it != triplets.end(); ++it) {
+    M(it->i, it->j) += it->v;
+  }
+#else // TEMPLATE
+// TODO: return the "dense" version of "*this"
+#endif // TEMPLATE
+
+  return M;
+}
+/* SAM_LISTING_END_4 */
+
+/* @brief Converts *this to an eigen (dense) function
+ * Loops over all rows and add value at col to zero matrix
+ * WARNING: May fill in a lot of nonzeros if n,m large
+ * @return Matrix of Dynamic size and scalar type
+ */
+/* SAM_LISTING_BEGIN_5 */
+CRSMatrix::Matrix<scalar, -1, -1> densify() const {
+// Initialization
+  Matrix<scalar, -1, -1> M = Matrix<scalar, -1, -1>::Zero(rows, cols);
+
+#if SOLUTION
+  std::size_t i = 0;
+  for(auto it = row_pt.begin(); it != row_pt.end(); ++it) {
+    for(auto it2 = it->begin(); it2 != it->end(); ++it2) {
+      M(i, it2->col) = it2->v;
     }
-    return M;
+    ++i;
+  }
 #else // TEMPLATE
     // TODO: convert "*this" to a dense matrix
 #endif // TEMPLATE
-  }
-};
-/* SAM_LISTING_END_3 */
+
+  return M;
+}
+/* SAM_LISTING_END_5 */
+
+
+
+
 
 /* @brief Converts a matrix given as triplet matrix to a matrix in CRS format
  * No assumption is made on the triplets, may be unsorted and/or duplicated
@@ -153,7 +173,7 @@ void tripletToCRS(const TripletMatrix<scalar>& T, CRSMatrix<scalar>& C) {
   // Loop over all triplets
   for(auto triplet_it = T.triplets.begin(); triplet_it != T.triplets.end(); ++triplet_it) {
     // Store row (containing ColValPairs for this row) inside row\_pt
-  	std::vector<ColValPair<scalar>>& row = C.row_pt.at(triplet_it->i); // Notice the reference!
+  	std::vector<ColValPair<scalar> >& row = C.row_pt.at(triplet_it->i); // Notice the reference!
     // Create a ColVal pair that must be inserted somewhere
     ColValPair<scalar> col_val(triplet_it->j, triplet_it->v);
     // Find the place (as iterator) where to insert col\_val, i.e. the first place where col\_val < C.row\_pt.at(i)
