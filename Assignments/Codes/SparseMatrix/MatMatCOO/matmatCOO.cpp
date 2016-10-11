@@ -150,7 +150,7 @@ TripVec COOprod_effic(TripVec &A, TripVec &B)
 		if(A[i_A].col() < B[i_B].row()) ++i_A;
 		else if(B[i_B].row() < A[i_A].col()) ++i_B;
 		else {
-		  intersect.insert(A[i_A].col()); // intersect.insert(B[i_B].row());
+		  intersect.insert(A[i_A].col()); // intersect.insert(B[i\_B].row());
 		  ++i_A; ++i_B;
 		}
 	}

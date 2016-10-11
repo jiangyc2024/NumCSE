@@ -63,7 +63,7 @@ SparseMatrix<double> build_matrix(const Matrix<double, s, s> & S,
 /* \brief Evaluate function f at the coordinates of X and store values in X
  * Computes $(X)_{i,j} = f(i-1,j-1)$ (-1 subracted because indices start at 0).
  * \param[in,out] X Matrix where values of X will be stored, must have correct size
- * \param[in] f A function taking two indices (i,j) and returning a value.
+ * \param[in] f A function taking two indices $(i,j)$ and returning a value.
  */
 void eval(MatrixXd & X, std::function<double(index_t,index_t)> f) {
     // TODO:implement an evaluation function

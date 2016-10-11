@@ -228,7 +228,7 @@ void tripletToCRS_sortafter(const TripletMatrix<scalar>& T, CRSMatrix<scalar>& C
           ++last_col_it;
         }
         // Remove range from next col to last col with same value
-        // WARNING: std::vector keeps the data as c-array, so mildly costly call (from col_it to end(), at most M)
+        // WARNING: std::vector keeps the data as c-array, so mildly costly call (from col\_it to end(), at most M)
         row_it->erase(col_it+1, last_col_it);
       }
     }
