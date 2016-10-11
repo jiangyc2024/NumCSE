@@ -1,0 +1,9 @@
+{
+    "author" : "",
+    "email" : "",
+    "contributors" : "",
+
+    "name": "TripletToCRS",
+    "all" : ["triplettoCRS.cpp"],
+    "lib" : ["timer.h"]
+}

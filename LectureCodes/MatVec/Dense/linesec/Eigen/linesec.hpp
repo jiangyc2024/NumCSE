@@ -1,3 +1,11 @@
+///////////////////////////////////////////////////////////////////////////
+/// Demonstration code for lecture "Numerical Methods for CSE" @ ETH Zurich
+/// (C) 2016 SAM, D-MATH
+/// Author(s): Thomas Etterlin <thomaset@student.ethz.ch>
+/// Repository: https://gitlab.math.ethz.ch/NumCSE/NumCSE/
+/// Do not remove this header.
+//////////////////////////////////////////////////////////////////////////
+
 #pragma once
 
 #include <cmath>
@@ -18,10 +26,10 @@ for(int i = 0; i < phi.size(); ++i){
 	// L2 condition number is the quotient of the maximal
 	// and minimal singular value of A
 	JacobiSVD<MatrixXd> svd(A);
-	double C2 = svd.singularValues()(0) /
+	double C2 = svd.singularValues()(0) / // \Label[line]{cmc:1}
 	svd.singularValues()(svd.singularValues().size()-1);
 	// L-infinity condition number
-	double Cinf=A.inverse().cwiseAbs().rowwise().sum().maxCoeff()* A.cwiseAbs().rowwise().sum().maxCoeff();
+	double Cinf=A.inverse().cwiseAbs().rowwise().sum().maxCoeff()* A.cwiseAbs().rowwise().sum().maxCoeff(); // \Label[line]{cmc:2}
 	res(i,0) = phi(i); res(i,1) = C2; res(i,2) = Cinf;
 }
 // Plot

@@ -1,0 +1,6 @@
+{
+    "name": "StructuredmatrixProduct",
+    "all" : ["multAmin.cpp"],
+    "solution" : ["multAmin_timing.eps"],
+    "lib" : ["timer.h"]
+}

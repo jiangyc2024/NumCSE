@@ -1,4 +1,9 @@
 {
+    "author" : "tille, lfilippo, albertig",
+    "contributors" : "",
+    "email" : "",
+    
     "name": "Strassen",
-    "all" : ["strassen.cpp"]
+    "all" : ["strassen.hpp", "test.cpp", "timing.cpp"],
+    "lib" : ["timer.h"]
 }

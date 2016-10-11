@@ -1,0 +1,8 @@
+{
+    "author" : "",
+    "email" : "",
+    "contributors" : "",
+
+    "name": "EfficientBandMult",
+    "all" : ["efficientbandmult.cpp"]
+}

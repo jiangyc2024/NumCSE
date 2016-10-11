@@ -1,0 +1,9 @@
+{
+    "author" : "Till Ehrengruber",
+    "contributors" : "",
+    "email" : "tille@student.ethz.ch",
+
+    "name": "Cancellation",
+    "all" : ["cancellation.cpp"],
+    "solutions" : ["error_cancellation.eps"]
+}
