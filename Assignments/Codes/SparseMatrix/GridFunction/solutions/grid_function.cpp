@@ -78,7 +78,7 @@ SparseMatrix<double> build_matrix(const Matrix<double, s, s> & S,
             for(index_t local_i = 0; local_i < s; ++local_i) {
                 for(index_t local_j = 0; local_j < s; ++local_j) {
                     // Index on vec(X) relative to index (i,j) and
-                    // stencil index (local_i, local_j)
+                    // stencil index (local\_i, local\_j)
                     const index_t J = to_vector_index(
                                 i + local_i - offset,
                                 j + local_j - offset,
@@ -169,7 +169,7 @@ void solve(const SparseMatrix<double> & A, const MatrixXd & Y, MatrixXd & X) {
         return;
     }
 
-    // vec(X) = A^{-1} * vec(Y)
+    // $vec(X) = A^{-1} * vec(Y)$
     // Notice how you can assign to a Map object
     Map<VectorXd>(X.data(), Y.size()) = solver.solve(
                 Map<const VectorXd>(Y.data(), Y.size())
@@ -204,10 +204,12 @@ int main(int argc, char** argv) {
     MatrixXd X(n,m), Y;
 
     // A function of indices (i,j) of the matrix X
+    /* SAM_LISTING_BEGIN_0 */
     auto f = [n,m] (index_t i , index_t j) {
         if(i > n/4 && i < n*3/4 && j > m/4 && j < m*3/4 ) return 1.;
         else return 0.;
     };
+    /* SAM_LISTING_END_0 */
 
     // Fill entries of X given f
     std::cout << "--> Evaluating f at the indices of X..." << std::endl;
