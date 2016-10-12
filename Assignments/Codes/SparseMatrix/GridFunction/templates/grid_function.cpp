@@ -133,10 +133,12 @@ int main(int argc, char** argv) {
     MatrixXd X(n,m), Y;
 
     // A function of indices (i,j) of the matrix X
+    /* SAM_LISTING_BEGIN_0 */
     auto f = [n,m] (index_t i , index_t j) {
         if(i > n/4 && i < n*3/4 && j > m/4 && j < m*3/4 ) return 1.;
         else return 0.;
     };
+    /* SAM_LISTING_END_0 */
 
     // Fill entries of X given f
     std::cout << "--> Evaluating f at the indices of X..." << std::endl;
