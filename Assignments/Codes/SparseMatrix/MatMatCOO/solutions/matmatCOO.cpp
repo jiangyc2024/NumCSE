@@ -127,8 +127,8 @@ TripVec COOprod_effic(TripVec &A, TripVec &B)
 	// Initialization
     TripVec C;
 	
-	std::sort(A.begin(), A.end(), [&](const Trip& a1, const Trip& a2) {return a1.col() < a2.col();});
-	std::sort(B.begin(), B.end(), [&](const Trip& b1, const Trip& b2) {return b1.row() < b2.row();});
+	std::sort(A.begin(), A.end(), [](const Trip& a1, const Trip& a2) {return a1.col() < a2.col();});
+	std::sort(B.begin(), B.end(), [](const Trip& b1, const Trip& b2) {return b1.row() < b2.row();});
 	
 	size_t i_A = 0, i_B = 0;
 	std::set<int> intersect;
@@ -147,9 +147,9 @@ TripVec COOprod_effic(TripVec &A, TripVec &B)
 	for(auto i: intersect) {
 
 		A_idx = std::find_if(A_idx, A.end(),
-					[&](const Trip& a){return a.col() == i;});
+					[](const Trip& a){return a.col() == i;});
 		B_idx = std::find_if(B_idx, B.end(),
-					[&](const Trip& b){return b.row() == i;});
+					[](const Trip& b){return b.row() == i;});
 		
 		TripVec::iterator A_it;
 		TripVec::iterator B_it;
