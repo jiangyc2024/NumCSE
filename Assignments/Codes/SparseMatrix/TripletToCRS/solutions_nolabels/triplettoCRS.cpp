@@ -29,7 +29,7 @@ struct Triplet {
   Triplet(std::size_t i_, std::size_t j_, scalar v_)
     : i(i_), j(j_), v(v_) { }
 
-    std::size_t i, j; // row and col
+    std::size_t i, j; // Row and col
     scalar v; // value @ (row,col)
 };
 
@@ -42,20 +42,9 @@ struct Triplet {
 template <class scalar>
 struct TripletMatrix {
   std::size_t rows, cols; // Sizes: nrows and ncols
-  std::vector<Triplet<scalar>> triplets;
+  std::vector<Triplet<scalar> > triplets;
 
-  /* @brief Converts *this to an eigen (dense) function
-   * Loops over all triplets and add value to zero matrix
-   * WARNING: May fill in a lot of nonzeros if n,m large
-   * @return Matrix of Dynamic size and scalar type
-   */
-  Matrix<scalar, -1, -1> densify() const {
-    Matrix<scalar, -1, -1> M = Matrix<scalar, -1, -1>::Zero(rows, cols);
-    for(auto it = triplets.begin(); it != triplets.end(); ++it) {
-      M(it->i, it->j) += it->v;
-    }
-    return M;
-  }
+  Matrix<scalar, -1, -1> densify();
 };
 
 /* @brief Structure holding a pair column index-value to be used in CRS format
@@ -90,29 +79,50 @@ struct CRSMatrix {
   std::size_t rows, cols; // Size of the matrix rows, cols
   std::vector< std::vector< ColValPair<scalar> > > row_pt; // Vector containing, for each row, al vector of (col, value) pairs (CRS format)
 
-  /* @brief Converts *this to an eigen (dense) function
-   * Loops over all rows and add value at col to zero matrix
-   * WARNING: May fill in a lot of nonzeros if n,m large
-   * @return Matrix of Dynamic size and scalar type
-   */
-  Matrix<scalar, -1, -1> densify() const {
-    Matrix<scalar, -1, -1> M = Matrix<scalar, -1, -1>::Zero(rows, cols);
-    std::size_t i = 0;
-    for(auto it = row_pt.begin(); it != row_pt.end(); ++it) {
-      for(auto it2 = it->begin(); it2 != it->end(); ++it2) {
-        M(i, it2->col) = it2->v;
-      }
-      ++i;
-    }
-    return M;
-  }
+  Matrix<scalar, -1, -1> densify();
 };
+
+/* @brief Converts *this to an eigen (dense) function
+ * Loops over all triplets and add value to zero matrix
+ * WARNING: May fill in a lot of nonzeros if n,m large
+ * @return Matrix of Dynamic size and scalar type
+ */
+TripletMatrix::Matrix<scalar, -1, -1> densify() const {
+  // Initialization
+  Matrix<scalar, -1, -1> M = Matrix<scalar, -1, -1>::Zero(rows, cols);
+
+  for(auto it = triplets.begin(); it != triplets.end(); ++it) {
+    M(it->i, it->j) += it->v;
+  }
+
+  return M;
+}
+
+/* @brief Converts *this to an eigen (dense) function
+ * Loops over all rows and add value at col to zero matrix
+ * WARNING: May fill in a lot of nonzeros if n,m large
+ * @return Matrix of Dynamic size and scalar type
+ */
+CRSMatrix::Matrix<scalar, -1, -1> densify() const {
+// Initialization
+  Matrix<scalar, -1, -1> M = Matrix<scalar, -1, -1>::Zero(rows, cols);
+
+  std::size_t i = 0;
+  for(auto it = row_pt.begin(); it != row_pt.end(); ++it) {
+    for(auto it2 = it->begin(); it2 != it->end(); ++it2) {
+      M(i, it2->col) = it2->v;
+    }
+    ++i;
+  }
+
+  return M;
+}
 
 /* @brief Converts a matrix given as triplet matrix to a matrix in CRS format
  * No assumption is made on the triplets, may be unsorted and/or duplicated
  * In case of duplicated triplets, values are added toghether
  * The output CRS matrix may be empty (in that case T = C) or may be already filled with values (in which case C += T)
- * This version inserts the ColValParis already sorted in the list
+ * This version inserts the pairs ColVal already sorted in the list
  * Complexity: Loops over all triplets (lets say k) and look up over all columns of the row (say $n_i$), performing a
  * linear search and an insertion (complexity $O(n_i)$)
  * Assuming $n_i$ is bounded by $n$ small, complexity is $k*n$, otherwise $k^2$
@@ -127,7 +137,7 @@ void tripletToCRS(const TripletMatrix<scalar>& T, CRSMatrix<scalar>& C) {
   // Loop over all triplets
   for(auto triplet_it = T.triplets.begin(); triplet_it != T.triplets.end(); ++triplet_it) {
     // Store row (containing ColValPairs for this row) inside row\_pt
-  	std::vector<ColValPair<scalar>>& row = C.row_pt.at(triplet_it->i); // Notice the reference!
+  	std::vector<ColValPair<scalar> >& row = C.row_pt.at(triplet_it->i); // Notice the reference!
     // Create a ColVal pair that must be inserted somewhere
     ColValPair<scalar> col_val(triplet_it->j, triplet_it->v);
     // Find the place (as iterator) where to insert col\_val, i.e. the first place where col\_val < C.row\_pt.at(i)
@@ -148,7 +158,7 @@ void tripletToCRS(const TripletMatrix<scalar>& T, CRSMatrix<scalar>& C) {
  * No assumption is made on the triplets, may be unsorted and/or duplicated
  * In case of duplicated triplets, values are added toghether
  * The output CRS matrix may be empty (in that case T = C) or may be already filled with values (in which case C += T)
- * This version inserts all the triplets (push_back) then sorts eatch row and cumsum al the duplicated col values
+ * This version inserts all the triplets (push_back), then sorts each row and cumsum all the duplicated col values
  * Complexity: Loops over all triplets (lets say k) and do a cheap (amortized) o(1) push back (complexity k*1). Then sorts an array
  * of rows (ith quicksort complexity k * log(k))
  */
@@ -180,7 +190,7 @@ void tripletToCRS_sortafter(const TripletMatrix<scalar>& T, CRSMatrix<scalar>& C
           ++last_col_it;
         }
         // Remove range from next col to last col with same value
-        // WARNING: std::vector keeps the data as c-array, so mildly costly call (from col_it to end(), at most M)
+        // WARNING: std::vector keeps the data as c-array, so mildly costly call (from col\_it to end(), at most M)
         row_it->erase(col_it+1, last_col_it);
       }
     }
@@ -226,16 +236,10 @@ int main() {
   std::cout << "***Test conversion with random matrices***" << std::endl;
   tripletToCRS(T, C);
   std::cout << "--> Frobenius norm of T - C: " << (T.densify()-C.densify()).norm() << std::endl;
-  // std::cout << "T = " << std::endl
-            // << T << std::endl;
-  // std::cout << "C = " << std::endl
-            // << C << std::endl;
 
   // Alternative solution
   tripletToCRS_sortafter(T, D);
   std::cout << "--> Frobenius norm of T - D: " << (T.densify()-D.densify()).norm() << std::endl;
-  // std::cout << "D = "
-            // << std::endl << D << std::endl;
 
   // Big benefit of how we defined our functions: can add new triplets to the old ones:
   std::cout << "***Test addition with random matrices***" << std::endl;
@@ -299,7 +303,7 @@ int main() {
       tripletToCRS_sortafter(A, E);
     }
     sortafter_timer.stop();
-    std::cout << "Insertsort took: " << insertsort_timer.duration() << " s." << std::endl;
-    std::cout << "Sortafter took:  " << sortafter_timer.duration()  << " s." << std::endl;
+    std::cout << "InsertSort took: " << insertsort_timer.duration() << " s." << std::endl;
+    std::cout << "SortAfter took:  " << sortafter_timer.duration()  << " s." << std::endl;
   }
 }

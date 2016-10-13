@@ -104,7 +104,7 @@ int main() {
     unsigned int repeats = 3;
 
 #if INTERNAL
-    // sizes will contain the size of the matrix
+    // sizes   will contain the size of the matrix
     // timings will contain the runtimes in seconds
     std::vector<double> sizes, timings, timings_eff;
 #endif
@@ -138,7 +138,7 @@ int main() {
 
 #if INTERNAL
         // Save results in a vector
-        sizes.push_back(n); // save vector sizes
+        sizes.push_back(n); // Save vector sizes
         timings.push_back(tm_naive.min());
         timings_eff.push_back(tm_fast.min());
 #endif
