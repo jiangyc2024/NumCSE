@@ -78,7 +78,7 @@ int main() {
 	int * col_ptr_2;
 
 	// Caste $A$ to 'SparseMatrix' and compress it to store the matrix in CCS format
-	SparseMatrix <double> As = A.sparseView();
+	SparseMatrix<double> As = A.sparseView();
 	As.makeCompressed();
 
 	val_2 = As.valuePtr(); // Pointer to values
