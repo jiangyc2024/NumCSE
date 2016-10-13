@@ -74,7 +74,8 @@ void eval(MatrixXd & X, std::function<double(index_t,index_t)> f) {
  * \param[out] Y a n*m "grid" matrix s.t. vec(Y) = A*vec(X)
  */
 /* SAM_LISTING_BEGIN_3 */
-void mult(const SparseMatrix<double> & A, const MatrixXd & X, MatrixXd & Y) {
+void mult(const SparseMatrix<double> & A,
+          const MatrixXd & X, MatrixXd & Y) {
     assert( A.rows() == X.rows()*X.cols() &&
             A.cols() == X.rows()*X.cols() &&
             "Inconsistent size of A!");
@@ -92,7 +93,8 @@ void mult(const SparseMatrix<double> & A, const MatrixXd & X, MatrixXd & Y) {
  * \param[out] X a n*m "grid" matrix s.t. vec(Y) = A*vec(X)
  */
 /* SAM_LISTING_BEGIN_4 */
-void solve(const SparseMatrix<double> & A, const MatrixXd & Y, MatrixXd & X) {
+void solve(const SparseMatrix<double> & A,
+           const MatrixXd & Y, MatrixXd & X) {
     assert( A.rows() == Y.rows()*Y.cols() &&
             A.cols() == Y.rows()*Y.cols() &&
             "Inconsistent size of A!");
@@ -150,12 +152,9 @@ int main(int argc, char** argv) {
 
     // Compute A^{-1}*vec(Y)
     std::cout << "--> Solving A*vec(X) = vec(Y)..." << std::endl;
-//    solve(A, X, Y);
-//    Y = X;
+    solve(A, X, Y);
 
-    std::cout << Y;
-
-    // Plot values of X
+    // Plot values of Y
     mglData Xd(Y.rows(), Y.cols(), Y.data());
 
     mglGraph gr;
