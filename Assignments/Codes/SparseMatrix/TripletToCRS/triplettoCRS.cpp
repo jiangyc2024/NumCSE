@@ -53,21 +53,21 @@ struct TripletMatrix {
 };
 /* SAM_LISTING_END_1 */
 
-/* SAM_LISTING_BEGIN_2 */
 /* @brief Structure holding a pair column index-value to be used in CRS format
  * Provides handy constructor and comparison operators.
  * @tparam scalar represents the scalar type of the value stored (e.g. double)
  */
+/* SAM_LISTING_BEGIN_2 */
 template <typename scalar>
 struct ColValPair {
 #if SOLUTION
   ColValPair(std::size_t col_, scalar v_)
     : col(col_), v(v_) { }
 
-  /* @brief Comparison operator for std::sort and std::lower\_bound
-   * Basic sorting operator < for use with std::functions (i.e. for ordering according to first component (col)
-   * We keep the column values sorted, either by sorting after insertion of by sorted insertion
-   * @return true if this->col < other.col
+  /* Comparison operator for std::sort and std::lower\_bound:
+     Basic sorting operator < to use with std::functions (i.e. for ordering according to first component col).
+     We keep the column values sorted, either by sorting after insertion of by sorted insertion.
+     It returns true if this->col < other.col.
    */
   bool operator<(const ColValPair& other) const {
     return this->col < other.col;
