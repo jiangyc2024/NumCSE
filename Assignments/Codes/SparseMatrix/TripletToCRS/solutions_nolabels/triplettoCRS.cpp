@@ -17,7 +17,7 @@ using namespace Eigen;
 /* @brief Structure holding a triplet in format (row, col, value)
  * For convenience, we provide a void constructor and a init constructor. All members are public
  * Used in the TripletMatrix class to provide a nice wrapper for a triplet
- * @tparam scalar represents the type of the triplet (e.g. double)
+ * @tparam scalar Type of the triplet (e.g. double)
  */
 template <typename scalar>
 struct Triplet {
@@ -30,14 +30,14 @@ struct Triplet {
     : i(i_), j(j_), v(v_) { }
 
     std::size_t i, j; // Row and col
-    scalar v; // value @ (row,col)
+    scalar v; // Value in (row,col)
 };
 
-/* @brief Defines a matrix stored in triplet format (using the Triplet<scalar> class.
- * Triplets may be duplicated and in *any* order. If there is a multiple triplet for (row,col) pair, we assume
- * that the values are intended to be added together
- * Also stores dimension
- * @tparam scalar represents the scalar type of the matrix (and of the triplet) (e.g. double)
+/* @brief Defines a matrix stored in triplet format (using the Triplet<scalar> class).
+ * Triplets may be duplicated and in *any* order.
+ * If there is a multiple triplet for (row,col) pair, we assume that the values are intended to be added together.
+ * Dimensions are also stored to simplify the code.
+ * @tparam scalar Type of the matrix and triplets (e.g. double)
  */
 template <typename scalar>
 struct TripletMatrix {
@@ -47,37 +47,17 @@ struct TripletMatrix {
   MatrixXd densify() const;
 };
 
-/* @brief Structure holding a pair column index-value to be used in CRS format
- * Provides handy constructor and comparison operators.
- * @tparam scalar represents the scalar type of the value stored (e.g. double)
- */
-template <typename scalar>
-struct ColValPair {
-  ColValPair(std::size_t col_, scalar v_)
-    : col(col_), v(v_) { }
 
-  /* @brief Comparison operator for std::sort and std::lower\_bound
-   * Basic sorting operator < for use with std::functions (i.e. for ordering according to first component (col)
-   * We keep the column values sorted, either by sorting after insertion of by sorted insertion
-   * @return true if this->col < other.col
-   */
-  bool operator<(const ColValPair& other) const {
-    return this->col < other.col;
-  }
-
-  std::size_t col; // Col index
-  scalar v; // Scalar value at col
-};
-
-/* @brief Defines a matrix stored in CRS format (using the ColValPair<scalar> struct.
- * The row_pt contains the data, indexed by row and column position
- * Also stores dimension
- * @tparam scalar represents the scalar type of the matrix (and of the ColValPair) (e.g. double)
+/* @brief Defines a matrix stored in CRS format.
+ * Dimensions are also stored to simplify the code.
+ * @tparam scalar Type of the matrix and CRS vectors (e.g. double)
  */
 template <typename scalar>
 struct CRSMatrix {
-  std::size_t rows, cols; // Size of the matrix rows, cols
-  std::vector< std::vector< ColValPair<scalar> > > row_pt; // Vector containing, for each row, al vector of (col, value) pairs (CRS format)
+  std::size_t rows, cols; // Sizes: nrows and ncols
+  std::vector<scalar_t> val;
+  std::vector<size_t> col_ind;
+  std::vector<size_t> row_ptr;
 
   MatrixXd densify() const;
 };
@@ -89,8 +69,9 @@ struct CRSMatrix {
  */
 template <class scalar>
 MatrixXd TripletMatrix<scalar>::densify() const {
+  MatrixXd M;
   // Initialization
-  MatrixXd M = MatrixXd::Zero(rows, cols);
+  M = MatrixXd::Zero(rows, cols);
 
   for(auto it = triplets.begin(); it != triplets.end(); ++it) {
     M(it->i, it->j) += it->v;
@@ -106,8 +87,9 @@ MatrixXd TripletMatrix<scalar>::densify() const {
  */
 template <typename scalar>
 MatrixXd CRSMatrix<scalar>::densify() const {
+  MatrixXd M;
 // Initialization
-  MatrixXd M = MatrixXd::Zero(rows, cols);
+  M = MatrixXd::Zero(rows, cols);
 
   std::size_t i = 0;
   for(auto it = row_pt.begin(); it != row_pt.end(); ++it) {

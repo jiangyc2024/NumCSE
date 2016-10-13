@@ -17,18 +17,18 @@ using namespace Eigen;
 /* @brief Structure holding a triplet in format (row, col, value)
  * For convenience, we provide a void constructor and a init constructor. All members are public
  * Used in the TripletMatrix class to provide a nice wrapper for a triplet
- * @tparam scalar represents the type of the triplet (e.g. double)
+ * @tparam scalar Type of the triplet (e.g. double)
  */
 template <typename scalar>
 struct Triplet {
   // TODO: write Triplet if you want to use this structure for TripletMatrix
 };
 
-/* @brief Defines a matrix stored in triplet format (using the Triplet<scalar> class.
- * Triplets may be duplicated and in *any* order. If there is a multiple triplet for (row,col) pair, we assume
- * that the values are intended to be added together
- * Also stores dimension
- * @tparam scalar represents the scalar type of the matrix (and of the triplet) (e.g. double)
+/* @brief Defines a matrix stored in triplet format (using the Triplet<scalar> class).
+ * Triplets may be duplicated and in *any* order.
+ * If there is a multiple triplet for (row,col) pair, we assume that the values are intended to be added together.
+ * Dimensions are also stored to simplify the code.
+ * @tparam scalar Type of the matrix and triplets (e.g. double)
  */
 template <typename scalar>
 struct TripletMatrix {
@@ -37,23 +37,14 @@ struct TripletMatrix {
   MatrixXd densify() const;
 };
 
-/* @brief Structure holding a pair column index-value to be used in CRS format
- * Provides handy constructor and comparison operators.
- * @tparam scalar represents the scalar type of the value stored (e.g. double)
- */
-template <typename scalar>
-struct ColValPair {
-  // TODO: write ColValPair if you want to use this structure for CRSMatrix
-};
 
-/* @brief Defines a matrix stored in CRS format (using the ColValPair<scalar> struct.
- * The row_pt contains the data, indexed by row and column position
- * Also stores dimension
- * @tparam scalar represents the scalar type of the matrix (and of the ColValPair) (e.g. double)
+/* @brief Defines a matrix stored in CRS format.
+ * Dimensions are also stored to simplify the code.
+ * @tparam scalar Type of the matrix and CRS vectors (e.g. double)
  */
 template <typename scalar>
 struct CRSMatrix {
-    // TODO: imsert members here
+    // TODO: put members here
 
   MatrixXd densify() const;
 };
@@ -65,9 +56,7 @@ struct CRSMatrix {
  */
 template <class scalar>
 MatrixXd TripletMatrix<scalar>::densify() const {
-  // Initialization
-  MatrixXd M = MatrixXd::Zero(rows, cols);
-
+  MatrixXd M;
 // TODO: return the "dense" version of "*this"
 
   return M;
@@ -80,9 +69,7 @@ MatrixXd TripletMatrix<scalar>::densify() const {
  */
 template <typename scalar>
 MatrixXd CRSMatrix<scalar>::densify() const {
-// Initialization
-  MatrixXd M = MatrixXd::Zero(rows, cols);
-
+  MatrixXd M;
     // TODO: convert "*this" to a dense matrix
 
   return M;
@@ -99,11 +86,6 @@ MatrixXd CRSMatrix<scalar>::densify() const {
  */
 template <typename scalar>
 void tripletToCRS(const TripletMatrix<scalar>& T, CRSMatrix<scalar>& C) {
-  // Copy sizes and reserve memory for rows
-  C.rows = T.rows;
-  C.cols = T.cols;
-  C.row_pt.resize(C.rows);
-
     // TODO: conversion function
 }
 
@@ -117,11 +99,6 @@ void tripletToCRS(const TripletMatrix<scalar>& T, CRSMatrix<scalar>& C) {
  */
 template <typename scalar>
 void tripletToCRS_sortafter(const TripletMatrix<scalar>& T, CRSMatrix<scalar>& C) {
-  // Copy dimensions and reserve known space
-  C.rows = T.rows;
-  C.cols = T.cols;
-  C.row_pt.resize(C.rows);
-
     // TODO: conversion function (alternative)
 }
 
