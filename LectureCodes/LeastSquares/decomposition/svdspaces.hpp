@@ -46,7 +46,7 @@ MatrixXd nullspace(const MatrixXd &A, double tol = EPS) {
 /* SAM_LISTING_END_2 */
 
 /* SAM_LISTING_BEGIN_3 */
-// Computation of an ONB of the kernel of a matrix
+// Computation of an ONB of the image space of a matrix
 MatrixXd rangespace(const MatrixXd &A, double tol = EPS) {
   using index_t = MatrixXd::Index;
   Eigen::JacobiSVD<MatrixXd> svd(A,Eigen::ComputeFullV);
