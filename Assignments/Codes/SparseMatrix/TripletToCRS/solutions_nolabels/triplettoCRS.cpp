@@ -19,7 +19,7 @@ using namespace Eigen;
  * Used in the TripletMatrix class to provide a nice wrapper for a triplet
  * @tparam scalar represents the type of the triplet (e.g. double)
  */
-template <class scalar>
+template <typename scalar>
 struct Triplet {
   // Default constructor
   Triplet()
@@ -39,19 +39,19 @@ struct Triplet {
  * Also stores dimension
  * @tparam scalar represents the scalar type of the matrix (and of the triplet) (e.g. double)
  */
-template <class scalar>
+template <typename scalar>
 struct TripletMatrix {
   std::size_t rows, cols; // Sizes: nrows and ncols
   std::vector<Triplet<scalar> > triplets;
 
-  MatrixXd densify();
+  MatrixXd densify() const;
 };
 
 /* @brief Structure holding a pair column index-value to be used in CRS format
  * Provides handy constructor and comparison operators.
  * @tparam scalar represents the scalar type of the value stored (e.g. double)
  */
-template <class scalar>
+template <typename scalar>
 struct ColValPair {
   ColValPair(std::size_t col_, scalar v_)
     : col(col_), v(v_) { }
@@ -74,12 +74,12 @@ struct ColValPair {
  * Also stores dimension
  * @tparam scalar represents the scalar type of the matrix (and of the ColValPair) (e.g. double)
  */
-template <class scalar>
+template <typename scalar>
 struct CRSMatrix {
   std::size_t rows, cols; // Size of the matrix rows, cols
   std::vector< std::vector< ColValPair<scalar> > > row_pt; // Vector containing, for each row, al vector of (col, value) pairs (CRS format)
 
-  MatrixXd densify();
+  MatrixXd densify() const;
 };
 
 /* @brief Converts *this to an eigen (dense) function
@@ -87,7 +87,8 @@ struct CRSMatrix {
  * WARNING: May fill in a lot of nonzeros if n,m large
  * @return Matrix of Dynamic size and scalar type
  */
-MatrixXd TripletMatrix::densify() const {
+template <class scalar>
+MatrixXd TripletMatrix<scalar>::densify() const {
   // Initialization
   MatrixXd M = MatrixXd::Zero(rows, cols);
 
@@ -103,7 +104,8 @@ MatrixXd TripletMatrix::densify() const {
  * WARNING: May fill in a lot of nonzeros if n,m large
  * @return Matrix of Dynamic size and scalar type
  */
-MatrixXd CRSMatrix::densify() const {
+template <typename scalar>
+MatrixXd CRSMatrix<scalar>::densify() const {
 // Initialization
   MatrixXd M = MatrixXd::Zero(rows, cols);
 
@@ -127,7 +129,7 @@ MatrixXd CRSMatrix::densify() const {
  * linear search and an insertion (complexity $O(n_i)$)
  * Assuming $n_i$ is bounded by $n$ small, complexity is $k*n$, otherwise $k^2$
  */
-template <class scalar>
+template <typename scalar>
 void tripletToCRS(const TripletMatrix<scalar>& T, CRSMatrix<scalar>& C) {
   // Copy sizes and reserve memory for rows
   C.rows = T.rows;
@@ -162,7 +164,7 @@ void tripletToCRS(const TripletMatrix<scalar>& T, CRSMatrix<scalar>& C) {
  * Complexity: Loops over all triplets (lets say k) and do a cheap (amortized) o(1) push back (complexity k*1). Then sorts an array
  * of rows (ith quicksort complexity k * log(k))
  */
-template <class scalar>
+template <typename scalar>
 void tripletToCRS_sortafter(const TripletMatrix<scalar>& T, CRSMatrix<scalar>& C) {
   // Copy dimensions and reserve known space
   C.rows = T.rows;

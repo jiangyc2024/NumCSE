@@ -14,7 +14,7 @@ using namespace Eigen;
  * @tparam scalar represents the type of the triplet (e.g. double)
  */
 /* SAM_LISTING_BEGIN_0 */
-template <class scalar>
+template <typename scalar>
 struct Triplet {
 #if SOLUTION
   // Default constructor
@@ -40,7 +40,7 @@ struct Triplet {
  * @tparam scalar represents the scalar type of the matrix (and of the triplet) (e.g. double)
  */
 /* SAM_LISTING_BEGIN_1 */
-template <class scalar>
+template <typename scalar>
 struct TripletMatrix {
 #if SOLUTION
   std::size_t rows, cols; // Sizes: nrows and ncols
@@ -58,7 +58,7 @@ struct TripletMatrix {
  * Provides handy constructor and comparison operators.
  * @tparam scalar represents the scalar type of the value stored (e.g. double)
  */
-template <class scalar>
+template <typename scalar>
 struct ColValPair {
 #if SOLUTION
   ColValPair(std::size_t col_, scalar v_)
@@ -87,7 +87,7 @@ struct ColValPair {
  * @tparam scalar represents the scalar type of the matrix (and of the ColValPair) (e.g. double)
  */
 /* SAM_LISTING_BEGIN_3 */
-template <class scalar>
+template <typename scalar>
 struct CRSMatrix {
 #if SOLUTION
   std::size_t rows, cols; // Size of the matrix rows, cols
@@ -108,10 +108,11 @@ struct CRSMatrix {
 /* SAM_LISTING_BEGIN_4 */
 template <class scalar>
 MatrixXd TripletMatrix<scalar>::densify() const {
-  // Initialization
-  MatrixXd M = MatrixXd::Zero(rows, cols);
-
+  MatrixXd M;
 #if SOLUTION
+  // Initialization
+  M = MatrixXd::Zero(rows, cols);
+
   for(auto it = triplets.begin(); it != triplets.end(); ++it) {
     M(it->i, it->j) += it->v;
   }
@@ -129,12 +130,13 @@ MatrixXd TripletMatrix<scalar>::densify() const {
  * @return Matrix of Dynamic size and scalar type
  */
 /* SAM_LISTING_BEGIN_5 */
-template <class scalar>
+template <typename scalar>
 MatrixXd CRSMatrix<scalar>::densify() const {
-// Initialization
-  MatrixXd M = MatrixXd::Zero(rows, cols);
-
+  MatrixXd M;
 #if SOLUTION
+// Initialization
+  M = MatrixXd::Zero(rows, cols);
+
   std::size_t i = 0;
   for(auto it = row_pt.begin(); it != row_pt.end(); ++it) {
     for(auto it2 = it->begin(); it2 != it->end(); ++it2) {
@@ -160,14 +162,14 @@ MatrixXd CRSMatrix<scalar>::densify() const {
  * Assuming $n_i$ is bounded by $n$ small, complexity is $k*n$, otherwise $k^2$
  */
 /* SAM_LISTING_BEGIN_6 */
-template <class scalar>
+template <typename scalar>
 void tripletToCRS(const TripletMatrix<scalar>& T, CRSMatrix<scalar>& C) {
+#if SOLUTION
   // Copy sizes and reserve memory for rows
   C.rows = T.rows;
   C.cols = T.cols;
   C.row_pt.resize(C.rows);
 
-#if SOLUTION
   // Loop over all triplets
   for(auto triplet_it = T.triplets.begin(); triplet_it != T.triplets.end(); ++triplet_it) {
     // Store row (containing ColValPairs for this row) inside row\_pt
@@ -201,14 +203,14 @@ void tripletToCRS(const TripletMatrix<scalar>& T, CRSMatrix<scalar>& C) {
  * of rows (ith quicksort complexity k * log(k))
  */
 /* SAM_LISTING_BEGIN_7 */
-template <class scalar>
+template <typename scalar>
 void tripletToCRS_sortafter(const TripletMatrix<scalar>& T, CRSMatrix<scalar>& C) {
+#if SOLUTION
   // Copy dimensions and reserve known space
   C.rows = T.rows;
   C.cols = T.cols;
   C.row_pt.resize(C.rows);
 
-#if SOLUTION
   // Loops over all triplets and push them at the ritgh place (cheap)
   for(auto triplets_it = T.triplets.begin(); triplets_it != T.triplets.end(); ++triplets_it) {
     ColValPair<scalar> cp(triplets_it->j, triplets_it->v);
