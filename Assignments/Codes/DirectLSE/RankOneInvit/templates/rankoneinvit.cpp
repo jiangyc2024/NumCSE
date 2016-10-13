@@ -53,8 +53,8 @@ void rankoneinvit_fast(const VectorXd & d,
 }
 /* SAM_LISTING_END_1 */
 
-/* SAM_LISTING_BEGIN_2*/
 int main() {
+/* SAM_LISTING_BEGIN_2*/
     // Initialization
     srand((unsigned int) time(0));
     double tol = 1e-3;
@@ -104,5 +104,5 @@ int main() {
                   << tm_fast.min()
                   << " s for n = " << n << std::endl;
     }
-}
 /* SAM_LISTING_END_2 */
+}
