@@ -49,7 +49,7 @@ struct TripletMatrix {
   // TODO: put members here
 #endif // TEMPLATE
 
-  Matrix<scalar, -1, -1> densify();
+  MatrixXd densify() const;
 };
 /* SAM_LISTING_END_1 */
 
@@ -96,7 +96,7 @@ struct CRSMatrix {
     // TODO: imsert members here
 #endif // TEMPLATE
 
-  Matrix<scalar, -1, -1> densify();
+  MatrixXd densify() const;
 };
 /* SAM_LISTING_END_3 */
 
@@ -106,9 +106,10 @@ struct CRSMatrix {
  * @return Matrix of Dynamic size and scalar type
  */
 /* SAM_LISTING_BEGIN_4 */
-TripletMatrix::Matrix<scalar, -1, -1> densify() const {
+template <class scalar>
+MatrixXd TripletMatrix<scalar>::densify() const {
   // Initialization
-  Matrix<scalar, -1, -1> M = Matrix<scalar, -1, -1>::Zero(rows, cols);
+  MatrixXd M = MatrixXd::Zero(rows, cols);
 
 #if SOLUTION
   for(auto it = triplets.begin(); it != triplets.end(); ++it) {
@@ -128,9 +129,10 @@ TripletMatrix::Matrix<scalar, -1, -1> densify() const {
  * @return Matrix of Dynamic size and scalar type
  */
 /* SAM_LISTING_BEGIN_5 */
-CRSMatrix::Matrix<scalar, -1, -1> densify() const {
+template <class scalar>
+MatrixXd CRSMatrix<scalar>::densify() const {
 // Initialization
-  Matrix<scalar, -1, -1> M = Matrix<scalar, -1, -1>::Zero(rows, cols);
+  MatrixXd M = MatrixXd::Zero(rows, cols);
 
 #if SOLUTION
   std::size_t i = 0;

@@ -34,7 +34,7 @@ template <class scalar>
 struct TripletMatrix {
   // TODO: put members here
 
-  Matrix<scalar, -1, -1> densify();
+  MatrixXd densify();
 };
 
 /* @brief Structure holding a pair column index-value to be used in CRS format
@@ -55,7 +55,7 @@ template <class scalar>
 struct CRSMatrix {
     // TODO: imsert members here
 
-  Matrix<scalar, -1, -1> densify();
+  MatrixXd densify();
 };
 
 /* @brief Converts *this to an eigen (dense) function
@@ -63,9 +63,9 @@ struct CRSMatrix {
  * WARNING: May fill in a lot of nonzeros if n,m large
  * @return Matrix of Dynamic size and scalar type
  */
-TripletMatrix::Matrix<scalar, -1, -1> densify() const {
+MatrixXd TripletMatrix::densify() const {
   // Initialization
-  Matrix<scalar, -1, -1> M = Matrix<scalar, -1, -1>::Zero(rows, cols);
+  MatrixXd M = MatrixXd::Zero(rows, cols);
 
 // TODO: return the "dense" version of "*this"
 
@@ -77,9 +77,9 @@ TripletMatrix::Matrix<scalar, -1, -1> densify() const {
  * WARNING: May fill in a lot of nonzeros if n,m large
  * @return Matrix of Dynamic size and scalar type
  */
-CRSMatrix::Matrix<scalar, -1, -1> densify() const {
+MatrixXd CRSMatrix::densify() const {
 // Initialization
-  Matrix<scalar, -1, -1> M = Matrix<scalar, -1, -1>::Zero(rows, cols);
+  MatrixXd M = MatrixXd::Zero(rows, cols);
 
     // TODO: convert "*this" to a dense matrix
 

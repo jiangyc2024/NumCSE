@@ -31,7 +31,7 @@ template <class scalar>
 struct TripletMatrix {
   // TODO: put members here
 
-  Matrix<scalar, -1, -1> densify();
+  MatrixXd densify();
 };
 /* SAM_LISTING_END_1 */
 
@@ -56,7 +56,7 @@ template <class scalar>
 struct CRSMatrix {
     // TODO: imsert members here
 
-  Matrix<scalar, -1, -1> densify();
+  MatrixXd densify();
 };
 /* SAM_LISTING_END_3 */
 
@@ -66,9 +66,9 @@ struct CRSMatrix {
  * @return Matrix of Dynamic size and scalar type
  */
 /* SAM_LISTING_BEGIN_4 */
-TripletMatrix::Matrix<scalar, -1, -1> densify() const {
+MatrixXd TripletMatrix::densify() const {
   // Initialization
-  Matrix<scalar, -1, -1> M = Matrix<scalar, -1, -1>::Zero(rows, cols);
+  MatrixXd M = MatrixXd::Zero(rows, cols);
 
 // TODO: return the "dense" version of "*this"
 
@@ -82,9 +82,9 @@ TripletMatrix::Matrix<scalar, -1, -1> densify() const {
  * @return Matrix of Dynamic size and scalar type
  */
 /* SAM_LISTING_BEGIN_5 */
-CRSMatrix::Matrix<scalar, -1, -1> densify() const {
+MatrixXd CRSMatrix::densify() const {
 // Initialization
-  Matrix<scalar, -1, -1> M = Matrix<scalar, -1, -1>::Zero(rows, cols);
+  MatrixXd M = MatrixXd::Zero(rows, cols);
 
     // TODO: convert "*this" to a dense matrix
 

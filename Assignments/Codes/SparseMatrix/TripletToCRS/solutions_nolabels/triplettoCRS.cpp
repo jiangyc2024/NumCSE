@@ -44,7 +44,7 @@ struct TripletMatrix {
   std::size_t rows, cols; // Sizes: nrows and ncols
   std::vector<Triplet<scalar> > triplets;
 
-  Matrix<scalar, -1, -1> densify();
+  MatrixXd densify();
 };
 
 /* @brief Structure holding a pair column index-value to be used in CRS format
@@ -79,7 +79,7 @@ struct CRSMatrix {
   std::size_t rows, cols; // Size of the matrix rows, cols
   std::vector< std::vector< ColValPair<scalar> > > row_pt; // Vector containing, for each row, al vector of (col, value) pairs (CRS format)
 
-  Matrix<scalar, -1, -1> densify();
+  MatrixXd densify();
 };
 
 /* @brief Converts *this to an eigen (dense) function
@@ -87,9 +87,9 @@ struct CRSMatrix {
  * WARNING: May fill in a lot of nonzeros if n,m large
  * @return Matrix of Dynamic size and scalar type
  */
-TripletMatrix::Matrix<scalar, -1, -1> densify() const {
+MatrixXd TripletMatrix::densify() const {
   // Initialization
-  Matrix<scalar, -1, -1> M = Matrix<scalar, -1, -1>::Zero(rows, cols);
+  MatrixXd M = MatrixXd::Zero(rows, cols);
 
   for(auto it = triplets.begin(); it != triplets.end(); ++it) {
     M(it->i, it->j) += it->v;
@@ -103,9 +103,9 @@ TripletMatrix::Matrix<scalar, -1, -1> densify() const {
  * WARNING: May fill in a lot of nonzeros if n,m large
  * @return Matrix of Dynamic size and scalar type
  */
-CRSMatrix::Matrix<scalar, -1, -1> densify() const {
+MatrixXd CRSMatrix::densify() const {
 // Initialization
-  Matrix<scalar, -1, -1> M = Matrix<scalar, -1, -1>::Zero(rows, cols);
+  MatrixXd M = MatrixXd::Zero(rows, cols);
 
   std::size_t i = 0;
   for(auto it = row_pt.begin(); it != row_pt.end(); ++it) {
