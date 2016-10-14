@@ -22,94 +22,100 @@ using namespace Eigen;
 
 // We use this as type of each index (will be int or similar)
 using index_t = std::size_t;
-// Use this to contain the "shape" of our matrix
+// Use this to contain the "size" of our matrix
 using shape_t =  std::array<index_t, 2>;
 
-/* \brief Given "grid" indices i and j, convert to the vectorie index
- *
- * \param[in] i Coordinate in i direction
- * \param[in] j Coordinate in j direction
- * \param[in] size The shape of the "grid" matrix
- * \return Index I of point (i,j) on the vectorized matrix
+/* \brief Given "grid" indices i and j, convert to the vectoried index
+ * Return $I$ s.t. $(\mathbf{X})_{i,j} = vec(\mathbf{X})_I$.
+ * \param[in] i Coordinate in $i$ direction
+ * \param[in] j Coordinate in $j$ direction
+ * \param[in] size The size of the "grid" matrix (tuple $(n,m)$)
+ * \return Index $I$ of entry $(i,j)$ on the vectorized matrix
  */
 inline index_t to_vector_index(index_t i,
                                index_t j,
                                const shape_t & size) {
-    // TODO: convert grid index (i,j) to index I and return
+    // TODO: convert grid index $(i,j)$ to index $I$ and return
     return 0;
 }
 
-/* \brief BUild a sparse matrix constructed from the stencil S
- * The matrix is constructed from triplets, compressed and returned.
- * \tparam n Size of stencil (odd number)
- * \param[in] S The stencil: a $n \times n$ matrix
- * \param[in] size The size if the grid
- * \return Sparse matrix representing linear operator $L$.
+/* \brief Build sparse matrix constructed from stencil matrix $\mathbf{S}$.
+ * The matrix is constructed from triplets, then compressed and returned.
+ * \param[in] S The stencil matrix: i.e. an $3 \times 3$ matrix
+ * \param[in] size The size of the grid, i.e. the tuple $(n,m)$.
+ * \return Sparse matrix $\mathbf{A}$ representing linear operator $L$.
  */
-template <int s>
-SparseMatrix<double> build_matrix(const Matrix<double, s, s> & S,
+SparseMatrix<double> build_matrix(const Matrix3d & S,
                                  const shape_t & size) {
-    static_assert( s % 2 == 1, "Fatal: n must be odd!");
-
     // Will be used to store triplets
     std::vector<Triplet<double>> triplets;
 
-    // The matrix A wil have size $N \times N$.
+    // The matrix $\mathbf{A}$ will have size $N \times N$.
+    // N = n*m
     const index_t N = size[0]*size[1];
-    // TODO: build sparse matrix A
+    // TODO: build/compress/return sparse matrix $\mathbf{A}$ from
+    // intermediate triplet format.
     return SparseMatrix<double>(N,N);
 }
 
-/* \brief Evaluate function f at the coordinates of X and store values in X
- * Computes $(X)_{i,j} = f(i-1,j-1)$ (-1 subracted because indices start at 0).
- * \param[in,out] X Matrix where values of X will be stored, must have correct size
- * \param[in] f A function taking two indices $(i,j)$ and returning a value.
+/* \brief Evaluate function $f$ at the indices of $\mathbf{X}$.
+ * Computes $(\mathbf{X})_{i,j} = f(i,j)$
+ * ($+1$ added because C++-indices start at $0$).
+ * \param[in,out] X Matrix $\mathbf{X}$, must have correct size.
+ * \param[in] f A function $\mathbf{N}^2 \rightarrow \mathbf{R}$.
  */
 void eval(MatrixXd & X, std::function<double(index_t,index_t)> f) {
-    // TODO:implement an evaluation function
+    // TODO: implement an evaluation function computing
+    // $(\mathbf{X})_{i,j} = f(i,j)$.
 }
 
-/* \brief Computes vec(Y) = A * vec(X)
- * Multiply the sparse matrix times vec(X) and store result in vec(Y)
- * \param[in] A a n^2*m^2 sparse marix
- * \param[in] X a n*m "grid" matrix
- * \param[out] Y a n*m "grid" matrix s.t. vec(Y) = A*vec(X)
+/* \brief Compute $vec(\mathbf{Y}) := \mathbf{A} * vec(\mathbf{X})$
+ * Multiply the sparse matrix by $vec(\mathbf{X})$
+ * and store result in $vec(\mathbf{Y})$.
+ * \param[in] A A $nm \times nm$ sparse marix.
+ * \param[in] X A $n \times m$ "grid" matrix.
+ * \param[out] Y A "grid" matrix s.t.
+ * $vec(\mathbf{Y}) := \mathbf{A} * vec(\mathbf{X})$.
  */
 void mult(const SparseMatrix<double> & A,
           const MatrixXd & X, MatrixXd & Y) {
+    // Size check
     assert( A.rows() == X.rows()*X.cols() &&
             A.cols() == X.rows()*X.cols() &&
             "Inconsistent size of A!");
-
+    // Ensure correct size of $\mathbf{Y}$.
     Y.resizeLike(X);
 
-    // TODO: compute vec(Y) = A*vec(X)
+    // TODO: compute $vec(\mathbf{Y}) := \mathbf{A} * vec(\mathbf{X})$.
 }
 
-/* \brief Solves vec(Y) = A * vec(X) for X
- * Solve the linear system given by the sparse matrix A and r.h.s Y
- * \param[in] A a n^2*m^2 sparse marix
- * \param[in] Y a n*m "grid" matrix
- * \param[out] X a n*m "grid" matrix s.t. vec(Y) = A*vec(X)
+/* \brief Solve $vec(\mathbf{Y}) = \mathbf{A} * vec(\mathbf{X})$ for $\mathbf{X}$.
+ * Solve the linear system given by the sparse matrix $\mathbf{A}$
+ * and r.h.s $\mathbf{Y}$.
+ * \param[in] A A $nm \times nm$ sparse marix.
+ * \param[in] Y A $n \times m$ "grid" matrix.
+ * \param[out] X A "grid" matrix s.t.
+ * $vec(\mathbf{Y}) = \mathbf{A} * vec(\mathbf{X})$.
  */
 void solve(const SparseMatrix<double> & A,
            const MatrixXd & Y, MatrixXd & X) {
+    // Size check
     assert( A.rows() == Y.rows()*Y.cols() &&
             A.cols() == Y.rows()*Y.cols() &&
             "Inconsistent size of A!");
-
+    // Ensure correct size of $\mathbf{X}$.
     X.resizeLike(Y);
 
     // Sparse LU decomposition object
     SparseLU<SparseMatrix<double>> solver;
 
-    // TODO: solve system vec(Y) = A*vec(X)
+    // TODO: solve system $vec(\mathbf{Y}) = \mathbf{A} * vec(\mathbf{X})$.
 }
 
 int main(int argc, char** argv) {
-    // Size of the *grid" matrices X and Y
+    // Size of the "grid" matrices $\mathbf{X}$ and $\mathbf{Y}$.
     index_t n = 100, m = 100;
-    // If provided, will be read from command line
+    // If provided, $n$ and $m$ will be read from command line.
     if(argc > 1) {
         n = std::stoi(argv[1]);
     }
@@ -117,40 +123,42 @@ int main(int argc, char** argv) {
         m = std::stoi(argv[2]);
     }
 
-    // The stencil
+    // The stencil matrix $\mathbf{S}$.
     Matrix3d S;
-    S << 0, 1, 0,
+    S << 0, 1,  0,
          1, -4, 1,
-         0, 1, 0;
+         0, 1,  0;
 
-    // Construct S
-    std::cout << "--> Building matrix A..." << std::endl;
+    // Construct $\mathbf{A}$.
+    std::cout << "--> Building matrix A..."
+              << std::endl;
     SparseMatrix<double> A = build_matrix(S, shape_t{n, m});
 
-    std::cout << A;
-
-    // The grid matrices X and Y
+    // The grid matrices $\mathbf{X}$ and $\mathbf{Y}$.
     MatrixXd X(n,m), Y;
 
-    // A function of indices (i,j) of the matrix X
+    // A function of indices $(i,j)$ of the matrix $\mathbf{X}$.
     auto f = [n,m] (index_t i , index_t j) {
-        if(i > n/4 && i < n*3/4 && j > m/4 && j < m*3/4 ) return 1.;
-        else return 0.;
+        // TODO: implement f
+        return 0.;
     };
 
-    // Fill entries of X given f
-    std::cout << "--> Evaluating f at the indices of X..." << std::endl;
+    // Fill entries of  $\mathbf{X}$ given $f$.
+    std::cout << "--> Evaluating f at the indices of X..."
+              << std::endl;
     eval(X, f);
 
-    // Compute A*vec(X)
-    std::cout << "--> Computing A*vec(X)..." << std::endl;
+    // Compute $\mathbf{A} vec(\mathbf{X})$.
+    std::cout << "--> Computing A*vec(X)..."
+              << std::endl;
     mult(A, X, Y);
 
-    // Compute A^{-1}*vec(Y)
-    std::cout << "--> Solving A*vec(X) = vec(Y)..." << std::endl;
+    // Compute $\mathbf{A}^{-1} vec(\mathbf{X})$.
+    std::cout << "--> Solving A*vec(X) = vec(Y)..."
+              << std::endl;
     solve(A, X, Y);
 
-    // Plot values of Y
+    // Plot values of $\mathbf{X}$.
     mglData Xd(Y.rows(), Y.cols(), Y.data());
 
     mglGraph gr;

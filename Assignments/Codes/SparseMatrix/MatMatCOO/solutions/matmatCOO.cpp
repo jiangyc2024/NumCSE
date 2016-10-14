@@ -147,9 +147,9 @@ TripVec COOprod_effic(TripVec &A, TripVec &B)
 	for(auto i: intersect) {
 
 		A_idx = std::find_if(A_idx, A.end(),
-					[](const Trip& a){return a.col() == i;});
+					[&](const Trip& a){return a.col() == i;});
 		B_idx = std::find_if(B_idx, B.end(),
-					[](const Trip& b){return b.row() == i;});
+					[&](const Trip& b){return b.row() == i;});
 		
 		TripVec::iterator A_it;
 		TripVec::iterator B_it;
@@ -267,9 +267,6 @@ int main() {
     }
     
 
-    sizes.clear();
-    timings_naive.clear();
-    timings_effic.clear();
 
 //-----------------------------------------------------------------------------------------------
 
