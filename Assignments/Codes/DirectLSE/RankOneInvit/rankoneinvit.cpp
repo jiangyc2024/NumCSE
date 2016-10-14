@@ -93,7 +93,7 @@ void rankoneinvit_fast(const VectorXd & d,
 }
 /* SAM_LISTING_END_1 */
 
-/* SAM_LISTING_BEGIN_2*/
+/* SAM_LISTING_BEGIN_2 */
 int main() {
     // Initialization
     srand((unsigned int) time(0));
