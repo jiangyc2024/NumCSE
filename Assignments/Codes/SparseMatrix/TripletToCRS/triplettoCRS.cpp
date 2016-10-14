@@ -53,30 +53,6 @@ struct TripletMatrix {
 };
 /* SAM_LISTING_END_1 */
 
-#if INTERNAL
-/* @brief Structure holding a pair column index-value to be used in CRS format
- * Provides handy constructor and comparison operators.
- * @tparam scalar represents the scalar type of the value stored (e.g. double)
- */
-template <typename scalar>
-struct ColValPair {
-  ColValPair(size_t col_, scalar v_)
-    : col(col_), v(v_) { }
-
-  /* Comparison operator for std::sort and std::lower\_bound:
-     Basic sorting operator < to use with std::functions (i.e. for ordering according to first component col).
-     We keep the column values sorted, either by sorting after insertion of by sorted insertion.
-     It returns true if this->col < other.col.
-   */
-  bool operator<(const ColValPair& other) const {
-    return this->col < other.col;
-  }
-
-  size_t col; // Col index
-  scalar v; // Scalar value at col
-};
-#endif
-
 /* @brief Defines a matrix stored in CRS format.
  * Dimensions are also stored to simplify the code.
  * @tparam scalar Type of the matrix and CRS vectors (e.g. double)
@@ -162,31 +138,44 @@ MatrixXd CRSMatrix<scalar>::densify() const {
 template <typename scalar>
 void tripletToCRS_insertsort(const TripletMatrix<scalar>& T, CRSMatrix<scalar>& C) {
 #if SOLUTION
+  // Temporary "quasi-CRS" format for the conversion
+  std::vector< std::vector< ColValPair<scalar> > > preCRS;
+
   // Copy sizes and reserve memory for rows
   C.rows = T.rows;
   C.cols = T.cols;
-  C.row_ptr.resize(C.rows);
+  preCRS_col_ind.resize(C.rows);
+  preCRS_val.resize(C.rows);
 
   // Loop over all triplets
   for(auto triplet_it = T.triplets.begin(); triplet_it != T.triplets.end(); ++triplet_it) {
     // Store row (containing ColValPairs for this row) inside row\_pt
-  	std::vector<ColValPair<scalar> >& row = C.row_ptr.at(triplet_it->i); // Notice the reference!
-    // Create a ColVal pair that must be inserted somewhere
-    ColValPair<scalar> col_val(triplet_it->j, triplet_it->v);
+  	std::vector<scalar >& row_col_ind = preCRS_col_ind.at(triplet_it->i); // Notice the reference!
+  	std::vector<scalar >& row_val     = preCRS_val.at(triplet_it->i); // Notice the reference!
     // Find the place (as iterator) where to insert col\_val, i.e. the first place where col\_val < C.row\_pt.at(i)
-    // WARNING: Costly call
-    // returns an iterator to a ColValPair in row
-    auto lb_it = std::lower_bound(row.begin(), row.end(), col_val);
+    // WARNING: Costly call, which returns an iterator to a ColValPair in row
+    auto lb_it = std::lower_bound(row_col_ind.begin(), row_col_ind.end(), triplet_it->j);
     // If lower bound has already a col (and is not end()) with some value, just add the value to the column, othervise insert it
-    if(lb_it != row.end() && lb_it->col == triplet_it->j) {
-      lb_it->v += triplet_it->v;
+	  size_t i = lb_it - row_col_ind.begin();
+    if(lb_it != row_col_ind.end() && *lb_it == triplet_it->j) {
+      row_val.at(i) += triplet_it->v;
     } else {
       // WARNING: Costly call (loops over all rows in the worst-case scenario)
-      row.insert(lb_it, col_val);
+      row_col_ind.insert(lb_it, triplet_it->j);
+      row_val.insert(row_val.begin()+i, triplet_it->v);
     }
   }
   
-  TODO: Convert to proper CRS
+  // Convert 'preCRS' to proper CRS format (CRSMatrix)
+  C.row_ptr.push_back(0);
+  for(size_t i=0; i<preCRS_col_ind.size(); ++i) {
+	if(preCRS_col_ind.at(i).size() != 0) {
+	  C.row_ptr.push_back(C.row_ptr.back() + preCRS_col_ind.at(i).size() + 1);
+	  C.col_ind.insert(C.col_ind.end(), preCRS_col_ind.at(i).begin(), preCRS_col_ind.at(i).end());
+      C.val.insert(C.val.end(), preCRS_val.at(i).begin(), preCRS_val.at(i).end());
+	}
+  }
+  C.row_ptr.pop_back();
   
 #else // TEMPLATE
     // TODO: conversion function (insert sort)
