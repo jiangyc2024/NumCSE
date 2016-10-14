@@ -209,9 +209,6 @@ int main() {
     }
     
 
-    sizes.clear();
-    timings_naive.clear();
-    timings_effic.clear();
 
 //-----------------------------------------------------------------------------------------------
 
@@ -260,96 +257,4 @@ int main() {
                   << std::endl;
     }
 
-}
-// Complexity: O(n*log(n) + O(nnz(A*B))
-
-int main() {
-    // Initialization
-    unsigned int n = 6;
-    MatrixXd A(n,n), B(n,n);
-    A << 1, 0, 0, 0, 0, 1,
-         1, 0, 0, 0, 0, 1,
-         1, 0, 0, 0, 0, 1,
-         1, 0, 0, 0, 0, 1,
-         1, 0, 0, 0, 0, 1,
-		 1, 0, 0, 0, 0, 1;
-    B << 1, 1, 1, 1, 1, 1,
-         0, 0, 0, 0, 0, 0,
-         0, 0, 0, 0, 0, 0,
-         0, 0, 0, 0, 0, 0,
-         0, 0, 0, 0, 0, 0,
-		 1, 1, 1, 1, 1, 1;
-		  
-	// COO format
-	TripVec A_COO = Mat2COO(A);
-	TripVec B_COO = Mat2COO(B);
-
-    // Compute with standard matrix multiplication and both new multipliers
-    std::cout << "--> Check that the multipliers are correct" << std::endl;
-    TripVec C_eigen, C_naive, C_effic;
-	
-	C_eigen = Mat2COO(A * B);
-    C_naive = COOprod_naive(A_COO, B_COO);
-    C_effic = COOprod_effic(A_COO, B_COO);
-
-    MatrixXd C_mat_eigen;
-	MatrixXd C_mat_naive;
-	MatrixXd C_mat_effic;
-	C_mat_eigen = COO2Mat(C_eigen);
-	C_mat_naive = COO2Mat(C_naive);
-	C_mat_effic = COO2Mat(C_effic);
-	
-	std::cout << "Error eigen vs naive = " << (C_mat_eigen - C_mat_naive).norm() << std::endl;
-    std::cout << "Error naive vs effic = " << (C_mat_naive - C_mat_effic).norm() << std::endl;
-
-    // Compute runtimes of different multipliers
-    std::cout << "--> Runtime comparison of naive vs efficient multiplier" << std::endl;
-	// Number of repetitions
-    unsigned int repeats = 3;
-
-    // Header
-    std::cout << std::setw(20) << "n"
-		      << std::setw(20) << "time eigen [s]"
-              << std::setw(20) << "time naive [s]"
-              << std::setw(20) << "time effic [s]"
-              << std::endl;
-
-    // Loop over matrix size
-    for(unsigned int k = 4; k <= 12; ++k) {
-        // Timers
-        Timer tm_eigen, tm_naive, tm_effic;
-        unsigned int n = pow(2,k);
-
-        // Repeat test many times
-        for(unsigned int r = 0; r < repeats; ++r) {
-            // Initialization
-			A = MatrixXd::Random(n,n);
-            B = MatrixXd::Random(n,n);
-			
-			// COO format
-			TripVec A_COO = Mat2COO(A);
-			TripVec B_COO = Mat2COO(B);
-
-            // Compute runtime with Eigen solver
-            tm_eigen.start();
-            C_eigen = Mat2COO(A * B);
-            tm_eigen.stop();
-            // Compute runtime with naive solver
-            tm_naive.start();
-            C_naive = COOprod_naive(A_COO, B_COO);
-            tm_naive.stop();
-            // Compute runtime with efficient solver
-            tm_effic.start();
-            C_effic = COOprod_effic(A_COO, B_COO);
-            tm_effic.stop();
-        }
-
-        // Print runtimes
-        std::cout << std::setw(20) << n
-                  << std::scientific << std::setprecision(3)
-				  << std::setw(20) << tm_eigen.min()
-                  << std::setw(20) << tm_naive.min()
-                  << std::setw(20) << tm_effic.min()
-                  << std::endl;
-    }
 }
