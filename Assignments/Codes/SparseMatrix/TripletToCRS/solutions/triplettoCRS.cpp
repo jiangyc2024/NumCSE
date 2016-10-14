@@ -45,7 +45,6 @@ struct TripletMatrix {
 };
 /* SAM_LISTING_END_1 */
 
-
 /* @brief Defines a matrix stored in CRS format.
  * Dimensions are also stored to simplify the code.
  * @tparam scalar Type of the matrix and CRS vectors (e.g. double)
@@ -54,7 +53,7 @@ struct TripletMatrix {
 template <typename scalar>
 struct CRSMatrix {
   size_t rows, cols; // Sizes: nrows and ncols
-  std::vector<scalar_t> val;
+  std::vector<scalar> val;
   std::vector<size_t> col_ind;
   std::vector<size_t> row_ptr;
 
@@ -106,6 +105,52 @@ MatrixXd CRSMatrix<scalar>::densify() const {
 }
 /* SAM_LISTING_END_4 */
 
+/* @brief Structure holding a pair column index-value to be used in CRS format
+ * Provides handy constructor and comparison operators.
+ * @tparam scalar represents the scalar type of the value stored (e.g. double)
+ */
+/* SAM_LISTING_BEGIN_7 */
+template <typename scalar>
+struct ColValPair {
+  ColValPair(size_t col_, scalar v_)
+    : col(col_), v(v_) { }
+
+  /* Comparison operator for std::sort and std::lower\_bound:
+     Basic sorting operator < to use with std::functions (i.e. for ordering according to first component col).
+     We keep the column values sorted, either by sorting after insertion of by sorted insertion.
+     It returns true if this->col < other.col.
+   */
+  bool operator<(const ColValPair& other) const {
+    return this->col < other.col;
+  }
+
+  size_t col; // Col index
+  scalar v; // Scalar value at col
+};
+/* SAM_LISTING_END_7 */
+
+/* @brief Convert 'preCRS' to proper CRS format (CRSMatrix)
+ * @param[in] preCRS Vector of rows of pairs (col\_ind, val)
+ * @param[out] C Proper CRSMatrix format
+ */
+/* SAM_LISTING_BEGIN_8 */
+template <typename scalar>
+void properCRS(const std::vector< std::vector< ColValPair<scalar> > >& preCRS, CRSMatrix<scalar>& C) {
+
+  C.row_ptr.push_back(0);
+  for(auto & row : preCRS) {
+	// If one whole row is empty,
+	// the same index is stored in 'row\_ptr' twice.
+	C.row_ptr.push_back(C.row_ptr.back() + row.size());
+	for(auto & col_val : row) {
+	  C.col_ind.push_back(col_val.col);
+      C.val.push_back(    col_val.v);
+	}
+  }
+  C.row_ptr.pop_back();
+}
+/* SAM_LISTING_END_8 */
+
 /* @brief Converts a matrix given as triplet matrix to a matrix in CRS format.
  * No assumption is made on the triplets, which may be unsorted and/or duplicated.
  * In case of duplicated triplets, values are added toghether.
@@ -118,31 +163,38 @@ MatrixXd CRSMatrix<scalar>::densify() const {
 /* SAM_LISTING_BEGIN_5 */
 template <typename scalar>
 void tripletToCRS_insertsort(const TripletMatrix<scalar>& T, CRSMatrix<scalar>& C) {
-  // Copy sizes and reserve memory for rows
+  // Initialization
   C.rows = T.rows;
   C.cols = T.cols;
-  C.row_ptr.resize(C.rows);
+  // Temporary "quasi-CRS" format for the conversion
+  std::vector< std::vector< ColValPair<scalar> > > preCRS;
+  preCRS.resize(C.rows);
 
   // Loop over all triplets
-  for(auto triplet_it = T.triplets.begin(); triplet_it != T.triplets.end(); ++triplet_it) {
-    // Store row (containing ColValPairs for this row) inside row\_pt
-  	std::vector<ColValPair<scalar> >& row = C.row_ptr.at(triplet_it->i); // Notice the reference!
-    // Create a ColVal pair that must be inserted somewhere
-    ColValPair<scalar> col_val(triplet_it->j, triplet_it->v);
-    // Find the place (as iterator) where to insert col\_val, i.e. the first place where col\_val < C.row\_pt.at(i)
-    // WARNING: Costly call
-    // returns an iterator to a ColValPair in row
+  for(auto triplet = T.triplets.begin(); triplet != T.triplets.end(); ++triplet) {
+
+    // Store row (containing all ColValPair for this row) inside row\_ptr
+    std::vector<ColValPair<scalar> >& row = preCRS.at(triplet->i); // Notice the reference!
+  	
+  	// Create a ColValPair that must be inserted somewhere
+  	ColValPair<scalar> col_val(triplet->j, triplet->v);
+  	
+    // Find the place (as iterator) where to insert col\_val, i.e. the first position $lb_it$ s.t col\_val < row
+    // WARNING: Costly call, which returns an iterator to an element (ColValPair) in row
     auto lb_it = std::lower_bound(row.begin(), row.end(), col_val);
-    // If lower bound has already a col (and is not end()) with some value, just add the value to the column, othervise insert it
-    if(lb_it != row.end() && lb_it->col == triplet_it->j) {
-      lb_it->v += triplet_it->v;
-    } else {
-      // WARNING: Costly call (loops over all rows in the worst-case scenario)
-      row.insert(lb_it, col_val);
-    }
+    
+    // If lower bound has already a col (and is not end()) with some value,
+    // just add the value to the column, othervise insert it
+    if(lb_it != row.end() && lb_it->col == triplet->j) {
+	  lb_it->v += triplet->v;
+	} else {
+	  // WARNING: Costly call (loop over all rows in the worst-case scenario)
+	  row.insert(lb_it, col_val);
+	}
   }
   
-  TODO: Convert to proper CRS
+  // Convert 'preCRS' to proper CRS format (CRSMatrix)
+  properCRS(preCRS, C);
   
 }
 /* SAM_LISTING_END_5 */
@@ -158,31 +210,38 @@ void tripletToCRS_insertsort(const TripletMatrix<scalar>& T, CRSMatrix<scalar>& 
 /* SAM_LISTING_BEGIN_6 */
 template <typename scalar>
 void tripletToCRS_sortafter(const TripletMatrix<scalar>& T, CRSMatrix<scalar>& C) {
-  // Copy dimensions and reserve known space
+  // Initialization
   C.rows = T.rows;
   C.cols = T.cols;
-  C.row_ptr.resize(C.rows);
+  // Temporary "quasi-CRS" format for the conversion
+  std::vector< std::vector< ColValPair<scalar> > > preCRS;
+  preCRS.resize(C.rows);
 
-  // Loops over all triplets and push them at the ritgh place (cheap)
-  for(auto triplets_it = T.triplets.begin(); triplets_it != T.triplets.end(); ++triplets_it) {
-    ColValPair<scalar> cp(triplets_it->j, triplets_it->v);
-    C.row_ptr.at(triplets_it->i).push_back(cp);
+  // Loop over all triplets and push them at the right place (cheap)
+  for(auto triplet = T.triplets.begin(); triplet != T.triplets.end(); ++triplet) {	
+	ColValPair<scalar> cp(triplet->j, triplet->v);
+	preCRS.at(triplet->i).push_back(cp);
   }
-  // Loops over all rows , sort them (according to col) and sum duplicated values
-  for(auto row_it = C.row_ptr.begin(); row_it != C.row_ptr.end(); ++row_it) {
+  // Loop over all rows, sort them (according to col) and sum duplicated values
+  for(auto row_it = preCRS.begin(); row_it != preCRS.end(); ++row_it) {
+
     // WARNING: costly call in this case
     std::sort(row_it->begin(), row_it->end());
+    
     // Sum duplicated cols
     // NOTE: iterating backwards should be faster
     for(auto col_it = row_it->begin(); col_it != row_it->end(); ++col_it) {
-      // Check that next col is not at the end and that has same col value
+	
+      // Check that next col is not at the end and that has same col index
       if((col_it + 1) != row_it->end() && (col_it + 1)->col == col_it->col) {
+		  
         // Last col with same value (starting from next col)
         auto last_col_it = col_it + 1;
         while(last_col_it != row_it->end() && last_col_it->col == col_it->col) {
           col_it->v += last_col_it->v;
           ++last_col_it;
         }
+        
         // Remove range from next col to last col with same value
         // WARNING: std::vector keeps the data as c-array, so mildly costly call (from col\_it to end(), at most M)
         row_it->erase(col_it+1, last_col_it);
@@ -190,7 +249,8 @@ void tripletToCRS_sortafter(const TripletMatrix<scalar>& T, CRSMatrix<scalar>& C
     }
   }
   
-  TODO: Convert to proper CRS
+  // Convert 'preCRS' to proper CRS format (CRSMatrix)
+  properCRS(preCRS, C);
   
 }
 /* SAM_LISTING_END_6 */
@@ -219,7 +279,7 @@ int main() {
   // Initialization
   size_t nrows = 7, ncols = 5, ntriplets = 9;
   TripletMatrix<double> T;
-  CRSMatrix<double> C;
+  CRSMatrix<double> C, D;
 
   T.rows = nrows;
   T.cols = ncols;
@@ -231,8 +291,10 @@ int main() {
   }
 
   std::cout << "***Test conversion with random matrices***" << std::endl;
-  tripletToCRS(T, C);
+  tripletToCRS_insertsort(T, C);
+  tripletToCRS_sortafter( T, D);
   std::cout << "--> Frobenius norm of T - C: " << (T.densify()-C.densify()).norm() << std::endl;
+  std::cout << "--> Frobenius norm of T - D: " << (T.densify()-D.densify()).norm() << std::endl;
 
   // Initialization
   bool noruntime = false; // Skip runtime measurments
@@ -248,25 +310,25 @@ int main() {
   auto ftriplets = [](size_t M) { return M*5; };
 
   // Runtime test
-  Timer timer;
-  for(size_t M = 2; M < 1024; M *= 2) {
-    std::cout << "Runtime for " << M << "x" << M/2 << " matrix (with nnz(A) <= " << M << "):" << std::endl;
+  Timer insertsort_timer, sortafter_timer;
+  for(size_t n = 2; n < 1024; n *= 2) {
+    std::cout << "Runtime for " << n << "x" << n/2 << " matrix (with nnz(A) <= " << n << "):" << std::endl;
     TripletMatrix<double> A;
-    CRSMatrix<double> B, E;
+    CRSMatrix<double> E, F;
 
-    A.rows = frows(M); // nrows
-    A.cols = fcols(M); //ncols
-    A.triplets.reserve(ftriplets(M));
-    for(size_t i = 0; i < ftriplets(M); ++i) {
+    A.rows = frows(n); // nrows
+    A.cols = fcols(n); //ncols
+    A.triplets.reserve(ftriplets(n));
+    for(size_t i = 0; i < ftriplets(n); ++i) {
       A.triplets.push_back(Triplet<double>(rand() % A.rows, rand() % A.cols, rand() % 1000));
     }
 
     insertsort_timer.start();
-    tripletToCRS_insertsort(A, B);
+    tripletToCRS_insertsort(A, E);
     insertsort_timer.stop();
 
     sortafter_timer.start();
-    tripletToCRS_sortafter(A, E);
+    tripletToCRS_sortafter(A, F);
     sortafter_timer.stop();
     std::cout << "InsertSort took: " << insertsort_timer.duration() << " s." << std::endl;
     std::cout << "SortAfter took:  " << sortafter_timer.duration()  << " s." << std::endl;

@@ -35,7 +35,6 @@ struct TripletMatrix {
 };
 /* SAM_LISTING_END_1 */
 
-
 /* @brief Defines a matrix stored in CRS format.
  * Dimensions are also stored to simplify the code.
  * @tparam scalar Type of the matrix and CRS vectors (e.g. double)
@@ -78,6 +77,52 @@ MatrixXd CRSMatrix<scalar>::densify() const {
   return M;
 }
 /* SAM_LISTING_END_4 */
+
+/* @brief Structure holding a pair column index-value to be used in CRS format
+ * Provides handy constructor and comparison operators.
+ * @tparam scalar represents the scalar type of the value stored (e.g. double)
+ */
+/* SAM_LISTING_BEGIN_7 */
+template <typename scalar>
+struct ColValPair {
+  ColValPair(size_t col_, scalar v_)
+    : col(col_), v(v_) { }
+
+  /* Comparison operator for std::sort and std::lower\_bound:
+     Basic sorting operator < to use with std::functions (i.e. for ordering according to first component col).
+     We keep the column values sorted, either by sorting after insertion of by sorted insertion.
+     It returns true if this->col < other.col.
+   */
+  bool operator<(const ColValPair& other) const {
+    return this->col < other.col;
+  }
+
+  size_t col; // Col index
+  scalar v; // Scalar value at col
+};
+/* SAM_LISTING_END_7 */
+
+/* @brief Convert 'preCRS' to proper CRS format (CRSMatrix)
+ * @param[in] preCRS Vector of rows of pairs (col\_ind, val)
+ * @param[out] C Proper CRSMatrix format
+ */
+/* SAM_LISTING_BEGIN_8 */
+template <typename scalar>
+void properCRS(const std::vector< std::vector< ColValPair<scalar> > >& preCRS, CRSMatrix<scalar>& C) {
+
+  C.row_ptr.push_back(0);
+  for(auto & row : preCRS) {
+	// If one whole row is empty,
+	// the same index is stored in 'row\_ptr' twice.
+	C.row_ptr.push_back(C.row_ptr.back() + row.size());
+	for(auto & col_val : row) {
+	  C.col_ind.push_back(col_val.col);
+      C.val.push_back(    col_val.v);
+	}
+  }
+  C.row_ptr.pop_back();
+}
+/* SAM_LISTING_END_8 */
 
 /* @brief Converts a matrix given as triplet matrix to a matrix in CRS format.
  * No assumption is made on the triplets, which may be unsorted and/or duplicated.
@@ -134,7 +179,7 @@ int main() {
   // Initialization
   size_t nrows = 7, ncols = 5, ntriplets = 9;
   TripletMatrix<double> T;
-  CRSMatrix<double> C;
+  CRSMatrix<double> C, D;
 
     // TODO: construct T here
 
@@ -144,7 +189,8 @@ int main() {
   }
 
   std::cout << "***Test conversion with random matrices***" << std::endl;
-  tripletToCRS(T, C);
+  tripletToCRS_insertsort(T, C);
+  tripletToCRS_sortafter( T, D);
     // TODO: if you implemented densify(), compute Frobenius norm of $T - C$
 
 }
