@@ -51,6 +51,8 @@ void CCS(const MatrixXd & A, VectorXd & val, VectorXd & row_ind, VectorXd & col_
 				++index;
 			}
 		}
+		// If one whole column is empty,
+		// the same 'index' is stored in 'col\_ptr' twice.
 	}
 #else // TEMPLATE
     // TODO: compute the CCS format of matrix $A$

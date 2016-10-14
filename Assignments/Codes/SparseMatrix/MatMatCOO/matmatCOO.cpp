@@ -434,5 +434,3 @@ int main() {
         fig6.save("matmatCOO_comparison_spardense.png");
 #endif
 }
-// Complexity: O(n*log(n) + O(nnz(A*B))
-/* SAM_LISTING_END_2 */
