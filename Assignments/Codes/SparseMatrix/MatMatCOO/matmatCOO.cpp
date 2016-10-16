@@ -66,7 +66,7 @@ MatrixXd COO2Mat(const TripVec &A)
 	}
 	++m; ++n; // First index is 0
 	MatrixXd A_mat = MatrixXd::Zero(m, n);
-	
+
 	for(auto const& a: A) {
 		A_mat(a.row(), a.col()) += a.value();
 	}
@@ -138,11 +138,11 @@ TripVec COOprod_effic(TripVec &A, TripVec &B)
 {
 	// Initialization
     TripVec C;
-	
+
 #if SOLUTION
 	std::sort(A.begin(), A.end(), [](const Trip& a1, const Trip& a2) {return a1.col() < a2.col();});
 	std::sort(B.begin(), B.end(), [](const Trip& b1, const Trip& b2) {return b1.row() < b2.row();});
-	
+
 	size_t i_A = 0, i_B = 0;
 	std::set<int> intersect;
 	while(i_A != A.size() && i_B != B.size())
@@ -154,16 +154,16 @@ TripVec COOprod_effic(TripVec &A, TripVec &B)
 		  ++i_A; ++i_B;
 		}
 	}
-	
+
 	TripVec::iterator A_idx = A.begin();
 	TripVec::iterator B_idx = B.begin();
 	for(auto i: intersect) {
 
 		A_idx = std::find_if(A_idx, A.end(),
-					[&](const Trip& a){return a.col() == i;});
+					[i](const Trip& a){return a.col() == i;});
 		B_idx = std::find_if(B_idx, B.end(),
-					[&](const Trip& b){return b.row() == i;});
-		
+					[i](const Trip& b){return b.row() == i;});
+
 		TripVec::iterator A_it;
 		TripVec::iterator B_it;
 		for(A_it=A_idx; A_it!=A.end(); ++A_it) {
@@ -207,7 +207,7 @@ int main() {
          0, 0, 0, 0, 0, 0,
          0, 0, 0, 0, 0, 0,
 		 0, 0, 0, 0, 0, 0;
-		  
+
 	// COO format
 	TripVec A_COO = Mat2COO(A);
 	TripVec B_COO = Mat2COO(B);
@@ -215,7 +215,7 @@ int main() {
     // Compute with standard matrix multiplication and both new multipliers
     std::cout << "--> Check that the multipliers are correct" << std::endl;
     TripVec C_eigen, C_naive, C_effic;
-	
+
 	C_eigen = Mat2COO(A * B);
     C_naive = COOprod_naive(A_COO, B_COO);
     C_effic = COOprod_effic(A_COO, B_COO);
@@ -226,7 +226,7 @@ int main() {
 	C_mat_eigen = COO2Mat(C_eigen);
 	C_mat_naive = COO2Mat(C_naive);
 	C_mat_effic = COO2Mat(C_effic);
-	
+
 	std::cout << "Error eigen vs naive = " << (C_mat_eigen - C_mat_naive).norm() << std::endl;
     std::cout << "Error naive vs effic = " << (C_mat_naive - C_mat_effic).norm() << std::endl;
 
@@ -241,7 +241,7 @@ int main() {
     // timings will contain the runtimes in seconds
     std::vector<double> sizes, timings_naive, timings_effic;
 #endif
-    
+
     // Compute runtimes of different multipliers for products between sparse matrices
     std::cout << "--> Runtime comparison of naive vs efficient multiplier" << std::endl;
     std::cout << "--> Product between sparse matrices" << std::endl;
@@ -263,7 +263,7 @@ int main() {
             // Initialization of random sparse matrices
         	A = randMat(n, n, 0.1);
         	B = randMat(n, n, 0.1);
-			
+
 			// COO format
 			TripVec A_COO = Mat2COO(A);
 			TripVec B_COO = Mat2COO(B);
@@ -277,7 +277,7 @@ int main() {
             C_effic = COOprod_effic(A_COO, B_COO);
             tm_effic.stop();
         }
-        
+
 #if INTERNAL
         // Save results in a vector
         sizes.push_back(n); // Save vector sizes
@@ -292,7 +292,7 @@ int main() {
                   << std::setw(20) << tm_effic.min()
                   << std::endl;
     }
-    
+
 #if INTERNAL
     mgl::Figure fig1;
     fig1.title("Timings of naive solver -- sparse matrices");
@@ -338,7 +338,7 @@ int main() {
     sizes.clear();
     timings_naive.clear();
     timings_effic.clear();
-#endif
+#endif // INTERNAL
 
 //-----------------------------------------------------------------------------------------------
 
