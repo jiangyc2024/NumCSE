@@ -1,9 +1,15 @@
 #include <iostream>
 
 #include <Eigen/Dense>
+#include <Eigen/Sparse> // FIX bug in Eigen
 #include <unsupported/Eigen/KroneckerProduct>
 
 using namespace Eigen;
+
+//#define DECOMP partialPivLU
+//#define DECOMP fullPivLU
+//#define DECOMP llt
+#define DECOMP ldlt
 
 /* SAM_LISTING_BEGIN_1 */
 MatrixXd min_frob(const VectorXd & z, const VectorXd & g) {

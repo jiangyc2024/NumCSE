@@ -7,9 +7,15 @@
 #include <iostream>
 
 #include <Eigen/Dense>
+#include <Eigen/Sparse> // FIX bug in Eigen
 #include <unsupported/Eigen/KroneckerProduct>
 
 using namespace Eigen;
+
+//#define DECOMP partialPivLU
+//#define DECOMP fullPivLU
+//#define DECOMP llt
+#define DECOMP ldlt
 
 MatrixXd min_frob(const VectorXd & z, const VectorXd & g) {
     assert(z.size() == g.size() && "Size mismatch!");
@@ -21,7 +27,7 @@ MatrixXd min_frob(const VectorXd & z, const VectorXd & g) {
                                   z.transpose());
 
     // Build system matrix and r.h.s.
-    MatrixXd lhs(n*n+n,n*n+n);
+    MatrixXd S(n*n+n,n*n+n);
     S << MatrixXd::Identity(n*n, n*n), C.transpose(),
          C                           , MatrixXd::Zero(n,n);
     VectorXd h(n*n+n);
@@ -29,8 +35,10 @@ MatrixXd min_frob(const VectorXd & z, const VectorXd & g) {
 
     // Solve augmented system and return only head of solution
     // as a $n \times n$ matrix (discard the rest).
-    return Map<const MatrixXd>(S.lu().solve(h).eval().data(),
-                               n, n);
+    return Map<const MatrixXd>(S.DECOMP().solve(h).eval().data(),
+                               n, n).transpose();
+    // It maybe possible to solve the system more efficiently
+    // eployting the special structure of the matrix.
 }
 
 int main(int argc, char **argv) {
@@ -43,7 +51,7 @@ int main(int argc, char **argv) {
     VectorXd z = VectorXd::Random(n),
              g = VectorXd::Random(n);
 
-    MatrixXd Mstar = min_frob(z, g).transpose(); // $\mathbf{M}^*$
+    MatrixXd Mstar = min_frob(z, g); // $\mathbf{M}^*$
     MatrixXd M = g*z.transpose() / z.squaredNorm(); // $\mathbf{M}$
 
     std::cout << "Norm: "
