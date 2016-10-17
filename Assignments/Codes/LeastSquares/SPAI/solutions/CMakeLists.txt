@@ -151,3 +151,8 @@ set(SRCS spai.cpp)
 add_executable(spai ${SRCS})
 target_link_libraries(spai Figure ${MATHGL2_LIBRARIES})
 
+# make spai_test
+set(SRCS spai_test.cpp)
+add_executable(spai_test ${SRCS})
+target_link_libraries(spai_test Figure ${MATHGL2_LIBRARIES})
+

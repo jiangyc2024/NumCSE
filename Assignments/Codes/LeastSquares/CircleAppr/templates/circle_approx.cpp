@@ -31,14 +31,6 @@ Vector3d circl_geo_fit(const VectorXd &x, const VectorXd & y) {
 }
 /* SAM_LISTING_END_2 */
 
-
-
-Vector3d circl_geo_fit(const VectorXd &x, const VectorXd & y) {
-//    A.jacobiSvd(ComputeThinU | ComputeThinV).solve(b)
-//            A.colPivHouseholderQr().solve(b) << endl;
-//    A.transpose() * A).ldlt().solve(A.transpose() * b) << endl;
-}
-
 int main(int argc, char **argv) {
 
 }
