@@ -29,6 +29,8 @@ SparseMatrix<double> spai(SparseMatrix<double> & A) {
     std::vector<Triplet<double>> triplets;
     triplets.reserve(A.nonZeros());
 
+    // Without this, the code is MUCH slower w.r.t. MATLAB
+    #pragma omp parallel for
     for(unsigned int i = 0; i < n; ++i) {
 
         index_t nnz_i = outPtr[i+1] - outPtr[i];
@@ -46,7 +48,10 @@ SparseMatrix<double> spai(SparseMatrix<double> & A) {
         }
         VectorXd b = (C.transpose() * C).partialPivLu().solve(C.row(i).transpose());
         for(unsigned int k = 0; k < b.size(); ++k) {
+            #pragma omp critical(triplets)
+            {
             triplets.push_back(Triplet<double>(innPtr[outPtr[i] + k], i, b(k)));
+            }
         }
 
     }
