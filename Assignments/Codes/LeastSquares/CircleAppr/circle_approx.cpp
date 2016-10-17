@@ -37,7 +37,7 @@ Vector3d circl_alg_fit(const VectorXd &x,
 
 #if SOLUTION
     MatrixXd A(n,3);
-    A << -2*x, -2*y, -VectorXd::One(n);
+    A << -2*x, -2*y, -VectorXd::Ones(n);
     VectorXd b = -x.array()*x.array()
             - y.array()*y.array();
 
