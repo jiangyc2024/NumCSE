@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include <Eigen/Dense>
+#include <Eigen/Sparse> // FIX bug in Eigen
 #include <unsupported/Eigen/KroneckerProduct>
 
 using namespace Eigen;
