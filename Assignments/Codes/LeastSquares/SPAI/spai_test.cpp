@@ -18,7 +18,7 @@ void spai(const MatrixXd& A, MatrixXd& B) { // $A$ must be square...
 				tempMat.col(tempMat.cols()-1) = A.col(j);
 			}
 		}
-		VectorXd tempVec = (tempMat.transpose() * tempMat).fullPivLu().solve(tempMat.row(i));
+		VectorXd tempVec = (tempMat.transpose() * tempMat).fullPivLu().solve(tempMat.row(i).transpose());
 		for(size_t j=0; j<idx.size(); ++j) {
 			B(j,i) = tempVec(j);
 		}

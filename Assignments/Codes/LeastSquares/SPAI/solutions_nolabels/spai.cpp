@@ -4,14 +4,3 @@
 //// Contributors: tille, jgacon, dcasati
 //// This file is part of the NumCSE repository.
 ////
-#include <iostream>
-#include <cmath>
-
-#include <Eigen/Dense>
-#include <Eigen/Sparse>
-
-using namespace Eigen;
-
-int main(int argc, char **argv) {
-
-}

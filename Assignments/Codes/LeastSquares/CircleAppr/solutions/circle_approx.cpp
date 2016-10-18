@@ -34,7 +34,7 @@ Vector3d circl_alg_fit(const VectorXd &x,
     unsigned int n = x.size();
 
     MatrixXd A(n,3);
-    A << -2*x, -2*y, -VectorXd::One(n);
+    A << -2*x, -2*y, -VectorXd::Ones(n);
     VectorXd b = -x.array()*x.array()
             - y.array()*y.array();
 
@@ -55,14 +55,6 @@ Vector3d circl_geo_fit(const VectorXd &x, const VectorXd & y) {
 
 }
 /* SAM_LISTING_END_2 */
-
-
-
-Vector3d circl_geo_fit(const VectorXd &x, const VectorXd & y) {
-//    A.jacobiSvd(ComputeThinU | ComputeThinV).solve(b)
-//            A.colPivHouseholderQr().solve(b) << endl;
-//    A.transpose() * A).ldlt().solve(A.transpose() * b) << endl;
-}
 
 int main(int argc, char **argv) {
 
