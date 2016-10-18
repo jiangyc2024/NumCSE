@@ -211,8 +211,7 @@ void solve(const SparseMatrix<double> & A,
     // Solve system after factorization.
     // Notice how you can assign to a Map object.
     Map<VectorXd>(X.data(), Y.size()) = solver.solve(
-                Map<const VectorXd>(Y.data(), Y.size())
-                );
+    Map<const VectorXd>(Y.data(), Y.size()));
 #else // TEMPLATE
     // TODO: solve system $vec(\mathbf{Y}) = \mathbf{A} * vec(\mathbf{X})$.
 #endif // TEMPLATE
