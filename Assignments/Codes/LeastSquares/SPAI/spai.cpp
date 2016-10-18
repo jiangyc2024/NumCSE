@@ -50,7 +50,7 @@ SparseMatrix<double> spai(SparseMatrix<double> & A) {
         for(unsigned int k = 0; k < b.size(); ++k) {
             #pragma omp critical(triplets)
             {
-            triplets.push_back(Triplet<double>(innPtr[outPtr[i] + k], i, b(k)));
+				triplets.push_back(Triplet<double>(innPtr[outPtr[i] + k], i, b(k)));
             }
         }
 
