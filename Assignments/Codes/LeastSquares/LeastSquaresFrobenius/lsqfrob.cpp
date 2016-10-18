@@ -11,13 +11,18 @@ using namespace Eigen;
 //#define DECOMP llt
 #define DECOMP ldlt
 
+/* @brief Solve the minimization problem $\argmin |M|_{F}$
+ * @param[in] z An $n$-dimensional vector constraining the solution $M^*$ via $M^*z = g$
+ * @param[in] g An $n$-dimensional vector constraining the solution $M^*$ via $M^*z = g$
+ * @param[out] M^* The solution to the minimization problem
+ */
 /* SAM_LISTING_BEGIN_1 */
 MatrixXd min_frob(const VectorXd & z, const VectorXd & g) {
     assert(z.size() == g.size() && "Size mismatch!");
 
     unsigned int n = g.size();
+    
 #if SOLUTION
-
     // Build temporary matrix $\mathbf{C}$.
     MatrixXd C = kroneckerProduct(MatrixXd::Identity(n,n),
                                   z.transpose());
@@ -36,7 +41,7 @@ MatrixXd min_frob(const VectorXd & z, const VectorXd & g) {
     // It maybe possible to solve the system more efficiently
     // eployting the special structure of the matrix.
 #else // TEMPLATE
-    // TODO: solve minimization problem, return the matrix $\mathbf{M}^*$
+    // TODO: solve minimization problem, return matrix $M^*$
     return MatrixXd::Zero(n,n);
 #endif // TEMPLATE
 }
@@ -49,21 +54,21 @@ int main(int argc, char **argv) {
         n = std::stoi(argv[1]);
     }
 
-    /* SAM_LISTING_BEGIN_2 */
+/* SAM_LISTING_BEGIN_2 */
     VectorXd z = VectorXd::Random(n),
              g = VectorXd::Random(n);
 
 #if SOLUTION
-    MatrixXd Mstar = min_frob(z, g); // $\mathbf{M}^*$
-    MatrixXd M = g*z.transpose() / z.squaredNorm(); // $\mathbf{M}$
+    MatrixXd Mstar = min_frob(z, g); // $M^*$
+    MatrixXd M = g*z.transpose() / z.squaredNorm(); // $M$
 #else // TEMPLATE
-    // TODO: Compute matrices $M$ and $M^*$
-    MatrixXd Mstar = MatrixXd::Zero(n,n); // $\mathbf{M}^*$
-    MatrixXd M = MatrixXd::Zero(n,n); // $\mathbf{M}$
+    // TODO: compute matrices $M$ and $M^*$
+    MatrixXd Mstar = MatrixXd::Zero(n,n); // $M^*$
+    MatrixXd M = MatrixXd::Zero(n,n); // $M$
 #endif // TEMPLATE
 
     std::cout << "Norm: "
               << (Mstar - M).norm()
               << std::endl;
-    /* SAM_LISTING_END_2 */
+/* SAM_LISTING_END_2 */
 }

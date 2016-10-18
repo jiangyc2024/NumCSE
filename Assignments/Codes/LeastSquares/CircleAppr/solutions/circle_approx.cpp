@@ -38,8 +38,8 @@ Vector3d circl_alg_fit(const VectorXd &x,
     VectorXd b = -x.array()*x.array()
             - y.array()*y.array();
 
-//    Vector3d z = lsqSVD(A, b);
-//    Vector3d z = lsqNRM(A, b);
+//  Vector3d z = lsqSVD(A, b);
+//  Vector3d z = lsqNRM(A, b);
     Vector3d z = lsqHHR(A, b);
 
     z(2) = std::sqrt(z(2) + z(0)*z(0) + z(1)*z(1));
@@ -47,8 +47,6 @@ Vector3d circl_alg_fit(const VectorXd &x,
     return z;
 }
 /* SAM_LISTING_END_1 */
-
-
 
 /* SAM_LISTING_BEGIN_2 */
 Vector3d circl_geo_fit(const VectorXd &x, const VectorXd & y) {

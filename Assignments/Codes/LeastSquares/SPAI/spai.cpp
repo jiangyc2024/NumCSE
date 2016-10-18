@@ -14,9 +14,14 @@ using namespace Eigen;
 
 using index_t = int;
 
+/* @brief Compute $B = \argmin_{X \in P(A)} |I-AX|_F$
+ * @param[in] A An $n \times n$ matrix
+ * @param[out] B The $n \times n$ matrix $= \argmin_{X \in P(A)} |I-AX|_F$
+ */
+/* SAM_LISTING_BEGIN_1 */
 SparseMatrix<double> spai(SparseMatrix<double> & A) {
-    assert(A.rows() = A.cols() &&
-           "Matrix must be square!");
+    assert(A.rows() == A.cols() &&
+    "Matrix must be square!");
 
     unsigned int n = A.rows();
 
@@ -29,6 +34,7 @@ SparseMatrix<double> spai(SparseMatrix<double> & A) {
     std::vector<Triplet<double>> triplets;
     triplets.reserve(A.nonZeros());
 
+#if SOLUTION
     // Without this, the code is MUCH slower w.r.t. MATLAB
     #pragma omp parallel for
     for(unsigned int i = 0; i < n; ++i) {
@@ -53,17 +59,18 @@ SparseMatrix<double> spai(SparseMatrix<double> & A) {
 				triplets.push_back(Triplet<double>(innPtr[outPtr[i] + k], i, b(k)));
             }
         }
-
     }
+#else // TEMPLATE
+    // TODO: build $B$ in triplet format, exploiting the sparse format of $A$
+#endif // TEMPLATE
 
     SparseMatrix<double> B = SparseMatrix<double>(n,n);
     B.setFromTriplets(triplets.begin(), triplets.end());
     B.makeCompressed();
 
-//    std::cout << B;
-
     return B;
 }
+/* SAM_LISTING_END_1 */
 
 // Run conditionally
 const bool small_test = false;
@@ -112,7 +119,6 @@ int main(int argc, char **argv) {
         SparseMatrix<double>I(n,n);
         I.setIdentity();
         MatrixXd R = MatrixXd::Random(n,n);
-//        M = kroneckerProduct(I, R);
         M = kroneckerProduct(R, I);
 
         Timer tm;

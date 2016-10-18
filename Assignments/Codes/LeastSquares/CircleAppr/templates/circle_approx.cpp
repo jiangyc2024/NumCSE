@@ -19,11 +19,9 @@ Vector3d circl_alg_fit(const VectorXd &x,
 
     unsigned int n = x.size();
 
-    // TODO: find center/radius using algebriac method
+    // TODO: find center/radius using algebric method
 }
 /* SAM_LISTING_END_1 */
-
-
 
 /* SAM_LISTING_BEGIN_2 */
 Vector3d circl_geo_fit(const VectorXd &x, const VectorXd & y) {
