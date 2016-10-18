@@ -1,29 +1,24 @@
 # include <complex>
+
+# include <Eigen/Dense>
+# include <unsupported/Eigen/FFT>
+# include <figure/figure.hpp>
+
 # include "timer.h"
 # include "meshgrid.hpp"
-# include <Eigen/Dense>
-# include <figure/figure.hpp>
-# include <unsupported/Eigen/FFT>
-using Eigen::VectorXd; using Eigen::VectorXcd;
-using Eigen::MatrixXd; using Eigen::MatrixXcd;
-using Eigen::ArrayXcd;
 
-//! Computes componentwise exponential of the argument
-void exp(MatrixXcd& A) {
-  for (long i = 0; i < A.cols(); ++i) {
-    ArrayXcd c = A.col(i).array();
-    A.col(i) = c.exp().matrix();
-  }
-}
+using namespace Eigen;
 
 //! Benchmarking discrete fourier transformations
 //  N = maximal length of the transformed vector
 //  nruns = no. of runs on which to take the minimal timing
-void benchmark(const int N, const int nruns=5) {
+//  If the size of the transformed array is a prime number the kissfft
+//  implementation of \eigen{} performs extremly bad, use FFTW or MKL
+//  in these cases
+void benchmark(const int N, const int nruns=3) {
   std::complex<double> i(0,1); // imaginary unit
-
-  MatrixXd res(N, 4); // save timing results and vector size
-  for (int n = 2; n <= N; ++n) {
+  MatrixXd res(int(std::log2(N)), 4); // save timing results and vector size
+  for (int n = 2, j = 0; n <= N; n*=2, ++j) {
     VectorXd y = VectorXd::Random(n);
     VectorXcd c = VectorXcd::Zero(n);
     // compute fourier transformed with a loop implementation
@@ -42,7 +37,7 @@ void benchmark(const int N, const int nruns=5) {
     // compute fourier transformed through matrix multiplication
     MatrixXd I, J; VectorXd lin = VectorXd::LinSpaced(n, 0, n-1);
     meshgrid(lin, lin, I, J);
-    MatrixXcd F = -2*M_PI/n*i*I.cwiseProduct(J); exp(F);
+    MatrixXcd F = -2*M_PI/n*i*I.cwiseProduct(J); F.array().exp();
     Timer t2; t2.start();
     for (int k = 0; k < nruns; ++k) { 
       c = F*y; t2.lap();
@@ -54,20 +49,23 @@ void benchmark(const int N, const int nruns=5) {
       fft.fwd(c,y); t3.lap();
     }
     // save timings
-    res(n-1,0) = n; res(n-1,1) = t1.min(); 
-    res(n-1,2) = t2.min(); res(n-1,3) = t3.min();
+    res(j,0) = n; res(j,1) = t1.min(); 
+    res(j,2) = t2.min(); res(j,3) = t3.min();
   }
   mgl::Figure fig;
   fig.title("FFT timing");
-  fig.setlog(false, true);
-  fig.plot(res.col(0), res.col(1), "b").label("Loop based computation");
-  fig.plot(res.col(0), res.col(2), "k").label("Direct matrix multiplication");
-  fig.plot(res.col(0), res.col(3), "r").label("Eigen's FFT module");
+  fig.setlog(true, true);
+  fig.plot(res.col(0), res.col(1), "b*").label("Loop based computation");
+  fig.plot(res.col(0), res.col(2), "m^").label("Direct matrix multiplication");
+  fig.plot(res.col(0), res.col(3), "r<").label("Eigen's FFT module");
+  fig.fplot("x^2*1e-8","k:").label("O(x^2)");
+  fig.fplot("x*lg(x)*1e-8","k;").label("O(n log(n))");
   fig.legend(0,1);
   fig.save("ffttime");
+  std::cout << res << std::endl;
 }
 
 int main() {
-  benchmark(3000);
+  benchmark(1024*8);
   return 0;
 }
