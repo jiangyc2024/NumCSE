@@ -26,5 +26,15 @@ void spai(const MatrixXd& A, MatrixXd& B) { // $A$ must be square...
 }
 
 int main() {
+	MatrixXd A(4,4);
+	A << 1, 2, 0, 6,
+		 0, 2, 5, 0,
+		 7, 9, 8, 0,
+		 0, 8, 1, 5;
+	MatrixXd B(4,4);
 
+	spai(A,B);
+	
+	IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
+	std::cout << B.format(CleanFmt) << std::endl;
 }
