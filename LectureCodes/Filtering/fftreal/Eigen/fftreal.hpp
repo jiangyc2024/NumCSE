@@ -4,9 +4,10 @@
 using Eigen::VectorXd;
 using Eigen::VectorXcd;
 
-//! perform fft on a real vector y and return (complex) coefficients in c
-//  Note: Eigen's FFT method fwd() has this already implemented and we 
-//        could also just call: c = fft.fwd(y);
+/* SAM_LISTING_BEGIN_0 */
+//  Perform fft on a real vector $y$ and return (complex) coefficients in $c$
+//  Note: Eigen's FFT method fwd() has this already implemented and
+//        we could also just call: c = fft.fwd(y);
 void fftreal(const VectorXd& y, VectorXcd& c) {
   const unsigned n = y.size(), m = n/2;
   if (n % 2 != 0) {
@@ -14,7 +15,7 @@ void fftreal(const VectorXd& y, VectorXcd& c) {
     return;
   }
 
-  std::complex<double> i(0,1); // imaginary unit
+  std::complex<double> i(0,1); // Imaginary unit
   VectorXcd yc(m);
   for (unsigned j = 0; j < m; ++j) {
     yc(j) = y(2*j) + i*y(2*j + 1);
@@ -24,7 +25,7 @@ void fftreal(const VectorXd& y, VectorXcd& c) {
   h << d, d(0);
 
   c.resize(n);
-  // implementation of \eqref{rft:4}
+  // Implementation of \eqref{rft:4}
   for (unsigned k = 0; k < m; ++k) {
     c(k) = (h(k) + std::conj(h(m-k)))/2. - i/2.*std::exp(-2.*k/n*M_PI*i)*(h(k) - std::conj(h(m-k)));
   }
@@ -33,3 +34,4 @@ void fftreal(const VectorXd& y, VectorXcd& c) {
     c(k) = std::conj(c(n-k));
   }
 }
+/* SAM_LISTING_END_0 */
