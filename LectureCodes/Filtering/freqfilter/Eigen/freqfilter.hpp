@@ -19,6 +19,6 @@ void freqfilter(const VectorXd& y, int k, VectorXd& low, VectorXd& high) {
   VectorXcd chigh = c - clow;
   
   low = fft.inv(clow).real();
-  high = fft.inv(chigh).imag();
+  high = fft.inv(chigh).real();
 }
 /* SAM_LISTING_END_0 */
