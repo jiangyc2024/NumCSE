@@ -1,44 +1,35 @@
-#include <cmath>
+# include <complex>
+# include <Eigen/Dense>
+# include <unsupported/Eigen/FFT>
+using Eigen::VectorXd;
+using Eigen::VectorXcd;
 
-#include <Eigen/Dense>
-#include <unsupported/Eigen/FFT>
+//! perform fft on a real vector y and return (complex) coefficients in c
+//  Note: Eigen's FFT method fwd() has this already implemented and we 
+//        could also just call: c = fft.fwd(y);
+void fftreal(const VectorXd& y, VectorXcd& c) {
+  const unsigned n = y.size(), m = n/2;
+  if (n % 2 != 0) {
+    std::cout << "n must be even!\n";
+    return;
+  }
 
-using namespace Eigen;
+  std::complex<double> i(0,1); // imaginary unit
+  VectorXcd yc(m);
+  for (unsigned j = 0; j < m; ++j) {
+    yc(j) = y(2*j) + i*y(2*j + 1);
+  }
+  Eigen::FFT<double> fft;
+  VectorXcd d = fft.fwd(yc), h(m + 1);
+  h << d, d(0);
 
-VectorXcd fftreal(const VectorXd& y) {
-	  
-	size_t n = y.size();
-	size_t m = n/2;
-	assert(n % 2 != 0 &&
-	"n must be even");
-	
-	VectorXcd y_(m);
-	for(size_t j=0; j<m; ++j) {
-		
-		std::complex<double> tmp( y[2*j], y[2*j+1] );
-		y_[i] = tmp;
-	}
-	
-	FFT<double> fft;
-	VectorXcd h;
-	fft.fwd(h, y_);
-	h.conservativeResize(m+1);
-	h[m] = h[0];
-	
-	VectorXcd c(h.size());
-	for(size_t j=0; j<(m+1); ++j) {
-		
-		c[j] = 0.5*(h[j] + h[m-j].conjugate());
-		std::complex<double> tmp1( sin(2*M_PI*j/n), cos(2*M_PI*j/n) );
-		std::complex<double> tmp2;
-		tmp2 = 0.5*(h[j] - h[m-j].conjugate());
-		c[j] = c[j] - tmp1*tmp2;
-	}
-	
-	c.conservativeResize(2*m);
-	for(size_t j=1; j<m; ++j) {
-		c[m+j] = c[m-j];
-	}
-
-	return c;
+  c.resize(n);
+  // implementation of \eqref{rft:4}
+  for (unsigned k = 0; k < m; ++k) {
+    c(k) = (h(k) + std::conj(h(m-k)))/2. - i/2.*std::exp(-2.*k/n*M_PI*i)*(h(k) - std::conj(h(m-k)));
+  }
+  c(m) = std::real(h(0)) - std::imag(h(0));
+  for (unsigned k = m+1; k < n; ++k) {
+    c(k) = std::conj(c(n-k));
+  }
 }

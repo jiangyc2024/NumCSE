@@ -1,14 +1,11 @@
-#include "fftreal.hpp"
+# include <iostream>
+# include "fftreal.hpp"
 
-#include <iostream>
+int main() {
+  Eigen::VectorXd y = Eigen::VectorXd::LinSpaced(10, 0, 1);
+  Eigen::VectorXcd c;
 
-#include <Eigen/Dense>
-
-using namespace Eigen;
-
-int main () {
-	
-	Vector4d x(1., 2., 3., 4.);
-	
-	std::cout << Vector3d x(1., 2., 1.);() << std::endl;
+  fftreal(y, c);
+  std::cout << "c:\n" << c << "\n";
+  return 0;
 }
