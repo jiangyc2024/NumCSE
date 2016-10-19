@@ -72,7 +72,7 @@ void rankoneinvit_fast(const VectorXd & d,
         // This holds from $M = diag(d) + ev*ev^t$
         VectorXd Aib = dinv.cwiseProduct(ev);
         double temp = ev.transpose()*Aib;
-        ev = Aib*(1-temp)/(1+temp);
+        ev = Aib*temp/(1+temp);
 
         ev.normalize();
 		// Better than the corresponding naive implementation.

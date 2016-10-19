@@ -38,6 +38,7 @@ private:
     index_t maxcols; //< Number of non-empty columns
     index_t m,n; //< Number of rows, number of columns
 };
+/* SAM_LISTING_END_0 */
 
 /* @brief Retrieve value of cell $(i,j)$
  * \param[in] i Row index
@@ -52,7 +53,6 @@ double EllpackMat::operator() (index_t i, index_t j) const {
     }
     return 0;
 }
-/* SAM_LISTING_END_0 */
 
 /* @brief Constructor of class EllpackMat from vector of triplets
  * \param[in] triplets Vector of Eigen triplets

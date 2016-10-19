@@ -50,6 +50,8 @@ void CCS(const MatrixXd & A, VectorXd & val, VectorXd & row_ind, VectorXd & col_
 				++index;
 			}
 		}
+		// If one whole column is empty,
+		// the same 'index' is stored in 'col\_ptr' twice.
 	}
 }
 /* SAM_LISTING_END_0 */
@@ -78,7 +80,7 @@ int main() {
 	int * col_ptr_2;
 
 	// Caste $A$ to 'SparseMatrix' and compress it to store the matrix in CCS format
-	SparseMatrix <double> As = A.sparseView();
+	SparseMatrix<double> As = A.sparseView();
 	As.makeCompressed();
 
 	val_2 = As.valuePtr(); // Pointer to values

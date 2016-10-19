@@ -69,7 +69,7 @@ void rankoneinvit_fast(const VectorXd & d,
         // This holds from $M = diag(d) + ev*ev^t$
         VectorXd Aib = dinv.cwiseProduct(ev);
         double temp = ev.transpose()*Aib;
-        ev = Aib*(1-temp)/(1+temp);
+        ev = Aib*temp/(1+temp);
 
         ev.normalize();
 		// Better than the corresponding naive implementation.
@@ -84,8 +84,8 @@ void rankoneinvit_fast(const VectorXd & d,
 }
 /* SAM_LISTING_END_1 */
 
-/* SAM_LISTING_BEGIN_2*/
 int main() {
+/* SAM_LISTING_BEGIN_2*/
     // Initialization
     srand((unsigned int) time(0));
     double tol = 1e-3;
@@ -135,5 +135,5 @@ int main() {
                   << tm_fast.min()
                   << " s for n = " << n << std::endl;
     }
-}
 /* SAM_LISTING_END_2 */
+}
