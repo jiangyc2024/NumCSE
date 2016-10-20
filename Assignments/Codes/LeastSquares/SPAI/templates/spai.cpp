@@ -20,31 +20,35 @@ using index_t = int;
  */
 /* SAM_LISTING_BEGIN_1 */
 SparseMatrix<double> spai(SparseMatrix<double> & A) {
+    // Size check
     assert(A.rows() == A.cols() &&
     "Matrix must be square!");
+    unsigned int N = A.rows();
 
-    unsigned int n = A.rows();
-
+    // Needed to make sure ___Ptr functions return
+    // arrays specified in CRS format
     A.makeCompressed();
 
+    // Obtain pointers to data of A
     double* valPtr = A.valuePtr();
     index_t* innPtr = A.innerIndexPtr();
     index_t* outPtr = A.outerIndexPtr();
 
+    // Create vector for triplets of B and reserve enough space
     std::vector<Triplet<double>> triplets;
     triplets.reserve(A.nonZeros());
 
     // TODO: build $B$ in triplet format, exploiting the sparse format of $A$
 
-    SparseMatrix<double> B = SparseMatrix<double>(n,n);
+    // Build and return SPAI preconditioner
+    SparseMatrix<double> B = SparseMatrix<double>(N,N);
     B.setFromTriplets(triplets.begin(), triplets.end());
     B.makeCompressed();
-
     return B;
 }
 /* SAM_LISTING_END_1 */
 
-// Run conditionally
+// Run conditionally only one test
 const bool small_test = false;
 const bool big_test = true;
 
@@ -55,6 +59,8 @@ int main(int argc, char **argv) {
     }
     srand(time(NULL));
 
+    // First test: compute SPAI with very small matrix
+    // Check correctness
     if(small_test)
     {
         SparseMatrix<double> M(5,5);
@@ -84,6 +90,7 @@ int main(int argc, char **argv) {
                   << std::endl;
 
     }
+    // Big test: test with large, sparse matrix
     if(big_test)
     {
         SparseMatrix<double> M(n*n,n*n);

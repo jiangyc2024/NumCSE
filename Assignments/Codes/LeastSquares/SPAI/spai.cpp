@@ -40,6 +40,10 @@ SparseMatrix<double> spai(SparseMatrix<double> & A) {
 
 #if SOLUTION
     // Loop over each column of $A$
+#if INTERNAL
+    // Speed up with OMP
+    #pragma omp parallel for
+#endif // INTERNAL
     for(unsigned int i = 0; i < N; ++i) {
         // Number of non zeros in current column of $A$
         index_t nnz_i = outPtr[i+1] - outPtr[i];
@@ -49,10 +53,13 @@ SparseMatrix<double> spai(SparseMatrix<double> & A) {
         // Temporarily create a (small, dense) matrix on which normal formula
         // will be applied. We project the space $\mathcal{P}(A)$
         // onto $\mathcal{P}(a_i)$
-         MatrixXd C = MatrixXd::Zero(N, nnz_i);
-//        SparseMatrix<double> C(N, nnz_i);
-//        std::vector<Triplet<double>> C_triplets;
-//        C_triplets.reserve(nnz_i*nnz_i);
+#if INTERNAL
+        // Uncomment next line to have the slower, dense version of implementation
+//         MatrixXd C = MatrixXd::Zero(N, nnz_i);
+#endif // INTERNAL
+        SparseMatrix<double> C(N, nnz_i);
+        std::vector<Triplet<double>> C_triplets;
+        C_triplets.reserve(nnz_i*nnz_i);
 
         // Need to build matrix $C$. To this end we remove all columns
         // from $A$ for which $a_i = 0$.
@@ -67,25 +74,42 @@ SparseMatrix<double> spai(SparseMatrix<double> & A) {
             // This loop has length complexity $n$
             for(unsigned int l = 0; l < nnz_k; ++l) {
                 unsigned int innIdx = outPtr[row_k] + l;
-                 C(innPtr[innIdx], k - outPtr[i]) = valPtr[innIdx];
-//                C_triplets.emplace_back(Triplet<double>(innPtr[innIdx], k - outPtr[i], valPtr[innIdx]));
+#if INTERNAL
+                // Uncomment next line to have the slower, dense version of implementation
+//                 C(innPtr[innIdx], k - outPtr[i]) = valPtr[innIdx];
+#endif // INTERNAL
+                C_triplets.emplace_back(Triplet<double>(innPtr[innIdx], k - outPtr[i], valPtr[innIdx]));
             }
         }
-//        C.setFromTriplets(C_triplets.begin(), C_triplets.end());
-//        C.makeCompressed();
-//        SparseMatrix<double> S = C.transpose() * C;
-//        MatrixXd M = MatrixXd(S);
-//        VectorXd xt = C.row(i).transpose();
+#if INTERNAL
+        // Comment next line to have the slower, dense version of implementation
+#endif // INTERNAL
+        C.setFromTriplets(C_triplets.begin(), C_triplets.end());
+        C.makeCompressed();
+        SparseMatrix<double> S = C.transpose() * C;
+        MatrixXd M = MatrixXd(S);
+        VectorXd xt = C.row(i).transpose();
 
         // Compute $C^\top C$ and solve normal equation.
         // Complexity of product:
         // Complexity of solve:
         // Size of $b$ is at most $n$.
-//        VectorXd b = M.partialPivLu().solve(xt);
-        VectorXd b = (C.transpose() * C).partialPivLu().solve(C.row(i).transpose());
+        VectorXd b = M.partialPivLu().solve(xt);
+#if INTERNAL
+        // Uncomment next line to have the slower, dense version of implementation
+//        VectorXd b = (C.transpose() * C).partialPivLu().solve(C.row(i).transpose());
+#endif // INTERNAL
         // Loop as length $n$.
         for(unsigned int k = 0; k < b.size(); ++k) {
+#if INTERNAL
+            // Omp data race protection
+            #pragma omp critical
+            {
+#endif // INTERNAL
             triplets.emplace_back(Triplet<double>(innPtr[outPtr[i] + k], i, b(k)));
+#if INTERNAL
+            }
+#endif // INTERNAL
         }
     }
 #else // TEMPLATE
@@ -100,7 +124,7 @@ SparseMatrix<double> spai(SparseMatrix<double> & A) {
 }
 /* SAM_LISTING_END_1 */
 
-// Run conditionally
+// Run conditionally only one test
 const bool small_test = false;
 const bool big_test = true;
 
@@ -111,6 +135,8 @@ int main(int argc, char **argv) {
     }
     srand(time(NULL));
 
+    // First test: compute SPAI with very small matrix
+    // Check correctness
     if(small_test)
     {
         SparseMatrix<double> M(5,5);
@@ -140,6 +166,7 @@ int main(int argc, char **argv) {
                   << std::endl;
 
     }
+    // Big test: test with large, sparse matrix
     if(big_test)
     {
         SparseMatrix<double> M(n*n,n*n);
