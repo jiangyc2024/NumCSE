@@ -21,4 +21,4 @@ int main() {
        << "x = " << x.transpose() << endl;
   return 0;
 }
-/* SAM_LISTING_BEGIN_0 */
+/* SAM_LISTING_END_0 */
