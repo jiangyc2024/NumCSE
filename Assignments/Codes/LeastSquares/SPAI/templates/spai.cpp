@@ -25,7 +25,7 @@ SparseMatrix<double> spai(SparseMatrix<double> & A) {
     "Matrix must be square!");
     unsigned int N = A.rows();
 
-    // Needed to make sure ___Ptr functions return
+    // Needed to make sure ...Ptr functions return
     // arrays specified in CRS format
     A.makeCompressed();
 
