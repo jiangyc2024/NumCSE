@@ -150,7 +150,8 @@ struct ColValPair {
 /* SAM_LISTING_END_7 */
 
 /* @brief Convert 'preCRS' to proper CRS format (CRSMatrix)
- * @param[in] preCRS Vector of rows of pairs (col\_ind, val)
+ * @param[in] preCRS Vector of rows of pairs (col\_ind, val).
+ * The original matrix does not have rows only made by zeros.
  * @param[out] C Proper CRSMatrix format
  */
 /* SAM_LISTING_BEGIN_8 */
@@ -172,7 +173,8 @@ void properCRS(const std::vector< std::vector< ColValPair<scalar> > >& preCRS, C
 /* SAM_LISTING_END_8 */
 
 /* @brief Converts a matrix given as triplet matrix to a matrix in CRS format.
- * No assumption is made on the triplets, which may be unsorted and/or duplicated.
+ * No assumption is made on the triplets, which may be unsorted and/or duplicated,
+ * but it is imposed that the original matrix does not have rows only made by zeros.
  * In case of duplicated triplets, values are added toghether.
  * The output CRS matrix may be empty (in which case T = C) or may be already filled with values (in which case C += T).
  * This version inserts the pairs ColVal already sorted in the list
@@ -224,7 +226,8 @@ void tripletToCRS_insertsort(const TripletMatrix<scalar>& T, CRSMatrix<scalar>& 
 /* SAM_LISTING_END_5 */
 
 /* @brief Converts a matrix given as triplet matrix to a matrix in CRS format.
- * No assumption is made on the triplets, which may be unsorted and/or duplicated.
+ * No assumption is made on the triplets, which may be unsorted and/or duplicated,
+ * but it is imposed that the original matrix does not have rows only made by zeros.
  * In case of duplicated triplets, values are added toghether.
  * The output CRS matrix may be empty (in which case T = C) or may be already filled with values (in which case C += T).
  * This version inserts all the triplets (push_back), then sorts each row and cumsum all the duplicated col values.
