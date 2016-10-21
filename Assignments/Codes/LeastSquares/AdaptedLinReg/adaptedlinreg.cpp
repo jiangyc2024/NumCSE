@@ -29,6 +29,7 @@ VectorXd linReg(const VectorXd &t, const VectorXd &y)
 	A.col(0) = ones;
 	A.col(1) = t;
 
+	// Normal equations
 	MatrixXd lhs = A.transpose() * A; //< Left-hand side
 	VectorXd rhs = A.transpose() * b; //< Right-hand side
 	x = lhs.fullPivLu().solve(rhs);
