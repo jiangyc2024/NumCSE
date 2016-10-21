@@ -390,16 +390,10 @@ void Figure::save(const std::string& file) {
   // Shorten tick marks (factor 0.01) and make subticks so small that they do not appear (factor 1000)
   gr_.SetTickLen(0.01, 1000); 
 
-<<<<<<< HEAD
-  // NOTE: Changed to gr_.LoadFont("none"); because of missing text errors.
-  //       Will stay so until we find a solution to load "heros".
-  // will use the default STIX font, this is necessary to see why check MathGLs Google Group
-=======
   // setting font to "none" is necessary to prevent some bugs
   // for more information refer to MathGL's GoogleGroup
   // TODO: find way to successfully load "heros" font. 
   //       (usual 'LoadFont("heros", path)' doens't work properly!)
->>>>>>> master
   gr_.LoadFont("none");
   // set the font size
   gr_.SetFontSizePT(fontSizePT_);
