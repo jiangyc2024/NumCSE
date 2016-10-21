@@ -27,8 +27,8 @@ VectorXd lsqEst(const VectorXd &z, const VectorXd &c)
 	A(n-1,1) = z(n-2);
 	
 	// Normal equations
-	MatrixXd lhs = A.transpose() * A; //< Left-hand side
-	VectorXd rhs = A.transpose() * c; //< Right-hand side
+	MatrixXd lhs = A.transpose() * A; // Left-hand side
+	VectorXd rhs = A.transpose() * c; // Right-hand side
 	x = lhs.fullPivLu().solve(rhs);
 
 	return x;
