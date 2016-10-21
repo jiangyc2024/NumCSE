@@ -24,12 +24,13 @@ VectorXd linReg(const VectorXd &t, const VectorXd &y)
 	VectorXd ones(n);
 	 ones.setOnes(n);
 	 
-	MatrixXd A(n,2); //< Coefficient matrix of overdetermined linear system
+	MatrixXd A(n,2); // Coefficient matrix of overdetermined linear system
 	A.col(0) = ones;
 	A.col(1) = t;
 
-	MatrixXd lhs = A.transpose() * A; //< Left-hand side
-	VectorXd rhs = A.transpose() * b; //< Right-hand side
+	// Normal equations
+	MatrixXd lhs = A.transpose() * A; // Left-hand side
+	VectorXd rhs = A.transpose() * b; // Right-hand side
 	x = lhs.fullPivLu().solve(rhs);
 
 	return x;
