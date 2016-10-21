@@ -48,7 +48,7 @@ MatrixXd COO2Mat(const TripVec &A)
 	}
 	++m; ++n; // First index is 0
 	MatrixXd A_mat = MatrixXd::Zero(m, n);
-	
+
 	for(auto const& a: A) {
 		A_mat(a.row(), a.col()) += a.value();
 	}
@@ -109,7 +109,7 @@ TripVec COOprod_effic(TripVec &A, TripVec &B)
 {
 	// Initialization
     TripVec C;
-	
+
     // TODO: compute matrix product $AB$ in COO format (efficient multiplier)
 
 	return C;
@@ -132,7 +132,7 @@ int main() {
          0, 0, 0, 0, 0, 0,
          0, 0, 0, 0, 0, 0,
 		 0, 0, 0, 0, 0, 0;
-		  
+
 	// COO format
 	TripVec A_COO = Mat2COO(A);
 	TripVec B_COO = Mat2COO(B);
@@ -140,7 +140,7 @@ int main() {
     // Compute with standard matrix multiplication and both new multipliers
     std::cout << "--> Check that the multipliers are correct" << std::endl;
     TripVec C_eigen, C_naive, C_effic;
-	
+
 	C_eigen = Mat2COO(A * B);
     C_naive = COOprod_naive(A_COO, B_COO);
     C_effic = COOprod_effic(A_COO, B_COO);
@@ -151,7 +151,7 @@ int main() {
 	C_mat_eigen = COO2Mat(C_eigen);
 	C_mat_naive = COO2Mat(C_naive);
 	C_mat_effic = COO2Mat(C_effic);
-	
+
 	std::cout << "Error eigen vs naive = " << (C_mat_eigen - C_mat_naive).norm() << std::endl;
     std::cout << "Error naive vs effic = " << (C_mat_naive - C_mat_effic).norm() << std::endl;
 
@@ -161,7 +161,7 @@ int main() {
     int seed = static_cast<int> (std::chrono::system_clock::now().time_since_epoch().count());
     std::srand(seed);
 
-    
+
     // Compute runtimes of different multipliers for products between sparse matrices
     std::cout << "--> Runtime comparison of naive vs efficient multiplier" << std::endl;
     std::cout << "--> Product between sparse matrices" << std::endl;
@@ -183,7 +183,7 @@ int main() {
             // Initialization of random sparse matrices
         	A = randMat(n, n, 0.1);
         	B = randMat(n, n, 0.1);
-			
+
 			// COO format
 			TripVec A_COO = Mat2COO(A);
 			TripVec B_COO = Mat2COO(B);
@@ -197,7 +197,7 @@ int main() {
             C_effic = COOprod_effic(A_COO, B_COO);
             tm_effic.stop();
         }
-        
+
 
         // Print runtimes
         std::cout << std::setw(20) << n
@@ -206,7 +206,7 @@ int main() {
                   << std::setw(20) << tm_effic.min()
                   << std::endl;
     }
-    
+
 
 
 //-----------------------------------------------------------------------------------------------

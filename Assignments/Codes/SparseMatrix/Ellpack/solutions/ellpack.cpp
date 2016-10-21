@@ -185,7 +185,7 @@ int main(int, char**) {
     std::cout << "l2-norm of the difference = " << (Sx - Ex).norm() << std::endl;
 
     std::cout << " ------------- Test of y = A^t*x ------------- " << std::endl;
-    Vector y(3);
+    x.resize(3);
     x << 1,2,3;
     Vector Stx = S.transpose()*x;
     std::cout << "Sparse S^t*x ="  << std::endl << Stx  << std::endl;

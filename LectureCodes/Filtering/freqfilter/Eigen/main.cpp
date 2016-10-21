@@ -7,7 +7,7 @@ int main() {
   VectorXd y = Eigen::ArrayXd::LinSpaced(n, 0, M_PI).cos().matrix();
   VectorXd l, h;
   freqfilter(y, k, l, h);
-  std::cout << "Low:\t" << l.transpose() << "\n"
-            << "High:\t" << h.transpose() << "\n";
-  return 0;
+  std::cout << "Low:\n" << l.transpose() << "\n"
+            << "High:\n" << h.transpose() << "\n";
+ return 0;
 }
