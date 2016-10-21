@@ -16,7 +16,7 @@ using namespace Eigen;
  * @param[in] y An $n$-dimensional vector containing the other side of input data
  * @param[out] x The vector of parameters $(x_1,x_2)$, intercept and slope of the line fitted
  */
-VectorXd linRegr(const VectorXd &t, const VectorXd &y)
+VectorXd linReg(const VectorXd &t, const VectorXd &y)
 {
     // Initialization
 	int n = t.size();
@@ -54,13 +54,13 @@ VectorXd expFit(const VectorXd &t, const VectorXd &y)
 
 	VectorXd x(2);
 
-	// Define the correct input $y$ for 'linRegr'
+	// Define the correct input $y$ for 'linReg'
 	VectorXd y_(n);
 	for(size_t i=0; i<n; ++i) {
 		y_(i) = log(y(i));
 	}
 	
-	VectorXd x_ = linRegr(t, y_);
+	VectorXd x_ = linReg(t, y_);
 	
     // Set the proper fitted parameters
     x(0) = exp(x_(0));

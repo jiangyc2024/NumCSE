@@ -11,7 +11,7 @@ using namespace Eigen;
  * @param[out] x The vector of parameters $(x_1,x_2)$, intercept and slope of the line fitted
  */
 /* SAM_LISTING_BEGIN_0 */
-VectorXd linRegr(const VectorXd &t, const VectorXd &y)
+VectorXd linReg(const VectorXd &t, const VectorXd &y)
 {
     // Initialization
 	int n = t.size();
