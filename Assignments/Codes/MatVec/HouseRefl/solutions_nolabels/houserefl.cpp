@@ -1,9 +1,8 @@
 //// 
 //// Copyright (C) 2016 SAM (D-MATH) @ ETH Zurich
 //// Author(s): lfilippo <filippo.leonardi@sam.math.ethz.ch> 
-//// Contributors: tille, jgacon
+//// Contributors: tille, jgacon, dcasati
 //// This file is part of the NumCSE repository.
-//// Report issues to: https://gitlab.math.ethz.ch/NumCSE/NumCSE/issues
 ////
 #include <Eigen/Dense>
 #include <iostream>
@@ -19,7 +18,7 @@ void houserefl(const Eigen::VectorXd & v, Eigen::MatrixXd & Z)
     Eigen::VectorXd w = v.normalized();
     Eigen::VectorXd u=w;
     u(0) += 1;
-    Eigen::VectorXd  q=u.normalized();
+    Eigen::VectorXd q = u.normalized();
     Eigen::MatrixXd X = Eigen::MatrixXd::Identity(n, n) - 2*q*q.transpose();
     Z = X.rightCols(n-1);
 }

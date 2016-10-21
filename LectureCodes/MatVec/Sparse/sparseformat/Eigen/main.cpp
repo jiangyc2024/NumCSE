@@ -1,4 +1,13 @@
+///////////////////////////////////////////////////////////////////////////
+/// Demonstration code for lecture "Numerical Methods for CSE" @ ETH Zurich
+/// (C) 2016 SAM, D-MATH
+/// Author(s): Thomas Etterlin <thomaset@student.ethz.ch>
+/// Repository: https://gitlab.math.ethz.ch/NumCSE/NumCSE/
+/// Do not remove this header.
+//////////////////////////////////////////////////////////////////////////
+
 #include <iostream>
+#include <iomanip>
 #include <cmath>
 #include <vector>
 #include <limits>
@@ -54,7 +63,7 @@ for(int i = min_i; i <= max_i ; ++i){
 	
 	
 	std::cout << tmp << std::endl;
-	std::cout << times << std::endl;
+	std::cout << std::scientific << std::setprecision(3) << times << std::endl;
 	mgl::Figure fig2;
 	fig2.setlog(true,true);
 	fig2.setFontSize(5);

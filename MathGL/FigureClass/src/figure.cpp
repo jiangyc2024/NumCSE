@@ -4,7 +4,6 @@
 // Co-Author: Baranidharan Mohan                        //
 //////////////////////////////////////////////////////////
 
-
 # include <iostream>
 # include <utility> // pair
 # include <vector>
@@ -49,14 +48,13 @@ Figure::Figure()
     autoRanges_(true),
     styles_(MglStyle()),
     fontSizePT_(4), // small font size
-    plotHeight_(800), // quadratic plot, window size depends on wheter there are labels or not!
-    plotWidth_(800),
     figHeight_(-1), // set to -1: later we will check if they have been changed manually, -1 means no
     figWidth_(-1),  //            any other value will mean that they've been changed
-    topMargin_(-1),
-    leftMargin_(-1)
-
-{}
+    plotHeight_(800), // quadratic plot, window size depends on wheter there are labels or not!
+    plotWidth_(800),
+    leftMargin_(-1),
+    topMargin_(-1)
+    {}
 
 
 /* setting height of the plot                                    *
@@ -392,9 +390,16 @@ void Figure::save(const std::string& file) {
   // Shorten tick marks (factor 0.01) and make subticks so small that they do not appear (factor 1000)
   gr_.SetTickLen(0.01, 1000); 
 
+<<<<<<< HEAD
   // NOTE: Changed to gr_.LoadFont("none"); because of missing text errors.
   //       Will stay so until we find a solution to load "heros".
   // will use the default STIX font, this is necessary to see why check MathGLs Google Group
+=======
+  // setting font to "none" is necessary to prevent some bugs
+  // for more information refer to MathGL's GoogleGroup
+  // TODO: find way to successfully load "heros" font. 
+  //       (usual 'LoadFont("heros", path)' doens't work properly!)
+>>>>>>> master
   gr_.LoadFont("none");
   // set the font size
   gr_.SetFontSizePT(fontSizePT_);

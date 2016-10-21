@@ -1,9 +1,8 @@
 //// 
 //// Copyright (C) 2016 SAM (D-MATH) @ ETH Zurich
 //// Author(s): lfilippo <filippo.leonardi@sam.math.ethz.ch> 
-//// Contributors: tille, jgacon
+//// Contributors: tille, jgacon, dcasati
 //// This file is part of the NumCSE repository.
-//// Report issues to: https://gitlab.math.ethz.ch/NumCSE/NumCSE/issues
 ////
 #include <iostream>
 #include <iomanip>
@@ -60,6 +59,17 @@ void multAmin(const VectorXd & x, VectorXd & y) {
 }
 
 int main(void) {
+    // Testing correctness of the code
+    unsigned int M = 10;
+    VectorXd xa = VectorXd::Random(M);
+    VectorXd ys, yf;
+
+    multAmin(xa, yf);
+    multAminSlow(xa, ys);
+    // Error should be small
+    std::cout << "||ys-yf|| = " << (ys - yf).norm() << std::endl;
+
+
  // TODO: Time multAminSlow and multAmin
  // Repeat timings 10 times. Output times inseconds with
  // scientific notation and 3 digits

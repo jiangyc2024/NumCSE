@@ -4,7 +4,6 @@
 // Co-Author: Baranidharan Mohan                        //
 //////////////////////////////////////////////////////////
 
-
 #ifndef MGL_LABEL_HPP
 #define MGL_LABEL_HPP
 

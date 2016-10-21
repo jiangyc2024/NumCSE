@@ -1,6 +1,7 @@
 # include <Eigen/Dense>
 using Eigen::VectorXcd;
 
+/* SAM_LISTING_BEGIN_0 */
 VectorXcd pconv(const VectorXcd& u, const VectorXcd& x) {
   const long n = x.size(); 
   VectorXcd z = VectorXcd::Zero(n);
@@ -12,3 +13,4 @@ VectorXcd pconv(const VectorXcd& u, const VectorXcd& x) {
   }
   return z;
 }
+/* SAM_LISTING_END_0 */

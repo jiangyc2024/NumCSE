@@ -12,6 +12,12 @@ if(POLICY CMP0016)
   cmake_policy(SET CMP0016 NEW)
 endif()
 
+# use install rpath already on built time
+# this is used to make the install name of the mathgl (shared)
+# library (already) on built time relative instead absolute
+# note: disabled since absolute paths are fine for now
+#SET(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+
 # set cmake module path
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMake/Modules/")
 
@@ -47,7 +53,7 @@ add_definitions(-pedantic -Wall)
 if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
     # (this is only applicable on clang)            
     # ignore some mathgl warnings
-    add_definitions(-Wno-return-type-c-linkage -Wno-keyword-macro)
+    add_definitions(-Wno-return-type-c-linkage -Wno-keyword-macro -Wno-missing-braces)
     #set(EXTERNAL_PROJECT_CXX_FLAGS ${EXTERNAL_PROJECT_CXX_FLAGS} -Wno-return-type-c-linkage)
 endif()
 
@@ -60,7 +66,7 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 endif()
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    add_definitions(-Wno-deprecated-declarations)
+    add_definitions(-Wno-deprecated-declarations -Wno-unknown-pragmas)
     #set(EXTERNAL_PROJECT_CXX_FLAGS ${EXTERNAL_PROJECT_CXX_FLAGS} -Wno-deprecated-declarations)
 endif()
 
@@ -115,23 +121,25 @@ if (${MATHGL2_FOUND})
 else()
   set(DOWNLOADING_MGL ON)
   message("-- Downloading MathGl")
-  if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/mathgl_binary)
+  if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/mathgl_install)
     ExternalProject_Add(
         MathGL
         URL http://downloads.sourceforge.net/mathgl/mathgl-2.3.3.tar.gz
         SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/mathgl_source
         BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/mathgl_binary
         DOWNLOAD_NO_PROGRESS 1
-        CMAKE_ARGS ${EXTERNAL_PROJECT_CMAKE_ARGS_PREFIX} -DCMAKE_CXX_STANDARD=11 -Denable-openmp=OFF -DMGL_HAVE_TYPEOF=0 -DMGL_HAVE_C99_COMPLEX=0 -DMGL_LIB_INSTALL_DIR=${CMAKE_CURRENT_BINARY_DIR}/mathgl_install/lib/ -DMGL_CGI_PATH=${CMAKE_CURRENT_BINARY_DIR}/mathgl_install/share/mathgl -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/mathgl_install
+        CMAKE_ARGS ${EXTERNAL_PROJECT_CMAKE_ARGS_PREFIX} -DCMAKE_CXX_STANDARD=11 -Denable-openmp=OFF -DMGL_HAVE_TYPEOF=0 -DMGL_HAVE_C99_COMPLEX=0 -DMGL_LIB_INSTALL_DIR=${CMAKE_CURRENT_BINARY_DIR}/mathgl_install/lib/ -DMGL_CGI_PATH=${CMAKE_CURRENT_BINARY_DIR}/mathgl_install/share/mathgl -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/mathgl_install -DCMAKE_INSTALL_NAME_DIR=@rpath
         INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/mathgl_install
         )
   else()
     add_custom_target(MathGL)
-    message("Skipped download of mathgl because its already present. Delete `${CMAKE_CURRENT_BINARY_DIR}/mathgl_binary` to redownload it.")
+    message("Skipped download of mathgl because its already present. Delete `${CMAKE_CURRENT_BINARY_DIR}/mathgl_install` to redownload it.")
   endif()
+
   set(MATHGL2_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/mathgl_install/include)
   set(MATHGL2_LIBRARY_NAME ${CMAKE_SHARED_LIBRARY_PREFIX}mgl${CMAKE_SHARED_LIBRARY_SUFFIX})
-  set(MATHGL2_LIBRARIES ${CMAKE_CURRENT_BINARY_DIR}/mathgl_install/lib/${MATHGL2_LIBRARY_NAME})
+  set(MATHGL2_LIBRARIES "${CMAKE_CURRENT_BINARY_DIR}/mathgl_install/lib/${MATHGL2_LIBRARY_NAME}")
+
 endif()
 # include mathgl
 include_directories(${MATHGL2_INCLUDE_DIRS})
@@ -158,8 +166,9 @@ else()
   endforeach()
   message(STATUS "Found necessary Figure files: ${FIGURE_INCLUDE_DIR}")
 
-
   add_library(Figure STATIC ${FIGURE_INCLUDE_DIR}/figure.cpp)
+  #add_library(Figure SHARED ${FIGURE_INCLUDE_DIR}/figure.cpp)
+  #target_link_libraries(Figure ${MATHGL2_LIBRARIES})
   
   add_dependencies(Figure Eigen)
   add_dependencies(Figure MathGL) 

@@ -4,7 +4,6 @@
 // Co-Author: Baranidharan Mohan                        //
 //////////////////////////////////////////////////////////
 
-
 # ifndef FIGURE_H
 # define FIGURE_H
 
@@ -33,7 +32,7 @@ namespace mgl {
 /* make mglData from std::vector                                    *
  * PRE: -                                                           *
  * POST: returning mglData containing the data of given std::vector */
-template<typename Scalar>
+template <typename Scalar>
 typename std::enable_if<std::is_arithmetic<Scalar>::value, mglData>::type
 make_mgldata(const std::vector<Scalar>& v) {
   std::vector<double> vd(v.begin(), v.end());
@@ -44,7 +43,7 @@ make_mgldata(const std::vector<Scalar>& v) {
  * PRE : -                                                                 *
  * POST: returning mglData containing the data of given Eigen::(Row)Vector */
 # if FIG_HAS_EIGEN
-template<typename Derived>
+template <typename Derived>
 mglData make_mgldata(const Eigen::MatrixBase<Derived>& vec) {
   assert(vec.rows() == 1 || vec.cols() == 1);
   std::vector<typename Derived::Scalar> v;
@@ -59,7 +58,6 @@ mglData make_mgldata(const Eigen::MatrixBase<Derived>& vec) {
   }
   return mglData(v.data(), v.size());
 }
-
 
 /* make mglData from Eigen::Array                                    *
  * PRE : -                                                           *
@@ -106,6 +104,14 @@ public:
   MglPlot& plot3(const xVector& x, const yVector& y, const zVector& z, std::string style = "");
 
   MglPlot& fplot(const std::string& function, std::string style = "");
+
+# if FIG_HAS_EIGEN
+  template <typename Scalar, typename xVector, typename yVector>
+  MglPlot& triplot(const Eigen::Matrix<Scalar, -1, -1, Eigen::ColMajor>& T, const xVector& x, const yVector& y, std::string style = "");
+
+  template <typename Scalar, typename xVector, typename yVector>
+  MglPlot& triplot(const Eigen::Matrix<Scalar, -1, -1, Eigen::RowMajor>& T, const xVector& x, const yVector& y, std::string style = "");
+# endif
 
   void ranges(const double& xMin, const double& xMax, const double& yMin, const double& yMax);
 
@@ -406,6 +412,57 @@ MglPlot& Figure::spy(const Eigen::SparseMatrix<Scalar>& A, const std::string& st
   plots_.emplace_back(std::unique_ptr<MglSpy>(new MglSpy(xd, yd, style + radius)));
   return *plots_.back().get();
 }
+
+template <typename Scalar, typename xVector, typename yVector>
+MglPlot& Figure::triplot(const Eigen::Matrix<Scalar, -1, -1, Eigen::RowMajor>& T, const xVector& x, const yVector& y, std::string style) 
+{
+  Eigen::Matrix<double, -1, -1, Eigen::RowMajor> T_double = T.template cast<double>();
+
+  mglData Td(T_double.rows(), T_double.cols(), T_double.data()),
+          xd(x.data(), x.size()),
+          yd(y.data(), y.size());
+
+  bool draw_numbers = false; // draw numbers on the vertices
+
+  // if the ranges are set to auto set the new ranges 
+  if(autoRanges_){
+    setRanges(xd, yd, 0.); // the 0 stands no top+bottom margin
+  }
+  
+  // check if a style is given,
+  // if yes: add that style to the style queue and remove it from the style-deque,
+  // if no : get a new style from the style-deque
+  // Note: '#' is to draw lines and not a fully colored plot,
+  //       if the style contains 'F' then the triplot will be fully colored
+  if (style.size() == 0) {
+    style = styles_.get_next() + "#";
+  }
+  else {
+    styles_.eliminate(style);
+    // if no 'F' is found add a '#'
+    if ( std::find(style.begin(), style.end(), 'F') == style.end() ) {
+      style += "#";
+    }
+
+    std::string::size_type enumerate = style.find('?');
+    if (enumerate != std::string::npos) {
+      draw_numbers = true;
+      //style.erase(enumerate);
+    }
+  }
+
+  // put the x-y data in the plot queue
+  plots_.emplace_back(std::unique_ptr<MglTriPlot>(new MglTriPlot(Td, xd, yd, style, draw_numbers)));
+  return *plots_.back().get();
+}
+
+template <typename Scalar, typename xVector, typename yVector>
+MglPlot& Figure::triplot(const Eigen::Matrix<Scalar, -1, -1, Eigen::ColMajor>& T, const xVector& x, const yVector& y, std::string style) 
+{
+  Eigen::Matrix<Scalar, -1, -1, Eigen::RowMajor> TRow(T);
+  return triplot(TRow, x, y, style);
+}
+
 # endif
 
 } // end namespace

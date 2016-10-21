@@ -4,7 +4,6 @@
 // Co-Author: Baranidharan Mohan                        //
 //////////////////////////////////////////////////////////
 
-
 #ifndef MGL_PLOT_H
 #define MGL_PLOT_H
 
@@ -177,6 +176,39 @@ private:
   mglData xd_;
   mglData yd_;
 };
+
+class MglTriPlot : public MglPlot {
+public:
+  MglTriPlot(const mglData& Td, const mglData& xd, const mglData& yd, const std::string& style, const bool draw_numbers) 
+    : MglPlot(style)
+    , Td_(Td)
+    , xd_(xd)
+    , yd_(yd)
+    , draw_numbers_(draw_numbers)
+  {}
+
+  bool is_3d() {
+    return false;
+  }
+
+  void plot(mglGraph* gr) {
+    gr->TriPlot(Td_, xd_, yd_, style_.c_str());
+    if (legend_.size() > 0) {
+      gr->AddLegend(legend_.c_str(), style_.c_str());
+    }
+    if (draw_numbers_) {
+      gr->Label(xd_, yd_, "%n");
+    }
+  }
+
+private:
+  mglData Td_;
+  mglData xd_;
+  mglData yd_;
+  bool draw_numbers_;
+};
+
+
 
 } // end namespace
 #endif

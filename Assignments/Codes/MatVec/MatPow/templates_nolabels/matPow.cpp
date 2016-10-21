@@ -1,9 +1,8 @@
 //// 
 //// Copyright (C) 2016 SAM (D-MATH) @ ETH Zurich
 //// Author(s): lfilippo <filippo.leonardi@sam.math.ethz.ch> 
-//// Contributors: tille, jgacon
+//// Contributors: tille, jgacon, dcasati
 //// This file is part of the NumCSE repository.
-//// Report issues to: https://gitlab.math.ethz.ch/NumCSE/NumCSE/issues
 ////
 #include <iostream>
 #include <iomanip>
@@ -16,10 +15,10 @@
 
 using namespace Eigen;
 
-/* \brief Compute powers of a square matrix
- * Use smart binary representation
+/* \brief Compute powers of a square matrix.
+ * Use a smart binary representation.
  * \param[in,out] A square (complex) matrix. $A^k$ is stored in $A$
- * \param[in] k positive integer for $A^k$
+ * \param[in] k Positive integer for $A^k$
  */
 MatrixXcd matPow(MatrixXcd & A, unsigned int k) {
     // TODO: implement efficient matrix power

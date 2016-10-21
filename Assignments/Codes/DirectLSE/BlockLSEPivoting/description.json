@@ -1,0 +1,9 @@
+{
+    "author" : "lfilippo",
+    "email" : "",
+    "contributors" : "",
+
+
+    "name": "BlockLSEPivoting",
+    "all" : ["blocklsepiv.cpp"]
+}

@@ -4,7 +4,6 @@
 // Co-Author: Baranidharan Mohan                        //
 //////////////////////////////////////////////////////////
 
-
 # ifndef MGL_STYLE_H
 # define MGL_STYLE_H
 

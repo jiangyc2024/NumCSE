@@ -5,5 +5,5 @@
 
 int main()
 {
-    // TODO: Test you implementation comparing with the Eigen built-in matrix product
+    // TODO: Test your implementation comparing with the Eigen built-in matrix product
 }

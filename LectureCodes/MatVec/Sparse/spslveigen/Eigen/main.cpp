@@ -1,3 +1,11 @@
+///////////////////////////////////////////////////////////////////////////
+/// Demonstration code for lecture "Numerical Methods for CSE" @ ETH Zurich
+/// (C) 2016 SAM, D-MATH
+/// Author(s): Thomas Etterlin <thomaset@student.ethz.ch>
+/// Repository: https://gitlab.math.ethz.ch/NumCSE/NumCSE/
+/// Do not remove this header.
+//////////////////////////////////////////////////////////////////////////
+
 // **********************************************************************
 // Eigen codes for testing dense linear algebra routines
 // **********************************************************************
@@ -12,7 +20,6 @@ using namespace std;
 template <class SpMat>
 SpMat initSparseMatrix(size_t n)
 {
-  using index_t = typename SpMat::Index;
   using scalar_t = typename SpMat::Scalar;
   vector<Eigen::Triplet<scalar_t>> triplets(5*n);
 
