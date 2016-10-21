@@ -5,7 +5,7 @@
 
 int main()
 {
-  Eigen::VectorXd y = Eigen::VectorXd::LinSpaced(10, 0, 1);
+  Eigen::VectorXd y = Eigen::VectorXd::LinSpaced(9, 0, 1);
   Eigen::VectorXd s;
 
   sinetransform(y, s);

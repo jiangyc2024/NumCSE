@@ -7,7 +7,7 @@ void sinetransform(const Eigen::VectorXd &y, Eigen::VectorXd& s)
 	std::complex<double> i(0,1);
 
 	// prepare sinus terms
-	Eigen::VectorXd x = Eigen::VectorXd::LinSpaced(n-1, 1, n);
+	Eigen::VectorXd x = Eigen::VectorXd::LinSpaced(n-1, 1, n-1);
 	Eigen::VectorXd sinevals = x.unaryExpr([&](double z){ return imag(std::pow(std::exp(i*M_PI/(double)n), z)); });
 
 	// transform coefficients
@@ -15,6 +15,7 @@ void sinetransform(const Eigen::VectorXd &y, Eigen::VectorXd& s)
 	yt(0) = 0;
 	yt.tail(n-1) = sinevals.array() * (y + y.reverse()).array() + 0.5*(y-y.reverse()).array();
 
+	// fft
 	Eigen::VectorXcd c;
 	Eigen::FFT<double> fft;
 	fft.fwd(c,yt);
