@@ -11,7 +11,7 @@ using Eigen::VectorXcd;
 //        we could also just call: c = fft.fwd(y);
 void fftreal(const VectorXd& y, VectorXcd& c) {
   const unsigned n = y.size(), m = n/2;
-  if (n % 2 != 0) { cout << "n must be even!\n"; return; }
+  if (n % 2 != 0) { std::cout << "n must be even!\n"; return; }
   
   // Step I: compute \Blue{$\Vh$} from \eqref{rft:1}, \eqref{rft:2}
   std::complex<double> i(0,1); // Imaginary unit
