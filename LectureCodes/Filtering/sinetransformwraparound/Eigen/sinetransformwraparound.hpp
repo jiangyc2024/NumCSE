@@ -1,6 +1,7 @@
 #include <Eigen/Dense>
 #include <unsupported/Eigen/FFT>
 
+/* SAM_LISTING_BEGIN_0 */
 void sinetransformwraparound(const Eigen::VectorXd &y, Eigen::VectorXd& c)
 {
 	int n = y.rows()+1;
@@ -15,3 +16,4 @@ void sinetransformwraparound(const Eigen::VectorXd &y, Eigen::VectorXd& c)
 	std::complex<double> v(0,2);
 	c = (-ct.middleRows(1, n-1) / v).real();
 }
+/* SAM_LISTING_END_0 */

@@ -1,7 +1,6 @@
 #include <iostream>
 #include <Eigen/Dense>
-#include "sinetransform.hpp"
-
+#include "./sinetransform.hpp"
 
 int main()
 {

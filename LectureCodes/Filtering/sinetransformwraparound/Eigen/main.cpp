@@ -1,7 +1,6 @@
 #include <Eigen/Dense>
 #include <figure.hpp>
-#include "sinetransformwraparound.hpp"
-
+#include "./sinetransformwraparound.hpp"
 
 int main()
 {

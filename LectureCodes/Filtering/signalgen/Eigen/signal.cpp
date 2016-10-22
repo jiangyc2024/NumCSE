@@ -1,5 +1,5 @@
-# include "./signalgen.hpp"
 # include <figure/figure.hpp>
+# include "./signalgen.hpp"
 
 // Plot signal
 int main() {
