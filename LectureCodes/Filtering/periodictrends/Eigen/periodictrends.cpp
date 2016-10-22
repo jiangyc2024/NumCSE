@@ -21,6 +21,7 @@ VectorXd read(const std::string file) {
 }
 
 int main() {
+/* SAM_LISTING_BEGIN_0 */
   VectorXd x = read("trend.dat");
   const int n = x.size();
   
@@ -55,6 +56,7 @@ int main() {
     fig.plot(ind, val, " r*");
   }
   fig.save("fourierdata");
+/* SAM_LISTING_END_0 */
 
   return 0;
 }
