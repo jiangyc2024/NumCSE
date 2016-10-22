@@ -1,22 +1,18 @@
-# include <iostream>
-# include <complex>
 # include "deblur.hpp"
 # include "../../blur/Eigen/blur.hpp"
+# include "../../psf/Eigen/psf.hpp"
+# include <unsupported/Eigen/KroneckerProduct>
 
 int main() {
-  MatrixXcd X(3,3); 
-  X << 1,2,3,4,5,6,7,8,9;
+  MatrixXd M(3,3); M << 8,1,6,3,5,7,4,9,2;
+  MatrixXd P = Eigen::kroneckerProduct(M, MatrixXd::Ones(2,2)),
+           S; psf(1, S);
+  MatrixXd C = blur(P, S);
+  std::cout << "Original: \n" << P << "\n";
+  std::cout << "Blurred: \n" << C << "\n";
 
-  std::cout << "Testing fft2 --------------------------------------\n"
-            << "X:\n" << X << "\n\n"
-            << "fft2(X):\n" << fft2(X) << "\n\n"
-            << "ifft2(fft2(X)):\n" << ifft2(fft2(X)) << "\n\n";
-
-  MatrixXd C = MatrixXd::Random(3,3), 
-           S = MatrixXd::Random(5,5);
-
-  std::cout << "Testing deblur with random matrices ---------------\n"
-            << deblur(C, S) << "\n";
+  MatrixXd D = deblur(C,S);
+  std::cout << "Deblurred: \n" << D << "\n";
 
   return 0;
 }

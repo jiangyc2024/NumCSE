@@ -7,7 +7,7 @@ using Eigen::MatrixXcd;
 typedef std::complex<double> complex;
 
 /* SAM_LISTING_BEGIN_0 */
-MatrixXcd deblur(const MatrixXd& C, const MatrixXd& S, const double tol=1e-3) {
+MatrixXd deblur(const MatrixXd& C, const MatrixXd& S, const double tol=1e-3) {
   const long m = C.rows(), n = C.cols(),
              M = S.rows(), N = S.cols(), L = (M-1)/2;
   if (M != N) {
@@ -27,7 +27,7 @@ MatrixXcd deblur(const MatrixXd& C, const MatrixXd& S, const double tol=1e-3) {
     std::cerr << "Error: Deblurring impossible!\n";
   }
   // DFT based deblurring
-  MatrixXcd D = fft2(ifft(C.cast<complex>()).cwiseQuotient(SF));
+  MatrixXd D = fft2(ifft2(C.cast<complex>()).cwiseQuotient(SF)).real();
   return std::move(D);
 }
 /* SAM_LISTING_END_0 */
