@@ -5,7 +5,7 @@
 /* SAM_LISTING_BEGIN_0 */
 void icosinetransform(const Eigen::VectorXd& c, Eigen::VectorXd& y)
 {
-	int n = c.size();
+	size_t n = c.size();
 	
 	std::complex<double> i(0,1);
 	Eigen::VectorXcd c_1(n);

@@ -4,6 +4,7 @@
 # include <unsupported/Eigen/FFT>
 using Eigen::VectorXcd;
 
+/* SAM_LISTING_BEGIN_0 */
 void fftrec(const VectorXcd& y, VectorXcd& c) {
   const long n = y.size();
   if (n == 1) {  c = y; return; }
@@ -28,3 +29,4 @@ void fftrec(const VectorXcd& y, VectorXcd& c) {
     c(k) = c1(k%(n/2)) + c2(k%(n/2))*std::exp(-2*M_PI/n*k*i);
   }
 }
+/* SAM_LISTING_END_0 */
