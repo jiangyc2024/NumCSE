@@ -6,11 +6,13 @@ using Eigen::VectorXd; using Eigen::VectorXcd;
 
 //! Approximate evaluation of Fourier series
 //  \texttt{signal} is a handle to a function providing the \Blue{$y_k$}
-//  \texttt{M} specifies truncation of series according to \eqref{eq:fourtrunc}//  \texttt{N} is the number of equidistant evaluation points for \Blue{$c$} in \Blue{$[0,1[$}. 
+//  \texttt{M} specifies truncation of series according to \eqref{eq:fourtrunc}
+//  // \texttt{N} is the number of equidistant evaluation points for \Blue{$c$} in \Blue{$[0,1[$}. 
 template <class Function>
 VectorXcd foursum(const Function& signal, int M, int N) {
   const int m = 2*M+1; // length of the signal
-  VectorXd y = feval(signal, VectorXd::LinSpaced(m, -M, M)); // sample signal
+  // sample signal
+  VectorXd y = feval(signal, VectorXd::LinSpaced(m, -M, M));
   // Ensure that there are more sampling points than terms in series
   int l;
   if (m > N) {

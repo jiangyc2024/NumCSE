@@ -1,0 +1,8 @@
+{
+    "author" : "",
+    "email" : "",
+    "contributors" : "",
+
+    "name": "ShapeIdent",
+    "all" : ["shape_ident.cpp"]
+}

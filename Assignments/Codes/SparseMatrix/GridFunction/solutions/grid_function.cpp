@@ -42,7 +42,7 @@ inline index_t to_vector_index(index_t i,
 SparseMatrix<double> build_matrix(const Matrix3d & S,
                                  const shape_t & size) {
     // Will be used to store triplets
-    std::vector<Triplet<double>> triplets;
+    std::vector<Triplet<double> > triplets;
 
     // The matrix $\mathbf{A}$ will have size $N \times N$.
     // N = n*m
@@ -172,7 +172,7 @@ void solve(const SparseMatrix<double> & A,
     X.resizeLike(Y);
 
     // Sparse LU decomposition object
-    SparseLU<SparseMatrix<double>> solver;
+    SparseLU<SparseMatrix<double> > solver;
 
     // Prepare LU factorization
     solver.analyzePattern(A);
@@ -190,8 +190,7 @@ void solve(const SparseMatrix<double> & A,
     // Solve system after factorization.
     // Notice how you can assign to a Map object.
     Map<VectorXd>(X.data(), Y.size()) = solver.solve(
-                Map<const VectorXd>(Y.data(), Y.size())
-                );
+    Map<const VectorXd>(Y.data(), Y.size()));
 }
 /* SAM_LISTING_END_4 */
 

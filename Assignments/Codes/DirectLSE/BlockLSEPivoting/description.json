@@ -5,5 +5,5 @@
 
 
     "name": "BlockLSEPivoting",
-    "all" : ["blocklsepiv.cpp"]
+    "all" : ["blocklsepiv.cpp", "solveA_timing.eps"]
 }
