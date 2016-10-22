@@ -1,5 +1,6 @@
 # include <iostream>
 # include <Eigen/Dense>
+# include <Eigen/Sparse> // necessary include for KroneckerProduct
 # include <unsupported/Eigen/KroneckerProduct>
 # include <mgl2/mgl.h>
 # include "image.hpp" // provides plot command
@@ -11,9 +12,7 @@ using Eigen::MatrixXd; using Eigen::VectorXd;
 void deblurdriver() {
   // Generate artificial ``image''
   MatrixXd M(3,3); M << 8,1,6,3,5,7,4,9,2;
-  MatrixXd O = MatrixXd::Ones(30,40), P;
-  Eigen::KroneckerProduct<MatrixXd, MatrixXd> kron(M, O);
-  kron.evalTo(P); // save kronecker product to P
+  MatrixXd P = 31*Eigen::kroneckerProduct(M, MatrixXd::Ones(30,40));
   image(P, "Original", "dborigimage.eps");
   // Generate point spread function
   MatrixXd S; psf(5, S); 
