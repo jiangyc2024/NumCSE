@@ -1,6 +1,6 @@
 #include <iostream>
 #include <Eigen/Dense>
-#include "./fftbasedsolutionlocal.hpp"
+#include "fftbasedsolutionlocal.hpp"
 
 int main()
 {

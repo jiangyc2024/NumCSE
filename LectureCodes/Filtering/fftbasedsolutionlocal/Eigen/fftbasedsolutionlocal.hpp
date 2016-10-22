@@ -6,8 +6,8 @@
 void fftbasedsolutionlocal(const Eigen::MatrixXd& B,
  double c, double cx, double cy, Eigen::MatrixXd& X)
 {
-	int m = B.rows();
-	int n = B.cols();
+	size_t m = B.rows();
+	size_t n = B.cols();
 	
 	// Eigen's meshgrid
 	Eigen::MatrixXd I = Eigen::RowVectorXd::LinSpaced(n,1,n).replicate(m,1);

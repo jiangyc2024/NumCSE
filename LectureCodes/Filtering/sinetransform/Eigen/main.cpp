@@ -1,6 +1,6 @@
 #include <iostream>
 #include <Eigen/Dense>
-#include "./sinetransform.hpp"
+#include "sinetransform.hpp"
 
 int main()
 {
@@ -8,6 +8,6 @@ int main()
   Eigen::VectorXd s;
 
   sinetransform(y, s);
-  std::cout << "s:\n" << s << "\n";
+  std::cout << s << std::endl;
   return 0;
 }
