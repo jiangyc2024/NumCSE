@@ -87,6 +87,7 @@ MatrixXd randMat(int m, int n, double d)
  * @param[in] B The $nnz(B)$-dimensional vector of triplets forming matrix $B$
  * @param[out] C The $nnz(C)$-dimensional vector of triplets forming matrix $C = AB$
  */
+ /* SAM_LISTING_BEGIN_1 */
 TripVec COOprod_naive(const TripVec &A, const TripVec &B)
 {
     // Initialization

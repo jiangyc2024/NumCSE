@@ -7,7 +7,7 @@
 using namespace Eigen;
 
 /* @brief Compute the CCS format of matrix $A$
- * \param[in] A An $n \times n$ matrix
+ * \param[in] A An $n \times n$ matrix without columns only made by zeros
  * \param[out] val Vector of nonzero values of $A$
  * \param[out] row\_ind Row indices of each element of 'val'
  * \param[out] col\_ptr Indices of the elements in 'val' which start a column of $A$
@@ -51,8 +51,6 @@ void CCS(const MatrixXd & A, VectorXd & val, VectorXd & row_ind, VectorXd & col_
 				++index;
 			}
 		}
-		// If one whole column is empty,
-		// the same 'index' is stored in 'col\_ptr' twice.
 	}
 #else // TEMPLATE
     // TODO: compute the CCS format of matrix $A$
