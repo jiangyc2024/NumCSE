@@ -11,7 +11,7 @@ int main() {
   std::cout << "Original: \n" << P << "\n";
   std::cout << "Blurred: \n" << C << "\n";
 
-  MatrixXd D = deblur(C,S).real();
+  MatrixXd D = deblur(C,S);
   std::cout << "Deblurred: \n" << D << "\n";
 
   return 0;
