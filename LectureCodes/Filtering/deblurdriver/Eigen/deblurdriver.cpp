@@ -12,7 +12,7 @@ void deblurdriver() {
   // Generate artificial ``image''
   MatrixXd M(3,3); M << 8,1,6,3,5,7,4,9,2;
   MatrixXd P = Eigen::kroneckerProduct(M, MatrixXd::Ones(30,40));
-  image(P, "Original", "dboriginimage.eps");
+  image(P, "Original", "dborigimage.eps");
   // Generate point spread function
   MatrixXd S; psf(5, S); 
   // Blur image

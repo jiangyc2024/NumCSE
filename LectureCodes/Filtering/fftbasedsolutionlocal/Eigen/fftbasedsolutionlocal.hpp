@@ -1,6 +1,6 @@
 #include <cmath>
 #include <Eigen/Dense>
-#include "../../sinetransform2d/Eigen/sinetransform2d.hpp"
+#include "sinetransform2d.hpp"
 
 /* SAM_LISTING_BEGIN_0 */
 void fftbasedsolutionlocal(const Eigen::MatrixXd& B,
