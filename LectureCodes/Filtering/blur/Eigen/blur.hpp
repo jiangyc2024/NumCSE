@@ -2,6 +2,7 @@
 # include <Eigen/Dense>
 using Eigen::MatrixXd;
 
+/* SAM_LISTING_BEGIN_0 */
 MatrixXd blur(const MatrixXd& P, const MatrixXd& S) {
   const long m = P.rows(), n = P.cols(),
              M = S.rows(), N = S.cols(), L = (M-1)/2;
@@ -29,3 +30,4 @@ MatrixXd blur(const MatrixXd& P, const MatrixXd& S) {
   }
   return C;
 }
+/* SAM_LISTING_END_0 */

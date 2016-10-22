@@ -21,6 +21,7 @@ VectorXd read(const std::string file) {
 }
 
 int main() {
+/* SAM_LISTING_BEGIN_0 */
   VectorXd x = read("trend.dat");
   const int n = x.size();
   
@@ -48,13 +49,14 @@ int main() {
   // sort descending
   std::sort(p_sorted.data(), p_sorted.data() + p.size(), std::greater<double>());
   for (int i = 0; i < 4; ++i) {
-    // get position of p_sorted[i]
+    // get position of p\_sorted[i]
     int idx = std::find(p.data(), p.data()+p.size(), p_sorted[i]) - p.data();
     std::vector<double> ind = { double(idx + 1) }; // save in vectors
     std::vector<double> val = { p_sorted[i] }; // to be able to plot
     fig.plot(ind, val, " r*");
   }
   fig.save("fourierdata");
+/* SAM_LISTING_END_0 */
 
   return 0;
 }
