@@ -1,7 +1,7 @@
 # include <iostream>
 # include <Eigen/Dense>
-# include <unsupported/Eigen/KroneckerProduct>
 # include <mgl2/mgl.h>
+# include "kronecker.hpp"
 # include "image.hpp" // provides plot command
 # include "psf.hpp"
 # include "blur.hpp"
@@ -11,7 +11,7 @@ using Eigen::MatrixXd; using Eigen::VectorXd;
 void deblurdriver() {
   // Generate artificial ``image''
   MatrixXd M(3,3); M << 8,1,6,3,5,7,4,9,2;
-  MatrixXd P = Eigen::kroneckerProduct(M, MatrixXd::Ones(30,40));
+  MatrixXd P = 31*kron(M, MatrixXd::Ones(30,40));
   image(P, "Original", "dborigimage.eps");
   // Generate point spread function
   MatrixXd S; psf(5, S); 
