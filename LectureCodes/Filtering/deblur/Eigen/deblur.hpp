@@ -6,6 +6,7 @@ using Eigen::MatrixXcd;
 // typedef to avoid writing the whole type
 typedef std::complex<double> complex;
 
+/* SAM_LISTING_BEGIN_0 */
 MatrixXcd deblur(const MatrixXd& C, const MatrixXd& S, const double tol=1e-3) {
   const long m = C.rows(), n = C.cols(),
              M = S.rows(), N = S.cols(), L = (M-1)/2;
@@ -29,3 +30,4 @@ MatrixXcd deblur(const MatrixXd& C, const MatrixXd& S, const double tol=1e-3) {
   MatrixXcd D = fft2(ifft(C.cast<complex>()).cwiseQuotient(SF));
   return std::move(D);
 }
+/* SAM_LISTING_END_0 */
