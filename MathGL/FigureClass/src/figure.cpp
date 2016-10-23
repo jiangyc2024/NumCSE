@@ -4,6 +4,7 @@
 // Co-Author: Baranidharan Mohan                        //
 //////////////////////////////////////////////////////////
 
+// system includes
 # include <iostream>
 # include <utility> // pair
 # include <vector>
@@ -14,6 +15,8 @@
 # include <limits>
 # include <cstring> // needed for length of const char*
 # include <memory>
+
+// own includes
 # include "MglPlot.hpp"
 # include "MglLabel.hpp"
 # include "MglStyle.hpp"
@@ -22,6 +25,13 @@
 namespace mgl {
 
 
+/*******************************************************************
+ *                    Universal functions                          *
+ *******************************************************************/
+
+/* prints mglData, used for debugging                       *
+ * PRE : -                                                  *
+ * POST: prints content of mglData argument to command line */
 void print(const mglData& d)
 {
   for (long i = 0; i < d.GetNx(); ++i){
@@ -29,6 +39,42 @@ void print(const mglData& d)
   }
   std::cout << "\n";
 }
+
+
+/* get minimal positive ( > 0 ) value of mglData                            *
+ * PRE : -                                                                  *
+ * POST: minimal positive value of argument,                                *
+ *       std::numeric_limits<double>::max() if no positive value cotained,  *
+ *       print a warning to std::cerr if a value <= 0 encountered           *
+ * NOTE: this function is only used to check ranges in logarithmic scaling  * 
+ *       therefore the warning                                              */
+double minPositive(const mglData& d) {
+  double result = std::numeric_limits<double>::max();
+  bool print_warning = false;
+
+  // iterate over the given data
+  for (long i = 0; i < d.GetNx(); ++i){
+    if (d.a[i] > 0){
+      // if the data point is positive, check if it is smaller than the current minimum
+      result = std::min(result, d.a[i]);
+    }
+    else {
+      // if the data point is not positive it will not appear on the plot -> print warning
+      print_warning = true;
+    }
+  }
+
+  if (print_warning) {
+    std::cerr << "* Figure - Warning * non-positive values of data will not appear on plot. \n";
+  }
+
+  return result;
+}
+
+
+/*******************************************************************
+ *                   Figure class constructor                      *
+ *******************************************************************/
 
 /* constructor: set default style                                                                  *
  * PRE : pointer to mglGraph will not cease to exist until operations are performed on this Figure *
@@ -61,6 +107,9 @@ Figure::Figure()
     styles_(MglStyle())
     {}
 
+/*******************************************************************
+ *                 Non-template member functions                   *
+ *******************************************************************/
 
 /* setting height of the plot                                    *
  * leftMargin                                                    *
@@ -80,6 +129,7 @@ void Figure::setPlotHeight(const int height) {
   plotHeight_ = height;
 }
 
+
 /* setting width of the plot                                   *
  * PRE : width should be > 0                                   *
  * POST: width of the plot will later be set to given width    */
@@ -95,12 +145,14 @@ void Figure::setTopMargin(const int top) {
   topMargin_ = top;
 }
 
+
 /* setting left margin                                           *
  * PRE : > 0                                                     *
  * POST: left margin will be set to left                         */
 void Figure::setLeftMargin(const int left) {
   leftMargin_ = left;
 }
+
 
 /* setting height of the graphic                                 *
  * PRE : height should be > 0                                    *
@@ -109,12 +161,14 @@ void Figure::setHeight(const int height) {
   figHeight_ = height;
 }
 
+
 /* setting width of the graphic                                *
  * PRE : width should be > 0                                   *
  * POST: width of the graphic will later be set to given width */
 void Figure::setWidth(const int width) {
   figWidth_ = width;
 }
+
 
 /* setting the font size                                          *
  * PRE : size should be > 0                                       *
@@ -123,6 +177,7 @@ void Figure::setFontSize(const int size) {
   fontSizePT_ = size;
 }
 
+
 /* enable to manually add legend entries       *
  * PRE : -                                     *
  * POST: label + style are added to the legend */
@@ -130,16 +185,18 @@ void Figure::addlabel(const std::string& label, const std::string& style) {
   additionalLabels_.push_back(std::pair<std::string, std::string>(label, style));
 }
 
+
 /* change grid settings                                                         *
  * PRE : -                                                                      *
  * POST: No grid if on is false, grid style is gridType, grid color is gridCol. *
  *       For those arguments which are not given default settings are used.     */
-void Figure::grid(bool on, const std::string& gridType,  const std::string& gridCol)
-{
+void Figure::grid(bool on, const std::string& gridType,  const std::string& gridCol) {
   if (on){
     grid_ = true;
   }
-  else {
+  // although in the constructor grid_ is set to false this explicit setting to false
+  // is necessary as otherwise the grid couldn't be turned off once activated
+  else { 
     grid_ = false;
   }
 
@@ -147,27 +204,27 @@ void Figure::grid(bool on, const std::string& gridType,  const std::string& grid
   gridCol_ = gridCol;
 }
 
+
 /* setting x-axis label                         *
  * PRE : -                                      *
  * POST: xlabel initialized with given position */
-void Figure::xlabel(const std::string& label, double pos)
-{
+void Figure::xlabel(const std::string& label, double pos) {
   xMglLabel_ = MglLabel(label, pos);
 }
+
 
 /* setting y-axis label                         *
  * PRE : -                                      *
  * POST: ylabel initialized with given position */
-void Figure::ylabel(const std::string& label, double pos)
-{
+void Figure::ylabel(const std::string& label, double pos) {
   yMglLabel_ = MglLabel(label, pos);
 }
+
 
 /* set or unset legend                                       *
  * PRE : -                                                   *
  * POST: if on is true legend will be plotted, otherwise not */
-void Figure::legend(const double& xPos, const double& yPos)
-{
+void Figure::legend(const double& xPos, const double& yPos) {
   // print a warning if the user has given a position which will probably not appear on the plot
   if (std::abs(xPos) > 2 || std::abs(yPos) > 2){
     std::cerr << "* Figure - Warning * Legend may be out of the graphic due to large xPos or yPos\n";
@@ -179,11 +236,11 @@ void Figure::legend(const double& xPos, const double& yPos)
   legendPos_ = std::pair<double, double>(xPos, yPos);
 }
 
+
 /* plot a function given by a string                                                            *
  * PRE : proper format of the input, e.g.: "3*x^2 + exp(x)", see documentation for more details *
  * POST: plot the function in given style                                                       */
-MglPlot& Figure::fplot(const std::string& function, std::string style)
-{
+MglPlot& Figure::fplot(const std::string& function, std::string style) {
 #if NDEBUG
   std::cout << "Called fplot!\n";
 #endif
@@ -203,11 +260,11 @@ MglPlot& Figure::fplot(const std::string& function, std::string style)
   return *plots_.back().get();
 }
 
+
 /* set ranges                                                   *
  * PRE : -                                                      *
  * POST: new ranges will be: x = [xMin, xMax], y = [yMin, yMax] */
-void Figure::ranges(const double& xMin, const double& xMax, const double& yMin, const double& yMax)
-{
+void Figure::ranges(const double& xMin, const double& xMax, const double& yMin, const double& yMax) {
   // checking if the input is valid
   if (xMin > xMax || yMin > yMax){
     std::cerr << "In function Figure::ranges(): xMin must be smaller than xMax and yMin smaller than yMax!";
@@ -220,43 +277,12 @@ void Figure::ranges(const double& xMin, const double& xMax, const double& yMin, 
   ranges_ = {xMin, xMax, yMin, yMax};
 }
 
-/* get minimal positive ( > 0 ) value of mglData                            *
- * PRE : -                                                                  *
- * POST: minimal positive value of argument,                                *
- *       std::numeric_limits<double>::max() if no positive value cotained,  *
- *       print a warning to std::cerr if a value <= 0 encountered           *
- * NOTE: this function is only used to check ranges in logarithmic scaling  * 
- *       therefore the warning                                              */
-double minPositive(const mglData& d)
-{
-  double result = std::numeric_limits<double>::max();
-  bool print_warning = false;
-
-  // iterate over the given data
-  for (long i = 0; i < d.GetNx(); ++i){
-    if (d.a[i] > 0){
-      // if the data point is positive, check if it is smaller than the current minimum
-      result = std::min(result, d.a[i]);
-    }
-    else {
-      // if the data point is not positive it will not appear on the plot -> print warning
-      print_warning = true;
-    }
-  }
-
-  if (print_warning) {
-    std::cerr << "* Figure - Warning * non-positive values of data will not appear on plot. \n";
-  }
-
-  return result;
-}
 
 /* change ranges of plot                                                             *
  * PRE : -                                                                           *
  * POST: set ranges in such a way that all data is displayed                         *
  * NOTE: need the argument vertMargin to be able to set it to 0 when plotting in 3d  */
-void Figure::setRanges(const mglData& xd, const mglData& yd, double vertMargin)
-{
+void Figure::setRanges(const mglData& xd, const mglData& yd, double vertMargin) {
 #if NDEBUG
   std::cout << "setRanges for 2dim called\n";
 #endif
@@ -291,11 +317,11 @@ void Figure::setRanges(const mglData& xd, const mglData& yd, double vertMargin)
   ranges_[3] = std::max(yMax + yTot*vertMargin, ranges_[3]); // .. and top
 }
 
+
 /* change ranges of the plotted region in 3d                        *
  * PRE : -                                                          *
  * POST: set the ranges in such a way that all data will be visible */
-void Figure::setRanges(const mglData& xd, const mglData& yd, const mglData& zd)
-{
+void Figure::setRanges(const mglData& xd, const mglData& yd, const mglData& zd) {
 #if NDEBUG
   std::cout << "setRanges for 3dim called\n";
 #endif
@@ -322,8 +348,7 @@ void Figure::setRanges(const mglData& xd, const mglData& yd, const mglData& zd)
 /* (un-)set logscaling                                                               *
  * PRE : -                                                                           *
  * POST: linear, semilogx, semilogy or loglog scale according to bools logx and logy */
-void Figure::setlog(bool logx, bool logy, bool logz)
-{
+void Figure::setlog(bool logx, bool logy, bool logz) {
   // if logi is true set iFunc_ to "lg(i)", which will later be used to initialize the coordinate curvature (i=x,y,z)
   if (logx){
     xFunc_ = "lg(x)";
@@ -339,8 +364,7 @@ void Figure::setlog(bool logx, bool logy, bool logz)
 /* setting title                                                    *
  * PRE : -                                                          *
  * POST: title_ variable set to 'text' with small font option (@)   */
-void Figure::title(const std::string& text)
-{
+void Figure::title(const std::string& text) {
   title_ = "@{" + text + "}";
 }
 
@@ -449,6 +473,7 @@ void Figure::save(const std::string& file) {
   if (axis_){
     gr_.Axis();
   }
+
   // add axis at zero w/o labels if its a barplot
   if (barplot_) {
     // mglNaN -> automatically setting axis in x-direction
@@ -485,7 +510,6 @@ void Figure::save(const std::string& file) {
       gr_.Legend(legendPos_.first, legendPos_.second);
     }
   }
-
 
 #if NDEBUG
   std::cout << "Writing to file ... \n";
