@@ -110,7 +110,7 @@ MatrixXd CRSMatrix<scalar>::densify() const {
 // Initialization
   M = MatrixXd::Zero(rows, cols);
   std::vector<size_t> row_ptr_end = row_ptr;
-  row_ptr_end.push_back(row_ptr.size());
+  row_ptr_end.push_back(col_ind.size());
   
   for(size_t i=0; i<row_ptr.size(); ++i) {
 	  for(size_t j=row_ptr_end[i]; j<row_ptr_end[i+1]; ++j) {
