@@ -1,9 +1,8 @@
-///////////////////////////////////////////////////////
-// (c) Seminar of Applied Mathematics ETH 2016, D-MATH
-// Author: Julien Gacon
-// Co-Author: Baranidharan Mohan 
-///////////////////////////////////////////////////////
-
+//////////////////////////////////////////////////////////
+// (c) Seminar of Applied Mathematics ETH 2016, D-MATH  //
+// Author: Julien Gacon <jgacon@ethz.ch>                //
+// Co-Author: Baranidharan Mohan                        //
+//////////////////////////////////////////////////////////
 
 # ifndef FIGURE_H
 # define FIGURE_H
@@ -60,10 +59,10 @@ mglData make_mgldata(const Eigen::MatrixBase<Derived>& vec) {
   return mglData(v.data(), v.size());
 }
 
-/* make mglData from Eigen::Array                                     *
- * PRE : -                                                            *
- * POST: returning mglData containing the data of given Eigen::Arrary */
-template <typename Derived>
+/* make mglData from Eigen::Array                                    *
+ * PRE : -                                                           *
+ * POST: returning mglData containing the data of given Eigen::Array */
+template<typename Derived>
 mglData make_mgldata(const Eigen::ArrayBase<Derived>& a) {
   return make_mgldata(a.matrix());
 }
