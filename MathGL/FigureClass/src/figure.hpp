@@ -147,6 +147,7 @@ private:
   bool axis_; // plot axis?
   bool grid_; // plot grid?
   bool legend_; // plot legend
+  bool barplot_; // containing barplot? (needed to set axis properly)
   std::pair<double, double> legendPos_; // legend position
   std::string gridType_; // grid type
   std::string gridCol_; // grid color
@@ -189,6 +190,8 @@ Figure::bar(const xVector& x, const Matrix& y, std::string style)
 {
 
   // TODO check if x is really a vector. Problem: cant use .rows or .cols as it can be a std::vector
+  
+  barplot_ = true;
 
   const long m = y.rows(),
              n = y.cols();

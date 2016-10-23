@@ -37,6 +37,7 @@ Figure::Figure()
   : axis_(true),
     grid_(false),
     legend_(false),
+    barplot_(false),
     legendPos_(1,1),
     gridType_("xy"),
     gridCol_("{h7}"),
@@ -443,6 +444,12 @@ void Figure::save(const std::string& file) {
   // Add axis
   if (axis_){
     gr_.Axis();
+  }
+  // add axis at zero w/o labels if its a barplot
+  if (barplot_) {
+    // mglNaN -> automatically setting axis in x-direction
+    gr_.SetOrigin(mglNaN, 0);
+    gr_.Axis("_");
   }
 
   gr_.Box();
