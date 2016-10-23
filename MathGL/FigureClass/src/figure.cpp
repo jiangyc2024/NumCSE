@@ -226,7 +226,7 @@ void Figure::ylabel(const std::string& label, double pos) {
  * POST: if on is true legend will be plotted, otherwise not */
 void Figure::legend(const double& xPos, const double& yPos) {
   // print a warning if the user has given a position which will probably not appear on the plot
-  if (std::abs(xPos) > 2 || std::abs(yPos) > 2){
+  if (std::abs(xPos) > 2 || std::abs(yPos) > 2) {
     std::cerr << "* Figure - Warning * Legend may be out of the graphic due to large xPos or yPos\n";
   }
 

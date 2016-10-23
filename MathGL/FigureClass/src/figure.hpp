@@ -230,7 +230,7 @@ Figure::bar(const xVector& x, const Matrix& y, std::string style) {
 
   // check that input lengths fit
   if (x.size() != m) {
-    std::cerr << "In function Figure::bar(): Data sets must have same lengths! Remember to save the bar-data in columns!"
+    std::cerr << "In function Figure::bar(): Data sets must have same lengths! Remember to save the bar-data in columns!";
   }
 
   // initialize data
