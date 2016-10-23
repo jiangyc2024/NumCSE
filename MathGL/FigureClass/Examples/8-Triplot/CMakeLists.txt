@@ -1,5 +1,5 @@
 cmake_minimum_required( VERSION 2.8 ) 
-project( Examples/7-Triplot )
+project( Examples/8-Triplot )
 
 add_definitions( -std=gnu++11 )
 
@@ -10,6 +10,6 @@ find_package( MathGL2 2.0.0 REQUIRED )
 find_package( Figure REQUIRED )
 
 include_directories( ${EIGEN_INCLUDE_DIR} ${MATHGL2_INCLUDE_DIRS} ${FIGURE_INCLUDE_DIR} )
-add_executable( main triplot.cpp )
-target_link_libraries( main ${MATHGL2_LIBRARIES} ${FIGURE_LIBRARY} )
+add_executable( main_triplot triplot.cpp )
+target_link_libraries( main_triplot ${MATHGL2_LIBRARIES} ${FIGURE_LIBRARY} )
 
