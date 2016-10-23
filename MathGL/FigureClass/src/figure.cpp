@@ -34,27 +34,31 @@ void print(const mglData& d)
  * PRE : pointer to mglGraph will not cease to exist until operations are performed on this Figure *
  * POST: default settings                                                                          */
 Figure::Figure()
-  : axis_(true),
-    grid_(false),
-    legend_(false),
+  : autoRanges_(true),
+    axis_(true),
     barplot_(false),
-    legendPos_(1,1),
-    gridType_("xy"),
-    gridCol_("{h7}"),
+    grid_(false),
     has_3d_(false),
-    ranges_({ std::numeric_limits<double>::max(), std::numeric_limits<double>::lowest(),
-          std::numeric_limits<double>::max(), std::numeric_limits<double>::lowest()}),
-    zranges_({std::numeric_limits<double>::max(), std::numeric_limits<double>::lowest()}),
-    aspects_({1, 1, 1}), // normal axis, no shearing
-    autoRanges_(true),
-    styles_(MglStyle()),
-    fontSizePT_(4), // small font size
+    legend_(false),
     figHeight_(-1), // set to -1: later we will check if they have been changed manually, -1 means no
     figWidth_(-1),  //            any other value will mean that they've been changed
     plotHeight_(800), // quadratic plot, window size depends on wheter there are labels or not!
     plotWidth_(800),
     leftMargin_(-1),
-    topMargin_(-1)
+    topMargin_(-1),
+    fontSizePT_(4), // small font size
+    gridCol_("{h7}"),
+    gridType_("xy"),
+    title_(""),
+    xFunc_("x"),
+    yFunc_("y"),
+    zFunc_("z"),
+    legendPos_(1,1),
+    aspects_({1, 1, 1}), // normal axis, no shearing
+    ranges_({ std::numeric_limits<double>::max(), std::numeric_limits<double>::lowest(),
+          std::numeric_limits<double>::max(), std::numeric_limits<double>::lowest()}),
+    zranges_({std::numeric_limits<double>::max(), std::numeric_limits<double>::lowest()}),
+    styles_(MglStyle())
     {}
 
 
@@ -321,13 +325,13 @@ void Figure::setRanges(const mglData& xd, const mglData& yd, const mglData& zd)
 void Figure::setlog(bool logx, bool logy, bool logz)
 {
   // if logi is true set iFunc_ to "lg(i)", which will later be used to initialize the coordinate curvature (i=x,y,z)
-  if(logx){
+  if (logx){
     xFunc_ = "lg(x)";
   }
-  if(logy){
+  if (logy){
     yFunc_ = "lg(y)";
   }
-  if(logz){
+  if (logz){
     zFunc_ = "lg(z)";
   }
 }
@@ -454,7 +458,7 @@ void Figure::save(const std::string& file) {
 
   gr_.Box();
   // Plot
-  for(auto &p : plots_) {
+  for (auto &p : plots_) {
     p->plot(&gr_);
   }
 
@@ -469,7 +473,7 @@ void Figure::save(const std::string& file) {
       double bx = 1.3*double(leftMargin_)/figWidth_, // helper variables
              by = 1.1*double(topMargin_)/figHeight_;
 
-      if(xMglLabel_.str_.size() != 0) {
+      if (xMglLabel_.str_.size() != 0) {
         by *= 1.3;
       }
 
@@ -488,7 +492,7 @@ void Figure::save(const std::string& file) {
 #endif
 
   // Checking if to plot in png or eps and save file
-  if(file.find(".png") != std::string::npos){
+  if (file.find(".png") != std::string::npos){
     gr_.WritePNG(file.c_str());
   }
   else if (file.find(".eps") != std::string::npos){
