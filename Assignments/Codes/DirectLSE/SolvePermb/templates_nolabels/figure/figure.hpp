@@ -4,9 +4,10 @@
 // Co-Author: Baranidharan Mohan                        //
 //////////////////////////////////////////////////////////
 
-# ifndef FIGURE_H
-# define FIGURE_H
+# ifndef FIGURE_HPP
+# define FIGURE_HPP
 
+// system includes
 # include <iostream>
 # include <memory>
 # include <array>
@@ -16,18 +17,26 @@
 # include <numeric>
 # include <cctype> // isalpha
 
+// Eigen includes
 # include "FigureConfig.hpp"
 # if FIG_HAS_EIGEN
   # include <Eigen/Dense>
   # include <Eigen/Sparse>
 # endif
 
+// own includes 
 # include "MglPlot.hpp"
 # include "MglLabel.hpp"
 # include "MglStyle.hpp"
+// MathGL include
 # include <mgl2/mgl.h>
 
 namespace mgl {
+
+/*******************************************************************
+ *                    Universal functions                          *
+ *******************************************************************/
+
 
 /* make mglData from std::vector                                    *
  * PRE: -                                                           *
@@ -45,7 +54,10 @@ make_mgldata(const std::vector<Scalar>& v) {
 # if FIG_HAS_EIGEN
 template <typename Derived>
 mglData make_mgldata(const Eigen::MatrixBase<Derived>& vec) {
-  assert(vec.rows() == 1 || vec.cols() == 1);
+  if (! (vec.rows() == 1 || vec.cols() == 1) ) {
+    std::cerr << "In function Figure::make_mgldata(): vector.cols() == 1 || vector.rows() == 1 failed!";
+    assert(vec.rows() == 1 || vec.cols() == 1);
+  }
   std::vector<typename Derived::Scalar> v;
   if(vec.rows() == 1) {
     v.resize(vec.cols());
@@ -68,6 +80,12 @@ mglData make_mgldata(const Eigen::ArrayBase<Derived>& a) {
 }
 # endif
 
+
+/*******************************************************************
+ *                 Declaration of Figure class                     *
+ *******************************************************************/
+
+
 class Figure {
 public:
   Figure();
@@ -89,9 +107,11 @@ public:
   template <typename Matrix>
   MglPlot& bar(const Matrix& y, std::string style = "");
 
+  // Note: this tedious template expression ensures y is a Matrix and not e.g. a string, which could happen
+  //       as the argument is templated
   template <typename xVector, typename Matrix>
   typename std::enable_if<!std::is_same<typename std::remove_pointer<typename std::decay<Matrix>::type>::type, char >::value, MglPlot&>::type
-  bar(const xVector& x, const Matrix& y, std::string style =  "");
+  bar(const xVector& x, const Matrix& y, std::string style = "");
 
   template <typename yVector>
   MglPlot& plot(const yVector& y, std::string style = "");
@@ -144,35 +164,48 @@ public:
   void title(const std::string& text);
 
 private:
-  bool axis_; // plot axis?
-  bool grid_; // plot grid?
-  bool legend_; // plot legend
-  std::pair<double, double> legendPos_; // legend position
-  std::string gridType_; // grid type
-  std::string gridCol_; // grid color
-  bool has_3d_; // are there 3d plots?
-  std::array<double, 4> ranges_; // axis ranges
-  std::array<double, 2> zranges_; // z axis ranges
-  std::array<double, 3> aspects_; // axis aspects, e.g. -1 used to invert axis. see MathGL docu
   bool autoRanges_; // auto ranges or ranges as the user set them?
-  std::string title_; // title of the plot
-  std::string xFunc_, yFunc_, zFunc_; // curvature of coordinate axis
-  MglLabel xMglLabel_, yMglLabel_; // x and y labels of the plot
-  MglStyle styles_; // styles of the plots
-  double fontSizePT_; // font size in PT
+  bool axis_; // plot axis?
+  bool barplot_; // containing barplot? (needed to set axis properly)
+  bool grid_; // plot grid?
+  bool has_3d_; // are there 3d plots?
+  bool legend_; // plot legend
+
   int figHeight_, figWidth_; // height and width of the whole image
   int plotHeight_, plotWidth_; // height and width of the plot
   int leftMargin_, topMargin_; // left and top margin of plot inside the image
+
+  double fontSizePT_; // font size in PT
+
+  std::string gridCol_; // grid color
+  std::string gridType_; // grid type
+  std::string title_; // title of the plot
+  std::string xFunc_, yFunc_, zFunc_; // curvature of coordinate axis
+
+  std::pair<double, double> legendPos_; // legend position
+
+  std::array<double, 3> aspects_; // axis aspects, e.g. -1 used to invert axis. see MathGL documentation
+  std::array<double, 4> ranges_; // axis ranges
+  std::array<double, 2> zranges_; // z axis ranges
+
+  MglLabel xMglLabel_, yMglLabel_; // x and y labels of the plot
+  MglStyle styles_; // styles of the plots
+
   std::vector<std::unique_ptr<MglPlot> > plots_; // x, y (and z) data for the plots
   std::vector<std::pair<std::string, std::string>> additionalLabels_; // manually added labels 
 };
+
+
+/*******************************************************************
+ *                  Templated member functions                     *
+ *******************************************************************/
+
 
 /* bar plot for given y data                                                       *
  * PRE : -                                                                         *
  * POST: add bar plot of [1:length(y)]-y to plot queue with given style (optional) */
 template <typename Matrix>
-MglPlot& Figure::bar(const Matrix& y, std::string style) 
-{
+MglPlot& Figure::bar(const Matrix& y, std::string style) {
   // build a fitting x vector for the y vector
   std::vector<double> x(y.rows());
   std::iota(x.begin(), x.end(), 1);
@@ -185,10 +218,12 @@ MglPlot& Figure::bar(const Matrix& y, std::string style)
 template <typename xVector, typename Matrix>
 // the long template magic expression ensures this function is not called if yVector is a string (which would be allowed as it is a templated argument)
 typename std::enable_if<!std::is_same<typename std::remove_pointer<typename std::decay<Matrix>::type>::type, char >::value, MglPlot&>::type
-Figure::bar(const xVector& x, const Matrix& y, std::string style)
-{
+Figure::bar(const xVector& x, const Matrix& y, std::string style) {
 
   // TODO check if x is really a vector. Problem: cant use .rows or .cols as it can be a std::vector
+  
+  // set flag for barplots. this will set the y-axis origin to 0 later
+  barplot_ = true;
 
   const long m = y.rows(),
              n = y.cols();
@@ -235,8 +270,7 @@ Figure::bar(const xVector& x, const Matrix& y, std::string style)
  * PRE : -                                                             *
  * POST: add [1:length(y)]-y to plot queue with given style (optional) */
 template <typename yVector>
-MglPlot& Figure::plot(const yVector& y, std::string style)
-{
+MglPlot& Figure::plot(const yVector& y, std::string style) {
   // build a fitting x vector for the y vector
   std::vector<double> x(y.size());
   std::iota(x.begin(), x.end(), 1);
@@ -249,8 +283,7 @@ MglPlot& Figure::plot(const yVector& y, std::string style)
 template <typename xVector, typename yVector>
 // the long template magic expression ensures this function is not called if yVector is a string (which would be allowed as it is a templated argument)
 typename std::enable_if<!std::is_same<typename std::remove_pointer<typename std::decay<yVector>::type>::type, char >::value, MglPlot&>::type
-Figure::plot(const xVector& x, const yVector& y, std::string style)
-{
+Figure::plot(const xVector& x, const yVector& y, std::string style) {
   // make sure the sizes of the vectors are the same
   if (x.size() != y.size()){
     std::cerr << "In function Figure::plot(): Vectors must have same sizes!";
@@ -284,10 +317,10 @@ Figure::plot(const xVector& x, const yVector& y, std::string style)
  * PRE : -                                                   *
  * POST: add x-y-z tp plot queue with given style (optional) */
 template <typename xVector, typename yVector, typename zVector>
-MglPlot& Figure::plot3(const xVector& x, const yVector& y, const zVector& z, std::string style)
-{
+MglPlot& Figure::plot3(const xVector& x, const yVector& y, const zVector& z, std::string style) {
 
-  has_3d_ = true; // needed to set zranges in save-function and call mgl::Rotate
+  // needed to set zranges in save-function and call mgl::Rotate
+  has_3d_ = true; 
 
   // make sure the sizes of the vectors are the same
   if (!(x.size() == y.size() && y.size() == z.size())){
@@ -414,8 +447,7 @@ MglPlot& Figure::spy(const Eigen::SparseMatrix<Scalar>& A, const std::string& st
 }
 
 template <typename Scalar, typename xVector, typename yVector>
-MglPlot& Figure::triplot(const Eigen::Matrix<Scalar, -1, -1, Eigen::RowMajor>& T, const xVector& x, const yVector& y, std::string style) 
-{
+MglPlot& Figure::triplot(const Eigen::Matrix<Scalar, -1, -1, Eigen::RowMajor>& T, const xVector& x, const yVector& y, std::string style) {
   Eigen::Matrix<double, -1, -1, Eigen::RowMajor> T_double = T.template cast<double>();
 
   mglData Td(T_double.rows(), T_double.cols(), T_double.data()),
@@ -457,8 +489,7 @@ MglPlot& Figure::triplot(const Eigen::Matrix<Scalar, -1, -1, Eigen::RowMajor>& T
 }
 
 template <typename Scalar, typename xVector, typename yVector>
-MglPlot& Figure::triplot(const Eigen::Matrix<Scalar, -1, -1, Eigen::ColMajor>& T, const xVector& x, const yVector& y, std::string style) 
-{
+MglPlot& Figure::triplot(const Eigen::Matrix<Scalar, -1, -1, Eigen::ColMajor>& T, const xVector& x, const yVector& y, std::string style) {
   Eigen::Matrix<Scalar, -1, -1, Eigen::RowMajor> TRow(T);
   return triplot(TRow, x, y, style);
 }
@@ -467,4 +498,4 @@ MglPlot& Figure::triplot(const Eigen::Matrix<Scalar, -1, -1, Eigen::ColMajor>& T
 
 } // end namespace
 
-# endif
+# endif // FIGURE_HPP
