@@ -1,3 +1,10 @@
+///////////////////////////////////////////////////////////////////////////
+/// Demonstration code for lecture "Numerical Methods for CSE" @ ETH Zurich
+/// (C) 2016 SAM, D-MATH
+/// Author(s): Ralf Hiptmair
+/// Repository: https://gitlab.math.ethz.ch/NumCSE/NumCSE/
+/// Do not remove this header.
+//////////////////////////////////////////////////////////////////////////
 #include <iostream>
 #include "dft2d.hpp"
 #include "freqbasmatgen.hpp"
@@ -10,21 +17,25 @@ int main() {
   using Comp = complex<double>;
   const VectorXcd::Index m=7,n = 5;
 
-  if (0)
+  cout << "(I) Testing 2D DFT and convolution" << endl;
   {
     // Testing Fourier basis martrices
+    cout << "DFT of Fourier basis matrices" << endl;
+    cout << "(Mapped to unit vectors by inverse DFT)" << endl;
     int k=5,l=3;
     MatrixXcd B = freqbasmatgen(m,n,k,l);
     MatrixXcd C(m,n); ifft2(C,B);
     cout << "B = " << endl << B << endl;
     cout << "C = " << endl << C << endl;
-    return 0;
   }
 
-  if (1)
+  cout << "Testing 2D convolution" << endl;
   {
   // Test 2D convolution
-    MatrixXcd Y(m,n), X(m,n);
+    cout << "Comparison of loop-based and DFT-based implementation" << endl;
+    cout << "(both should return the same result except for roundoff)" << endl;
+    MatrixXd Y(m,n);
+    MatrixXcd X(m,n);
     MatrixXcd Z1(m,n),Z2(m,n);
     for (int k=0;k<m;k++)
       for (int j=0;j<n;j++) {
@@ -44,10 +55,9 @@ int main() {
     cout << "Y = " << endl << Y << endl;
     cout << "Z1 = " << endl << Z1 << endl;
     cout << "Z2 = " << endl << Z2 << endl;
-    return 0;
   }
 
-  if (0)
+  cout << "(III) Testing 2D DFT" << endl;
   {
   // Test: 2D DFT
   // Initialize matrix for testing 2D DFT
@@ -63,7 +73,6 @@ int main() {
   cout << "C = " << endl << C << endl;
   ifft2(Y,C);
   cout << "Y = " << endl << Y << endl;
-  return 0;
   }
 }
 /* SAM_LISTING_END_0 */
