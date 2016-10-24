@@ -13,7 +13,7 @@ MatrixXd kron(const MatrixXd& A, const MatrixXd& B) {
       K.block(i*rB, j*cB, rB, cB) = A(i,j)*B;
     }
   }
-  return std::move(K);
+  return K;
 }
 
 # endif // NCSE_KRONECKER_HPP
