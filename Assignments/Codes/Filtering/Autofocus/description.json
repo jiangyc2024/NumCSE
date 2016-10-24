@@ -1,0 +1,8 @@
+{
+    "author" : "",
+    "email" : "",
+    "contributors" : "",
+
+    "name": "Autofocus",
+    "all" : ["autofocus.cpp", "autofocus.hpp", "pbm.hpp"]
+}
