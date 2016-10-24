@@ -27,7 +27,6 @@ MatrixXd deblur(const MatrixXd& C, const MatrixXd& S, const double tol=1e-3) {
     std::cerr << "Error: Deblurring impossible!\n";
   }
   // DFT based deblurring
-  MatrixXd D = fft2(ifft2(C.cast<complex>()).cwiseQuotient(SF)).real();
-  return std::move(D);
+  return fft2(ifft2(C.cast<complex>()).cwiseQuotient(SF)).real();
 }
 /* SAM_LISTING_END_0 */
