@@ -62,14 +62,17 @@ void pmconv_basic(const Eigen::MatrixBase<Scalar1> &X,const Eigen::MatrixBase<Sc
 template <typename Scalar1,typename Scalar2,class EigenMatrix>
 void pmconv(const Eigen::MatrixBase<Scalar1> &X,const Eigen::MatrixBase<Scalar2> &Y,
 	    EigenMatrix &Z) {
+  using Comp = std::complex<double>;
   using idx_t = typename EigenMatrix::Index;
   using val_t = typename EigenMatrix::Scalar;
   const idx_t n=X.cols(),m=X.rows();
   if ((m!=Y.rows()) || (n!=Y.cols())) throw std::runtime_error("pmconv: size mismatch");
-  Z.resize(m,n); Eigen::MatrixXcd T(m,n),Xh(m,n),Yh(m,n);
-  T = Y.template cast<val_t>(); ifft2(Yh,T);
-  T = (X.template cast<val_t>()).conjugate(); fft2(Xh,T);
-  T = Xh.cwiseProduct(Yh.conjugate());
-  ifft2(Z,T);
+  Z.resize(m,n); Eigen::MatrixXcd Xh(m,n),Yh(m,n);
+  // Step \ding{202}: inverse 2D DFT of \Blue{$\overline{\VY}$}
+  ifft2(Yh,(Y.template cast<Comp>()).conjugate());
+  // Step \ding{203}: 2D DFT of \Blue{$\VX$}
+  fft2(Xh,(X.template cast<Comp>()));
+  // Steps \ding{204}, \ding{205}: inverse DFT of component-wise product
+  ifft2(Z,(m*n)*Xh.cwiseProduct(Yh.conjugate()));
 }
 /* SAM_LISTING_END_3 */
