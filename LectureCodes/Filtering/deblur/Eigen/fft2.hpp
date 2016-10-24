@@ -13,7 +13,7 @@ MatrixXcd fft(const MatrixXcd& X) {
     VectorXcd Xj = X.col(j);
     Y.col(j) = fft.fwd(Xj);
   }
-  return std::move(Y);
+  return Y;
 }
 
 //! Inverse FFT for matrices 
@@ -26,7 +26,7 @@ MatrixXcd ifft(const MatrixXcd& X) {
     VectorXcd Xj = X.col(j);
     Y.col(j) = fft.inv(Xj);
   }
-  return std::move(Y);
+  return Y;
 }
 
 //! 2-dimensional FFT

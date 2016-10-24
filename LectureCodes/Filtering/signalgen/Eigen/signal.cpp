@@ -1,7 +1,7 @@
 # include <figure/figure.hpp>
 # include "./signalgen.hpp"
 
-// plot signal
+// Plot signal
 int main() {
   VectorXd y = signalgen();
   mgl::Figure fig;

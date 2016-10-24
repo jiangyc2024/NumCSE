@@ -3,10 +3,11 @@
 
 
 // sorts eigenvalues and eigenvectors from eigensolver ev
-std::pair<Eigen::VectorXd, Eigen::MatrixXd> eigensolversort(Eigen::EigenSolver<Eigen::MatrixXd> ev)
+std::pair<Eigen::VectorXd, Eigen::MatrixXd> eigensolversort(Eigen::EigenSolver<Eigen::MatrixXd> ev, bool sortAbs = false)
 {
 	Eigen::MatrixXd eigenvectors = ev.eigenvectors().real();
 	Eigen::VectorXd eigenvalues = ev.eigenvalues().real();
+	if (sortAbs) eigenvalues = ev.eigenvalues().cwiseAbs();
 
 	int n = eigenvalues.size();
 	std::vector<std::pair<double, Eigen::VectorXd>> res;
