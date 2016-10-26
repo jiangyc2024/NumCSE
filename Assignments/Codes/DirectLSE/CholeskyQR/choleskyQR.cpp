@@ -41,8 +41,8 @@ void DirectQR(const MatrixXd & A, MatrixXd & R, MatrixXd & Q) {
     
     // To return the same "economy-size decomposition" as Matlab
     if(m > n) {
-		Q = Q.leftCols(n);
-		R = R.topRows(n);
+		Q.conservativeResize(Q.rows(), n);
+		R.conservativeResize(n, R.cols());
 	}
 }
 /* SAM_LISTING_END_1 */

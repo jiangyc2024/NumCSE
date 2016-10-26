@@ -22,7 +22,10 @@ void factorize_X_AB(const MatrixXd & X, size_t k, MatrixXd & A, MatrixXd & B) {
 	double tol = 1e-6;
 	
 	JacobiSVD<MatrixXd> svd(X, ComputeThinU | ComputeThinV);
+	
 	VectorXd s = svd.singularValues();
+	MatrixXd S; S.setZero(s.size(),s.size());
+	S.diagonal() = s;
 	MatrixXd U = svd.matrixU();
 	MatrixXd V = svd.matrixV();
 	
@@ -36,7 +39,8 @@ void factorize_X_AB(const MatrixXd & X, size_t k, MatrixXd & A, MatrixXd & B) {
 		std::cerr << "The rank of the matrix is greater than the required rank" << std::endl;
 	}
 	
-	A = U.leftCols(std::min(k,(size_t)U.cols())) * s.head(std::min(k,(size_t)s.size()));
+	A = U.leftCols(std::min(k,(size_t)U.cols())) *
+		S.topLeftCorner(std::min(k,(size_t)s.size()), std::min(k,(size_t)s.size()));
 	B = V.leftCols(std::min(k,(size_t)V.cols()));
 }
 /* SAM_LISTING_END_0 */
@@ -45,12 +49,12 @@ void factorize_X_AB(const MatrixXd & X, size_t k, MatrixXd & A, MatrixXd & B) {
  * @param[in] A An $m \times k$ matrix
  * @param[in] B An $n \times k$ matrix
  * @param[out] U The $n \times k$ matrix from ...
- * @param[out] s The $k$-dimensional vector of singular values of ...
+ * @param[out] S The $k \times k$ diagonal matrix of singular values of ...
  * @param[out] V The $n \times k$ matrix from ...
  */
 /* SAM_LISTING_BEGIN_1 */
 void svd_AB(const MatrixXd & A, const MatrixXd & B,
-MatrixXd & U, VectorXd & s, MatrixXd & V) {
+MatrixXd & U, MatrixXd & S, MatrixXd & V) {
 	
 	assert(A.cols() == B.cols()
            && "Matrices A and B should have the same column number");
@@ -67,15 +71,18 @@ MatrixXd & U, VectorXd & s, MatrixXd & V) {
     
     // To return the same "economy-size decomposition" as Matlab
     if(n > k) {
-		QA = QA.leftCols(k);
-		RA = RA.topRows(k);
-		QB = QB.leftCols(k);
-		RB = RB.topRows(k);
+		QA.conservativeResize(QA.rows(), k);
+		RA.conservativeResize(k, RA.cols());
+		QB.conservativeResize(QB.rows(), k);
+		RB.conservativeResize(k, RB.cols());
 	}
 	
 	// U,V: k x k
 	JacobiSVD<MatrixXd> svd(RA*RB.transpose(), ComputeThinU | ComputeThinV);
-	s = svd.singularValues();
+	
+	VectorXd s = svd.singularValues();
+	S.setZero(s.size(),s.size());
+	S.diagonal() = s;
 	U = svd.matrixU();
 	V = svd.matrixV();
 	
@@ -85,7 +92,7 @@ MatrixXd & U, VectorXd & s, MatrixXd & V) {
 }
 /* SAM_LISTING_END_1 */
 
-/* @brief Find $Az$ and $Bz$ s.t.
+/* @brief Find $Az$ and $Bz$ such that
  * $Ax*Bz'$ is the best approximation of $AxBx'+AyBy'$ with rank $k$
  * @param[in] Ax An $m \times k$ matrix
  * @param[in] Ay An $m \times k$ matrix
@@ -106,12 +113,12 @@ MatrixXd & Az, MatrixXd & Bz) {
 	
 	MatrixXd A(Ax.rows(), Ax.cols()+Ay.cols()); A << Ax, Ay;
 	MatrixXd B(Bx.rows(), Bx.cols()+By.cols()); B << Bx, By;
-	MatrixXd U, V; VectorXd s;
-	svd_AB(A, B, U, s, V);
+	MatrixXd U, S, V;
+	svd_AB(A, B, U, S, V);
 	// U: m x 2k; S: 2k x 2k; V: n x 2k
 	
 	size_t k = Ax.cols();
-	Az = U.leftCols(k) * s;
+	Az = U.leftCols(k) * S;
 	Bz = V.leftCols(k);
 }
 /* SAM_LISTING_END_2 */
@@ -132,12 +139,12 @@ int main() {
     A.resize(m,k); B.resize(n,k);
 	A << 2, 1, 2, 3, 6, 1;
 	B << 4, 4, 5, 0;
-    MatrixXd U, V; VectorXd s;
+    MatrixXd U, S, V;
     
-    svd_AB(A, B, U, s, V);
+    svd_AB(A, B, U, S, V);
     
     std::cout << "U =" << std::endl << U << std::endl;
-    std::cout << "s =" << std::endl << s << std::endl;
+    std::cout << "S =" << std::endl << S << std::endl;
     std::cout << "V =" << std::endl << V << std::endl;
     
     MatrixXd Ax(m,k), Ay(m,k), Bx(n,k), By(n,k), Az, Bz;
