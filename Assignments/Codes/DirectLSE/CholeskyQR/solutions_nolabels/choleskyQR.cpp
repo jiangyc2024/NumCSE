@@ -1,3 +1,9 @@
+//// 
+//// Copyright (C) 2016 SAM (D-MATH) @ ETH Zurich
+//// Author(s): lfilippo <filippo.leonardi@sam.math.ethz.ch> 
+//// Contributors: tille, jgacon, dcasati
+//// This file is part of the NumCSE repository.
+////
 #include <iostream>
 #include <limits>
 
@@ -11,7 +17,6 @@ using namespace Eigen;
  * @param[out] R The upper triangular matrix from the QR decomposition of $A$
  * @param[out] Q The orthogonal matrix from the QR decomposition of $A$
  */
-/* SAM_LISTING_BEGIN_0 */
 void CholeskyQR(const MatrixXd & A, MatrixXd & R, MatrixXd & Q) {
 	
 	MatrixXd AtA = A.transpose() * A;
@@ -21,21 +26,18 @@ void CholeskyQR(const MatrixXd & A, MatrixXd & R, MatrixXd & Q) {
 	// LLT only works with symmetric p.d. matrices,
 	// but $R^\top$ is at least invertible...
 }
-/* SAM_LISTING_END_0 */
 
 /* @brief Direct QR decomposition
  * @param[in] A An $m \times n$ matrix
  * @param[out] R The upper triangular matrix from the QR decomposition of $A$
  * @param[out] Q The orthogonal matrix from the QR decomposition of $A$
  */
-/* SAM_LISTING_BEGIN_1 */
 void DirectQR(const MatrixXd & A, MatrixXd & R, MatrixXd & Q) {
 	
 	HouseholderQR<MatrixXd> QR = A.householderQr();
     Q = QR.householderQ();
     R = QR.matrixQR().triangularView<Upper>();
 }
-/* SAM_LISTING_END_1 */
 
 int main() {
 	size_t m = 3;
