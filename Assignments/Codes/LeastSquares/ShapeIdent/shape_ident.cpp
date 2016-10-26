@@ -286,7 +286,7 @@ int main(int argc, char **argv) {
             fig.xlabel("x");
             fig.ylabel("y");
             fig.plot(P1.row(0), P1.row(1), " b*");
-            fig.title("Example of points $\\mathbf{p}^i$");
+//            fig.title("Example of points $\\mathbf{p}^i$");
             fig.legend();
             fig.save("example-p.eps");
         }
