@@ -19,7 +19,8 @@ void CholeskyQR(const MatrixXd & A, MatrixXd & R, MatrixXd & Q) {
 	R = L.matrixL().transpose();
 	Q = R.transpose().partialPivLu().solve(A.transpose()).transpose();
 	// LLT only works with symmetric p.d. matrices,
-	// but $R^\top$ is at least invertible...
+	// but $R^\top$ is at least invertible,
+	// so PartialPivLU to solve the problem.
 }
 /* SAM_LISTING_END_0 */
 
@@ -31,9 +32,18 @@ void CholeskyQR(const MatrixXd & A, MatrixXd & R, MatrixXd & Q) {
 /* SAM_LISTING_BEGIN_1 */
 void DirectQR(const MatrixXd & A, MatrixXd & R, MatrixXd & Q) {
 	
+	size_t m = A.rows();
+	size_t n = A.cols();
+	
 	HouseholderQR<MatrixXd> QR = A.householderQr();
     Q = QR.householderQ();
     R = QR.matrixQR().triangularView<Upper>();
+    
+    // To return the same "economy-size decomposition" as Matlab
+    if(m > n) {
+		Q = Q.leftCols(n);
+		R = R.topRows(n);
+	}
 }
 /* SAM_LISTING_END_1 */
 
