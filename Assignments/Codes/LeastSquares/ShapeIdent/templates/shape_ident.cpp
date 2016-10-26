@@ -106,8 +106,7 @@ int main(int argc, char **argv) {
 
         std::cout << "****************** Set 1 ******************"
                   << std::endl;
-        MatrixXd A;
-        Shape s = identify(Xstop, Xpriority, P1, A);
+        // TODO: identify and print best suited shape for P1
     }
     {
         MatrixXd P2(2, n);
@@ -118,8 +117,7 @@ int main(int argc, char **argv) {
 
         std::cout << "****************** Set 2 ******************"
                   << std::endl;
-        MatrixXd A;
-        Shape s = identify(Xstop, Xpriority, P2, A);
+        // TODO: identify and print best suited shape for P2
     }
     {
         MatrixXd P3(2, n);
@@ -128,10 +126,9 @@ int main(int argc, char **argv) {
                 1.53076, 2.02881, 1.36163, -0.340912,
                 -1.47697, -1.99975, -1.47947, 0.374859;
 
-        std::cout << "****************** Set 2 ******************"
+        std::cout << "****************** Set 23 ******************"
                   << std::endl;
-        MatrixXd A;
-        Shape s = identify(Xstop, Xpriority, P3, A);
+        // TODO: identify and print best suited shape for P3
     }
     /* SAM_LISTING_END_3 */
 

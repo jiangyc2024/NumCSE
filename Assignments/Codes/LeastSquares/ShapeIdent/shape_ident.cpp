@@ -26,8 +26,10 @@ MatrixXd shape_ident_matrix(const MatrixXd & X) {
 
 #if SOLUTION
     for(unsigned int row = 0; row < n; ++row) {
+        // Odd row, first two columns
         B(2*row,  0) = X(0,row);
         B(2*row,  1) = X(1,row);
+        // Even row, last two columns
         B(2*row+1,2) = X(0,row);
         B(2*row+1,3) = X(1,row);
     }
@@ -64,9 +66,16 @@ double solve_lsq(const MatrixXd & X,
     // Solve LSQ system using normal equation
     // We need to do some reshaping in order to properly set up the system
     A = Map<MatrixXd>(
-                MatrixXd((B.transpose() * B).ldlt().solve(B.transpose() *
-                                                          Map<const MatrixXd>(P.data(), 2*n, 1)
-                                                          )).data(),
+                MatrixXd(
+                    // Solve LSQ problem using normal equation
+                    (B.transpose() * B).ldlt()
+                                       .solve(B.transpose() *
+                                              // Ned to vectorize matrix
+                                              Map<const MatrixXd>(P.data(), 2*n, 1)
+                                              )
+                    // Pass an array to "Map"
+                    ).data(),
+                // Need to reshape vector to 2x2 matrix
                 2, 2).transpose();
 
     // Residual: must reshape P
@@ -278,8 +287,12 @@ int main(int argc, char **argv) {
 
         std::cout << "****************** Set 1 ******************"
                   << std::endl;
+#if SOLUTION
         MatrixXd A;
         Shape s = identify(Xstop, Xpriority, P1, A);
+#else // TEMPLATE
+        // TODO: identify and print best suited shape for P1
+#endif // TEMPLATE
 #if INTERNAL
         {
             mgl::Figure fig;
@@ -308,8 +321,12 @@ int main(int argc, char **argv) {
 
         std::cout << "****************** Set 2 ******************"
                   << std::endl;
+#if SOLUTION
         MatrixXd A;
         Shape s = identify(Xstop, Xpriority, P2, A);
+#else // TEMPLATE
+        // TODO: identify and print best suited shape for P2
+#endif // TEMPLATE
 #if INTERNAL
         plot(transform(points(s), A), P2,
              "Set 2: original points",
@@ -326,10 +343,14 @@ int main(int argc, char **argv) {
                 1.53076, 2.02881, 1.36163, -0.340912,
                 -1.47697, -1.99975, -1.47947, 0.374859;
 
-        std::cout << "****************** Set 2 ******************"
+        std::cout << "****************** Set 23 ******************"
                   << std::endl;
+#if SOLUTION
         MatrixXd A;
         Shape s = identify(Xstop, Xpriority, P3, A);
+#else // TEMPLATE
+        // TODO: identify and print best suited shape for P3
+#endif // TEMPLATE
 #if INTERNAL
         plot(transform(points(s), A), P3,
              "Set 3: original points",
