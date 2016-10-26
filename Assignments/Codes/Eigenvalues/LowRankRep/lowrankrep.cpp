@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 #include <limits>
 
@@ -7,13 +8,14 @@
 
 using namespace Eigen;
 
-/* @brief factorize X mxn of rank at most k in X=AB';  A mxk, Bnxk
- * @param[in] A An $m \times n$ matrix
- * @param[out] R The upper triangular matrix from the QR decomposition of $A$
- * @param[out] Q The orthogonal matrix from the QR decomposition of $A$
+/* @brief Factorize matrix $X$ as $X = AB'$
+ * @param[in] X An $m \times n$ matrix of rank at most $k$
+ * @param[in] k Rank of matrix $X$
+ * @param[out] A The $m \times k$ matrix from the decomposition of $X$
+ * @param[out] B The $n \times k$ matrix from the decomposition of $X$
  */
 /* SAM_LISTING_BEGIN_0 */
-void factorizeXAB(const MatrixXd & X, size_t k, MatrixXd & A, MatrixXd & B) {
+void factorize_X_AB(const MatrixXd & X, size_t k, MatrixXd & A, MatrixXd & B) {
 	
 	size_t m = X.rows();
 	size_t n = X.cols();
@@ -30,30 +32,32 @@ void factorizeXAB(const MatrixXd & X, size_t k, MatrixXd & A, MatrixXd & B) {
 	// there are only $m$ singular vectors;
 	// the remaining columns of $U$ and $V$ do not correspond to actual singular vectors
 	// and are not returned in the thin format.
-	if(k+1 <= min(m,n) && s(k) > tol) {
+	if(k+1 <= std::min(m,n) && s(k) > tol) {
 		std::cerr << "The rank of the matrix is greater than the required rank" << std::endl;
 	}
 	
-	A = U.leftCols(min(k,U.cols())) * s.head(min(k,s.size()));
-	B = V.leftCols(min(k,V.cols()));
+	A = U.leftCols(std::min(k,(size_t)U.cols())) * s.head(std::min(k,(size_t)s.size()));
+	B = V.leftCols(std::min(k,(size_t)V.cols()));
 }
 /* SAM_LISTING_END_0 */
 
-/* @brief Direct QR decomposition
- * @param[in] A An $m \times n$ matrix
- * @param[out] R The upper triangular matrix from the QR decomposition of $A$
- * @param[out] Q The orthogonal matrix from the QR decomposition of $A$
+/* @brief SVD decomposition and ...
+ * @param[in] A An $m \times k$ matrix
+ * @param[in] B An $n \times k$ matrix
+ * @param[out] U The $n \times k$ matrix from ...
+ * @param[out] s The $k$-dimensional vector of singular values of ...
+ * @param[out] V The $n \times k$ matrix from ...
  */
 /* SAM_LISTING_BEGIN_1 */
-void svdAB(const MatrixXd & A, const MatrixXd & B,
-MatrixXd & U, MatrixXd & S, MatrixXd & V) {
+void svd_AB(const MatrixXd & A, const MatrixXd & B,
+MatrixXd & U, VectorXd & s, MatrixXd & V) {
 	
-	assert(A.rows() == B.rows() && A.cols() == B.cols()
-           && "Matrices A and B should have the same dimensions");
+	assert(A.cols() == B.cols()
+           && "Matrices A and B should have the same column number");
 	size_t n = A.rows();
 	size_t k = A.cols();
 	
-	// QA,QB: n x k; RA,RB k x k
+	// QA: m x k; QB: n x k; RA,RB k x k
 	HouseholderQR<MatrixXd> QRA = A.householderQr();
     MatrixXd QA = QRA.householderQ();
     MatrixXd RA = QRA.matrixQR().triangularView<Upper>();
@@ -69,36 +73,81 @@ MatrixXd & U, MatrixXd & S, MatrixXd & V) {
 		RB = RB.topRows(k);
 	}
 	
-	// U,S,V: k x k
+	// U,V: k x k
 	JacobiSVD<MatrixXd> svd(RA*RB.transpose(), ComputeThinU | ComputeThinV);
-	VectorXd s = svd.singularValues();
-	S.setZeros(k,k);
-	S.diagonal() = s;
+	s = svd.singularValues();
 	U = svd.matrixU();
 	V = svd.matrixV();
 	
-	// U,V:   n x k
+	// U: m x k; V: n x k
 	U = QA*U;
 	V = QB*V;
 }
 /* SAM_LISTING_END_1 */
 
+/* @brief Find $Az$ and $Bz$ s.t.
+ * $Ax*Bz'$ is the best approximation of $AxBx'+AyBy'$ with rank $k$
+ * @param[in] Ax An $m \times k$ matrix
+ * @param[in] Ay An $m \times k$ matrix
+ * @param[in] Bx An $n \times k$ matrix
+ * @param[in] By An $n \times k$ matrix
+ * @param[out] Az The $m \times k$ matrix to form $Az*Bz'$
+ * @param[out] Bz The $n \times k$ matrix to form $Az*Bz'$
+ */
+/* SAM_LISTING_BEGIN_2 */
+void rank_k_approx(const MatrixXd & Ax, const MatrixXd & Ay,
+const MatrixXd & Bx, const MatrixXd & By,
+MatrixXd & Az, MatrixXd & Bz) {
+	
+	assert(Ax.rows() == Ay.rows() && Ax.cols() == Ay.cols()
+           && "Matrices Ax and Ay should have the same dimensions");
+	assert(Bx.rows() == By.rows() && Bx.cols() == By.cols()
+           && "Matrices Bx and By should have the same dimensions");
+	
+	MatrixXd A(Ax.rows(), Ax.cols()+Ay.cols()); A << Ax, Ay;
+	MatrixXd B(Bx.rows(), Bx.cols()+By.cols()); B << Bx, By;
+	MatrixXd U, V; VectorXd s;
+	svd_AB(A, B, U, s, V);
+	// U: m x 2k; S: 2k x 2k; V: n x 2k
+	
+	size_t k = Ax.cols();
+	Az = U.leftCols(k) * s;
+	Bz = V.leftCols(k);
+}
+/* SAM_LISTING_END_2 */
+
 int main() {
 	size_t m = 3;
 	size_t n = 2;
-    MatrixXd A(m,n);
-    double epsilon = std::numeric_limits<double>::denorm_min();
-    A << 1, 1, 0.5*epsilon, 0, 0, 0.5*epsilon;
+	size_t k = 2;
+    MatrixXd X(m,n);
+    X << 5, 0, 2, 1, 7, 4;
+    
+    MatrixXd A, B;
+    factorize_X_AB(X, k, A, B);
+    
     std::cout << "A =" << std::endl << A << std::endl;
+    std::cout << "B =" << std::endl << B << std::endl;
     
-    MatrixXd R, Q;
-    CholeskyQR(A, R, Q);
+    A.resize(m,k); B.resize(n,k);
+	A << 2, 1, 2, 3, 6, 1;
+	B << 4, 4, 5, 0;
+    MatrixXd U, V; VectorXd s;
+    
+    svd_AB(A, B, U, s, V);
+    
+    std::cout << "U =" << std::endl << U << std::endl;
+    std::cout << "s =" << std::endl << s << std::endl;
+    std::cout << "V =" << std::endl << V << std::endl;
+    
+    MatrixXd Ax(m,k), Ay(m,k), Bx(n,k), By(n,k), Az, Bz;
+	Ax << 1,  0, 9, 2, 6, 3;
+	Ay << 8, -2, 3, 4, 5, 8;
+	Bx << 2, 1, 2, 3;
+	By << 4, 4, 5, 0;
 	
-	std::cout << "From Cholesky: R =" << std::endl << R << std::endl;
-    std::cout << "From Cholesky: Q =" << std::endl << Q << std::endl;
-    
-    DirectQR(A, R, Q);
-    
-	std::cout << "Direct QR: R =" << std::endl << R << std::endl;
-    std::cout << "Direct QR: Q =" << std::endl << Q << std::endl;
+	rank_k_approx(Ax, Ay, Bx, By, Az, Bz);
+	
+	std::cout << "Az =" << std::endl << Az << std::endl;
+    std::cout << "Bz =" << std::endl << Bz << std::endl;
 }
