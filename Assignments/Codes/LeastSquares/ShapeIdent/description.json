@@ -4,5 +4,19 @@
     "contributors" : "",
 
     "name": "ShapeIdent",
-    "all" : ["shape_ident.cpp"]
+    "all" : ["shape_ident.cpp",
+    "180px-CH-Vortrittssignal-Hauptstrasse.svg.png",
+    "CH-Vortrittssignal-Stop.png",
+    "example-p.eps",
+    "set-1-transformed.eps",
+    "priority-pts.eps",
+    "set-2-transformed.eps",
+    "set-2-original.eps",
+    "priority-pts-eps-converted-to.pdf",
+    "set-3-original.eps",
+    "stop-pts.eps",
+    "set-1-original.eps",
+    "set-3-transformed.eps",
+    "stop-pts-eps-converted-to.pdf"
+    ]
 }
