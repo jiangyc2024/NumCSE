@@ -8,7 +8,7 @@
 
 using namespace Eigen;
 
-/* @brief Factorize matrix $X$ as $X = AB'$
+/* @brief Factorize matrix $X$ into $X = AB'$
  * @param[in] X An $m \times n$ matrix of rank at most $k$
  * @param[in] k Rank of matrix $X$
  * @param[out] A The $m \times k$ matrix from the decomposition of $X$
@@ -17,11 +17,24 @@ using namespace Eigen;
 /* SAM_LISTING_BEGIN_0 */
 void factorize_X_AB(const MatrixXd & X, size_t k, MatrixXd & A, MatrixXd & B) {
 	
+	assert(k <= std::min(m,n)
+		   && "Rank k cannot be larger than dimensions of X");
+	
 	size_t m = X.rows();
 	size_t n = X.cols();
 	double tol = 1e-6;
 	
+#if SOLUTION
 	JacobiSVD<MatrixXd> svd(X, ComputeThinU | ComputeThinV);
+	// You can ask for only thin $U$ or $V$ to be computed.
+	// In case of a rectangular $m \times n$ matrix with $j$,
+	// letting $j$ be the smaller value among $m$ and $n$,
+	// there can only be at most $j$ singular values.
+	// The remaining columns of $U$ and $V$ do not correspond
+	// to actual singular vectors and are not returned in thin format.
+	// However, this does not make Eigen::svd return only
+	// a number of (nonzero) singular values equal to the rank of $X$:
+	// in numerical calculus you can get very low values but still $!= 0$.
 	
 	VectorXd s = svd.singularValues();
 	MatrixXd S; S.setZero(s.size(),s.size());
@@ -29,19 +42,19 @@ void factorize_X_AB(const MatrixXd & X, size_t k, MatrixXd & A, MatrixXd & B) {
 	MatrixXd U = svd.matrixU();
 	MatrixXd V = svd.matrixV();
 	
-	// You can ask for only thin $U$ or $V$ to be computed.
-	// In case of a rectangular $n \times p$ matrix,
-	// letting $m$ be the smaller value among $n$ and $p$,
-	// there are only $m$ singular vectors;
-	// the remaining columns of $U$ and $V$ do not correspond to actual singular vectors
-	// and are not returned in the thin format.
 	if(k+1 <= std::min(m,n) && s(k) > tol) {
-		std::cerr << "The rank of the matrix is greater than the required rank" << std::endl;
+		// 1. condition checks if there is a possible singular value after $k$.
+		// ($S$ cannot be larger than the dimensions of $X$.)
+		// 2. condition checks if such singular value (by definition non-negative) is greater than 0.
+		std::cerr << "Rank of matrix X is greater than the required rank k" << std::endl;
 	}
 	
 	A = U.leftCols(std::min(k,(size_t)U.cols())) *
 		S.topLeftCorner(std::min(k,(size_t)s.size()), std::min(k,(size_t)s.size()));
 	B = V.leftCols(std::min(k,(size_t)V.cols()));
+#else // TEMPLATE
+    // TODO: factorize matrix $X$ into $X = AB'$
+#endif // TEMPLATE
 }
 /* SAM_LISTING_END_0 */
 
