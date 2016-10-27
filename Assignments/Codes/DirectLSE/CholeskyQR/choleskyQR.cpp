@@ -36,14 +36,13 @@ void DirectQR(const MatrixXd & A, MatrixXd & R, MatrixXd & Q) {
 	size_t n = A.cols();
 	
 	HouseholderQR<MatrixXd> QR = A.householderQr();
-    Q = QR.householderQ();
-    R = QR.matrixQR().triangularView<Upper>();
-    
-    // To return the same "economy-size decomposition" as Matlab
-    if(m > n) {
-		Q.conservativeResize(Q.rows(), n);
-		R.conservativeResize(n, R.cols());
-	}
+    Q = QR.householderQ() * MatrixXd::Identity(m, std::min(m, n));
+    R = MatrixXd::Identity(std::min(m, n), m) * QR.matrixQR().triangularView<Upper>();
+    // If A: m x n, then Q: m x m and R: m x n.
+    // If m > n, however, the extra columns of Q and extra rows of R are not needed.
+    // Matlab returns this "economy-size" format calling "qr(A,0)",
+    // which does not also compute these extra entries.
+    // With the code above, Eigen is smart enough to not compute the discarded vectors.
 }
 /* SAM_LISTING_END_1 */
 
@@ -52,7 +51,8 @@ int main() {
 	size_t n = 2;
     MatrixXd A(m,n);
     double epsilon = std::numeric_limits<double>::denorm_min();
-    A << 1, 1, 0.5*epsilon, 0, 0, 0.5*epsilon;
+    A << 3, 5, 1, 9, 7, 1;
+  //A << 1, 1, 0.5*epsilon, 0, 0, 0.5*epsilon;
     std::cout << "A =" << std::endl << A << std::endl;
     
     MatrixXd R, Q;
