@@ -31,7 +31,7 @@ void shift(VectorXd & b) {
 void solvpermb(const MatrixXd & A, VectorXd & b, MatrixXd & X) {
     // Size of b, which is the size of A
     int n = b.size();
-    assert( n == A.cols() && n == A.rows()
+    assert( n == A.rows() && n == A.cols()
             && "Error: size mismatch!");
     X.resize(n,n);
 
