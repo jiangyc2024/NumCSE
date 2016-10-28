@@ -17,10 +17,10 @@ void CholeskyQR(const MatrixXd & A, MatrixXd & R, MatrixXd & Q) {
 	MatrixXd AtA = A.transpose() * A;
 	LLT<MatrixXd> L = AtA.llt();
 	R = L.matrixL().transpose();
-	Q = R.transpose().partialPivLu().solve(A.transpose()).transpose();
-	// LLT only works with symmetric p.d. matrices,
-	// but $R^\top$ is at least invertible,
-	// so PartialPivLU to solve the problem.
+	Q = R.transpose().triangularView<Lower>().solve(A.transpose()).transpose();
+	// .triangularView() template member only accesses the triangular part
+	// of a dense matrix and allows to easily solve linear problem:
+	// http://eigen.tuxfamily.org/dox/group__QuickRefPage.html#title14
 }
 /* SAM_LISTING_END_0 */
 
@@ -41,7 +41,7 @@ void DirectQR(const MatrixXd & A, MatrixXd & R, MatrixXd & Q) {
     // If A: m x n, then Q: m x m and R: m x n.
     // If m > n, however, the extra columns of Q and extra rows of R are not needed.
     // Matlab returns this "economy-size" format calling "qr(A,0)",
-    // which does not also compute these extra entries.
+    // which does not compute these extra entries.
     // With the code above, Eigen is smart enough to not compute the discarded vectors.
 }
 /* SAM_LISTING_END_1 */
