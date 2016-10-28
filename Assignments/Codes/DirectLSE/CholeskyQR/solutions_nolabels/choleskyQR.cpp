@@ -24,8 +24,7 @@ void CholeskyQR(const MatrixXd & A, MatrixXd & R, MatrixXd & Q) {
 	R = L.matrixL().transpose();
 	Q = R.transpose().triangularView<Lower>().solve(A.transpose()).transpose();
 	// .triangularView() template member only accesses the triangular part
-	// of a dense matrix and allows to easily solve linear problem:
-	// http://eigen.tuxfamily.org/dox/group__QuickRefPage.html#title14
+	// of a dense matrix and allows to easily solve linear problem
 }
 
 /* @brief Direct QR decomposition
