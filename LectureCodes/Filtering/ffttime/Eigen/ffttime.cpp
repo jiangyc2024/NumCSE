@@ -4,6 +4,8 @@
 # include <figure/figure.hpp>
 # include "timer.h"
 # include "meshgrid.hpp"
+# include "eigen_fft_backend_name.hpp"
+
 using namespace Eigen;
 
 //! Benchmarking discrete fourier transformations
@@ -70,6 +72,9 @@ void benchmark(const int N, const int nruns=3) {
 }
 
 int main() {
+  // print the backend used by eigen for the fft
+  std::cout << "FFT Backend: " << eigen_fft_backend_name() << std::endl;
+    
   // WARNING: this code may take very long to run
   benchmark(1024*8);
   return 0;
