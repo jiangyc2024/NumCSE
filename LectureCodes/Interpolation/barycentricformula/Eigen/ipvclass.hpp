@@ -71,8 +71,8 @@ Eigen::VectorXd BarycPolyInterp::eval(const Eigen::VectorXd &y,
 void BarycPolyInterp::init_lambda(void) {  
   // Precompute the weights \Blue{$\lambda_i$} with effort \Blue{$O(n^2)$}
   for (unsigned k = 0; k < n; ++k) {
-    // little workaround: cannot subtract a vector from a scalar 
-    // -> multiply scalar by vector of ones
+    // little workaround: in \eigen cannot subtract a vector
+    // from a scalar; multiply scalar by vector of ones
     lambda(k) = 1./((t(k)*VectorXd::Ones(k)-t.head(k)).prod()* 
             (t(k)*VectorXd::Ones(n-k-1)-t.tail(n-k-1)).prod());
   }
