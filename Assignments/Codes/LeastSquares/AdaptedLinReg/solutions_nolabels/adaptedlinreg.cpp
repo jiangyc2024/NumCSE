@@ -33,10 +33,14 @@ VectorXd linReg(const VectorXd &t, const VectorXd &y)
 	A.col(0) = ones;
 	A.col(1) = t;
 
-	// Normal equations
+	// Normal equations are needed for "Eigen::FullPivLu" solver
 	MatrixXd lhs = A.transpose() * A; // Left-hand side
 	VectorXd rhs = A.transpose() * b; // Right-hand side
-	x = lhs.fullPivLu().solve(rhs);
+	x = lhs.fullPivLu().solve(rhs); // Least accurate than methods below but fastest
+	
+	// Alternatives (least squares problem is immediately solved)
+  //x = A.colPivHouseholderQr().solve(b); // In between
+  //x = A.jacobiSvd(ComputeThinU | ComputeThinV).solve(b); // Most accurate but slowest
 
 	return x;
 }
