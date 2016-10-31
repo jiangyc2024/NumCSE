@@ -26,7 +26,7 @@ double diffex(Function& f, const double x, const double h0, const double rtol, c
     for (int k = i - 1; k >= 0; --k) 
       y(k) = y(k+1) - (y(k+1)-y(k))*h(i)/(h(i)-h(k));
     // termination of extrapolation when desired tolerance is reached
-    const double errest = std::abs(y(1) - y(0)); // \com{error indicator}
+    const double errest = std::abs(y(1)-y(0)); // \com{error indicator}
     if ( errest < rtol*std::abs(y(0)) || errest < atol ) // \label{de:1}
       break;
   }

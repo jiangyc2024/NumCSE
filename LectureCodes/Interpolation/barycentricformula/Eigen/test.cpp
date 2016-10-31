@@ -25,14 +25,15 @@ int main () {
   intpolyval(t,y,x,p);
 
   // Evaluation by means of interpolation class
-  BarycPolyInterp ipc(t);
-  cout << "p = " << p.transpose() << endl << "ipc.p = " << ipc.eval(y,x).transpose() << endl;
+  BarycPolyInterp<> ipc(t);
+  cout << "p = " << p.transpose() << endl << "ipc.p = " << ipc.eval<VectorXd>(y,x).transpose() << endl;
 
   // Construction from STL
-  std::list<double> lst; 
+  std::list<std::complex<double> > lst; 
   for (int i=0;i<n;i++) lst.push_back(t(i)); 
-  BarycPolyInterp ipc2(lst);
-  cout << "p = " << p.transpose() << endl << "ipc.p = " << ipc2.eval(y,x).transpose() << endl;
+  BarycPolyInterp<std::complex<double> > ipc2(lst);
+  VectorXcd xc = x.cast<complex<double>>();
+  cout << "ipc.p = " << ipc2.eval<VectorXcd>(y,xc).transpose() << endl;
 
   return 0;
 }

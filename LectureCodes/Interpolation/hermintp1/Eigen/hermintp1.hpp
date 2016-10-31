@@ -23,7 +23,7 @@ void hermintp1(Function& f, const VectorXd& t) {
   const VectorXd delta = (y.tail(n - 1) - y.head(n - 1)).cwiseQuotient(h);
   VectorXd c(n);
   c(0) = delta(0); c(n - 1) = delta(n - 2);
-  // slopes from weighted averages, see \eqref{pwint:AverageSlopes}
+  // slopes from weighted averages, see \eqref{pwintp:AverageSlopes}
   for (unsigned i = 1; i < n - 1; ++i) {
     c(i) = ( h(i)*delta(i - 1) + h(i - 1)*delta(i) )/( t(i + 1) - t(i - 1) );
   }
