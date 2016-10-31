@@ -4,5 +4,10 @@
     "contributors" : "",
 
     "name": "Autofocus",
-    "all" : ["autofocus.cpp", "autofocus.hpp", "pbm.hpp"]
+    "all" : ["autofocus.cpp",
+        "autofocus.hpp",
+        "pgm.hpp", "conv.hpp",
+        "._SUPER_SECRET_FILE.cpp",
+        "image.pgm"
+    ]
 }
