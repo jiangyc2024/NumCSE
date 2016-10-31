@@ -1,0 +1,8 @@
+{
+    "author" : "",
+    "email" : "",
+    "contributors" : "",
+
+    "name": "LowRankRep",
+    "all" : ["lowrankrep.cpp"]
+}

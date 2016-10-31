@@ -1,6 +1,7 @@
+///////////////////////////////////////////////////////////////////////////
 /// Demonstration code for lecture "Numerical Methods for CSE" @ ETH Zurich
 /// (C) 2016 SAM, D-MATH
-/// Author(s): N.N.
+/// Author(s): Xiaolin Guo, Julien Gacon
 /// Repository: https://gitlab.math.ethz.ch/NumCSE/NumCSE/
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////

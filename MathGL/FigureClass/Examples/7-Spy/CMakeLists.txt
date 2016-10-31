@@ -10,6 +10,5 @@ find_package( MathGL2 2.0.0 REQUIRED )
 find_package( Figure REQUIRED )
 
 include_directories( ${EIGEN_INCLUDE_DIR} ${MATHGL2_INCLUDE_DIRS} ${FIGURE_INCLUDE_DIR} )
-add_executable( main main.cpp )
-target_link_libraries( main ${MATHGL2_LIBRARIES} ${FIGURE_LIBRARY} )
-
+add_executable( main_spy main.cpp )
+target_link_libraries( main_spy ${MATHGL2_LIBRARIES} ${FIGURE_LIBRARY} )

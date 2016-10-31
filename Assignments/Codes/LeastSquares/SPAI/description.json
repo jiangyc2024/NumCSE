@@ -1,0 +1,8 @@
+{
+    "author" : "",
+    "email" : "",
+    "contributors" : "",
+
+    "name": "SPAI",
+    "all" : ["spai.cpp"]
+}
