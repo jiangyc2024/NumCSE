@@ -2,6 +2,7 @@
 #include <vector>
 
 #include <Eigen/Dense>
+#include <unsupported/Eigen/FFT>
 
 using namespace Eigen;
 
@@ -14,8 +15,8 @@ using namespace Eigen;
 VectorXd polyMult_naive(const VectorXd & u, const VectorXd & v)
 {
     // Initialization
-    unsigned m = u.size() - 1;
-    unsigned n = v.size() - 1;
+    unsigned m = u.size() - 1; // Degree of polynomial
+    unsigned n = v.size() - 1; // Degree of polynomial
     unsigned dim = max(m, n);
     
     VectorXd u_tmp = u;
@@ -30,7 +31,7 @@ VectorXd polyMult_naive(const VectorXd & u, const VectorXd & v)
 		unsigned fst = max(0, i - n);
 		unsigned lst = min(i, n);
 		for(unsigned j=fst; j<=lst; ++j) {
-			uv(i) += u(j) * v(i-j);
+			uv(i) += u_tmp(j) * v_tmp(i-j);
 		}
 	}
 #else // TEMPLATE
@@ -46,28 +47,22 @@ VectorXd polyMult_naive(const VectorXd & u, const VectorXd & v)
  * @param[out] X The $n \times n$ solution matrix
  */
 /* SAM_LISTING_BEGIN_1 */
-VectorXd polyMult_convo(const VectorXd & u, const VectorXd & v)
+VectorXd polyMult_fast(const VectorXd & u, const VectorXd & v)
 {
     // Initialization
-    unsigned m = u.size() - 1;
-    unsigned n = v.size() - 1;
+    unsigned m = u.size() - 1; // Degree of polynomial
+    unsigned n = v.size() - 1; // Degree of polynomial
     unsigned dim = max(m, n);
     
     VectorXd u_tmp = u;
-    u_tmp.conservativeResize(dim);
+    u_tmp.conservativeResize(u.size() + n);
     VectorXd v_tmp = v;
-    v_tmp.conservativeResize(dim);
-    
-    VectorXd uv(m+n+1);
+    v_tmp.conservativeResize(v.size() + m);
 
 #if SOLUTION
-    for(unsigned i=0; i<uv.size(); ++i) {
-		unsigned fst = max(0, i - n);
-		unsigned lst = min(i, n);
-		for(unsigned j=fst; j<=lst; ++j) {
-			uv(i) += u(j) * v(i-j);
-		}
-	}
+	Eigen::FFT<double> fft;
+	VectorXcd tmp = ( fft.fwd(u_tmp) ).cwiseProduct( fft.fwd(v_tmp) );
+	VectorXd uv = fft.inv(tmp).real();
 #else // TEMPLATE
     // TODO: compute $C$ from $A$
 #endif // TEMPLATE

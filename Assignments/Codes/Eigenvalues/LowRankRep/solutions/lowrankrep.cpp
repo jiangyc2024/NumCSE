@@ -15,38 +15,38 @@ using namespace Eigen;
  */
 /* SAM_LISTING_BEGIN_0 */
 void factorize_X_AB(const MatrixXd & X, size_t k, MatrixXd & A, MatrixXd & B) {
-		
-	size_t m = X.rows();
-	size_t n = X.cols();
-	double tol = 1e-6;
-	assert(k <= std::min(m,n)
-		   && "Rank k cannot be larger than dimensions of X");
-	
-	JacobiSVD<MatrixXd> svd(X, ComputeThinU | ComputeThinV);
-	// When using Eigen::svd, you can ask for only thin $U$ or $V$ to be computed.
-	// In case of a rectangular $m \times n$ matrix,
-	// with $j$ the smaller value among $m$ and $n$,
-	// there can only be at most $j$ singular values.
-	// The remaining columns of $U$ and $V$ do not correspond
-	// to actual singular vectors and are not computed in thin format.
-	
-	VectorXd s = svd.singularValues();
-	MatrixXd S; S.setZero(s.size(),s.size());
-	S.diagonal() = s;
-	MatrixXd U = svd.matrixU();
-	MatrixXd V = svd.matrixV();
-	
-	if(k+1 <= std::min(m,n) && s(k) > tol) {
-		// 1. condition checks if there is a possible singular value after $k$.
-		// ($S$ cannot be larger than the dimensions of $X$.)
-		// 2. condition checks if such singular value (by definition non-negative)
-		// is "numerically" different than 0.
-		std::cerr << "Rank of matrix X is greater than required rank k" << std::endl;
-	}
-	
-	A = U.leftCols(std::min(k,(size_t)U.cols())) *
-		S.topLeftCorner(std::min(k,(size_t)s.size()), std::min(k,(size_t)s.size()));
-	B = V.leftCols(std::min(k,(size_t)V.cols()));
+  size_t m = X.rows(), n = X.cols();
+  double tol = 1e-6; // Tolerance for numerical rank, see \lref{ex:svdrank}
+  assert(k <= std::min(m,n)
+	 && "Rank k cannot be larger than dimensions of X");
+  
+  JacobiSVD<MatrixXd> svd(X, ComputeThinU | ComputeThinV);
+  // When using Eigen::svd, you can ask for only thin $\VU$ or $\VV$ to be computed.
+  // In case of a rectangular $m \times n$ matrix,
+  // with $j$ the smaller value among $m$ and $n$,
+  // there can only be at most $j$ singular values.
+  // The remaining columns of $U$ and $V$ do not correspond
+  // to actual singular vectors and are not computed in thin format.
+  
+  VectorXd s = svd.singularValues();
+  MatrixXd S; S.setZero(s.size(),s.size());
+  S.diagonal() = s;
+  MatrixXd U = svd.matrixU();
+  MatrixXd V = svd.matrixV();
+  
+  if(k+1 <= std::min(m,n) && s(k) > tol*s(0)) {
+    // 1. condition checks if there is a possible singular value after $k$.
+    // ($S$ cannot be larger than the dimensions of $X$.)
+    // 2. condition checks if such singular value (by definition non-negative)
+    // is "numerically" different than 0.
+    std::cerr << "Rank of matrix X is greater than required rank k" << std::endl;
+  }
+
+  // Instead of multiplying witf $\VS$ we could simply scale
+  // the columns of $\VA$
+  A = U.leftCols(std::min(k,(size_t)U.cols())) *
+    S.topLeftCorner(std::min(k,(size_t)s.size()), std::min(k,(size_t)s.size()));
+  B = V.leftCols(std::min(k,(size_t)V.cols()));
 }
 /* SAM_LISTING_END_0 */
 

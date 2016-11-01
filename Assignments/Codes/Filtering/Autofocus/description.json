@@ -6,8 +6,9 @@
     "name": "Autofocus",
     "all" : ["autofocus.cpp",
         "autofocus.hpp",
-        "pgm.hpp", "conv.hpp",
         "._SUPER_SECRET_FILE.cpp",
         "image.pgm"
-    ]
+    ],
+    "lib" :
+    ["pgm.hpp", "conv.hpp", "examples/"]
 }
