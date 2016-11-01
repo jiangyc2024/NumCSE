@@ -1,6 +1,9 @@
 #include <fstream>
 
 #include <mgl2/mgl.h>
+
+#include <figure/figure.hpp>
+
 #include <Eigen/Dense>
 
 // Contains PGMObject
@@ -23,10 +26,8 @@ void save_image(double focus) {
     // Create empty object
     PGMObject q;
 
-#if   TEMPLATE
     // TODO: read matrix of image generated
     // by "set_focus" and same as an image in format ".pgm"
-#endif // TEMPLATE
 }
 /* SAM_LISTING_END_1 */
 
@@ -36,12 +37,12 @@ void save_image(double focus) {
  */
 /* SAM_LISTING_BEGIN_0 */
 void plot_freq(double focus) {
-#if   TEMPLATE
+    int a = 0;
+    int b = 8000;
     // TODO: compute D containing the
     // spectrum of set_focus(focus)
     // "clamp" the data between 0 and 8000
     MatrixXd D;
-#endif // TEMPLATE
 
     // Plot values of $\mathbf{X}$.
     mglData Xd(D.cols(), D.rows(), D.data());
@@ -53,12 +54,12 @@ void plot_freq(double focus) {
     ss << "Specturm with f = "
         << focus
         << ".";
-    gr.Title(ss.str());
+    gr.Title(ss.str().c_str());
     gr.Axis();
     gr.Tile(Xd, "bcwyr");
     std::stringstream ss2;
     ss2 << "spectrum_focus="
-        << i
+        << focus
 //        << ".eps";
         << ".png";
 //    gr.WriteEPS(ss2.str().c_str());
@@ -79,9 +80,7 @@ double high_frequency_content(const MatrixXd & M) {
     int m = M.cols();
 
     double V = 0;
-#if   TEMPLATE
     // TODO: compute $V(\mathbf{M}).
-#endif
 
     return V;
 }
@@ -97,9 +96,7 @@ void plotV() {
 
     VectorXd x(N), y(N);
 
-#if   TEMPLATE
     // TODO: plot $V(\mathbf{B}(f))$
-#endif // TEMPLATE
 
     mgl::Figure fig;
     fig.title("High frequency content.");
@@ -131,9 +128,7 @@ double autofocus() {
     double df = max_focus / 1e2;
     // Starting step
     double step = max_focus / 2.;
-#if   TEMPLATE
     // TODO: use bisection method to find best focus
-#endif // TEMPLATE
 
     return f0;
 }
@@ -155,19 +150,19 @@ int main() {
 #endif
 
     //// SUBPROBLEM 2: plot spectrum for different $f$
-#if SUBPROBLEM2
+#ifdef SUBPROBLEM2
     for(unsigned int i = 0; i <= 3; ++i) {
         plot_freq(i);
     }
 #endif
 
     //// SUBPROBLEM 3: plot V(\mathbf{B}(f))
-#if SUBPROBLEM3
+#ifdef SUBPROBLEM3
     plotV();
 #endif
 
     //// SUBPROBLEM 4: find most focused image
-#if SUBPROBLEM4
+#ifdef SUBPROBLEM4
     std::cout << "Autofocus returns:"
               << autofocus()
               << std::endl;

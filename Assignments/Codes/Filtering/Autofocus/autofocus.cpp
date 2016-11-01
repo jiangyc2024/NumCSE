@@ -1,6 +1,9 @@
 #include <fstream>
 
 #include <mgl2/mgl.h>
+
+#include <figure/figure.hpp>
+
 #include <Eigen/Dense>
 
 // Contains PGMObject
@@ -48,14 +51,14 @@ void save_image(double focus) {
  */
 /* SAM_LISTING_BEGIN_0 */
 void plot_freq(double focus) {
-#if SOLUTION
     int a = 0;
     int b = 8000;
+#if SOLUTION
     auto clamp = [a,b] (double x) {
         return x < a ? a : x > b ? b : x;
     };
 
-    MatrixXd D = fft2r(set_focus(i))
+    MatrixXd D = fft2r(set_focus(focus))
             .cwiseAbs()
             .unaryExpr(clamp);
 #else // TEMPLATE
@@ -75,12 +78,12 @@ void plot_freq(double focus) {
     ss << "Specturm with f = "
         << focus
         << ".";
-    gr.Title(ss.str());
+    gr.Title(ss.str().c_str());
     gr.Axis();
     gr.Tile(Xd, "bcwyr");
     std::stringstream ss2;
     ss2 << "spectrum_focus="
-        << i
+        << focus
 //        << ".eps";
         << ".png";
 //    gr.WriteEPS(ss2.str().c_str());

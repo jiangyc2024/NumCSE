@@ -1,6 +1,9 @@
 #include <fstream>
 
 #include <mgl2/mgl.h>
+
+#include <figure/figure.hpp>
+
 #include <Eigen/Dense>
 
 // Contains PGMObject
@@ -49,7 +52,7 @@ void plot_freq(double focus) {
         return x < a ? a : x > b ? b : x;
     };
 
-    MatrixXd D = fft2r(set_focus(i))
+    MatrixXd D = fft2r(set_focus(focus))
             .cwiseAbs()
             .unaryExpr(clamp);
 
@@ -63,12 +66,12 @@ void plot_freq(double focus) {
     ss << "Specturm with f = "
         << focus
         << ".";
-    gr.Title(ss.str());
+    gr.Title(ss.str().c_str());
     gr.Axis();
     gr.Tile(Xd, "bcwyr");
     std::stringstream ss2;
     ss2 << "spectrum_focus="
-        << i
+        << focus
 //        << ".eps";
         << ".png";
 //    gr.WriteEPS(ss2.str().c_str());
@@ -189,19 +192,19 @@ int main() {
 #endif
 
     //// SUBPROBLEM 2: plot spectrum for different $f$
-#if SUBPROBLEM2
+#ifdef SUBPROBLEM2
     for(unsigned int i = 0; i <= 3; ++i) {
         plot_freq(i);
     }
 #endif
 
     //// SUBPROBLEM 3: plot V(\mathbf{B}(f))
-#if SUBPROBLEM3
+#ifdef SUBPROBLEM3
     plotV();
 #endif
 
     //// SUBPROBLEM 4: find most focused image
-#if SUBPROBLEM4
+#ifdef SUBPROBLEM4
     std::cout << "Autofocus returns:"
               << autofocus()
               << std::endl;
