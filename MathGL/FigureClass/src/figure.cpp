@@ -476,7 +476,20 @@ void Figure::save(const std::string& file) {
 
   // add axis at zero w/o labels if its a barplot
   if (barplot_) {
-    // mglNaN -> automatically setting axis in x-direction
+  // this macro block makes sure that mglNaN is defined
+  # ifndef _MGL_TYPE_H_ // mglNaN gets defined in type.h
+    typedef double mreal; // mglNaN is of type mreal
+    const unsigned long long mgl_nan[2] = {0x7fffffffffffffff, 0x7fffffff};
+    # ifndef NAN // check if NAN is already defined
+      # if MGL_USE_DOUBLE // if MathGL uses double use the double NAN
+        # define NAN (*(double*)mgl_nan)
+      # else
+        # define NAN (*(float*)(mgl_nan+1))
+      # endif
+    # endif
+    const mreal mglNaN = NAN; // define mglNaN
+  # endif
+   // mglNaN -> automatically setting axis in x-direction
     gr_.SetOrigin(mglNaN, 0);
     gr_.Axis("_");
   }
