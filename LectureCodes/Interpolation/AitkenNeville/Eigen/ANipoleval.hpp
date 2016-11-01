@@ -1,8 +1,17 @@
+///////////////////////////////////////////////////////////////////////////
+/// Demonstration code for lecture "Numerical Methods for CSE" @ ETH Zurich
+/// (C) 2016 SAM, D-MATH
+/// Author(s): J. Gacon
+/// Repository: https://gitlab.math.ethz.ch/NumCSE/NumCSE/
+/// Do not remove this header.
+//////////////////////////////////////////////////////////////////////////
 # include <Eigen/Dense>
 
 using Eigen::VectorXd;
-// IN:  t, y: Interpolation points
-//      x: Evaluation point
+/* SAM_LISTING_BEGIN_0 */
+// Aitken-Neville algorithm for evaluation of interpolating polynomial
+// IN:  t, y: interpolation data points
+//      x: (single) evaluation point
 // OUT: value of interpolant in x
 double ANipoleval(const VectorXd& t, VectorXd y, const double x) {
   for (int i = 0; i < y.size(); ++i) {
@@ -12,3 +21,4 @@ double ANipoleval(const VectorXd& t, VectorXd y, const double x) {
   }
   return y(0);
 }
+/* SAM_LISTING_END_0 */

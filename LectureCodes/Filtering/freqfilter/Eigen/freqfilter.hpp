@@ -6,15 +6,18 @@ using Eigen::VectorXcd;
 /* SAM_LISTING_BEGIN_0 */
 void freqfilter(const VectorXd& y, int k,
 		VectorXd& low, VectorXd& high) {
-  const unsigned m = y.size()/2; 
+  const VectorXd::Index n = y.size();
+  if (n%2 != 0)
+    throw std::runtime_error("Even vector length required!");
+  const VectorXd::Index m = y.size()/2; 
   
   Eigen::FFT<double> fft; // DFT helper object
-  VectorXcd c = fft.fwd(y);
+  VectorXcd c = fft.fwd(y); // Perform DFT of input vector
   
   VectorXcd clow = c;
-  // Set high frequency coefficients to zero
+  // Set high frequency coefficients to zero, \cref{speccircle}
   for (int j = -k; j <= +k; ++j) clow(m+j) = 0; 
-  // Vector of high frequency coefficients
+  // (Complementary) vector of high frequency coefficients
   VectorXcd chigh = c - clow;
 
   // Recover filtered time-domain signals
