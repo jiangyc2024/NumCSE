@@ -9,131 +9,163 @@
 #include <mgl2/mgl.h>
 #include <Eigen/Dense>
 
+// Contains PGMObject
 #include "pgm.hpp"
 
+// Contains definition of "set_focus"
 #include "autofocus.hpp"
 
+// Contains FFT utilities
 #include "FFT/fft.hpp"
 
 using namespace Eigen;
 
+/*!
+ * \brief save_image
+ * \param focus
+ */
+void save_image(double focus) {
+    // Create empty object
+    PGMObject q;
+
+#if   TEMPLATE
+    // TODO: read matrix of image generated
+    // by "set_focus" and same as an image in format ".pgm"
+#endif // TEMPLATE
+}
+
+/*!
+ * \brief plot_freq
+ * \param focus
+ */
+void plot_freq(double focus) {
+#if   TEMPLATE
+    // TODO: compute D containing the
+    // spectrum of set_focus(focus)
+    // "clamp" the data between 0 and 8000
+    MatrixXd D;
+#endif // TEMPLATE
+
+    // Plot values of $\mathbf{X}$.
+    mglData Xd(D.cols(), D.rows(), D.data());
+
+    mglGraph gr;
+    gr.SetRange('c', 0, b);
+    gr.Colorbar("bcwyr");
+    std::stringstream ss;
+    ss << "Specturm with f = "
+        << focus
+        << ".";
+    gr.Title(ss.str());
+    gr.Axis();
+    gr.Tile(Xd, "bcwyr");
+    std::stringstream ss2;
+    ss2 << "spectrum_focus="
+        << i
+//        << ".eps";
+        << ".png";
+//    gr.WriteEPS(ss2.str().c_str());
+    gr.WritePNG(ss2.str().c_str());
+
+}
+
+/*!
+ * \brief high_frequency_content
+ * \param M
+ * \return
+ */
 double high_frequency_content(const MatrixXd & M) {
 
     int n = M.rows();
     int m = M.cols();
 
     double V = 0;
-        for(unsigned int j = 0; j < M.cols(); ++j) {
-            for(unsigned int i = 0; i < M.rows(); ++i) {
-            double a = n/2 - std::abs(i - n/2);
-            double b = m/2 - std::abs(j - m/2);
-            V += (a*a + b*b) * M(i,j);
-        }
-    }
+#if   TEMPLATE
+    // TODO: compute $V(\mathbf{M}).
+#endif
 
     return V;
 }
 
+/*!
+ * \brief plotV
+ */
+void plotV() {
 
+    unsigned int N = 100;
+
+    VectorXd x(N), y(N);
+
+#if   TEMPLATE
+    // TODO: plot $V(\mathbf{B}(f))$
+#endif // TEMPLATE
+
+    mgl::Figure fig;
+    fig.title("High frequency content.");
+//    fig.ranges(2, 9000, 1e-8, 1e3);
+    fig.plot(x, y, " r+").label("V(\mathbf{B}(f))");
+    fig.xlabel("f");
+    fig.ylabel("V(\mathbf{B}(f))");
+    fig.legend(0, 1);
+    fig.save("focus_plot.eps");
+    fig.save("focus_plot.png");
+}
+
+/*!
+ * \brief autofocus
+ * \return
+ */
 double autofocus() {
 
+    // Max number of iteration
     unsigned int Niter = 6;
 
+    // Maximum focus
     unsigned int max_focus = 5;
-    double df = max_focus / 1e2;
+    // Starting guess
     double f0 = max_focus / 2.;
+    // Finite differences increment
+    double df = max_focus / 1e2;
+    // Starting step
     double step = max_focus / 2.;
-
-    auto computeV = [] (double focus) {
-        return high_frequency_content(
-                    fft2r(
-                        set_focus(focus)
-                        ).cwiseAbs()
-                    );
-    };
-
-    for(unsigned int i = 0; i < Niter; ++i) {
-        double dV = computeV(f0+df) - computeV(f0);
-
-        step = step / 2.;
-        f0 = f0 + (dV > 0 ? 1 : -1) * step;
-    }
+#if   TEMPLATE
+    // TODO: use bisection method to find best focus
+#endif // TEMPLATE
 
     return f0;
 }
 
+// Comment to disable compilation of subproblem
+#define SUBPROBLEM1
+#define SUBPROBLEM2
+#define SUBPROBLEM3
+#define SUBPROBLEM4
+
 int main() {
-//    std::ifstream file("image.pgm");
-//    PGMObject p;
-//    file >> p;
 
-//    MatrixXd M;
-//    p.get_data(M);
-
-//    p.set_data(M.transpose() / 2);
-
-//    file_out << p;
-
-    //    PGMObject q;
-//    p.set_data(set_focus(4));
-//    std::ofstream file_blur("image_blur.pgm");
-//    file_blur << p;
-
-    for(unsigned int i = 1; i <= 4; ++i) {
-        std::stringstream ss;
-        ss << "image_focus"
-           << i
-           << ".pgm";
-        std::ofstream file_out(ss.str());
-
-        MatrixXd D = fft2r(set_focus(i)).cwiseAbs();
-
-//        D
-
-        int a = 0;
-        int b = 8000;
-        auto clamp = [a,b] (double x) {
-            return x < a ? a : x > b ? b : x;
-        };
-//        .unaryExpr(clamp)
-//        D.maxCoeff()
-
-        std::cout << D.maxCoeff();
-//        PGMObject p;
-//        p.set_data(D.unaryExpr(clamp) / b * 254);
-
-        D = D.unaryExpr(clamp);
-//        file_out << p;
-
-
-        // Plot values of $\mathbf{X}$.
-        mglData Xd(D.cols(), D.rows(), D.data());
-
-        mglGraph gr;
-//        gr.SubPlot(1,1,0,"<_");
-//        gr.SetRanges(0,D.rows(),0,D.cols());
-        gr.SetRange('c', 0, b);
-        gr.Colorbar("bcwyr");
-        gr.Title("Visualization of $X$");
-        gr.Axis();
-        gr.Tile(Xd, "bcwyr");
-        std::stringstream ss2;
-        ss2 << "image_focus"
-           << i
-//           << ".eps";
-        << ".png";
-//        gr.WriteEPS(ss2.str().c_str());
-        gr.WritePNG(ss2.str().c_str());
-
+    //// SUBPROBLEM 1: save differently blurred images
+#ifdef SUBPROBLEM1
+    for(unsigned int i = 0; i <= 3; ++i) {
+        save_image(i);
     }
+#endif
 
-    unsigned int N = 100;
-    for(unsigned int i = 0; i < N; ++i) {
-        double V = high_frequency_content(fft2r(set_focus(5. / (N-1) * i)).cwiseAbs());
-        std::cout << 5. / (N-1) * i << "\t" << V << std::endl;
+    //// SUBPROBLEM 2: plot spectrum for different $f$
+#if SUBPROBLEM2
+    for(unsigned int i = 0; i <= 3; ++i) {
+        plot_freq(i);
     }
+#endif
 
+    //// SUBPROBLEM 3: plot V(\mathbf{B}(f))
+#if SUBPROBLEM3
+    plotV();
+#endif
+
+    //// SUBPROBLEM 4: find most focused image
+#if SUBPROBLEM4
     std::cout << "Autofocus returns:"
               << autofocus()
               << std::endl;
+#endif
 }
