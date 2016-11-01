@@ -5,5 +5,8 @@
 
     "name": "FFTLSQ",
     "all" : ["fftlsq.cpp"
-    ]
+    ],
+    "lib" : [ "FFT/" ],
+    "solutions" : ["orbit.eps",
+        "orbit.png"]
 }
