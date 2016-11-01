@@ -7,47 +7,9 @@
 
 #include "autofocus.hpp"
 
-#include "FFT/fft2.hpp"
-
+#include "FFT/fft.hpp"
 
 using namespace Eigen;
-
-//! FFT for matrices
-//  This just implements FFT for each column of X
-MatrixXcd fftr(const MatrixXd& X) {
-  const long m = X.rows(), n = X.cols();
-  MatrixXcd Y(m, n);
-  Eigen::FFT<double> fft;
-  for (long j = 0; j < n; ++j) {
-    VectorXd Xj = X.col(j);
-    Y.col(j) = fft.fwd(Xj);
-  }
-  return Y;
-}
-
-//! Inverse FFT for matrices
-//  This just implements inverse FFT for each column of X
-MatrixXd ifftr(const MatrixXcd& X) {
-  const long m = X.rows(), n = X.cols();
-  MatrixXd Y(m, n);
-  Eigen::FFT<double> fft;
-  for (long j = 0; j < n; ++j) {
-    VectorXcd Xj = X.col(j);
-    Y.col(j) = fft.inv(Xj);
-  }
-  return Y;
-}
-
-//! 2-dimensional FFT
-//  Implementation based on: https://ch.mathworks.com/help/matlab/ref/fft2.html
-MatrixXcd fft2r(const MatrixXd& X) {
-  return fft(fftr(X).transpose()).transpose();
-}
-
-//! 2-dimensional inverse FFT
-MatrixXd ifft2r(const MatrixXcd& X) {
-  return ifftr(ifft(X).transpose()).transpose();
-}
 
 double high_frequency_content(const MatrixXd & M) {
 
