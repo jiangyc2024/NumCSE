@@ -8,10 +8,9 @@
 
 using namespace Eigen;
 
-/* @brief Compute the matrix $C$ from $A$
- * @param[in] A An $n \times n$ matrix
- * @param[out] C The $(n^2) \times (n^2)$ matrix
- * from $A\otimes I+I\otimes A$
+/* @brief 
+ * @param[in] 
+ * @param[out] 
  */
 /* SAM_LISTING_BEGIN_0 */
 VectorXd polyMult_naive(const VectorXd & u, const VectorXd & v)
@@ -37,16 +36,16 @@ VectorXd polyMult_naive(const VectorXd & u, const VectorXd & v)
 		}
 	}
 #else // TEMPLATE
-    // TODO: compute $C$ from $A$
+    // TODO: 
 #endif // TEMPLATE
 
 	return uv;
 }
 /* SAM_LISTING_END_0 */
 
-/* @brief Solve the Lyapunov system
- * @param[in] A An $n \times n$ matrix
- * @param[out] X The $n \times n$ solution matrix
+/* @brief 
+ * @param[in] 
+ * @param[out] 
  */
 /* SAM_LISTING_BEGIN_1 */
 VectorXd polyMult_fast(const VectorXd & u, const VectorXd & v)
@@ -66,12 +65,41 @@ VectorXd polyMult_fast(const VectorXd & u, const VectorXd & v)
 	VectorXcd tmp = ( fft.fwd(u_tmp) ).cwiseProduct( fft.fwd(v_tmp) );
 	VectorXd uv = fft.inv(tmp).real();
 #else // TEMPLATE
-    // TODO: compute $C$ from $A$
+    // TODO: 
 #endif // TEMPLATE
 
 	return uv;
 }
 /* SAM_LISTING_END_1 */
+
+/* @brief 
+ * @param[in] 
+ * @param[out] 
+ */
+/* SAM_LISTING_BEGIN_2 */
+VectorXd polyMult_fast(const VectorXd & u, const VectorXd & v)
+{
+    // Initialization
+    unsigned m = u.size();
+    unsigned n = v.size();
+    unsigned dim = max(m, n);
+    
+    VectorXd u_tmp = u;
+    u_tmp.conservativeResize(u.size() + n - 1);
+    VectorXd v_tmp = v;
+    v_tmp.conservativeResize(v.size() + m - 1);
+
+#if SOLUTION
+	Eigen::FFT<double> fft;
+	VectorXcd tmp = ( fft.fwd(u_tmp) ).cwiseProduct( fft.fwd(v_tmp) );
+	VectorXd uv = fft.inv(tmp).real();
+#else // TEMPLATE
+    // TODO: 
+#endif // TEMPLATE
+
+	return uv;
+}
+/* SAM_LISTING_END_2 */
 
 int main() {
 	unsigned m = 10;
