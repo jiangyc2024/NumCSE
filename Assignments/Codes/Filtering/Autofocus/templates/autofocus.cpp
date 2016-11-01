@@ -62,7 +62,7 @@ void plot_freq(double focus) {
         << focus
 //        << ".eps";
         << ".png";
-//    gr.WriteEPS(ss2.str().c_str());
+//    gr.WriteEPS(ss2.str().c\_str());
     gr.WritePNG(ss2.str().c_str());
 
 }

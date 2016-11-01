@@ -31,8 +31,8 @@ void save_image(double focus) {
     // Create empty object
     PGMObject q;
 
-    // Set data using function "set_data"
-    // Data obtained from "set_focus"
+    // Set data using function "set\_data"
+    // Data obtained from "set\_focus"
     q.set_data(set_focus(focus));
 
     // Create and save file
@@ -77,7 +77,7 @@ void plot_freq(double focus) {
         << focus
 //        << ".eps";
         << ".png";
-//    gr.WriteEPS(ss2.str().c_str());
+//    gr.WriteEPS(ss2.str().c\_str());
     gr.WritePNG(ss2.str().c_str());
 
 }
