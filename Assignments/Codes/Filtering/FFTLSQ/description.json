@@ -1,0 +1,9 @@
+{
+    "author" : "",
+    "email" : "",
+    "contributors" : "",
+
+    "name": "FFTLSQ",
+    "all" : ["fftlsq.cpp"
+    ]
+}

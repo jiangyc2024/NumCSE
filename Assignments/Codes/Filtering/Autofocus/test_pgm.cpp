@@ -8,6 +8,8 @@ using namespace Eigen;
 
 int main() {
 
+    //// EXAMPLE USAGE OF PGM OBJECT
+
     std::ifstream file("image.pgm");
     std::ofstream file_out("image_edited.pgm");
 
