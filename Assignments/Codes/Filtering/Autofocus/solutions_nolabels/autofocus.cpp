@@ -152,7 +152,7 @@ double autofocus() {
     double df = max_focus / 1e2;
     // Starting step
     double step = max_focus / 2.;
-    // Returns $V(\mathbf{B}(f))$
+    // Returns $V(B(f))$
     auto computeV = [] (double focus) {
         return high_frequency_content(
                     fft2r(
@@ -194,7 +194,7 @@ int main() {
     }
 #endif
 
-    //// SUBPROBLEM 3: plot V(\mathbf{B}(f))
+    //// SUBPROBLEM 3: plot V(B(f))
 #ifdef SUBPROBLEM3
     plotV();
 #endif

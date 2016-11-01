@@ -142,7 +142,7 @@ void plotV() {
         y(i) = V;
     }
 #else // TEMPLATE
-    // TODO: plot $V(\mathbf{B}(f))$
+    // TODO: plot $V(B(f))$
 #endif // TEMPLATE
 
     mgl::Figure fig;
@@ -176,7 +176,7 @@ double autofocus() {
     // Starting step
     double step = max_focus / 2.;
 #if SOLUTION
-    // Returns $V(\mathbf{B}(f))$
+    // Returns $V(B(f))$
     auto computeV = [] (double focus) {
         return high_frequency_content(
                     fft2r(
@@ -222,7 +222,7 @@ int main() {
     }
 #endif
 
-    //// SUBPROBLEM 3: plot V(\mathbf{B}(f))
+    //// SUBPROBLEM 3: plot V(B(f))
 #ifdef SUBPROBLEM3
     plotV();
 #endif

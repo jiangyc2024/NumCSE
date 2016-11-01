@@ -95,7 +95,7 @@ void plotV() {
 
     VectorXd x(N), y(N);
 
-    // TODO: plot $V(\mathbf{B}(f))$
+    // TODO: plot $V(B(f))$
 
     mgl::Figure fig;
     fig.title("High frequency content.");
@@ -152,7 +152,7 @@ int main() {
     }
 #endif
 
-    //// SUBPROBLEM 3: plot V(\mathbf{B}(f))
+    //// SUBPROBLEM 3: plot V(B(f))
 #ifdef SUBPROBLEM3
     plotV();
 #endif
