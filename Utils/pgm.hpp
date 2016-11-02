@@ -74,7 +74,7 @@ public:
                              PGMObject &obj)
     {
         if( !i.good() ) {
-            std::cerr << "Input stream in bad state!"
+            std::cerr << "Input stream in bad state (missing file?)!"
                       << std::endl;
             return i;
         }
@@ -165,7 +165,7 @@ public:
                              const PGMObject &obj)
     {
         if( !o.good() ) {
-            std::cerr << "Output in bad state!"
+            std::cerr << "Output in bad state (cannot write to disk?)!"
                       << std::endl;
             return o;
         }
