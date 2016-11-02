@@ -1,17 +1,23 @@
 #include <algorithm>
 #include <iostream>
 #include <iomanip>
+#include <vector>
 
 #include <Eigen/Dense>
 #include <unsupported/Eigen/FFT>
 
 #include "timer.h"
+#if INTERNAL
+#include <chrono>
+#include <figure/figure.hpp>
+#endif // INTERNAL
 
 using namespace Eigen;
 
-/* @brief 
- * @param[in] 
- * @param[out] 
+/* @brief Polynomial multiplication -- naive implementation
+ * @param[in] u Vector of coefficients of polynomial $u$
+ * @param[in] v Vector of coefficients of polynomial $v$
+ * @param[out] uv Vector of coefficients of polynomial $uv = u*v$
  */
 /* SAM_LISTING_BEGIN_0 */
 VectorXd polyMult_naive(const VectorXd & u, const VectorXd & v)
@@ -37,16 +43,17 @@ VectorXd polyMult_naive(const VectorXd & u, const VectorXd & v)
 		}
 	}
 #else // TEMPLATE
-    // TODO: 
+    // TODO: multiply polynomials $u$ and $v$ naively
 #endif // TEMPLATE
 
 	return uv;
 }
 /* SAM_LISTING_END_0 */
 
-/* @brief 
-* @param[in] 
-* @param[out] 
+/* @brief Polynomial multiplication -- efficient implementation
+ * @param[in] u Vector of coefficients of polynomial $u$
+ * @param[in] v Vector of coefficients of polynomial $v$
+ * @param[out] uv Vector of coefficients of polynomial $uv = u*v$
 */
 /* SAM_LISTING_BEGIN_1 */
 VectorXd polyMult_fast(const VectorXd & u, const VectorXd & v)
@@ -69,16 +76,18 @@ VectorXd polyMult_fast(const VectorXd & u, const VectorXd & v)
 	VectorXcd tmp = u_tmp_.cwiseProduct(v_tmp_);
 	uv = fft.inv(tmp).real();
 #else // TEMPLATE
-// TODO: 
+// TODO: multiply polynomials $u$ and $v$ efficiently
 #endif // TEMPLATE
 
 	return uv;
 }
 /* SAM_LISTING_END_1 */
 
-/* @brief 
-* @param[in] 
-* @param[out] 
+/* @brief Polynomial division -- efficient implementation
+ * @param[in] uv Vector of coefficients of polynomial $uv$
+ * @param[in] u Vector of coefficients of polynomial $u$
+ * @param[out] uv Vector of coefficients of polynomial $v$
+ * from $uv = u*v$ (division without remainder)
 */
 /* SAM_LISTING_BEGIN_2 */
 VectorXd polyDiv(const VectorXd & uv, const VectorXd & u)
@@ -99,7 +108,7 @@ VectorXd polyDiv(const VectorXd & uv, const VectorXd & u)
 	VectorXcd tmp = uv_tmp_.cwiseQuotient(u_tmp_);
 	v = fft.inv(tmp).real();
 #else // TEMPLATE
-	// TODO: 
+	// TODO: divide polynomials $uv$ and $u$ efficiently (no remainder)
 #endif // TEMPLATE
 
 	v.conservativeResize(mn - m + 1); // (mn-1) - (m-1) + 1
@@ -133,45 +142,75 @@ int main() {
 	std::cout << "Error of efficient division = " << (v - v_new).norm()
 			  << std::endl;
 
-	//~ // Initialization
-	//~ int repeats = 3;
-	//~ VectorXd uv;
+	// Initialization
+	int repeats = 3;
+	VectorXd uv;
+#if INTERNAL
+    // sizes   will contain the size of the vectors
+    // timings will contain the runtimes in seconds
+    std::vector<double> sizes, timings_naive, timings_effic;
+#endif
 
-	//~ // Compute runtimes of different multiplicators
-	//~ std::cout << "Runtime comparison of naive v efficient multiplicator"
-			  //~ << std::endl;
+	// Compute runtimes of different multiplicators
+	std::cout << "Runtime comparison of naive v efficient multiplicator"
+			  << std::endl;
 
-	//~ // Header
-	//~ std::cout << std::setw(20) << "n"
-			  //~ << std::setw(20) << "time naive [s]"
-			  //~ << std::setw(20) << "time fast [s]"
-			  //~ << std::endl;
+	// Header
+	std::cout << std::setw(20) << "n"
+			  << std::setw(20) << "time naive [s]"
+			  << std::setw(20) << "time fast [s]"
+			  << std::endl;
 
-	//~ // Loop over matrix size
-	//~ for(int p = 2; p <= 9; ++p) {
-		//~ // Timers
-		//~ Timer tm_naive, tm_fast;
-		//~ int n = pow(2,p);
+	// Loop over vector size
+	for(int p = 2; p <= 15; ++p) {
+		// Timers
+		Timer tm_naive, tm_effic;
+		int n = pow(2,p);
 
-		//~ // Repeat test many times
-		//~ for(int r = 0; r < repeats; ++r) {
-			//~ u = VectorXd::Random(n);
-			//~ v = VectorXd::Random(n);
+		// Repeat test many times
+		for(int r = 0; r < repeats; ++r) {
+			u = VectorXd::Random(n);
+			v = VectorXd::Random(n);
 
-			//~ // Compute runtime of naive multiplicator
-			//~ tm_naive.start();
-			//~ uv = polyMult_naive(u, v);
-			//~ tm_naive.stop();
-			//~ // Compute runtime of efficient multiplicator
-			//~ tm_fast.start();
-			//~ uv = polyMult_fast(u, v);
-			//~ tm_fast.stop();
-		//~ }
-		//~ // Print runtimes
-		//~ std::cout << std::setw(20) << n
-				  //~ << std::scientific << std::setprecision(3)
-				  //~ << std::setw(20) << tm_naive.min()
-				  //~ << std::setw(20) << tm_fast.min()
-				  //~ << std::endl;
-	//~ }
+			// Compute runtime of naive multiplicator
+			tm_naive.start();
+			uv = polyMult_naive(u, v);
+			tm_naive.stop();
+			// Compute runtime of efficient multiplicator
+			tm_effic.start();
+			uv = polyMult_fast(u, v);
+			tm_effic.stop();
+		}
+		
+#if INTERNAL
+        // Save results in a vector
+        sizes.push_back(n); // Save vector sizes
+        timings_naive.push_back(tm_naive.min());
+        timings_effic.push_back(tm_effic.min());
+#endif
+		
+		// Print runtimes
+		std::cout << std::setw(20) << n
+				  << std::scientific << std::setprecision(3)
+				  << std::setw(20) << tm_naive.min()
+				  << std::setw(20) << tm_effic.min()
+				  << std::endl;
+	}
+	
+#if INTERNAL
+    mgl::Figure fig;
+    fig.title("Comparison of timings of polynomial multiplication");
+    fig.ranges(2, 35000, 1e-8, 1e3);
+    fig.setlog(true, true); // set loglog scale
+    fig.plot(sizes, timings_naive, " r+").label("naive");
+    fig.plot(sizes, timings_effic, " b+").label("efficient");
+    fig.fplot("1e-9*x^3", "k|").label("O(n^3)");
+    fig.fplot("1e-8*x^2", "k-").label("O(n^2)");
+    fig.fplot("1e-7*x", "k:").label("O(n)");
+    fig.xlabel("Vector size (n)");
+    fig.ylabel("Time [s]");
+    fig.legend(0, 1);
+    fig.save("polydiv_comparison.eps");
+    fig.save("polydiv_comparison.png");
+#endif
 }
