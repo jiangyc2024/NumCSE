@@ -26,8 +26,8 @@ void save_image(double focus) {
     // Create empty object
     PGMObject q;
 
-    // Set data using function "set\_data".
-    // Data obtained from "set\_focus".
+    // Set data using function "set\_data"
+    // Data obtained from "set\_focus"
     q.set_data(set_focus(focus));
 
     // Create and save file
@@ -125,10 +125,9 @@ void plotV() {
 
     mgl::Figure fig;
     fig.title("High frequency content.");
-//    fig.ranges(2, 9000, 1e-8, 1e3);
-    fig.plot(x, y, " r+").label("V(\mathbf{B}(f))");
-    fig.xlabel("f");
-    fig.ylabel("V(\mathbf{B}(f))");
+    fig.plot(x, y, "r+").label("$V(\mathbf{B}(f))$");
+    fig.xlabel("$f$");
+    fig.ylabel("$V(\mathbf{B}(f))$");
     fig.legend(0, 1);
     fig.save("focus_plot.eps");
     fig.save("focus_plot.png");
@@ -153,7 +152,7 @@ double autofocus() {
     double df = max_focus / 1e2;
     // Starting step
     double step = max_focus / 2.;
-    // Returns $V(\mathbf{B}(f))$
+    // Returns $V(B(f))$
     auto computeV = [] (double focus) {
         return high_frequency_content(
                     fft2r(
@@ -187,6 +186,8 @@ int main() {
     std::cout << "*** Subproblem a ***"
               << std::endl;
     for(unsigned int i = 0; i <= 3; ++i) {
+        std::cout << "Saving image..."
+                  << std::endl;
         save_image(i);
     }
 #endif
@@ -196,6 +197,8 @@ int main() {
     std::cout << "*** Subproblem b ***"
               << std::endl;
     for(unsigned int i = 0; i <= 3; ++i) {
+        std::cout << "Saving plot..."
+                  << std::endl;
         plot_freq(i);
     }
 #endif

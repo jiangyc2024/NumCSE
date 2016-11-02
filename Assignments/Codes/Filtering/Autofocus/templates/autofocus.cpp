@@ -94,14 +94,13 @@ void plotV() {
 
     VectorXd x(N), y(N);
 
-    // TODO: plot $V(\mathbf{B}(f))$
+    // TODO: plot $V(B(f))$
 
     mgl::Figure fig;
     fig.title("High frequency content.");
-//    fig.ranges(2, 9000, 1e-8, 1e3);
-    fig.plot(x, y, " r+").label("V(\mathbf{B}(f))");
-    fig.xlabel("f");
-    fig.ylabel("V(\mathbf{B}(f))");
+    fig.plot(x, y, "r+").label("$V(\mathbf{B}(f))$");
+    fig.xlabel("$f$");
+    fig.ylabel("$V(\mathbf{B}(f))$");
     fig.legend(0, 1);
     fig.save("focus_plot.eps");
     fig.save("focus_plot.png");
@@ -145,6 +144,8 @@ int main() {
     std::cout << "*** Subproblem a ***"
               << std::endl;
     for(unsigned int i = 0; i <= 3; ++i) {
+        std::cout << "Saving image..."
+                  << std::endl;
         save_image(i);
     }
 #endif
@@ -154,6 +155,8 @@ int main() {
     std::cout << "*** Subproblem b ***"
               << std::endl;
     for(unsigned int i = 0; i <= 3; ++i) {
+        std::cout << "Saving plot..."
+                  << std::endl;
         plot_freq(i);
     }
 #endif

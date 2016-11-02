@@ -27,8 +27,8 @@ void save_image(double focus) {
     PGMObject q;
 
 #if SOLUTION
-    // Set data using function "set\_data".
-    // Data obtained from "set\_focus".
+    // Set data using function "set\_data"
+    // Data obtained from "set\_focus"
     q.set_data(set_focus(focus));
 
     // Create and save file
@@ -140,7 +140,7 @@ void plotV() {
         y(i) = V;
     }
 #else // TEMPLATE
-    // TODO: plot $V(\mathbf{B}(f))$
+    // TODO: plot $V(B(f))$
 #endif // TEMPLATE
 
     mgl::Figure fig;
@@ -173,7 +173,7 @@ double autofocus() {
     // Starting step
     double step = max_focus / 2.;
 #if SOLUTION
-    // Returns $V(\mathbf{B}(f))$
+    // Returns $V(B(f))$
     auto computeV = [] (double focus) {
         return high_frequency_content(
                     fft2r(
