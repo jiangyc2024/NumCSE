@@ -4,5 +4,6 @@
     "contributors" : "",
 
     "name": "Toeplitz",
-    "all" : ["toeplitz.cpp"]
+    "all" : ["toeplitz.cpp",
+			 "pconvfft.hpp"]
 }

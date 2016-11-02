@@ -36,11 +36,11 @@ MatrixXd toeplitz(const VectorXd & c, const VectorXd & r)
     MatrixXd T(m, n);
     
 	for(int i=0; i<n; ++i) {
-		T.col(i).tail(m-i) = c.tail(m-i);
+		T.col(i).tail(m-i) = c.head(m-i);
 	}
 	for(int i=0; i<m; ++i) {
-		T.row(i).tail(n-i-1) = r.tail(n-i-1);
-	} // Do not reassign the diagonal
+		T.row(i).tail(n-i-1) = r.segment(1,n-i-1);
+	} // Do not reassign the diagonal!
 
 	return T;
 }
@@ -187,26 +187,19 @@ VectorXd ttsolve(const VectorXd & h, const VectorXd & y)
 /* SAM_LISTING_END_4 */
 
 int main() {
-	//~ // Initialization
-	//~ int m = 4;
-	//~ int n = 3;
-	//~ VectorXd u(m);
-	//~ VectorXd v(n);
-	//~ u << 1, 2, 3, 4;
-	//~ v << 10, 20, 30;
+	// Initialization
+	int n = 3;
+	VectorXd c(n), r(n), x(n);
+	c << 1, 2, 3;
+	r << 1, 5, 6;
+	x << 7, 8, 9;
 
-	//~ // Compute with both functions
-	//~ std::cout << "Check that all functions are correct" << std::endl;
-
-	//~ VectorXd uv_1 = polyMult_naive(u, v);
-	//~ std::cout << "Naive multiplicator: "
-			  //~ << std::endl << uv_1 << std::endl;
-
-	//~ VectorXd uv_2 = polyMult_fast(u, v);
-	//~ std::cout << "Efficient multiplicator: "
-			  //~ << std::endl << uv_2 << std::endl;
-
-	//~ std::cout << "Error = " << (uv_1 - uv_2).norm() << std::endl;
+	// Compute with both functions toepmatmult and toepmult
+	std::cout << "Check that toepmatmult and toepmult are correct"
+			  << std::endl;
+	VectorXd y_1 = toepmatmult(c, r, x);
+	VectorXd y_2 = toepmult(c, r, x);
+	std::cout << "Error = " << (y_1 - y_2).norm() << std::endl;
 
 	//~ VectorXd v_new = polyDiv(uv_2, u);
 	//~ std::cout << "Error of efficient division = " << (v - v_new).norm()
