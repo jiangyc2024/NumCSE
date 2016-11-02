@@ -141,11 +141,13 @@ VectorXd ttrecsolve(const VectorXd & h, const VectorXd & y, int l)
 			   "h and y have length different from 2^l!");
 			   
 		VectorXd x1 = ttrecsolve(h.head(m), y.head(m), l-1);
-		VectorXd y2 = y.segment(m,n) - toepmult(h.segment(m,n-m),
+		VectorXd y2 = y.segment(m,m) - toepmult(h.segment(m,m),
 			h.segment(1,m).reverse(), x1);
 		VectorXd x2 = ttrecsolve(h.head(m), y2, l-1);
 		
-		x << x1, x2;
+		x.resize(n);
+		x.head(m) = x1;
+		x.tail(m) = x2;
 	}
 
 	return x;
@@ -187,8 +189,10 @@ VectorXd ttsolve(const VectorXd & h, const VectorXd & y)
 /* SAM_LISTING_END_4 */
 
 int main() {
+	int n;
+	
 	// Initialization
-	int n = 3;
+	n = 3;
 	VectorXd c(n), r(n), x(n);
 	c << 1, 2, 3;
 	r << 1, 5, 6;
@@ -201,9 +205,18 @@ int main() {
 	VectorXd y_2 = toepmult(c, r, x);
 	std::cout << "Error = " << (y_1 - y_2).norm() << std::endl;
 
-	//~ VectorXd v_new = polyDiv(uv_2, u);
-	//~ std::cout << "Error of efficient division = " << (v - v_new).norm()
-			  //~ << std::endl;
+	// Initialization
+	n = 4;
+	VectorXd h(n), y(n);
+	h << 1, 2, 3, 4;
+	y << 5, 6, 7, 8;
+
+	// Compute with both functions ttmatsolve and ttrecsolve
+	std::cout << "Check that ttmatsolve and ttrecsolve are correct"
+			  << std::endl;
+	VectorXd x_1 = ttmatsolve(h, y);
+	VectorXd x_2 = ttrecsolve(h, y, 2);
+	std::cout << "Error = " << (x_1 - x_2).norm() << std::endl;
 
 	//~ // Initialization
 	//~ int repeats = 3;
