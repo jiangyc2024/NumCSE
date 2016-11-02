@@ -14,18 +14,19 @@ using namespace Eigen;
  * @param[out] B The $n \times k$ matrix from the decomposition of $X$
  */
 /* SAM_LISTING_BEGIN_0 */
-void factorize_X_AB(const MatrixXd & X, size_t k, MatrixXd & A, MatrixXd & B) {
+void factorize_X_AB(const MatrixXd & X, size_t k, MatrixXd & A,
+						  MatrixXd & B) {
   size_t m = X.rows(), n = X.cols();
-  double tol = 1e-6; // Tolerance for numerical rank, see \lref{ex:svdrank}
+  double tol = 1e-6; // Tolerance for numerical rank: \lref{ex:svdrank}
   assert(k <= std::min(m,n)
 	 && "Rank k cannot be larger than dimensions of X");
   
   JacobiSVD<MatrixXd> svd(X, ComputeThinU | ComputeThinV);
-  // When using Eigen::svd, you can ask for only thin $\VU$ or $\VV$ to be computed.
+  // With Eigen::svd you can ask for thin $\VU$ or $\VV$ to be computed.
   // In case of a rectangular $m \times n$ matrix,
   // with $j$ the smaller value among $m$ and $n$,
   // there can only be at most $j$ singular values.
-  // The remaining columns of $U$ and $V$ do not correspond
+  // The remaining columns of $\VU$ and $\VV$ do not correspond
   // to actual singular vectors and are not computed in thin format.
   
   VectorXd s = svd.singularValues();
@@ -35,17 +36,19 @@ void factorize_X_AB(const MatrixXd & X, size_t k, MatrixXd & A, MatrixXd & B) {
   MatrixXd V = svd.matrixV();
   
   if(k+1 <= std::min(m,n) && s(k) > tol*s(0)) {
-    // 1. condition checks if there is a possible singular value after $k$.
-    // ($S$ cannot be larger than the dimensions of $X$.)
-    // 2. condition checks if such singular value (by definition non-negative)
-    // is "numerically" different than 0.
-    std::cerr << "Rank of matrix X is greater than required rank k" << std::endl;
+    // 1.\ condition checks if there is a singular value after $k$.
+    // ($\VS$ cannot be larger than the dimensions of $\VX$.)
+    // 2.\ condition checks if such singular value
+    // (by definition non-negative) is "numerically" different from 0.
+    std::cerr << "Rank of matrix X is greater than required rank k"
+              << std::endl;
   }
 
-  // Instead of multiplying witf $\VS$ we could simply scale
+  // Instead of multiplying with $\VS$ we could simply scale
   // the columns of $\VA$
   A = U.leftCols(std::min(k,(size_t)U.cols())) *
-    S.topLeftCorner(std::min(k,(size_t)s.size()), std::min(k,(size_t)s.size()));
+    S.topLeftCorner(std::min(k,(size_t)s.size()),
+    std::min(k,(size_t)s.size()));
   B = V.leftCols(std::min(k,(size_t)V.cols()));
 }
 /* SAM_LISTING_END_0 */
@@ -54,7 +57,7 @@ void factorize_X_AB(const MatrixXd & X, size_t k, MatrixXd & A, MatrixXd & B) {
  * @param[in] A An $m \times k$ matrix
  * @param[in] B An $n \times k$ matrix
  * @param[out] U The $n \times k$ matrix from the SVD of $AB'$
- * @param[out] S The $k \times k$ diagonal matrix of singular values of $AB'$
+ * @param[out] S The $k \times k$ diagonal matrix of sing. vals of $AB'$
  * @param[out] V The $n \times k$ matrix from the SVD of $AB'$
  */
 /* SAM_LISTING_BEGIN_1 */
@@ -78,8 +81,10 @@ MatrixXd & U, MatrixXd & S, MatrixXd & V) {
 	
 	// U,V: k x k
 	JacobiSVD<MatrixXd> svd(RA*RB.transpose(), ComputeFullU | ComputeFullV);
-	// Thin matrices are unnecessary here as $RA*RB'$ is a square $k \times k$ matrix!
-	// Moreover, if you had computed the thin matrices $U$ and $V$ of the direct SVD of $AB'$,
+	// Thin matrices are unnecessary here as $RA*RB'$ is
+	// a square $k \times k$ matrix!
+	// Moreover, if you had computed the thin matrices $U$ and $V$
+	// of the direct SVD of $AB'$,
 	// you would still have dealt with the minimum between $m$ and $n$,
 	// without exploiting $k << m, n$!
 		
