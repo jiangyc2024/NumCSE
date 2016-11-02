@@ -51,7 +51,7 @@ void plot_freq(double focus) {
     mglData Xd(D.cols(), D.rows(), D.data());
 
     mglGraph gr;
-    gr.SetRange('c', 0, b);
+//    gr.SetRange('c', 0, 1);
     gr.Colorbar("bcwyr");
     std::stringstream ss;
     ss << "Specturm with f = "
@@ -63,9 +63,7 @@ void plot_freq(double focus) {
     std::stringstream ss2;
     ss2 << "spectrum_focus="
         << focus
-//        << ".eps";
         << ".png";
-//    gr.WriteEPS(ss2.str().c\_str());
     gr.WritePNG(ss2.str().c_str());
 
 }
@@ -95,14 +93,13 @@ void plotV() {
 
     VectorXd x(N), y(N);
 
-    // TODO: plot $V(B(f))$
+    // TODO: plot $V(\mathbf{B}(f))$
 
     mgl::Figure fig;
     fig.title("High frequency content.");
-//    fig.ranges(2, 9000, 1e-8, 1e3);
-    fig.plot(x, y, " r+").label("V(\mathbf{B}(f))");
-    fig.xlabel("f");
-    fig.ylabel("V(\mathbf{B}(f))");
+    fig.plot(x, y, "r+").label("$V(\\mathbf{B}(f))$");
+    fig.xlabel("$f$");
+    fig.ylabel("$V(\\mathbf{B}(f))$");
     fig.legend(0, 1);
     fig.save("focus_plot.eps");
     fig.save("focus_plot.png");
@@ -113,52 +110,68 @@ void plotV() {
  * \return
  */
 double autofocus() {
-
-    // Max number of iteration
-    unsigned int Niter = 6;
-
+    // Minimum focus
+    unsigned int min_focus = 0;
     // Maximum focus
     unsigned int max_focus = 5;
+    // Min step
+    unsigned int min_step = 0.05;
     // Starting guess
-    double f0 = max_focus / 2.;
+    double f0 = (max_focus - min_focus) / 2.;
     // Finite differences increment
-    double df = max_focus / 1e2;
+    double df = min_step;
     // Starting step
     double step = max_focus / 2.;
+    // Max number of iteration
+    unsigned int Niter = std::log2(
+                (max_focus - min_focus) / min_step
+                );
     // TODO: use bisection method to find best focus
 
     return f0;
 }
 
 // Comment to disable compilation of subproblem
-#define SUBPROBLEM1
-#define SUBPROBLEM2
-#define SUBPROBLEM3
-#define SUBPROBLEM4
+#define SUBPROBLEMa
+#define SUBPROBLEMb
+#define SUBPROBLEMc
+#define SUBPROBLEMd
 
 int main() {
 
-    //// SUBPROBLEM 1: save differently blurred images
-#ifdef SUBPROBLEM1
+    //// SUBPROBLEM a: save differently blurred images
+#ifdef SUBPROBLEMa
+    std::cout << "*** Subproblem a ***"
+              << std::endl;
     for(unsigned int i = 0; i <= 3; ++i) {
+        std::cout << "Saving image..."
+                  << std::endl;
         save_image(i);
     }
 #endif
 
-    //// SUBPROBLEM 2: plot spectrum for different $f$
-#ifdef SUBPROBLEM2
+    //// SUBPROBLEM b: plot spectrum for different $f$
+#ifdef SUBPROBLEMb
+    std::cout << "*** Subproblem b ***"
+              << std::endl;
     for(unsigned int i = 0; i <= 3; ++i) {
+        std::cout << "Saving plot..."
+                  << std::endl;
         plot_freq(i);
     }
 #endif
 
-    //// SUBPROBLEM 3: plot V(B(f))
-#ifdef SUBPROBLEM3
+    //// SUBPROBLEM c: plot $V(\mathbf{B}(f))$
+#ifdef SUBPROBLEMc
+    std::cout << "*** Subproblem c ***"
+              << std::endl;
     plotV();
 #endif
 
-    //// SUBPROBLEM 4: find most focused image
-#ifdef SUBPROBLEM4
+    //// SUBPROBLEM d: find most focused image
+#ifdef SUBPROBLEMd
+    std::cout << "*** Subproblem d ***"
+              << std::endl;
     std::cout << "Autofocus returns:"
               << autofocus()
               << std::endl;
