@@ -18,7 +18,7 @@ using Eigen::MatrixXd;
 /* SAM_LISTING_BEGIN_0 */
 // Solver for polynomial linear least squares data fitting problem
 // data points passed in t and y, 'order' = degree + 1 
-Eigen::VectorXd polyfit(const VectorXd& t, const VectorXd& y, const unsigned& order) {
+VectorXd polyfit(const VectorXd& t, const VectorXd& y, const unsigned& order) {
   // Initialize the coefficient matrix of \eqref{eq:polyfitlse}
   Eigen::MatrixXd A = Eigen::MatrixXd::Ones(t.size(),order + 1);
   for (unsigned j = 1; j < order + 1; ++j) 
