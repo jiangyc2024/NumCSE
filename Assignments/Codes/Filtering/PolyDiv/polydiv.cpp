@@ -201,7 +201,7 @@ int main() {
     mgl::Figure fig;
     fig.title("Comparison of timings of polynomial multiplication");
     fig.ranges(1, 35000, 1e-8, 1e3);
-    fig.setlog(true, true); // set loglog scale
+    fig.setlog(true, true); // Set loglog scale
     fig.plot(sizes, timings_naive, " r+").label("naive");
     fig.plot(sizes, timings_effic, " b+").label("efficient");
     fig.fplot("1e-9*x^3", "k|").label("O(n^3)");

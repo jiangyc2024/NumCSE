@@ -195,8 +195,8 @@ int main() {
 	n = 3;
 	VectorXd c(n), r(n), x(n);
 	c << 1, 2, 3;
-	r << 1, 5, 6;
-	x << 7, 8, 9;
+	r << 1, 4, 5;
+	x << 6, 7, 8;
 
 	// Compute with both functions toepmatmult and toepmult
 	std::cout << "Check that toepmatmult and toepmult are correct"
@@ -218,75 +218,94 @@ int main() {
 	VectorXd x_2 = ttrecsolve(h, y, 2);
 	std::cout << "Error = " << (x_1 - x_2).norm() << std::endl;
 
-	//~ // Initialization
-	//~ int repeats = 3;
-	//~ VectorXd uv;
-//~ #if INTERNAL
-    //~ // sizes   will contain the size of the vectors
-    //~ // timings will contain the runtimes in seconds
-    //~ std::vector<double> sizes, timings_naive, timings_effic;
-//~ #endif
+	// Initialization
+	int repeats = 3;
+	VectorXd out;
+#if INTERNAL
+    // sizes   will contain the size of the vectors
+    // timings will contain the runtimes in seconds
+    std::vector<double> sizes,
+    timings_matmult, timings_mult,
+    timings_ttmat, timings_ttrec;
+#endif
 
-	//~ // Compute runtimes of different multiplicators
-	//~ std::cout << "Runtime comparison of naive v efficient multiplicator"
-			  //~ << std::endl;
+	// Compute runtimes of different multiplicators
+	std::cout << "Runtime comparison of "
+			  << "toepmatmult vs toepmult and ttmatsolve vs ttrecsolve"
+			  << std::endl;
 
-	//~ // Header
-	//~ std::cout << std::setw(20) << "n"
-			  //~ << std::setw(20) << "time naive [s]"
-			  //~ << std::setw(20) << "time fast [s]"
-			  //~ << std::endl;
+	// Loop over vector size
+	for(int l = 3; l <= 11; ++l) {
+		// Timers
+		Timer tm_matmult, tm_mult, tm_ttmat, tm_ttrec;
+		int n = pow(2,l);
 
-	//~ // Loop over vector size
-	//~ for(int p = 2; p <= 15; ++p) {
-		//~ // Timers
-		//~ Timer tm_naive, tm_effic;
-		//~ int n = pow(2,p);
+		// Repeat test many times
+		for(int repeat = 0; repeat < repeats; ++repeat) {
+			c = VectorXd::Random(n);
+			r = VectorXd::Random(n); r(0) = c(0);
+			x = VectorXd::Random(n);
+			h = VectorXd::LinSpaced(n,1,n).cwiseInverse();
+			y = VectorXd::Random(n);
 
-		//~ // Repeat test many times
-		//~ for(int r = 0; r < repeats; ++r) {
-			//~ u = VectorXd::Random(n);
-			//~ v = VectorXd::Random(n);
-
-			//~ // Compute runtime of naive multiplicator
-			//~ tm_naive.start();
-			//~ uv = polyMult_naive(u, v);
-			//~ tm_naive.stop();
-			//~ // Compute runtime of efficient multiplicator
-			//~ tm_effic.start();
-			//~ uv = polyMult_fast(u, v);
-			//~ tm_effic.stop();
-		//~ }
+			// Compute runtime of toepmatmult
+			tm_matmult.start();
+			out = toepmatmult(c, r, x);
+			tm_matmult.stop();
+			// Compute runtime of toepmult
+			tm_mult.start();
+			out = toepmult(c, r, x);
+			tm_mult.stop();
+			// Compute runtime of ttmatsolve
+			tm_ttmat.start();
+			out = ttmatsolve(h, y);
+			tm_ttmat.stop();
+			// Compute runtime of ttrecsolve
+			tm_ttrec.start();
+			out = ttrecsolve(h, y, l);
+			tm_ttrec.stop();
+		}
 		
-//~ #if INTERNAL
-        //~ // Save results in a vector
-        //~ sizes.push_back(n); // Save vector sizes
-        //~ timings_naive.push_back(tm_naive.min());
-        //~ timings_effic.push_back(tm_effic.min());
-//~ #endif
+#if INTERNAL
+        // Save results in a vector
+        sizes.push_back(n); // Save vector sizes
+        timings_matmult.push_back(tm_matmult.min());
+        timings_mult.push_back(tm_mult.min());
+        timings_ttmat.push_back(tm_ttmat.min());
+        timings_ttrec.push_back(tm_ttrec.min());
+#endif
 		
-		//~ // Print runtimes
-		//~ std::cout << std::setw(20) << n
-				  //~ << std::scientific << std::setprecision(3)
-				  //~ << std::setw(20) << tm_naive.min()
-				  //~ << std::setw(20) << tm_effic.min()
-				  //~ << std::endl;
-	//~ }
+		// Print progress
+		std::cout << n << " completed" << std::endl;
+	}
 	
-//~ #if INTERNAL
-    //~ mgl::Figure fig;
-    //~ fig.title("Comparison of timings of polynomial multiplication");
-    //~ fig.ranges(1, 35000, 1e-8, 1e3);
-    //~ fig.setlog(true, true); // set loglog scale
-    //~ fig.plot(sizes, timings_naive, " r+").label("naive");
-    //~ fig.plot(sizes, timings_effic, " b+").label("efficient");
-    //~ fig.fplot("1e-9*x^3", "k|").label("O(n^3)");
-    //~ fig.fplot("1e-8*x^2", "k-").label("O(n^2)");
-    //~ fig.fplot("1e-7*x", "k:").label("O(n)");
-    //~ fig.xlabel("Vector size (n)");
-    //~ fig.ylabel("Time [s]");
-    //~ fig.legend(0, 1);
-    //~ fig.save("polydiv_comparison.eps");
-    //~ fig.save("polydiv_comparison.png");
-//~ #endif
+#if INTERNAL
+    mgl::Figure fig1;
+    fig1.title("Comparison of timings of toepmatmult vs toepmult");
+    fig1.ranges(5, 2500, 1e-8, 1e3);
+    fig1.setlog(true, true); // Set loglog scale
+    fig1.plot(sizes, timings_ttmat, " r+").label("toepmatmult");
+    fig1.plot(sizes, timings_ttrec, " b+").label("toepmult");
+    fig1.fplot("1e-8*x^2", "k-").label("O(n^2)");
+    fig1.fplot("1e-7*x", "k:").label("O(n)");
+    fig1.xlabel("Vector size (n)");
+    fig1.ylabel("Time [s]");
+    fig1.legend(0, 1);
+    fig1.save("toepmatmultVtoepmult.eps");
+    fig1.save("toepmatmultVtoepmult.png");
+
+    mgl::Figure fig2;
+    fig2.title("Comparison of timings of ttmatsolve vs ttrecsolve");
+    fig2.ranges(5, 2500, 1e-8, 1e3);
+    fig2.setlog(true, true); // Set loglog scale
+    fig2.plot(sizes, timings_ttmat, " r+").label("ttmatsolve");
+    fig2.plot(sizes, timings_ttrec, " b+").label("ttrecsolve");
+    fig2.fplot("1e-8*x^2", "k-").label("O(n^2)");
+    fig2.fplot("1e-7*x", "k:").label("O(n)");
+    fig2.xlabel("Vector size (n)");
+    fig2.ylabel("Time [s]");
+    fig2.legend(0, 1);
+    fig2.save("ttmatsolveVttrecsolve.eps");
+    fig2.save("ttmatsolveVttrecsolve.png");
+#endif
 }
