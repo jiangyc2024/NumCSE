@@ -80,14 +80,14 @@ VectorXd toepmult(const VectorXd & c, const VectorXd & r,
 		   "c, r, x have different lengths!");
 	int n = c.size();
 
-	VectorXd cr_tmp = c;
+	VectorXcd cr_tmp = c.cast<std::complex<double>>();
 	cr_tmp.conservativeResize(2*n);
-	cr_tmp.tail(n-1) = r.tail(n-1).reverse();
+	cr_tmp.tail(n-1).real() = r.tail(n-1).reverse();
 	
-	VectorXd x_tmp = x;
+	VectorXcd  x_tmp = x.cast<std::complex<double>>();
 	x_tmp.conservativeResize(2*n);
 
-    VectorXd y = pconvfft(cr_tmp, x_tmp);
+    VectorXd y = pconvfft(cr_tmp, x_tmp).real();
 	y.conservativeResize(n);
 
 	return y;
@@ -168,7 +168,7 @@ VectorXd ttsolve(const VectorXd & h, const VectorXd & y)
 	
 #if SOLUTION
 	int l = std::ceil(std::log(n));
-	int m = std::po2(2,l);
+	int m = std::pow(2,l);
 	
 	VectorXd h_tmp = h;
 	h_tmp.conservativeResize(m);
