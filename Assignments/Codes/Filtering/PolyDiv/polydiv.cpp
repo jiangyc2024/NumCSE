@@ -30,8 +30,8 @@ VectorXd polyMult_naive(const VectorXd & u, const VectorXd & v)
 
 #if SOLUTION
     for(int i=0; i<uv.size(); ++i) {
-		int fst = std::max(0, i - n - 1);
-		int lst = std::min(i, n - 1);
+		int fst = std::max(0, i - (dim - 1));
+		int lst = std::min(i, dim - 1);
 		for(int j=fst; j<=lst; ++j) {
 			uv(i) += u_tmp(j) * v_tmp(i-j);
 		}
@@ -133,45 +133,45 @@ int main() {
 	std::cout << "Error of efficient division = " << (v - v_new).norm()
 			  << std::endl;
 
-	// Initialization
-	int repeats = 3;
-	VectorXd uv;
+	//~ // Initialization
+	//~ int repeats = 3;
+	//~ VectorXd uv;
 
-	// Compute runtimes of different multiplicators
-	std::cout << "Runtime comparison of naive v efficient multiplicator"
-			  << std::endl;
+	//~ // Compute runtimes of different multiplicators
+	//~ std::cout << "Runtime comparison of naive v efficient multiplicator"
+			  //~ << std::endl;
 
-	// Header
-	std::cout << std::setw(20) << "n"
-			  << std::setw(20) << "time naive [s]"
-			  << std::setw(20) << "time fast [s]"
-			  << std::endl;
+	//~ // Header
+	//~ std::cout << std::setw(20) << "n"
+			  //~ << std::setw(20) << "time naive [s]"
+			  //~ << std::setw(20) << "time fast [s]"
+			  //~ << std::endl;
 
-	// Loop over matrix size
-	for(int p = 2; p <= 9; ++p) {
-		// Timers
-		Timer tm_naive, tm_fast;
-		int n = pow(2,p);
+	//~ // Loop over matrix size
+	//~ for(int p = 2; p <= 9; ++p) {
+		//~ // Timers
+		//~ Timer tm_naive, tm_fast;
+		//~ int n = pow(2,p);
 
-		// Repeat test many times
-		for(int r = 0; r < repeats; ++r) {
-			u = VectorXd::Random(n);
-			v = VectorXd::Random(n);
+		//~ // Repeat test many times
+		//~ for(int r = 0; r < repeats; ++r) {
+			//~ u = VectorXd::Random(n);
+			//~ v = VectorXd::Random(n);
 
-			// Compute runtime of naive multiplicator
-			tm_naive.start();
-			uv = polyMult_naive(u, v);
-			tm_naive.stop();
-			// Compute runtime of efficient multiplicator
-			tm_fast.start();
-			uv = polyMult_fast(u, v);
-			tm_fast.stop();
-		}
-		// Print runtimes
-		std::cout << std::setw(20) << n
-				  << std::scientific << std::setprecision(3)
-				  << std::setw(20) << tm_naive.min()
-				  << std::setw(20) << tm_fast.min()
-				  << std::endl;
-	}
+			//~ // Compute runtime of naive multiplicator
+			//~ tm_naive.start();
+			//~ uv = polyMult_naive(u, v);
+			//~ tm_naive.stop();
+			//~ // Compute runtime of efficient multiplicator
+			//~ tm_fast.start();
+			//~ uv = polyMult_fast(u, v);
+			//~ tm_fast.stop();
+		//~ }
+		//~ // Print runtimes
+		//~ std::cout << std::setw(20) << n
+				  //~ << std::scientific << std::setprecision(3)
+				  //~ << std::setw(20) << tm_naive.min()
+				  //~ << std::setw(20) << tm_fast.min()
+				  //~ << std::endl;
+	//~ }
 }
