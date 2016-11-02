@@ -106,7 +106,7 @@ VectorXd toepmult(const VectorXd & c, const VectorXd & r,
  * @param[out] 
  */
 /* SAM_LISTING_BEGIN_2 */
-VectorXd toepmult(const VectorXd & h, const VectorXd & y)
+VectorXd ttmatsolve(const VectorXd & h, const VectorXd & y)
 {
 	assert(h.size() == y.size() &&
 		   "h and y have different lengths!");
@@ -153,7 +153,9 @@ VectorXd ttrecsolve(const VectorXd & h, const VectorXd & y, int l)
 			   "h and y have length different from 2^l!");
 			   
 		VectorXd x1 = ttrecsolve(h.head(m), y.head(m), l-1);
-		VectorXd y2 
+		VectorXd y2 = y.segment(m,n) - toepmult(h.segment(m,n-m),
+			h.segment(1,m).reverse(), x1);
+		VectorXd x2 = ttrecsolve();
 	}
 	
 	

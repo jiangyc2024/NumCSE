@@ -7,6 +7,6 @@ function x = ttrecsolve(h,y,l)
             error('Size mismatch'); end
         x1 = ttrecsolve(h(1:m), y(1:m),l-1);
         y2 = y(m+1:n) - toepmult(h(m+1:n), h(m+1:-1:2),x1);
-        x2 = ttrecsolve(h(1:m,y2,l-1);
+        x2 = ttrecsolve(h(1:m),y2,l-1);
         x  = [x1; x2];
     end

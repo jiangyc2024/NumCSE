@@ -14,49 +14,6 @@
 
 using namespace Eigen;
 
-MatrixXd toeplix(const VectorXd & c, const VectorXd & r)
-{
-	if(c(0) != r(0)) {
-		std::cerr << "First elements of c and r are differents!"
-		<< std:: endl << "We will assign the first element of c to the diagonal"
-	}
-	
-	
-    // Initialization
-    int m = c.size();
-    int n = r.size();
-    MatrxiXd T(m, n);
-    
-    for(int i=0; i<n; ++i) {
-		T.col(i).tail(m-i) = c.head(m-i);
-	}
-	for(int i=0; i<m; ++i) {
-		T.row(i).tail(n-i) = r.head(n-i); // Rewrite the diagonal twice
-	}
-    
-    VectorXd u_tmp = u;
-    u_tmp.conservativeResize(dim);
-    VectorXd v_tmp = v;
-    v_tmp.conservativeResize(dim);
-    
-    VectorXd uv(m+n-1); // Degree is (m-1) + (n-1)
-
-#if SOLUTION
-    for(int i=0; i<uv.size(); ++i) {
-		int fst = std::max(0, i - (dim - 1));
-		int lst = std::min(i, dim - 1);
-		for(int j=fst; j<=lst; ++j) {
-			uv(i) += u_tmp(j) * v_tmp(i-j);
-		}
-	}
-#else // TEMPLATE
-    // TODO: multiply polynomials $u$ and $v$ naively
-#endif // TEMPLATE
-
-	return uv;
-}
-
-
 /* @brief Polynomial multiplication -- naive implementation
  * @param[in] u Vector of coefficients of polynomial $u$
  * @param[in] v Vector of coefficients of polynomial $v$
