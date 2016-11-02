@@ -77,54 +77,61 @@ VectorXd polyMult_fast(const VectorXd & u, const VectorXd & v)
  * @param[out] 
  */
 /* SAM_LISTING_BEGIN_2 */
-VectorXd polyMult_fast(const VectorXd & u, const VectorXd & v)
+VectorXd polyDiv(const VectorXd & uv, const VectorXd & u)
 {
     // Initialization
+    unsigned mn = uv.size();
     unsigned m = u.size();
-    unsigned n = v.size();
-    unsigned dim = max(m, n);
     
     VectorXd u_tmp = u;
-    u_tmp.conservativeResize(u.size() + n - 1);
-    VectorXd v_tmp = v;
-    v_tmp.conservativeResize(v.size() + m - 1);
+    u_tmp.conservativeResize(mn);
 
 #if SOLUTION
 	Eigen::FFT<double> fft;
-	VectorXcd tmp = ( fft.fwd(u_tmp) ).cwiseProduct( fft.fwd(v_tmp) );
-	VectorXd uv = fft.inv(tmp).real();
+	VectorXcd tmp = ( fft.fwd(uv) ).cwiseQuotient( fft.fwd(u_tmp) );
+	VectorXd v = fft.inv(tmp).real();
 #else // TEMPLATE
     // TODO: 
 #endif // TEMPLATE
 
-	return uv;
+	v.conservativeResize(mn - m + 1); // (mn-1) - (m-1) + 1
+	return v;
 }
 /* SAM_LISTING_END_2 */
 
 int main() {
-	unsigned m = 10;
-    unsigned n = 8;
+	// Initialization
+	unsigned m = 4;
+    unsigned n = 3;
+    VectorXd u(m);
+    VectorXd v(n);
+    u << 1, 2, 3, 4;
+    v << 10, 20, 30;
+    
     // Compute with both functions
-    std::cout << "Check that both polynomial multiplicators are correct"
-			  << std::endl;
-    VectorXd u = VectorXd::Random(m);
-    VectorXd v = VectorXd::Random(n);
+    std::cout << "Check that all functions are correct" << std::endl;
 
-    VectorXd uv1 = polyMult_naive(u, v);
+    VectorXd uv_1 = polyMult_naive(u, v);
     std::cout << "Naive multiplicator: "
-		      << std::endl << uv1 << std::endl;
+		      << std::endl << uv_1 << std::endl;
 
-    VectorXd uv2 = polyMult_fast(u, v);
+    VectorXd uv_2 = polyMult_fast(u, v);
     std::cout << "Efficient multiplicator: "
-		      << std::endl << uv2 << std::endl;
+		      << std::endl << uv_2 << std::endl;
 
-    std::cout << "Error = " << (uv1 - uv2).norm() << std::endl;
+    std::cout << "Error = " << (uv_1 - uv_2).norm() << std::endl;
+    
+    VectorXd v_new = polyDiv(uv_2, u);
+    std::cout << "Error of efficient division = " << (v - v_new).norm()
+			  << std::endl;
 
+	// Initialization
 	unsigned repeats = 3;
+	VectorXd uv;
+	
     // Compute runtimes of different multiplicators
     std::cout << "Runtime comparison of naive v efficient multiplicator"
 			  << std::endl;
-	VectorXd uv;
 
     // Header
     std::cout << std::setw(20) << "n"
