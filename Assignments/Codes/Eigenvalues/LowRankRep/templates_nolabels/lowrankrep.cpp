@@ -20,14 +20,12 @@ using namespace Eigen;
  * @param[out] B The $n \times k$ matrix from the decomposition of $X$
  */
 void factorize_X_AB(const MatrixXd & X, size_t k, MatrixXd & A, MatrixXd & B) {
-		
-	size_t m = X.rows();
-	size_t n = X.cols();
-	double tol = 1e-6;
-	assert(k <= std::min(m,n)
-		   && "Rank k cannot be larger than dimensions of X");
-	
-    // TODO: factorize matrix $X$ into $X = AB'$
+  size_t m = X.rows(), n = X.cols();
+  double tol = 1e-6; // Tolerance for numerical rank, see \lref{ex:svdrank}
+  assert(k <= std::min(m,n)
+	 && "Rank k cannot be larger than dimensions of X");
+  
+  // TODO: factorize matrix $X$ into $X = AB'$
 }
 
 /* @brief Compute the SVD of $AB'$

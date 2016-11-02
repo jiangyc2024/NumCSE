@@ -101,6 +101,7 @@ Optional:
 - gmp
 - mpfr
 - MKL
+- FFTW
 
 ### F.A.Q.
 
