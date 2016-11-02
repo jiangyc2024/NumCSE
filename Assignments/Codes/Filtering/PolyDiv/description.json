@@ -4,5 +4,6 @@
     "contributors" : "",
 
     "name": "PolyDiv",
-    "all" : ["polydiv.cpp"]
+    "all" : ["polydiv.cpp"],
+    "lib" : ["timer.h"]
 }
