@@ -7,6 +7,12 @@
 #include <Eigen/Dense>
 #include <unsupported/Eigen/FFT>
 
+#include "timer.h"
+#if INTERNAL
+#include <chrono>
+#include <figure/figure.hpp>
+#endif // INTERNAL
+
 #include "pconvfft.hpp"
 
 using namespace Eigen;
@@ -52,15 +58,9 @@ VectorXd toepmatmult(const VectorXd & c, const VectorXd & r,
 		   c.size() == x.size() &&
 		   "c, r, x have different lengths!");
 	
-	VectorXd y;
-
-#if SOLUTION
     MatrixXd T = toeplitz(c,r);
 	
-    y = T*x;
-#else // TEMPLATE
-    // TODO: 
-#endif // TEMPLATE
+    VectorXd y = T*x;
 
 	return y;
 }
@@ -79,10 +79,7 @@ VectorXd toepmult(const VectorXd & c, const VectorXd & r,
 		   c.size() == x.size() &&
 		   "c, r, x have different lengths!");
 	int n = c.size();
-	
-	VectorXd y;
 
-#if SOLUTION
 	VectorXd cr_tmp = c;
 	cr_tmp.conservativeResize(2*n);
 	cr_tmp.tail(n-1) = r.tail(n-1).reverse();
@@ -90,11 +87,8 @@ VectorXd toepmult(const VectorXd & c, const VectorXd & r,
 	VectorXd x_tmp = x;
 	x_tmp.conservativeResize(2*n);
 
-    y = pconvfft(cr_tmp, x_tmp);
+    VectorXd y = pconvfft(cr_tmp, x_tmp);
 	y.conservativeResize(n);
-#else // TEMPLATE
-    // TODO: 
-#endif // TEMPLATE
 
 	return y;
 }
@@ -112,20 +106,14 @@ VectorXd ttmatsolve(const VectorXd & h, const VectorXd & y)
 		   "h and y have different lengths!");
 	int n = h.size();
 	
-	VectorXd x;
-
-#if SOLUTION
 	VectorXd h_tmp(n);
 	h_tmp(0) = h(0);
 
     MatrixXd T = toeplitz(h,h_tmp);
     
-    x = T.fullPivLu().solve(y);
-#else // TEMPLATE
-    // TODO: 
-#endif // TEMPLATE
+    VectorXd x = T.fullPivLu().solve(y);
 
-	return y;
+	return x;
 }
 /* SAM_LISTING_END_2 */
 
@@ -155,121 +143,144 @@ VectorXd ttrecsolve(const VectorXd & h, const VectorXd & y, int l)
 		VectorXd x1 = ttrecsolve(h.head(m), y.head(m), l-1);
 		VectorXd y2 = y.segment(m,n) - toepmult(h.segment(m,n-m),
 			h.segment(1,m).reverse(), x1);
-		VectorXd x2 = ttrecsolve();
+		VectorXd x2 = ttrecsolve(h.head(m), y2, l-1);
+		
+		x << x1, x2;
 	}
-	
-	
 
+	return x;
+}
+/* SAM_LISTING_END_3 */
+
+/* @brief 
+ * @param[in] 
+ * @param[in] 
+ * @param[out] 
+ */
+/* SAM_LISTING_BEGIN_4 */
+VectorXd ttsolve(const VectorXd & h, const VectorXd & y)
+{
+	assert(h.size() == y.size() &&
+		   "h and y have different lengths!");
+	int n = h.size();
+		   
+	VectorXd x;
+	
 #if SOLUTION
-	VectorXd h_tmp(n);
-	h_tmp(0) = h(0);
-
-    MatrixXd T = toeplitz(h,h_tmp);
-    
-    x = T.fullPivLu().solve(y);
+	int l = std::ceil(std::log(n));
+	int m = std::po2(2,l);
+	
+	VectorXd h_tmp = h;
+	h_tmp.conservativeResize(m);
+	
+	VectorXd y_tmp = y;
+	y_tmp.conservativeResize(m);
+	
+	x = ttrecsolve(h_tmp, y_tmp, l);
+	x.conservativeResize(n);
 #else // TEMPLATE
     // TODO: 
 #endif // TEMPLATE
 
 	return x;
 }
-/* SAM_LISTING_END_3 */
+/* SAM_LISTING_END_4 */
 
 int main() {
-	// Initialization
-	int m = 4;
-	int n = 3;
-	VectorXd u(m);
-	VectorXd v(n);
-	u << 1, 2, 3, 4;
-	v << 10, 20, 30;
+	//~ // Initialization
+	//~ int m = 4;
+	//~ int n = 3;
+	//~ VectorXd u(m);
+	//~ VectorXd v(n);
+	//~ u << 1, 2, 3, 4;
+	//~ v << 10, 20, 30;
 
-	// Compute with both functions
-	std::cout << "Check that all functions are correct" << std::endl;
+	//~ // Compute with both functions
+	//~ std::cout << "Check that all functions are correct" << std::endl;
 
-	VectorXd uv_1 = polyMult_naive(u, v);
-	std::cout << "Naive multiplicator: "
-			  << std::endl << uv_1 << std::endl;
+	//~ VectorXd uv_1 = polyMult_naive(u, v);
+	//~ std::cout << "Naive multiplicator: "
+			  //~ << std::endl << uv_1 << std::endl;
 
-	VectorXd uv_2 = polyMult_fast(u, v);
-	std::cout << "Efficient multiplicator: "
-			  << std::endl << uv_2 << std::endl;
+	//~ VectorXd uv_2 = polyMult_fast(u, v);
+	//~ std::cout << "Efficient multiplicator: "
+			  //~ << std::endl << uv_2 << std::endl;
 
-	std::cout << "Error = " << (uv_1 - uv_2).norm() << std::endl;
+	//~ std::cout << "Error = " << (uv_1 - uv_2).norm() << std::endl;
 
-	VectorXd v_new = polyDiv(uv_2, u);
-	std::cout << "Error of efficient division = " << (v - v_new).norm()
-			  << std::endl;
+	//~ VectorXd v_new = polyDiv(uv_2, u);
+	//~ std::cout << "Error of efficient division = " << (v - v_new).norm()
+			  //~ << std::endl;
 
-	// Initialization
-	int repeats = 3;
-	VectorXd uv;
-#if INTERNAL
-    // sizes   will contain the size of the vectors
-    // timings will contain the runtimes in seconds
-    std::vector<double> sizes, timings_naive, timings_effic;
-#endif
+	//~ // Initialization
+	//~ int repeats = 3;
+	//~ VectorXd uv;
+//~ #if INTERNAL
+    //~ // sizes   will contain the size of the vectors
+    //~ // timings will contain the runtimes in seconds
+    //~ std::vector<double> sizes, timings_naive, timings_effic;
+//~ #endif
 
-	// Compute runtimes of different multiplicators
-	std::cout << "Runtime comparison of naive v efficient multiplicator"
-			  << std::endl;
+	//~ // Compute runtimes of different multiplicators
+	//~ std::cout << "Runtime comparison of naive v efficient multiplicator"
+			  //~ << std::endl;
 
-	// Header
-	std::cout << std::setw(20) << "n"
-			  << std::setw(20) << "time naive [s]"
-			  << std::setw(20) << "time fast [s]"
-			  << std::endl;
+	//~ // Header
+	//~ std::cout << std::setw(20) << "n"
+			  //~ << std::setw(20) << "time naive [s]"
+			  //~ << std::setw(20) << "time fast [s]"
+			  //~ << std::endl;
 
-	// Loop over vector size
-	for(int p = 2; p <= 15; ++p) {
-		// Timers
-		Timer tm_naive, tm_effic;
-		int n = pow(2,p);
+	//~ // Loop over vector size
+	//~ for(int p = 2; p <= 15; ++p) {
+		//~ // Timers
+		//~ Timer tm_naive, tm_effic;
+		//~ int n = pow(2,p);
 
-		// Repeat test many times
-		for(int r = 0; r < repeats; ++r) {
-			u = VectorXd::Random(n);
-			v = VectorXd::Random(n);
+		//~ // Repeat test many times
+		//~ for(int r = 0; r < repeats; ++r) {
+			//~ u = VectorXd::Random(n);
+			//~ v = VectorXd::Random(n);
 
-			// Compute runtime of naive multiplicator
-			tm_naive.start();
-			uv = polyMult_naive(u, v);
-			tm_naive.stop();
-			// Compute runtime of efficient multiplicator
-			tm_effic.start();
-			uv = polyMult_fast(u, v);
-			tm_effic.stop();
-		}
+			//~ // Compute runtime of naive multiplicator
+			//~ tm_naive.start();
+			//~ uv = polyMult_naive(u, v);
+			//~ tm_naive.stop();
+			//~ // Compute runtime of efficient multiplicator
+			//~ tm_effic.start();
+			//~ uv = polyMult_fast(u, v);
+			//~ tm_effic.stop();
+		//~ }
 		
-#if INTERNAL
-        // Save results in a vector
-        sizes.push_back(n); // Save vector sizes
-        timings_naive.push_back(tm_naive.min());
-        timings_effic.push_back(tm_effic.min());
-#endif
+//~ #if INTERNAL
+        //~ // Save results in a vector
+        //~ sizes.push_back(n); // Save vector sizes
+        //~ timings_naive.push_back(tm_naive.min());
+        //~ timings_effic.push_back(tm_effic.min());
+//~ #endif
 		
-		// Print runtimes
-		std::cout << std::setw(20) << n
-				  << std::scientific << std::setprecision(3)
-				  << std::setw(20) << tm_naive.min()
-				  << std::setw(20) << tm_effic.min()
-				  << std::endl;
-	}
+		//~ // Print runtimes
+		//~ std::cout << std::setw(20) << n
+				  //~ << std::scientific << std::setprecision(3)
+				  //~ << std::setw(20) << tm_naive.min()
+				  //~ << std::setw(20) << tm_effic.min()
+				  //~ << std::endl;
+	//~ }
 	
-#if INTERNAL
-    mgl::Figure fig;
-    fig.title("Comparison of timings of polynomial multiplication");
-    fig.ranges(1, 35000, 1e-8, 1e3);
-    fig.setlog(true, true); // set loglog scale
-    fig.plot(sizes, timings_naive, " r+").label("naive");
-    fig.plot(sizes, timings_effic, " b+").label("efficient");
-    fig.fplot("1e-9*x^3", "k|").label("O(n^3)");
-    fig.fplot("1e-8*x^2", "k-").label("O(n^2)");
-    fig.fplot("1e-7*x", "k:").label("O(n)");
-    fig.xlabel("Vector size (n)");
-    fig.ylabel("Time [s]");
-    fig.legend(0, 1);
-    fig.save("polydiv_comparison.eps");
-    fig.save("polydiv_comparison.png");
-#endif
+//~ #if INTERNAL
+    //~ mgl::Figure fig;
+    //~ fig.title("Comparison of timings of polynomial multiplication");
+    //~ fig.ranges(1, 35000, 1e-8, 1e3);
+    //~ fig.setlog(true, true); // set loglog scale
+    //~ fig.plot(sizes, timings_naive, " r+").label("naive");
+    //~ fig.plot(sizes, timings_effic, " b+").label("efficient");
+    //~ fig.fplot("1e-9*x^3", "k|").label("O(n^3)");
+    //~ fig.fplot("1e-8*x^2", "k-").label("O(n^2)");
+    //~ fig.fplot("1e-7*x", "k:").label("O(n)");
+    //~ fig.xlabel("Vector size (n)");
+    //~ fig.ylabel("Time [s]");
+    //~ fig.legend(0, 1);
+    //~ fig.save("polydiv_comparison.eps");
+    //~ fig.save("polydiv_comparison.png");
+//~ #endif
 }
