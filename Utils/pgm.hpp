@@ -73,6 +73,11 @@ public:
     std::istream& operator>>(std::istream &i,
                              PGMObject &obj)
     {
+        if( !i.good() ) {
+            std::cerr << "Input stream in bad state!"
+                      << std::endl;
+            return i;
+        }
         unsigned int stage = 0;
         unsigned int line = 1;
         while (stage != 3 ||
@@ -159,6 +164,11 @@ public:
     std::ostream& operator<<(std::ostream &o,
                              const PGMObject &obj)
     {
+        if( !o.good() ) {
+            std::cerr << "Output in bad state!"
+                      << std::endl;
+            return o;
+        }
         o << obj._magic_number << std::endl
           << "# Created with PGMObject class." << std::endl
           << obj.width << " "

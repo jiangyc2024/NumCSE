@@ -60,7 +60,7 @@ void plot_freq(double focus) {
 
     MatrixXd D = fft2r(set_focus(focus))
             .cwiseAbs()
-            .unaryExpr(clamp) / 8000;
+            .unaryExpr(clamp) / b;
 #else // TEMPLATE
     // TODO: compute D containing the
     // spectrum of set_focus(focus)
@@ -72,7 +72,7 @@ void plot_freq(double focus) {
     mglData Xd(D.cols(), D.rows(), D.data());
 
     mglGraph gr;
-    gr.SetRange('c', 0, b);
+//    gr.SetRange('c', 0, 1);
     gr.Colorbar("bcwyr");
     std::stringstream ss;
     ss << "Specturm with f = "
@@ -103,8 +103,8 @@ double high_frequency_content(const MatrixXd & M) {
 
     double V = 0;
 #if SOLUTION
+    for(unsigned int i = 0; i < M.rows(); ++i) {
         for(unsigned int j = 0; j < M.cols(); ++j) {
-            for(unsigned int i = 0; i < M.rows(); ++i) {
             double a = n/2 - std::abs(i - n/2);
             double b = m/2 - std::abs(j - m/2);
             V += (a*a + b*b) * M(i,j);
@@ -131,7 +131,9 @@ void plotV() {
 #if SOLUTION
     for(unsigned int i = 0; i < N; ++i) {
         double V = high_frequency_content(
+                    // Find 2D spectrum of matrix $\mathbf{B}(t)$
                     fft2r(
+                        // Evaluate set\_focus at equidistant points
                         set_focus(5. / (N-1) * i)
                         )
                     .cwiseAbs()
@@ -140,14 +142,14 @@ void plotV() {
         y(i) = V;
     }
 #else // TEMPLATE
-    // TODO: plot $V(B(f))$
+    // TODO: plot $V(\mathbf{B}(f))$
 #endif // TEMPLATE
 
     mgl::Figure fig;
     fig.title("High frequency content.");
-    fig.plot(x, y, "r+").label("$V(\mathbf{B}(f))$");
+    fig.plot(x, y, "r+").label("$V(\\mathbf{B}(f))$");
     fig.xlabel("$f$");
-    fig.ylabel("$V(\mathbf{B}(f))$");
+    fig.ylabel("$V(\\mathbf{B}(f))$");
     fig.legend(0, 1);
     fig.save("focus_plot.eps");
     fig.save("focus_plot.png");
@@ -160,18 +162,22 @@ void plotV() {
  */
 /* SAM_LISTING_BEGIN_4 */
 double autofocus() {
-
-    // Max number of iteration
-    unsigned int Niter = 6;
-
+    // Minimum focus
+    unsigned int min_focus = 0;
     // Maximum focus
     unsigned int max_focus = 5;
+    // Min step
+    unsigned int min_step = 0.05;
     // Starting guess
-    double f0 = max_focus / 2.;
+    double f0 = (max_focus - min_focus) / 2.;
     // Finite differences increment
-    double df = max_focus / 1e2;
+    double df = min_step;
     // Starting step
     double step = max_focus / 2.;
+    // Max number of iteration
+    unsigned int Niter = std::log2(
+                (max_focus - min_focus) / min_step
+                );
 #if SOLUTION
     // Returns $V(B(f))$
     auto computeV = [] (double focus) {
@@ -184,7 +190,7 @@ double autofocus() {
 
     // Bisection method
     for(unsigned int i = 0; i < Niter; ++i) {
-        double dV = computeV(f0+df) - computeV(f0);
+        double dV = computeV(f0+df) - computeV(f0-df);
 
         step = step / 2.;
         f0 = f0 + (dV > 0 ? 1 : -1) * step;

@@ -48,7 +48,7 @@ void plot_freq(double focus) {
     mglData Xd(D.cols(), D.rows(), D.data());
 
     mglGraph gr;
-    gr.SetRange('c', 0, b);
+//    gr.SetRange('c', 0, 1);
     gr.Colorbar("bcwyr");
     std::stringstream ss;
     ss << "Specturm with f = "
@@ -94,13 +94,13 @@ void plotV() {
 
     VectorXd x(N), y(N);
 
-    // TODO: plot $V(B(f))$
+    // TODO: plot $V(\mathbf{B}(f))$
 
     mgl::Figure fig;
     fig.title("High frequency content.");
-    fig.plot(x, y, "r+").label("$V(\mathbf{B}(f))$");
+    fig.plot(x, y, "r+").label("$V(\\mathbf{B}(f))$");
     fig.xlabel("$f$");
-    fig.ylabel("$V(\mathbf{B}(f))$");
+    fig.ylabel("$V(\\mathbf{B}(f))$");
     fig.legend(0, 1);
     fig.save("focus_plot.eps");
     fig.save("focus_plot.png");
@@ -113,18 +113,22 @@ void plotV() {
  */
 /* SAM_LISTING_BEGIN_4 */
 double autofocus() {
-
-    // Max number of iteration
-    unsigned int Niter = 6;
-
+    // Minimum focus
+    unsigned int min_focus = 0;
     // Maximum focus
     unsigned int max_focus = 5;
+    // Min step
+    unsigned int min_step = 0.05;
     // Starting guess
-    double f0 = max_focus / 2.;
+    double f0 = (max_focus - min_focus) / 2.;
     // Finite differences increment
-    double df = max_focus / 1e2;
+    double df = min_step;
     // Starting step
     double step = max_focus / 2.;
+    // Max number of iteration
+    unsigned int Niter = std::log2(
+                (max_focus - min_focus) / min_step
+                );
     // TODO: use bisection method to find best focus
 
     return f0;
