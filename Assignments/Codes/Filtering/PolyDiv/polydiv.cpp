@@ -200,7 +200,7 @@ int main() {
 #if INTERNAL
     mgl::Figure fig;
     fig.title("Comparison of timings of polynomial multiplication");
-    fig.ranges(2, 35000, 1e-8, 1e3);
+    fig.ranges(1, 35000, 1e-8, 1e3);
     fig.setlog(true, true); // set loglog scale
     fig.plot(sizes, timings_naive, " r+").label("naive");
     fig.plot(sizes, timings_effic, " b+").label("efficient");
