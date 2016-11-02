@@ -27,8 +27,8 @@ void save_image(double focus) {
     PGMObject q;
 
 #if SOLUTION
-    // Set data using function "set_data"
-    // Data obtained from "set_focus"
+    // Set data using function "set\_data".
+    // Data obtained from "set\_focus".
     q.set_data(set_focus(focus));
 
     // Create and save file
@@ -60,7 +60,7 @@ void plot_freq(double focus) {
 
     MatrixXd D = fft2r(set_focus(focus))
             .cwiseAbs()
-            .unaryExpr(clamp);
+            .unaryExpr(clamp) / 8000;
 #else // TEMPLATE
     // TODO: compute D containing the
     // spectrum of set_focus(focus)
@@ -210,6 +210,7 @@ int main() {
 
     //// SUBPROBLEM 1: save differently blurred images
 #ifdef SUBPROBLEM1
+    std::cout << "" << std::endl;
     for(unsigned int i = 0; i <= 3; ++i) {
         save_image(i);
     }

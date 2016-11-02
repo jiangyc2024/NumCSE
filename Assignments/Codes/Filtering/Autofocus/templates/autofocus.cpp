@@ -144,6 +144,7 @@ int main() {
 
     //// SUBPROBLEM 1: save differently blurred images
 #ifdef SUBPROBLEM1
+    std::cout << "" << std::endl;
     for(unsigned int i = 0; i <= 3; ++i) {
         save_image(i);
     }
