@@ -60,13 +60,11 @@ void plot_freq(double focus) {
     std::stringstream ss2;
     ss2 << "spectrum_focus="
         << focus
-//        << ".eps";
         << ".png";
-//    gr.WriteEPS(ss2.str().c_str());
     gr.WritePNG(ss2.str().c_str());
 
 }
-/* SAM_LISTING_END_1 */
+/* SAM_LISTING_END_0 */
 
 /*!
  * \brief high_frequency_content
@@ -135,35 +133,42 @@ double autofocus() {
 /* SAM_LISTING_END_4 */
 
 // Comment to disable compilation of subproblem
-#define SUBPROBLEM1
-#define SUBPROBLEM2
-#define SUBPROBLEM3
-#define SUBPROBLEM4
+#define SUBPROBLEMa
+#define SUBPROBLEMb
+#define SUBPROBLEMc
+#define SUBPROBLEMd
 
 int main() {
 
-    //// SUBPROBLEM 1: save differently blurred images
-#ifdef SUBPROBLEM1
-    std::cout << "" << std::endl;
+    //// SUBPROBLEM a: save differently blurred images
+#ifdef SUBPROBLEMa
+    std::cout << "*** Subproblem a ***"
+              << std::endl;
     for(unsigned int i = 0; i <= 3; ++i) {
         save_image(i);
     }
 #endif
 
-    //// SUBPROBLEM 2: plot spectrum for different $f$
-#ifdef SUBPROBLEM2
+    //// SUBPROBLEM b: plot spectrum for different $f$
+#ifdef SUBPROBLEMb
+    std::cout << "*** Subproblem b ***"
+              << std::endl;
     for(unsigned int i = 0; i <= 3; ++i) {
         plot_freq(i);
     }
 #endif
 
-    //// SUBPROBLEM 3: plot V(\mathbf{B}(f))
-#ifdef SUBPROBLEM3
+    //// SUBPROBLEM c: plot $V(\mathbf{B}(f))$
+#ifdef SUBPROBLEMc
+    std::cout << "*** Subproblem c ***"
+              << std::endl;
     plotV();
 #endif
 
-    //// SUBPROBLEM 4: find most focused image
-#ifdef SUBPROBLEM4
+    //// SUBPROBLEM d: find most focused image
+#ifdef SUBPROBLEMd
+    std::cout << "*** Subproblem d ***"
+              << std::endl;
     std::cout << "Autofocus returns:"
               << autofocus()
               << std::endl;
