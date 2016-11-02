@@ -17,11 +17,12 @@ lv_ex = d(n); lw_ex = d(n-1);
 v = ones(n,1); w = (-1).^v; % (Arbitrary) initial guess for eigenvectors
 v = v/norm(v); w = w/norm(w);
 result = [];
+A
 for k=1:maxit
   v_new = A*v; w_new = A*w; % ``power iteration'', \emph{cf.} \eqref{eq:dirpotmeth}
   [Q,R] = qr([v_new,w_new],0); % orthogonalization, \emph{cf.} Rem.~\ref{rem:QRorth}
   Q
-  a
+  break
   [U,D] = eig(Q'*A*Q); % Solve Ritz projected eigenvalue problem
   [ev,idx] = sort(abs(diag(D))), % Sort eigenvalues
   w = Q*U(:,idx(1)); v = Q*U(:,idx(2)); % Recover approximate eigenvectors

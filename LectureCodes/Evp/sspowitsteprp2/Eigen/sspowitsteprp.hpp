@@ -14,5 +14,6 @@ Eigen::MatrixXd sspowitsteprp(const Eigen::MatrixXd& A, const Eigen::MatrixXd& V
 
 	// recover approximate eigenvectors
 	Eigen::MatrixXd M = ev.eigenvectors().real();
+
 	return Q*M;
 }

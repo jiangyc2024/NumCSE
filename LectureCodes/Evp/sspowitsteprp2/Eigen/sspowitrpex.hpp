@@ -37,7 +37,6 @@ void sspowitrpex(const Eigen::VectorXd& d, int maxit = 20)
 	Eigen::MatrixXd result(maxit, 5);
 	Eigen::VectorXd v_new;
 	Eigen::VectorXd w_new;
-	double lv, lw;
 
 
 	for (int k=0; k <maxit; ++k)
@@ -50,24 +49,19 @@ void sspowitrpex(const Eigen::VectorXd& d, int maxit = 20)
 		B.col(0) = v_new;
 		B.col(1) = w_new;
 
-		//std::cout << B << std::endl << std::endl;
-
 		// Solve Ritz projected eigenvalue problem
-		auto qr = B.fullPivHouseholderQr();
-		Eigen::MatrixXd Q = qr.matrixQ();
-		std::cout << "k=" << k << " Q=" << std::endl << Q << std::endl << std::endl;
-		Eigen::EigenSolver<Eigen::MatrixXd> esolver(Q.transpose()*A*Q);
-		break;
+		auto qr = B.householderQr();
+		Eigen::MatrixXd Q = qr.householderQ();
+		Eigen::MatrixXd Q2 = Q.leftCols(2);
+
+		Eigen::EigenSolver<Eigen::MatrixXd> esolver(Q2.transpose()*A*Q2);
 
 		// recover approximate eigenvectors
 		Eigen::VectorXd D; // eigenvalues
 		Eigen::MatrixXd U; // eigenvectors
 		std::tie(D, U) = eigensolversort(esolver, true);
-		v = Q*U.col(1);
-		w = Q*U.col(0);
-		/*std::cout << U << std::endl << std::endl;
-		std::cout << D << std::endl << std::endl;
-		std::cout << std::endl;*/
+		v = Q2*U.col(1);
+		w = Q2*U.col(0);
 		
 		// Record errors in eigenvalue and eigenvector approximations. Note that the 
 		// direction of the eigenvectors is not specified.
@@ -78,6 +72,8 @@ void sspowitrpex(const Eigen::VectorXd& d, int maxit = 20)
 				std::min((v-v_ex).norm(), (v+v_ex).norm()), 
 				std::min((w-w_ex).norm(), (w+w_ex).norm());
 	}
+
+	std::cout << result << std::endl;
 
 	// plot errors
 	mgl::Figure fig1;

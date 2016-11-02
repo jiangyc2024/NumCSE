@@ -1,6 +1,9 @@
 #include <Eigen/Dense>
 #include <unsupported/Eigen/FFT>
 
+/*
+ * sinus transform on vector y
+ */
 void sinetransform(const Eigen::VectorXd &y, Eigen::VectorXd& s)
 {
 	int n = y.rows() + 1;

@@ -18,7 +18,7 @@ Eigen::MatrixXd gso(const Eigen::MatrixXd &V)
 		q = V.col(l);
 
 		// orthogonalization
-		for (int k=0; k<l-1; ++k)
+		for (int k=0; k<l; ++k)
 		{
 			q = q - Q.col(k).dot(V.col(l)) * Q.col(k);
 		}
