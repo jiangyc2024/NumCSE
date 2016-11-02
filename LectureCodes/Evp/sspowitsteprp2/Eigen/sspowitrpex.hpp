@@ -51,17 +51,16 @@ void sspowitrpex(const Eigen::VectorXd& d, int maxit = 20)
 
 		// Solve Ritz projected eigenvalue problem
 		auto qr = B.householderQr();
-		Eigen::MatrixXd Q = qr.householderQ();
-		Eigen::MatrixXd Q2 = Q.leftCols(2);
+		Eigen::MatrixXd Q = qr.householderQ() * Eigen::MatrixXd::Identity(n,2); // economy size qr
 
-		Eigen::EigenSolver<Eigen::MatrixXd> esolver(Q2.transpose()*A*Q2);
+		Eigen::EigenSolver<Eigen::MatrixXd> esolver(Q.transpose()*A*Q);
 
 		// recover approximate eigenvectors
 		Eigen::VectorXd D; // eigenvalues
 		Eigen::MatrixXd U; // eigenvectors
 		std::tie(D, U) = eigensolversort(esolver, true);
-		v = Q2*U.col(1);
-		w = Q2*U.col(0);
+		v = Q*U.col(1);
+		w = Q*U.col(0);
 		
 		// Record errors in eigenvalue and eigenvector approximations. Note that the 
 		// direction of the eigenvectors is not specified.
