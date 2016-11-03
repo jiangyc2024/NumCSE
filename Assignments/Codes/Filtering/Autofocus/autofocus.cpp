@@ -72,7 +72,6 @@ void plot_freq(double focus) {
     mglData Xd(D.cols(), D.rows(), D.data());
 
     mglGraph gr;
-//    gr.SetRange('c', 0, 1);
     gr.Colorbar("bcwyr");
     std::stringstream ss;
     ss << "Specturm with f = "
