@@ -1,11 +1,12 @@
 # include <cmath>
 # include <Eigen/Dense>
 # include <unsupported/Eigen/FFT>
-# include "stem.hpp"
+# include "stem.hpp" // simple classed which uses Figure for plotting
 using Eigen::VectorXd; using Eigen::VectorXcd;
 
+// Visualize limit \Blue{$m\to\infty$} for a \Blue{$2m+!$}-periodic signal and
+// its discrete Fourier transform ``squeezed'' into \Blue{$[0,1]$}.
 int main() {
- 
   // range of plot for visualization of discrete signal
   const int N = 3*257;
   // function defining discrete signal
@@ -23,11 +24,12 @@ int main() {
     for (int i = 0; i < Ncp; ++i) 
       y.segment(n*i, n) = ybas;
 
+    // Stem plots vertical lines from 0 to the y-value
     Stem s1;
     s1.title = "Period of signal y_i = " + std::to_string(2*m+1);
     s1.xlabel = "Index i of sampling instance";
     s1.ylabel = "y_i";
-    s1.file = "persig" + std::to_string(mpow);
+    s1.file = "persig" + std::to_string(mpow); // where to save
     s1.plot(VectorXd::LinSpaced(n*Ncp, -n*Ncp/2., n*Ncp/2.), y, "r");
 
     Eigen::FFT<double> fft;
