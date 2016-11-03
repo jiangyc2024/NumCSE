@@ -29,6 +29,7 @@ void housetime() {
   for(int i = 0; i <= maxExp-minExp; ++i){
     Timer t1, t2, t3;	// timer class
     int n = std::pow(2, minExp + i); int m = n*n;
+    // Initialization of matrix A
     MatrixXd A(m,n); A.setZero();
     A.setIdentity(); A.block(n,0,m-n,n).setOnes();
     A += VectorXd::LinSpaced(m,1,m) * RowVectorXd::LinSpaced(n,1,n);

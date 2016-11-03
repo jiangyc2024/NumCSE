@@ -23,6 +23,7 @@ int main () {
 	double tol = 1e-5;
 	
 	lloydmax(X, C, idx, cds, tol);
+	std::cout << C << std::endl << idx << std::endl;
 	
 	return 0;
 }

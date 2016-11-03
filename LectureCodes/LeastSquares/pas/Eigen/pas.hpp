@@ -20,14 +20,14 @@ using namespace Eigen;
 // columns of X according to their location w.r.t. the principal axis
 std::pair<VectorXi, VectorXi> princaxissep(const MatrixXd & X){
   int N = X.cols();	// no. of points
-  Vector2d g = X.rowwise().sum() / N; // Compute center of gravity, \emph{cf.} \eqref{eq:cgrav}
+  VectorXd g = X.rowwise().sum() / N; // Center of gravity, \emph{cf.} \eqref{eq:cgrav}
   MatrixXd Y = X - g.replicate(1,N); // Normalize point coordinates.
   // Compute \Red{principal axes}, \emph{cf.} \eqref{eq:pax} and \eqref{lsq:maxconst}. Note that the
-  //  SVD of a symmetric matrix is available through an orthonormal basis of
-  // eigenvectors.
+  // SVD of a symmetric matrix is available through an orthonormal 
+  // basis of eigenvectors.
   SelfAdjointEigenSolver<MatrixXd> es(Y*Y.transpose());
   // Major principal axis
-  Eigen::Vector2d a = es.eigenvectors().rightCols<1>();
+  Eigen::VectorXd a = es.eigenvectors().rightCols<1>();
   // Coordinates of points w.r.t. to major principal axis
   Eigen::VectorXd c = a.transpose()*Y;
   // Split point set according to locations of projections on principal axis
