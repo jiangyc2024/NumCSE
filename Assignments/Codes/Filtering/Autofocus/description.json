@@ -1,0 +1,14 @@
+{
+    "author" : "",
+    "email" : "",
+    "contributors" : "",
+
+    "name": "Autofocus",
+    "all" : ["autofocus.cpp",
+        "autofocus.hpp",
+        "._SUPER_SECRET_FILE.cpp",
+        "image.pgm"
+    ],
+    "lib" :
+    ["pgm.hpp", "conv.hpp", "examples/"]
+}

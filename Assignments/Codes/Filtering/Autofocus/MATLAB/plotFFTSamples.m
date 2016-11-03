@@ -10,4 +10,4 @@ for i = 1:length(f)
     axis('off');
     title(sprintf('Image with focus set to %1.1f',f(i)));
 end
-print -depsc '../PICTURES/plotFFTSamples.eps'
+print -depsc './plotFFTSamples.eps'
