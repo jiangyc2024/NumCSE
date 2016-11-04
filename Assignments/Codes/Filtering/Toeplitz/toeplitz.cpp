@@ -17,11 +17,12 @@
 
 using namespace Eigen;
 
-/* @brief 
- * @param[in] 
- * @param[in] 
- * @param[out] 
+/* @brief Build a Toeplitz matrix $\VT$ from $\Vc$ and $\Vr$
+ * @param[in] c An $m$-dimensional vector, first column of $\VT$
+ * @param[in] r An $n$-dimensional vector, first row of $\VT$
+ * @param[out] T The $m \times n$ Toeplitz matrix from $\Vc$ and $\Vr$
  */
+/* SAM_LISTING_BEGIN_0 */
 MatrixXd toeplitz(const VectorXd & c, const VectorXd & r)
 {
 	if(c(0) != r(0)) {
@@ -35,20 +36,26 @@ MatrixXd toeplitz(const VectorXd & c, const VectorXd & r)
     int n = r.size();
     MatrixXd T(m, n);
     
+#if SOLUTION
 	for(int i=0; i<n; ++i) {
 		T.col(i).tail(m-i) = c.head(m-i);
 	}
 	for(int i=0; i<m; ++i) {
 		T.row(i).tail(n-i-1) = r.segment(1,n-i-1);
 	} // Do not reassign the diagonal!
+#else // TEMPLATE
+    // TODO: build Toeplitz matrix $\VT$
+#endif // TEMPLATE
 
 	return T;
 }
+/* SAM_LISTING_END_5 */
 
-/* @brief 
- * @param[in] 
- * @param[in] 
- * @param[out] 
+/* @brief Do something...
+ * @param[in] c An $n$-dimensional vector
+ * @param[in] r An $n$-dimensional vector
+ * @param[in] x An $n$-dimensional vector
+ * @param[out] y An $n$-dimensional vector
  */
 /* SAM_LISTING_BEGIN_0 */
 VectorXd toepmatmult(const VectorXd & c, const VectorXd & r,
@@ -66,10 +73,11 @@ VectorXd toepmatmult(const VectorXd & c, const VectorXd & r,
 }
 /* SAM_LISTING_END_0 */
 
-/* @brief 
- * @param[in] 
- * @param[in] 
- * @param[out] 
+/* @brief Do something...
+ * @param[in] c An $n$-dimensional vector
+ * @param[in] r An $n$-dimensional vector
+ * @param[in] x An $n$-dimensional vector
+ * @param[out] y An $n$-dimensional vector
  */
 /* SAM_LISTING_BEGIN_1 */
 VectorXd toepmult(const VectorXd & c, const VectorXd & r,
@@ -94,10 +102,10 @@ VectorXd toepmult(const VectorXd & c, const VectorXd & r,
 }
 /* SAM_LISTING_END_1 */
 
-/* @brief 
- * @param[in] 
- * @param[in] 
- * @param[out] 
+/* @brief Do something...
+ * @param[in] h An $n$-dimensional vector
+ * @param[in] y An $n$-dimensional vector
+ * @param[out] x An $n$-dimensional vector
  */
 /* SAM_LISTING_BEGIN_2 */
 VectorXd ttmatsolve(const VectorXd & h, const VectorXd & y)
@@ -117,10 +125,11 @@ VectorXd ttmatsolve(const VectorXd & h, const VectorXd & y)
 }
 /* SAM_LISTING_END_2 */
 
-/* @brief 
- * @param[in] 
- * @param[in] 
- * @param[out] 
+/* @brief Do something...
+ * @param[in] h An $n$-dimensional vector
+ * @param[in] y An $n$-dimensional vector
+ * @param[in] l An integer
+ * @param[out] x An $n$-dimensional vector
  */
 /* SAM_LISTING_BEGIN_3 */
 VectorXd ttrecsolve(const VectorXd & h, const VectorXd & y, int l)
@@ -154,10 +163,10 @@ VectorXd ttrecsolve(const VectorXd & h, const VectorXd & y, int l)
 }
 /* SAM_LISTING_END_3 */
 
-/* @brief 
- * @param[in] 
- * @param[in] 
- * @param[out] 
+/* @brief Wrapper for 'ttrecsolve' for any size $n$
+ * @param[in] h An $n$-dimensional vector
+ * @param[in] y An $n$-dimensional vector
+ * @param[out] x An $n$-dimensional vector
  */
 /* SAM_LISTING_BEGIN_4 */
 VectorXd ttsolve(const VectorXd & h, const VectorXd & y)
@@ -181,7 +190,7 @@ VectorXd ttsolve(const VectorXd & h, const VectorXd & y)
 	x = ttrecsolve(h_tmp, y_tmp, l);
 	x.conservativeResize(n);
 #else // TEMPLATE
-    // TODO: 
+    // TODO: wrap 'ttrecsolve' for any size $n$
 #endif // TEMPLATE
 
 	return x;
