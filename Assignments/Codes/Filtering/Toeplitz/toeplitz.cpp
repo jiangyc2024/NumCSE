@@ -22,7 +22,7 @@ using namespace Eigen;
  * @param[in] r An $n$-dimensional vector, first row of $\VT$
  * @param[out] T The $m \times n$ Toeplitz matrix from $\Vc$ and $\Vr$
  */
-/* SAM_LISTING_BEGIN_0 */
+/* SAM_LISTING_BEGIN_5 */
 MatrixXd toeplitz(const VectorXd & c, const VectorXd & r)
 {
 	if(c(0) != r(0)) {
@@ -295,8 +295,9 @@ int main() {
     fig1.setlog(true, true); // Set loglog scale
     fig1.plot(sizes, timings_ttmat, " r+").label("toepmatmult");
     fig1.plot(sizes, timings_ttrec, " b+").label("toepmult");
-    fig1.fplot("1e-8*x^2", "k-").label("O(n^2)");
-    fig1.fplot("1e-7*x", "k:").label("O(n)");
+    fig1.fplot("1e-5*x^2", "k:").label("O(n^2)");
+    fig1.fplot("1e-5*x", "k:").label("O(n)");
+    fig1.fplot("1e-5*x*lg(x)", "k:").label("O(n log(n))");
     fig1.xlabel("Vector size (n)");
     fig1.ylabel("Time [s]");
     fig1.legend(0, 1);
@@ -309,8 +310,9 @@ int main() {
     fig2.setlog(true, true); // Set loglog scale
     fig2.plot(sizes, timings_ttmat, " r+").label("ttmatsolve");
     fig2.plot(sizes, timings_ttrec, " b+").label("ttrecsolve");
-    fig2.fplot("1e-8*x^2", "k-").label("O(n^2)");
-    fig2.fplot("1e-7*x", "k:").label("O(n)");
+    fig2.fplot("1e-5*x^2", "k:").label("O(n^2)");
+    fig2.fplot("1e-5*x", "k:").label("O(n)");
+    fig2.fplot("1e-5*x*lg(x)", "k:").label("O(n log(n))");
     fig2.xlabel("Vector size (n)");
     fig2.ylabel("Time [s]");
     fig2.legend(0, 1);

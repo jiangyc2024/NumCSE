@@ -18,7 +18,7 @@ using namespace Eigen;
  * @param[in] r An $n$-dimensional vector, first row of $\VT$
  * @param[out] T The $m \times n$ Toeplitz matrix from $\Vc$ and $\Vr$
  */
-/* SAM_LISTING_BEGIN_0 */
+/* SAM_LISTING_BEGIN_5 */
 MatrixXd toeplitz(const VectorXd & c, const VectorXd & r)
 {
 	if(c(0) != r(0)) {
