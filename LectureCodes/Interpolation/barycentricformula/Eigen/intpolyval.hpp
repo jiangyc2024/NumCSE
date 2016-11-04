@@ -1,3 +1,11 @@
+///////////////////////////////////////////////////////////////////////////
+/// Demonstration code for lecture "Numerical Methods for CSE" @ ETH Zurich
+/// (C) 2016 SAM, D-MATH
+/// Author(s): J. Gacon
+/// Repository: https://gitlab.math.ethz.ch/NumCSE/NumCSE/
+/// Do not remove this header.
+//////////////////////////////////////////////////////////////////////////
+
 # include <Eigen/Dense>
 
 using Eigen::VectorXd;
@@ -24,7 +32,7 @@ void intpolyval(const VectorXd& t, const VectorXd& y, const VectorXd& x, VectorX
     VectorXd z = (x(i)*VectorXd::Ones(n) - t);
 
     // check if we want to evaluate at a node <-> avoid division by zero
-    double* ptr = std::find(z.data(), z.data() + n, 0);
+    double* ptr = std::find(z.data(), z.data() + n, 0.0);
     if (ptr != z.data() + n) { // if ptr = z.data + n = z.end no zero was found
       p(i) = y(ptr - z.data()); // ptr - z.data gives the position of the zero
     }

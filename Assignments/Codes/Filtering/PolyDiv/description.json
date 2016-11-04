@@ -1,0 +1,9 @@
+{
+    "author" : "",
+    "email" : "",
+    "contributors" : "",
+
+    "name": "PolyDiv",
+    "all" : ["polydiv.cpp"],
+    "lib" : ["timer.h"]
+}

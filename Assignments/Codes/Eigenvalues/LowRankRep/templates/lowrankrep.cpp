@@ -14,15 +14,14 @@ using namespace Eigen;
  * @param[out] B The $n \times k$ matrix from the decomposition of $X$
  */
 /* SAM_LISTING_BEGIN_0 */
-void factorize_X_AB(const MatrixXd & X, size_t k, MatrixXd & A, MatrixXd & B) {
-		
-	size_t m = X.rows();
-	size_t n = X.cols();
-	double tol = 1e-6;
-	assert(k <= std::min(m,n)
-		   && "Rank k cannot be larger than dimensions of X");
-	
-    // TODO: factorize matrix $X$ into $X = AB'$
+void factorize_X_AB(const MatrixXd & X, size_t k, MatrixXd & A,
+						  MatrixXd & B) {
+  size_t m = X.rows(), n = X.cols();
+  double tol = 1e-6; // Tolerance for numerical rank: \lref{ex:svdrank}
+  assert(k <= std::min(m,n)
+	 && "Rank k cannot be larger than dimensions of X");
+  
+  // TODO: factorize matrix $X$ into $X = AB'$
 }
 /* SAM_LISTING_END_0 */
 
@@ -30,7 +29,7 @@ void factorize_X_AB(const MatrixXd & X, size_t k, MatrixXd & A, MatrixXd & B) {
  * @param[in] A An $m \times k$ matrix
  * @param[in] B An $n \times k$ matrix
  * @param[out] U The $n \times k$ matrix from the SVD of $AB'$
- * @param[out] S The $k \times k$ diagonal matrix of singular values of $AB'$
+ * @param[out] S The $k \times k$ diagonal matrix of sing. vals of $AB'$
  * @param[out] V The $n \times k$ matrix from the SVD of $AB'$
  */
 /* SAM_LISTING_BEGIN_1 */
