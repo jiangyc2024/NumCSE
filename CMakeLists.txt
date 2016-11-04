@@ -192,3 +192,5 @@ include_directories(${CMAKE_SOURCE_DIR}/Utils) # oh dear
 #
 add_subdirectory(LectureCodes)
 add_subdirectory(Assignments)
+
+add_subdirectory(FFT/BackendTimings)
