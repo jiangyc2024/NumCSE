@@ -146,7 +146,7 @@ double autofocus() {
     // Minimum focus
     const double  min_focus = 0;
     // Maximum focus
-    const double int max_focus = 5;
+    const double max_focus = 5;
     // Min step
     const double min_step = 0.05;
     // Starting guess

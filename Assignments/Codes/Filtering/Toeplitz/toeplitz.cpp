@@ -24,25 +24,20 @@ using namespace Eigen;
  */
 MatrixXd toeplitz(const VectorXd & c, const VectorXd & r)
 {
-	if(c(0) != r(0)) {
-		std::cerr << "First entries of c and r are different!" <<
-		std::endl << "We assign the first entry of c to the diagonal"
-		<< std::endl;
-	}
-	
-    // Initialization
-    int m = c.size();
-    int n = r.size();
-    MatrixXd T(m, n);
-    
-	for(int i=0; i<n; ++i) {
-		T.col(i).tail(m-i) = c.head(m-i);
-	}
-	for(int i=0; i<m; ++i) {
-		T.row(i).tail(n-i-1) = r.segment(1,n-i-1);
-	} // Do not reassign the diagonal!
-
-	return T;
+  if(c(0) != r(0)) {
+    std::cerr << "First entries of c and r are different!" <<
+      std::endl << "We assign the first entry of c to the diagonal"
+	      << std::endl;
+  }
+  
+  // Initialization
+  int m = c.size(), n = r.size();
+  MatrixXd T(m, n);
+  
+  for(int i=0; i<n; ++i) T.col(i).tail(m-i) = c.head(m-i);
+  // Do not reassign the diagonal!
+  for(int i=0; i<m; ++i) T.row(i).tail(n-i-1) = r.segment(1,n-i-1);
+  return T;
 }
 
 /* @brief 
@@ -54,15 +49,13 @@ MatrixXd toeplitz(const VectorXd & c, const VectorXd & r)
 VectorXd toepmatmult(const VectorXd & c, const VectorXd & r,
 					 const VectorXd & x)
 {
-	assert(c.size() == r.size() &&
-		   c.size() == x.size() &&
-		   "c, r, x have different lengths!");
+  assert(c.size() == r.size() &&
+	 c.size() == x.size() &&
+	 "c, r, x have different lengths!");
 	
     MatrixXd T = toeplitz(c,r);
-	
     VectorXd y = T*x;
-
-	return y;
+    return y;
 }
 /* SAM_LISTING_END_0 */
 
@@ -75,22 +68,22 @@ VectorXd toepmatmult(const VectorXd & c, const VectorXd & r,
 VectorXd toepmult(const VectorXd & c, const VectorXd & r,
 				  const VectorXd & x)
 {
-	assert(c.size() == r.size() &&
-		   c.size() == x.size() &&
-		   "c, r, x have different lengths!");
-	int n = c.size();
-
-	VectorXcd cr_tmp = c.cast<std::complex<double>>();
-	cr_tmp.conservativeResize(2*n);
-	cr_tmp.tail(n-1).real() = r.tail(n-1).reverse();
-	
-	VectorXcd  x_tmp = x.cast<std::complex<double>>();
-	x_tmp.conservativeResize(2*n);
-
-    VectorXd y = pconvfft(cr_tmp, x_tmp).real();
-	y.conservativeResize(n);
-
-	return y;
+  assert(c.size() == r.size() &&
+	 c.size() == x.size() &&
+	 "c, r, x have different lengths!");
+  int n = c.size();
+  
+  VectorXcd cr_tmp = c.cast<std::complex<double>>();
+  cr_tmp.conservativeResize(2*n);
+  cr_tmp.tail(n-1).real() = r.tail(n-1).reverse();
+  
+  VectorXcd  x_tmp = x.cast<std::complex<double>>();
+  x_tmp.conservativeResize(2*n);
+  
+  VectorXd y = pconvfft(cr_tmp, x_tmp).real();
+  y.conservativeResize(n);
+  
+  return y;
 }
 /* SAM_LISTING_END_1 */
 
