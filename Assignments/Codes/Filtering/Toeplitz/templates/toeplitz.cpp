@@ -13,80 +13,86 @@
 
 using namespace Eigen;
 
-/* @brief 
- * @param[in] 
- * @param[in] 
- * @param[out] 
+/* @brief Build a Toeplitz matrix $\VT$ from $\Vc$ and $\Vr$
+ * @param[in] c An $m$-dimensional vector, first column of $\VT$
+ * @param[in] r An $n$-dimensional vector, first row of $\VT$
+ * @param[out] T The $m \times n$ Toeplitz matrix from $\Vc$ and $\Vr$
  */
+/* SAM_LISTING_BEGIN_0 */
 MatrixXd toeplitz(const VectorXd & c, const VectorXd & r)
 {
-  if(c(0) != r(0)) {
-    std::cerr << "First entries of c and r are different!" <<
-      std::endl << "We assign the first entry of c to the diagonal"
-	      << std::endl;
-  }
-  
-  // Initialization
-  int m = c.size(), n = r.size();
-  MatrixXd T(m, n);
-  
-  for(int i=0; i<n; ++i) T.col(i).tail(m-i) = c.head(m-i);
-  // Do not reassign the diagonal!
-  for(int i=0; i<m; ++i) T.row(i).tail(n-i-1) = r.segment(1,n-i-1);
-  return T;
-}
+	if(c(0) != r(0)) {
+		std::cerr << "First entries of c and r are different!" <<
+		std::endl << "We assign the first entry of c to the diagonal"
+		<< std::endl;
+	}
+	
+    // Initialization
+    int m = c.size();
+    int n = r.size();
+    MatrixXd T(m, n);
+    
+    // TODO: build Toeplitz matrix $\VT$
 
-/* @brief 
- * @param[in] 
- * @param[in] 
- * @param[out] 
+	return T;
+}
+/* SAM_LISTING_END_5 */
+
+/* @brief Do something...
+ * @param[in] c An $n$-dimensional vector
+ * @param[in] r An $n$-dimensional vector
+ * @param[in] x An $n$-dimensional vector
+ * @param[out] y An $n$-dimensional vector
  */
 /* SAM_LISTING_BEGIN_0 */
 VectorXd toepmatmult(const VectorXd & c, const VectorXd & r,
 					 const VectorXd & x)
 {
-  assert(c.size() == r.size() &&
-	 c.size() == x.size() &&
-	 "c, r, x have different lengths!");
+	assert(c.size() == r.size() &&
+		   c.size() == x.size() &&
+		   "c, r, x have different lengths!");
 	
     MatrixXd T = toeplitz(c,r);
+	
     VectorXd y = T*x;
-    return y;
+
+	return y;
 }
 /* SAM_LISTING_END_0 */
 
-/* @brief 
- * @param[in] 
- * @param[in] 
- * @param[out] 
+/* @brief Do something...
+ * @param[in] c An $n$-dimensional vector
+ * @param[in] r An $n$-dimensional vector
+ * @param[in] x An $n$-dimensional vector
+ * @param[out] y An $n$-dimensional vector
  */
 /* SAM_LISTING_BEGIN_1 */
 VectorXd toepmult(const VectorXd & c, const VectorXd & r,
 				  const VectorXd & x)
 {
-  assert(c.size() == r.size() &&
-	 c.size() == x.size() &&
-	 "c, r, x have different lengths!");
-  int n = c.size();
-  
-  VectorXcd cr_tmp = c.cast<std::complex<double>>();
-  cr_tmp.conservativeResize(2*n);
-  cr_tmp.tail(n-1).real() = r.tail(n-1).reverse();
-  
-  VectorXcd  x_tmp = x.cast<std::complex<double>>();
-  x_tmp.conservativeResize(2*n);
-  
-  VectorXd y = pconvfft(cr_tmp, x_tmp).real();
-  y.conservativeResize(n);
-  
-  return y;
+	assert(c.size() == r.size() &&
+		   c.size() == x.size() &&
+		   "c, r, x have different lengths!");
+	int n = c.size();
+
+	VectorXcd cr_tmp = c.cast<std::complex<double>>();
+	cr_tmp.conservativeResize(2*n);
+	cr_tmp.tail(n-1).real() = r.tail(n-1).reverse();
+	
+	VectorXcd  x_tmp = x.cast<std::complex<double>>();
+	x_tmp.conservativeResize(2*n);
+
+    VectorXd y = pconvfft(cr_tmp, x_tmp).real();
+	y.conservativeResize(n);
+
+	return y;
 }
 /* SAM_LISTING_END_1 */
 
-/* @brief 
- * @param[in] 
- * @param[in] 
- * @param[out] 
+/* @brief Do something...
+ * @param[in] h An $n$-dimensional vector
+ * @param[in] y An $n$-dimensional vector
+ * @param[out] x An $n$-dimensional vector
  */
 /* SAM_LISTING_BEGIN_2 */
 VectorXd ttmatsolve(const VectorXd & h, const VectorXd & y)
@@ -106,10 +112,11 @@ VectorXd ttmatsolve(const VectorXd & h, const VectorXd & y)
 }
 /* SAM_LISTING_END_2 */
 
-/* @brief 
- * @param[in] 
- * @param[in] 
- * @param[out] 
+/* @brief Do something...
+ * @param[in] h An $n$-dimensional vector
+ * @param[in] y An $n$-dimensional vector
+ * @param[in] l An integer
+ * @param[out] x An $n$-dimensional vector
  */
 /* SAM_LISTING_BEGIN_3 */
 VectorXd ttrecsolve(const VectorXd & h, const VectorXd & y, int l)
@@ -143,10 +150,10 @@ VectorXd ttrecsolve(const VectorXd & h, const VectorXd & y, int l)
 }
 /* SAM_LISTING_END_3 */
 
-/* @brief 
- * @param[in] 
- * @param[in] 
- * @param[out] 
+/* @brief Wrapper for 'ttrecsolve' for any size $n$
+ * @param[in] h An $n$-dimensional vector
+ * @param[in] y An $n$-dimensional vector
+ * @param[out] x An $n$-dimensional vector
  */
 /* SAM_LISTING_BEGIN_4 */
 VectorXd ttsolve(const VectorXd & h, const VectorXd & y)
@@ -157,7 +164,7 @@ VectorXd ttsolve(const VectorXd & h, const VectorXd & y)
 		   
 	VectorXd x;
 	
-    // TODO: 
+    // TODO: wrap 'ttrecsolve' for any size $n$
 
 	return x;
 }

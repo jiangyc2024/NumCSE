@@ -1,7 +1,8 @@
 #include <fstream>
+#include <Eigen/Dense>
+
 #include <mgl2/mgl.h>
 #include <figure/figure.hpp>
-#include <Eigen/Dense>
 
 // Contains PGMObject
 #include "pgm.hpp"

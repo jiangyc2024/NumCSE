@@ -5,9 +5,10 @@
 //// This file is part of the NumCSE repository.
 ////
 #include <fstream>
+#include <Eigen/Dense>
+
 #include <mgl2/mgl.h>
 #include <figure/figure.hpp>
-#include <Eigen/Dense>
 
 // Contains PGMObject
 #include "pgm.hpp"
@@ -49,11 +50,15 @@ void plot_freq(double focus) {
     mglGraph gr;
     gr.Colorbar("bcwyr");
     std::stringstream ss;
-    ss << "Specturm with f = " << focus << ".";
+    ss << "Specturm with f = "
+       << focus
+       << ".";
     gr.Title(ss.str().c_str());
     gr.Axis(); gr.Tile(Xd, "bcwyr");
     std::stringstream ss2;
-    ss2 << "spectrum_focus="  << focus << ".png";
+    ss2 << "spectrum_focus="
+        << focus
+        << ".png";
     gr.WritePNG(ss2.str().c_str());
 }
 
@@ -63,10 +68,10 @@ void plot_freq(double focus) {
  * \return
  */
 double high_frequency_content(const MatrixXd & M) {
-  int n = M.rows(),m = M.cols();
-  double V = 0;
+    int n = M.rows(),m = M.cols();
+    double V = 0;
     // TODO: compute $V(\mathbf{M}).
-  return V;
+    return V;
 }
 
 /*!
@@ -108,9 +113,9 @@ double autofocus() {
     // Starting step
     double step = max_focus / 2.;
     // Max number of iteration
-    unsigned int Niter = std::log2(
+    unsigned int Niter = std::ceil(std::log2(
                 (max_focus - min_focus) / min_step
-                );
+                ));
     // TODO: use bisection method to find best focus
 
     return f0;

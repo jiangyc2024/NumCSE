@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <iostream>
 #include <iomanip>
+#include <limits>
 #include <vector>
 
 #include <Eigen/Dense>
@@ -73,9 +74,16 @@ VectorXd polyDiv(const VectorXd & uv, const VectorXd & u)
 	// Initialization
 	int mn = uv.size();
 	int m = u.size();
+	int dim = std::max(mn, m);
+	
+	VectorXd uv_tmp = uv;
+	uv_tmp.conservativeResize(dim);
+	VectorXd u_tmp  = u;
+	u_tmp.conservativeResize(dim);
 
-	VectorXd u_tmp = u;
-	u_tmp.conservativeResize(mn);
+/* SAM_LISTING_BEGIN_3 */
+	// TODO: divide polynomials $uv$ and $u$ efficiently (no remainder)
+/* SAM_LISTING_END_3 */
 
 	VectorXd v;
 
