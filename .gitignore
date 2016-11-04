@@ -53,3 +53,6 @@ main
 *~
 *.swp
 *.swo
+
+# QtCreatory temporary files
+/CMakeLists.txt.user
