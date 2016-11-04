@@ -1,7 +1,8 @@
 #include <fstream>
+#include <Eigen/Dense>
+
 #include <mgl2/mgl.h>
 #include <figure/figure.hpp>
-#include <Eigen/Dense>
 
 // Contains PGMObject
 #include "pgm.hpp"
@@ -30,8 +31,11 @@ void save_image(double focus) {
 
     // Create and save file
     std::stringstream ss;
-    ss << "image_focus="  << (int) focus << ".pgm";
-    std::ofstream file(ss.str()); file << q;
+    ss << "image_focus="
+       << (int) focus
+       << ".pgm";
+    std::ofstream file(ss.str());
+    file << q;
 #else // TEMPLATE
     // TODO: read matrix of image generated
     // by "set_focus" and same as an image in format ".pgm"
@@ -67,11 +71,15 @@ void plot_freq(double focus) {
     mglGraph gr;
     gr.Colorbar("bcwyr");
     std::stringstream ss;
-    ss << "Specturm with f = " << focus << ".";
+    ss << "Specturm with f = "
+       << focus
+       << ".";
     gr.Title(ss.str().c_str());
     gr.Axis(); gr.Tile(Xd, "bcwyr");
     std::stringstream ss2;
-    ss2 << "spectrum_focus="  << focus << ".png";
+    ss2 << "spectrum_focus="
+        << focus
+        << ".png";
     gr.WritePNG(ss2.str().c_str());
 }
 /* SAM_LISTING_END_0 */
@@ -83,19 +91,20 @@ void plot_freq(double focus) {
  */
 /* SAM_LISTING_BEGIN_2 */
 double high_frequency_content(const MatrixXd & M) {
-  int n = M.rows(),m = M.cols();
-  double V = 0;
+    int n = M.rows(),m = M.cols();
+    double V = 0;
 #if SOLUTION
-  for(unsigned int i = 0; i < M.rows(); ++i) {
-    for(unsigned int j = 0; j < M.cols(); ++j) {
-      double a = n/2 - std::abs((double)(i - n/2));
-      double b = m/2 - std::abs((double)(j - m/2));
-      V += (a*a + b*b) * std::pow(M(i,j),2);
-    }}
+    for(unsigned int i = 0; i < M.rows(); ++i) {
+        for(unsigned int j = 0; j < M.cols(); ++j) {
+            double a = n/2. - std::abs(i - n/2.);
+            double b = m/2. - std::abs(j - m/2.);
+            V += (a*a + b*b) * M(i,j) * M(i,j);
+        }
+    }
 #else // TEMPLATE
     // TODO: compute $V(\mathbf{M}).
 #endif
-  return V;
+    return V;
 }
 /* SAM_LISTING_END_2 */
 
@@ -156,9 +165,9 @@ double autofocus() {
     // Starting step
     double step = max_focus / 2.;
     // Max number of iteration
-    unsigned int Niter = std::log2(
+    unsigned int Niter = std::ceil(std::log2(
                 (max_focus - min_focus) / min_step
-                );
+                ));
 #if SOLUTION
     // Returns $V(B(f))$
     auto computeV = [] (double focus) {

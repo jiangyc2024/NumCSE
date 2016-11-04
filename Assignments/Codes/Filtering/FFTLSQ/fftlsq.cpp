@@ -113,6 +113,8 @@ int main(int argc, char **argv) {
     // TODO: Find coefficients that best fit the data in d
     // using trig. poly of degree $m$, store the result in $g$.
 #endif // TEMPLATE
+    std::cout << g
+              << std::endl;
 
     // Find coordinates of best poly coeff.
     unsigned int neval = 100;
@@ -145,5 +147,4 @@ int main(int argc, char **argv) {
     fig.legend(0, 1);
     fig.save("orbit.eps");
     fig.save("orbit.png");
-
 }

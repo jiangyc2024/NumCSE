@@ -1,10 +1,8 @@
 #include <fstream>
+#include <Eigen/Dense>
 
 #include <mgl2/mgl.h>
-
 #include <figure/figure.hpp>
-
-#include <Eigen/Dense>
 
 // Contains PGMObject
 #include "pgm.hpp"
@@ -58,23 +56,19 @@ void plot_freq(double focus) {
 
     // Plot values of $\mathbf{X}$.
     mglData Xd(D.cols(), D.rows(), D.data());
-
     mglGraph gr;
-//    gr.SetRange('c', 0, 1);
     gr.Colorbar("bcwyr");
     std::stringstream ss;
     ss << "Specturm with f = "
-        << focus
-        << ".";
+       << focus
+       << ".";
     gr.Title(ss.str().c_str());
-    gr.Axis();
-    gr.Tile(Xd, "bcwyr");
+    gr.Axis(); gr.Tile(Xd, "bcwyr");
     std::stringstream ss2;
     ss2 << "spectrum_focus="
         << focus
         << ".png";
     gr.WritePNG(ss2.str().c_str());
-
 }
 /* SAM_LISTING_END_0 */
 
@@ -85,19 +79,15 @@ void plot_freq(double focus) {
  */
 /* SAM_LISTING_BEGIN_2 */
 double high_frequency_content(const MatrixXd & M) {
-
-    int n = M.rows();
-    int m = M.cols();
-
+    int n = M.rows(),m = M.cols();
     double V = 0;
     for(unsigned int i = 0; i < M.rows(); ++i) {
         for(unsigned int j = 0; j < M.cols(); ++j) {
-            double a = n/2 - std::abs(i - n/2);
-            double b = m/2 - std::abs(j - m/2);
-            V += (a*a + b*b) * M(i,j);
+            double a = n/2. - std::abs(i - n/2.);
+            double b = m/2. - std::abs(j - m/2.);
+            V += (a*a + b*b) * M(i,j) * M(i,j);
         }
     }
-
     return V;
 }
 /* SAM_LISTING_END_2 */
@@ -143,11 +133,11 @@ void plotV() {
 /* SAM_LISTING_BEGIN_4 */
 double autofocus() {
     // Minimum focus
-    unsigned int min_focus = 0;
+    const double  min_focus = 0;
     // Maximum focus
-    unsigned int max_focus = 5;
+    const double max_focus = 5;
     // Min step
-    unsigned int min_step = 0.05;
+    const double min_step = 0.05;
     // Starting guess
     double f0 = (max_focus - min_focus) / 2.;
     // Finite differences increment
@@ -155,9 +145,9 @@ double autofocus() {
     // Starting step
     double step = max_focus / 2.;
     // Max number of iteration
-    unsigned int Niter = std::log2(
+    unsigned int Niter = std::ceil(std::log2(
                 (max_focus - min_focus) / min_step
-                );
+                ));
     // Returns $V(B(f))$
     auto computeV = [] (double focus) {
         return high_frequency_content(

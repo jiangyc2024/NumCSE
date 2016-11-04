@@ -19,10 +19,10 @@
 
 using namespace Eigen;
 
-/* @brief 
- * @param[in] 
- * @param[in] 
- * @param[out] 
+/* @brief Build a Toeplitz matrix $\VT$ from $\Vc$ and $\Vr$
+ * @param[in] c An $m$-dimensional vector, first column of $\VT$
+ * @param[in] r An $n$-dimensional vector, first row of $\VT$
+ * @param[out] T The $m \times n$ Toeplitz matrix from $\Vc$ and $\Vr$
  */
 MatrixXd toeplitz(const VectorXd & c, const VectorXd & r)
 {
@@ -37,20 +37,16 @@ MatrixXd toeplitz(const VectorXd & c, const VectorXd & r)
     int n = r.size();
     MatrixXd T(m, n);
     
-	for(int i=0; i<n; ++i) {
-		T.col(i).tail(m-i) = c.head(m-i);
-	}
-	for(int i=0; i<m; ++i) {
-		T.row(i).tail(n-i-1) = r.segment(1,n-i-1);
-	} // Do not reassign the diagonal!
+    // TODO: build Toeplitz matrix $\VT$
 
 	return T;
 }
 
-/* @brief 
- * @param[in] 
- * @param[in] 
- * @param[out] 
+/* @brief Do something...
+ * @param[in] c An $n$-dimensional vector
+ * @param[in] r An $n$-dimensional vector
+ * @param[in] x An $n$-dimensional vector
+ * @param[out] y An $n$-dimensional vector
  */
 VectorXd toepmatmult(const VectorXd & c, const VectorXd & r,
 					 const VectorXd & x)
@@ -66,10 +62,11 @@ VectorXd toepmatmult(const VectorXd & c, const VectorXd & r,
 	return y;
 }
 
-/* @brief 
- * @param[in] 
- * @param[in] 
- * @param[out] 
+/* @brief Do something...
+ * @param[in] c An $n$-dimensional vector
+ * @param[in] r An $n$-dimensional vector
+ * @param[in] x An $n$-dimensional vector
+ * @param[out] y An $n$-dimensional vector
  */
 VectorXd toepmult(const VectorXd & c, const VectorXd & r,
 				  const VectorXd & x)
@@ -92,10 +89,10 @@ VectorXd toepmult(const VectorXd & c, const VectorXd & r,
 	return y;
 }
 
-/* @brief 
- * @param[in] 
- * @param[in] 
- * @param[out] 
+/* @brief Do something...
+ * @param[in] h An $n$-dimensional vector
+ * @param[in] y An $n$-dimensional vector
+ * @param[out] x An $n$-dimensional vector
  */
 VectorXd ttmatsolve(const VectorXd & h, const VectorXd & y)
 {
@@ -113,10 +110,11 @@ VectorXd ttmatsolve(const VectorXd & h, const VectorXd & y)
 	return x;
 }
 
-/* @brief 
- * @param[in] 
- * @param[in] 
- * @param[out] 
+/* @brief Do something...
+ * @param[in] h An $n$-dimensional vector
+ * @param[in] y An $n$-dimensional vector
+ * @param[in] l An integer
+ * @param[out] x An $n$-dimensional vector
  */
 VectorXd ttrecsolve(const VectorXd & h, const VectorXd & y, int l)
 {
@@ -148,10 +146,10 @@ VectorXd ttrecsolve(const VectorXd & h, const VectorXd & y, int l)
 	return x;
 }
 
-/* @brief 
- * @param[in] 
- * @param[in] 
- * @param[out] 
+/* @brief Wrapper for 'ttrecsolve' for any size $n$
+ * @param[in] h An $n$-dimensional vector
+ * @param[in] y An $n$-dimensional vector
+ * @param[out] x An $n$-dimensional vector
  */
 VectorXd ttsolve(const VectorXd & h, const VectorXd & y)
 {
@@ -161,7 +159,7 @@ VectorXd ttsolve(const VectorXd & h, const VectorXd & y)
 		   
 	VectorXd x;
 	
-    // TODO: 
+    // TODO: wrap 'ttrecsolve' for any size $n$
 
 	return x;
 }

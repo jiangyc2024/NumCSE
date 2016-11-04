@@ -9,6 +9,18 @@
         "._SUPER_SECRET_FILE.cpp",
         "image.pgm"
     ],
+    "solutions" : [
+        "focus_plot.eps",
+        "focus_plot.png",
+        "image_focus=0.pgm",
+        "image_focus=1.pgm",
+        "image_focus=2.pgm",
+        "image_focus=3.pgm",
+        "spectrum_focus=0.png",
+        "spectrum_focus=1.png",
+        "spectrum_focus=2.png",
+        "spectrum_focus=3.png"
+    ],
     "lib" :
     ["pgm.hpp", "conv.hpp", "examples/"]
 }

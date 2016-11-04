@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <iostream>
 #include <iomanip>
+#include <limits>
 #include <vector>
 
 #include <Eigen/Dense>
@@ -95,15 +96,36 @@ VectorXd polyDiv(const VectorXd & uv, const VectorXd & u)
 	// Initialization
 	int mn = uv.size();
 	int m = u.size();
+	int dim = std::max(mn, m);
+	
+	VectorXd uv_tmp = uv;
+	uv_tmp.conservativeResize(dim);
+	VectorXd u_tmp  = u;
+	u_tmp.conservativeResize(dim);
 
-	VectorXd u_tmp = u;
-	u_tmp.conservativeResize(mn);
+/* SAM_LISTING_BEGIN_3 */
+#if SOLUTION
+	double epsilon = std::numeric_limits<double>::denorm_min();
+	for(int i=dim-1; i>=0; --i) { // Right-most value of longest vector
+		// is not necessarily numerically different than 0...
+		if(uv_tmp(i) > epsilon) {
+			// No problem
+			break;
+		} else if(u_tmp(i) > epsilon) {
+			std::quick_exit(EXIT_FAILURE);
+			break;
+		}
+	}
+#else // TEMPLATE
+	// TODO: divide polynomials $uv$ and $u$ efficiently (no remainder)
+#endif // TEMPLATE
+/* SAM_LISTING_END_3 */
 
 	VectorXd v;
 
 #if SOLUTION
 	Eigen::FFT<double> fft;
-	VectorXcd uv_tmp_ = fft.fwd(uv);
+	VectorXcd uv_tmp_ = fft.fwd(uv_tmp);
 	VectorXcd u_tmp_ = fft.fwd(u_tmp);
 	VectorXcd tmp = uv_tmp_.cwiseQuotient(u_tmp_);
 	v = fft.inv(tmp).real();
