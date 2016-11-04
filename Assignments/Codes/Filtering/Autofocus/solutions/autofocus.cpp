@@ -1,9 +1,6 @@
 #include <fstream>
-
 #include <mgl2/mgl.h>
-
 #include <figure/figure.hpp>
-
 #include <Eigen/Dense>
 
 // Contains PGMObject
@@ -32,11 +29,8 @@ void save_image(double focus) {
 
     // Create and save file
     std::stringstream ss;
-    ss << "image_focus="
-       << (int) focus
-       << ".pgm";
-    std::ofstream file(ss.str());
-    file << q;
+    ss << "image_focus="  << (int) focus << ".pgm";
+    std::ofstream file(ss.str()); file << q;
 }
 /* SAM_LISTING_END_1 */
 
@@ -58,22 +52,15 @@ void plot_freq(double focus) {
 
     // Plot values of $\mathbf{X}$.
     mglData Xd(D.cols(), D.rows(), D.data());
-
     mglGraph gr;
     gr.Colorbar("bcwyr");
     std::stringstream ss;
-    ss << "Specturm with f = "
-        << focus
-        << ".";
+    ss << "Specturm with f = " << focus << ".";
     gr.Title(ss.str().c_str());
-    gr.Axis();
-    gr.Tile(Xd, "bcwyr");
+    gr.Axis(); gr.Tile(Xd, "bcwyr");
     std::stringstream ss2;
-    ss2 << "spectrum_focus="
-        << focus
-        << ".png";
+    ss2 << "spectrum_focus="  << focus << ".png";
     gr.WritePNG(ss2.str().c_str());
-
 }
 /* SAM_LISTING_END_0 */
 
@@ -84,20 +71,15 @@ void plot_freq(double focus) {
  */
 /* SAM_LISTING_BEGIN_2 */
 double high_frequency_content(const MatrixXd & M) {
-
-    int n = M.rows();
-    int m = M.cols();
-
-    double V = 0;
-    for(unsigned int i = 0; i < M.rows(); ++i) {
-        for(unsigned int j = 0; j < M.cols(); ++j) {
-            double a = n/2 - std::abs(i - n/2);
-            double b = m/2 - std::abs(j - m/2);
-            V += (a*a + b*b) * M(i,j);
-        }
-    }
-
-    return V;
+  int n = M.rows(),m = M.cols();
+  double V = 0;
+  for(unsigned int i = 0; i < M.rows(); ++i) {
+    for(unsigned int j = 0; j < M.cols(); ++j) {
+      double a = n/2 - std::abs((double)(i - n/2));
+      double b = m/2 - std::abs((double)(j - m/2));
+      V += (a*a + b*b) * std::pow(M(i,j),2);
+    }}
+  return V;
 }
 /* SAM_LISTING_END_2 */
 
@@ -142,11 +124,11 @@ void plotV() {
 /* SAM_LISTING_BEGIN_4 */
 double autofocus() {
     // Minimum focus
-    unsigned int min_focus = 0;
+    const double  min_focus = 0;
     // Maximum focus
-    unsigned int max_focus = 5;
+    const double max_focus = 5;
     // Min step
-    unsigned int min_step = 0.05;
+    const double min_step = 0.05;
     // Starting guess
     double f0 = (max_focus - min_focus) / 2.;
     // Finite differences increment
