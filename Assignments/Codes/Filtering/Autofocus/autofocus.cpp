@@ -86,12 +86,13 @@ double high_frequency_content(const MatrixXd & M) {
   int n = M.rows(),m = M.cols();
   double V = 0;
 #if SOLUTION
-  for(unsigned int i = 0; i < M.rows(); ++i) {
-    for(unsigned int j = 0; j < M.cols(); ++j) {
-      double a = n/2 - std::abs((double)(i - n/2));
-      double b = m/2 - std::abs((double)(j - m/2));
-      V += (a*a + b*b) * std::pow(M(i,j),2);
-    }}
+    for(unsigned int i = 0; i < M.rows(); ++i) {
+        for(unsigned int j = 0; j < M.cols(); ++j) {
+            double a = n/2. - std::abs(i - n/2.);
+            double b = m/2. - std::abs(j - m/2.);
+            V += (a*a + b*b) * M(i,j) * M(i,j);
+        }
+    }
 #else // TEMPLATE
     // TODO: compute $V(\mathbf{M}).
 #endif
@@ -156,9 +157,9 @@ double autofocus() {
     // Starting step
     double step = max_focus / 2.;
     // Max number of iteration
-    unsigned int Niter = std::log2(
+    unsigned int Niter = std::ceil(std::log2(
                 (max_focus - min_focus) / min_step
-                );
+                ));
 #if SOLUTION
     // Returns $V(B(f))$
     auto computeV = [] (double focus) {
