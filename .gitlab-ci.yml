@@ -1,5 +1,5 @@
 before_script:
-  - sudo apt-get install --yes --force-yes -qq --no-install-recommends build-essential git cmake libmgl-dev libeigen3-dev libboost-all-dev
+  - sudo apt-get install --yes --force-yes -qq --no-install-recommends build-essential git cmake libmgl-dev libeigen3-dev libboost-all-dev fftw3-devel
 NumCSE:
 #  only:
 #    - master
