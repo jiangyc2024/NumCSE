@@ -84,6 +84,8 @@ int main(int argc, char **argv) {
 
     // Find best polynomial  (coefficients)
     VectorXd g = gauss_fit(d, m);
+    std::cout << g
+              << std::endl;
 
     // Find coordinates of best poly coeff.
     unsigned int neval = 100;
@@ -116,5 +118,4 @@ int main(int argc, char **argv) {
     fig.legend(0, 1);
     fig.save("orbit.eps");
     fig.save("orbit.png");
-
 }
