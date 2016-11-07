@@ -8,10 +8,10 @@
 
 #include <Eigen/Dense>
 
+#include <figure.hpp>
+
 #include "polyfit.hpp"
 #include "polyval.hpp"
-
-#include <figure.hpp>
 
 using namespace Eigen;
 
