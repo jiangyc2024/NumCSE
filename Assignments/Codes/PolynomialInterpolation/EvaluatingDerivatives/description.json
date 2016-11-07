@@ -1,0 +1,9 @@
+{
+    "author" : "",
+    "email" : "",
+    "contributors" : "",
+
+    "name": "EvaluatingDerivatives",
+    "all" : ["eval_deriv.cpp"],
+    "lib" : ["polyfit.hpp", "polyval.hpp"]
+}

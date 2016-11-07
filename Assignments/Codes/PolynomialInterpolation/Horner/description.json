@@ -1,0 +1,8 @@
+{
+    "author" : "",
+    "email" : "",
+    "contributors" : "",
+
+    "name": "Horner",
+    "all" : ["horner.cpp"]
+}
