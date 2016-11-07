@@ -2,10 +2,10 @@
 
 #include <Eigen/Dense>
 
+#include <figure.hpp>
+
 #include "polyfit.hpp"
 #include "polyval.hpp"
-
-#include <figure.hpp>
 
 using namespace Eigen;
 
@@ -51,7 +51,7 @@ VectorXd dipoleval(const VectorXd & t,
         ret(i) = dP(0);
     }
 #else // TEMPLATE
-    // TODO
+    // TODO Evaluate derivative of interpolating polynomial using AN-scheme
 #endif
     return ret;
 }
@@ -83,7 +83,7 @@ VectorXd dipoleval_alt(const VectorXd & t,
     return polyval(P, x);
 #else // TEMPLATE
     VectorXd P;
-    // TODO
+    // TODO Evaluate derivative of interpolating polynomial using polyfit/polyval
     return P;
 #endif
 }
