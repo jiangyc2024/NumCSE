@@ -20,7 +20,7 @@ using namespace Eigen;
 VectorXd dipoleval(const VectorXd & t,
                    const VectorXd & y,
                    const VectorXd & x) {
-    assert(t.size() = y.size()
+    assert(t.size() == y.size()
            && "t and y must have same size!");
 
     VectorXd ret;
@@ -68,7 +68,7 @@ VectorXd dipoleval(const VectorXd & t,
 VectorXd dipoleval_alt(const VectorXd & t,
                        const VectorXd & y,
                        const VectorXd & x) {
-    assert(t.size() = y.size()
+    assert(t.size() == y.size()
            && "t and y must have same size!");
 
     int n = y.size();
