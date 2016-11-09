@@ -30,6 +30,7 @@ include(CMake/Macros/add_all_subdirectories.cmake)
 include(CMake/Macros/get_target_name_numcse.cmake)
 include(CMake/Macros/add_executable_numcse.cmake)
 include(CMake/Macros/add_resources.cmake)
+include(CMake/Macros/set_eigen_fft_backend.cmake)
 
 #
 # setup compiler
@@ -191,3 +192,5 @@ include_directories(${CMAKE_SOURCE_DIR}/Utils) # oh dear
 #
 add_subdirectory(LectureCodes)
 add_subdirectory(Assignments)
+
+add_subdirectory(FFT/BackendTimings)

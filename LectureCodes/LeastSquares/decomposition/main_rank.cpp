@@ -22,7 +22,7 @@ int main(void) {
         A += VectorXd::Random(m_init)*RowVectorXd::Random(n_init);
     }
     cout << "rank_eigen(A) = " << rank_eigen(A) << endl;
-    cout << "rank_ncse(A) = " << rank_ncse(A) << endl;
+    cout << "rank_ncse(A) = " << rank_by_svd(A) << endl;
     MatrixXd Z = nullspace(A);
     int dz = Z.cols();
 

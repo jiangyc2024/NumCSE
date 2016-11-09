@@ -2,13 +2,12 @@
 #include <Eigen/Dense>
 #include "sinetransform.hpp"
 
-
 int main()
 {
   Eigen::VectorXd y = Eigen::VectorXd::LinSpaced(9, 0, 1);
   Eigen::VectorXd s;
 
   sinetransform(y, s);
-  std::cout << "s:\n" << s << "\n";
+  std::cout << s << std::endl;
   return 0;
 }

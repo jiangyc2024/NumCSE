@@ -1,15 +1,17 @@
-///////////////////////////////////////////////////////
-// (c) Seminar of Applied Mathematics ETH 2016, D-MATH
-// Author: Julien Gacon
-// Co-Author: Baranidharan Mohan 
-///////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+// (c) Seminar of Applied Mathematics ETH 2016, D-MATH  //
+// Author: Julien Gacon <jgacon@ethz.ch>                //
+// Co-Author: Baranidharan Mohan                        //
+//////////////////////////////////////////////////////////
 
+# ifndef MGL_PLOT_HPP
+# define MGL_PLOT_HPP
 
-#ifndef MGL_PLOT_H
-#define MGL_PLOT_H
+// system includes
+# include <iostream>
 
-#include <iostream>
-#include <mgl2/mgl.h>
+// MathGL include
+# include <mgl2/mgl.h>
 
 namespace mgl {
 
@@ -17,9 +19,10 @@ class MglPlot {
 public:
 
   MglPlot(const std::string& style)
-    : style_{style}
-    , legend_{""}
+    : style_(style),
+      legend_("")
   {}
+
   virtual void plot(mglGraph* gr) = 0;
   virtual bool is_3d() = 0;
 
@@ -47,13 +50,14 @@ protected:
   std::string legend_;
 };
 
+
 class MglPlot2d : public MglPlot {
 public:
 
   MglPlot2d(const mglData& xd, const mglData& yd, const std::string& style)
-    : MglPlot(style)
-    , xd_(xd)
-    , yd_(yd)
+    : MglPlot(style),
+      xd_(xd),
+      yd_(yd)
   {}
 
   void plot(mglGraph* gr) {
@@ -74,14 +78,15 @@ private:
   mglData yd_;
 };
 
+
 class MglPlot3d : public MglPlot {
 public:
 
   MglPlot3d(const mglData& xd, const mglData& yd, const mglData& zd, const std::string& style)
-    : MglPlot(style)
-    , xd_(xd)
-    , yd_(yd)
-    , zd_(zd)
+    : MglPlot(style),
+      xd_(xd),
+      yd_(yd),
+      zd_(zd)
   {}
 
   void plot(mglGraph* gr) {
@@ -103,12 +108,13 @@ private:
   mglData zd_;
 };
 
+
 class MglFPlot : public MglPlot {
 public:
 
   MglFPlot(const std::string& fplot_str, const std::string& style)
-    : MglPlot(style)
-    , fplot_str_(fplot_str)
+    : MglPlot(style),
+      fplot_str_(fplot_str)
   {}
 
   void plot(mglGraph* gr) {
@@ -128,13 +134,14 @@ private:
   std::string fplot_str_;
 };
 
+
 class MglSpy : public MglPlot {
 public:
 
   MglSpy(const mglData& xd, const mglData& yd, const std::string& style) 
-    : MglPlot(style)
-    , xd_(xd)
-    , yd_(yd)
+    : MglPlot(style),
+      xd_(xd),
+      yd_(yd)
   {}
 
   bool is_3d() {
@@ -152,12 +159,13 @@ private:
   mglData yd_;
 };
 
+
 class MglBarPlot : public MglPlot {
 public:
   MglBarPlot(const mglData& xd, const mglData& yd, const std::string& style) 
-    : MglPlot(style)
-    , xd_(xd)
-    , yd_(yd)
+    : MglPlot(style),
+      xd_(xd),
+      yd_(yd)
   {}
 
   bool is_3d() {
@@ -178,14 +186,15 @@ private:
   mglData yd_;
 };
 
+
 class MglTriPlot : public MglPlot {
 public:
   MglTriPlot(const mglData& Td, const mglData& xd, const mglData& yd, const std::string& style, const bool draw_numbers) 
-    : MglPlot(style)
-    , Td_(Td)
-    , xd_(xd)
-    , yd_(yd)
-    , draw_numbers_(draw_numbers)
+    : MglPlot(style),
+      Td_(Td),
+      xd_(xd),
+      yd_(yd),
+      draw_numbers_(draw_numbers)
   {}
 
   bool is_3d() {
@@ -210,6 +219,6 @@ private:
 };
 
 
-
 } // end namespace
-#endif
+
+# endif // MGL_PLOT_HPP

@@ -1,9 +1,7 @@
 #include <Eigen/Dense>
 #include <unsupported/Eigen/FFT>
 
-/*
- * 2 dimensional sinus transform on matrix Y
- */
+/* SAM_LISTING_BEGIN_0 */
 void sinetransform2d(const Eigen::MatrixXd& Y, Eigen::MatrixXd& S)
 {
 	int m = Y.rows();
@@ -11,6 +9,7 @@ void sinetransform2d(const Eigen::MatrixXd& Y, Eigen::MatrixXd& S)
 
 	Eigen::VectorXcd c;
 	Eigen::FFT<double> fft;
+	std::complex<double> i(0,1);
 
 	Eigen::MatrixXcd C(2*m+2,n);
 	C.row(0) = Eigen::VectorXcd::Zero(n);
@@ -18,16 +17,13 @@ void sinetransform2d(const Eigen::MatrixXd& Y, Eigen::MatrixXd& S)
 	C.row(m+1) = Eigen::VectorXcd::Zero(n);
 	C.middleRows(m+2, m) = -Y.colwise().reverse().cast<std::complex<double>>();
 
-	// fft on each column of C
+	// FFT on each column of C -- Eigen::fft only operates on vectors
 	for (int i=0; i<n; ++i)
 	{
 		fft.fwd(c,C.col(i));
 		C.col(i) = c;
 	}
-
-	std::cout << C << std::endl << std::endl;
-
-	std::complex<double> i(0,1);
+	
 	C.middleRows(1,m) = i*C.middleRows(1,m)/2.;
 
 	Eigen::MatrixXcd C2(2*n+2,m);
@@ -36,7 +32,7 @@ void sinetransform2d(const Eigen::MatrixXd& Y, Eigen::MatrixXd& S)
 	C2.row(n+1) = Eigen::VectorXcd::Zero(m);
 	C2.middleRows(n+2, n) = -C.middleRows(1,m).transpose().colwise().reverse();
 
-	// fft on each column of C2
+	// FFT on each column of C2 -- Eigen::fft only operates on vectors
 	for (int i=0; i<m; ++i)
 	{
 		fft.fwd(c,C2.col(i));
@@ -45,19 +41,4 @@ void sinetransform2d(const Eigen::MatrixXd& Y, Eigen::MatrixXd& S)
 
 	S = (i*C2.middleRows(1,n).transpose() / 2.).real();
 }
-
-/*
-void sinft2d(Y)
-{
-	[m,n] = size(Y);
-	C = fft([zeros(1,n); Y;...
-			 zeros(1,n);...
-			 -Y(end:-1:1,:)]);
-	C = i*C(2:m+1,:)'/2;
-	C = fft([zeros(1,m); C;...
-			 zeros(1,m);...
-			 -C(end:-1:1,:)]);
-	C= i*C(2:n+1,:)'/2;
-
-	return C;
-}*/
+/* SAM_LISTING_END_0 */

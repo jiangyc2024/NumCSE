@@ -2,7 +2,6 @@
 #include <Eigen/Dense>
 #include "sinetransform2d.hpp"
 
-
 int main()
 {
   Eigen::VectorXd x1 = Eigen::VectorXd::LinSpaced(4, 1, 4);

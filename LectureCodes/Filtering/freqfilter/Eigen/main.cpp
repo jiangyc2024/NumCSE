@@ -1,13 +1,13 @@
+# include "./freqfilter.hpp"
 # include <iostream>
-# include "freqfilter.hpp"
 
 int main() {
-  Eigen::VectorXd y = Eigen::VectorXd::LinSpaced(10, 0, 1);
-  Eigen::VectorXd low; Eigen::VectorXd high;
-  int k = 2;
-
-  freqfilter(y, k, low, high);
-  std::cout << "low:\n" << low << "\n";
-  std::cout << "high:\n" << high << "\n";
-  return 0;
+  const int n = 10,
+            k = 2;
+  VectorXd y = Eigen::ArrayXd::LinSpaced(n, 0, M_PI).cos().matrix();
+  VectorXd l, h;
+  freqfilter(y, k, l, h);
+  std::cout << "Low:\n" << l.transpose() << "\n"
+            << "High:\n" << h.transpose() << "\n";
+ return 0;
 }

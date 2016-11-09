@@ -1,10 +1,10 @@
-///////////////////////////////////////////////////////
-// (c) Seminar of Applied Mathematics ETH 2016, D-MATH
-// Author: Julien Gacon
-// Co-Author: Baranidharan Mohan 
-///////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+// (c) Seminar of Applied Mathematics ETH 2016, D-MATH  //
+// Author: Julien Gacon <jgacon@ethz.ch>                //
+// Co-Author: Baranidharan Mohan                        //
+//////////////////////////////////////////////////////////
 
-
+// system includes
 # include <iostream>
 # include <utility> // pair
 # include <vector>
@@ -15,6 +15,8 @@
 # include <limits>
 # include <cstring> // needed for length of const char*
 # include <memory>
+
+// own includes
 # include "MglPlot.hpp"
 # include "MglLabel.hpp"
 # include "MglStyle.hpp"
@@ -23,6 +25,13 @@
 namespace mgl {
 
 
+/*******************************************************************
+ *                    Universal functions                          *
+ *******************************************************************/
+
+/* prints mglData, used for debugging                       *
+ * PRE : -                                                  *
+ * POST: prints content of mglData argument to command line */
 void print(const mglData& d)
 {
   for (long i = 0; i < d.GetNx(); ++i){
@@ -31,190 +40,6 @@ void print(const mglData& d)
   std::cout << "\n";
 }
 
-/* constructor: set default style                                                                  *
- * PRE : pointer to mglGraph will not cease to exist until operations are performed on this Figure *
- * POST: default settings                                                                          */
-Figure::Figure()
-  : axis_(true),
-    grid_(false),
-    legend_(false),
-    legendPos_(1,1),
-    gridType_("xy"),
-    gridCol_("{h7}"),
-    has_3d_(false),
-    ranges_({ std::numeric_limits<double>::max(), std::numeric_limits<double>::lowest(),
-          std::numeric_limits<double>::max(), std::numeric_limits<double>::lowest()}),
-    zranges_({std::numeric_limits<double>::max(), std::numeric_limits<double>::lowest()}),
-    aspects_({1, 1, 1}), // normal axis, no shearing
-    autoRanges_(true),
-    styles_(MglStyle()),
-    fontSizePT_(4), // small font size
-    figHeight_(-1), // set to -1: later we will check if they have been changed manually, -1 means no
-    figWidth_(-1),  //            any other value will mean that they've been changed
-    plotHeight_(800), // quadratic plot, window size depends on wheter there are labels or not!
-    plotWidth_(800),
-    leftMargin_(-1),
-    topMargin_(-1)
-    {}
-
-
-/* setting height of the plot                                    *
- * leftMargin                                                    *
- *  v                                                            * 
- * +----------+                                                  *
- * |          |  < topMargin                                     *  
- * | +------+ |                                                  *
- * | | plot | |                                                  *
- * | +------+ |                                                  * 
- * |          |                                                  *
- * +----------+                                                  *
- *    window                                                     *
- *                                                               *
- * PRE : height should be > 0                                    *
- * POST: height of the plot will later be set to given height    */
-void Figure::setPlotHeight(const int height) {
-  plotHeight_ = height;
-}
-
-/* setting width of the plot                                   *
- * PRE : width should be > 0                                   *
- * POST: width of the plot will later be set to given width    */
-void Figure::setPlotWidth(const int width) {
-  plotWidth_ = width;
-}
-
-
-/* setting top margin                                            *
- * PRE : > 0                                                     *
- * POST: top margin will be set to top                           */
-void Figure::setTopMargin(const int top) {
-  topMargin_ = top;
-}
-
-/* setting left margin                                           *
- * PRE : > 0                                                     *
- * POST: left margin will be set to left                         */
-void Figure::setLeftMargin(const int left) {
-  leftMargin_ = left;
-}
-
-/* setting height of the graphic                                 *
- * PRE : height should be > 0                                    *
- * POST: height of the graphic will later be set to given height */
-void Figure::setHeight(const int height) {
-  figHeight_ = height;
-}
-
-/* setting width of the graphic                                *
- * PRE : width should be > 0                                   *
- * POST: width of the graphic will later be set to given width */
-void Figure::setWidth(const int width) {
-  figWidth_ = width;
-}
-
-/* setting the font size                                          *
- * PRE : size should be > 0                                       *
- * POST: font size of the graphic will later be set to given size */
-void Figure::setFontSize(const int size) {
-  fontSizePT_ = size;
-}
-
-/* enable to manually add legend entries       *
- * PRE : -                                     *
- * POST: label + style are added to the legend */
-void Figure::addlabel(const std::string& label, const std::string& style) {
-  additionalLabels_.push_back(std::pair<std::string, std::string>(label, style));
-}
-
-/* change grid settings                                                         *
- * PRE : -                                                                      *
- * POST: No grid if on is false, grid style is gridType, grid color is gridCol. *
- *       For those arguments which are not given default settings are used.     */
-void Figure::grid(bool on, const std::string& gridType,  const std::string& gridCol)
-{
-  if (on){
-    grid_ = true;
-  }
-  else {
-    grid_ = false;
-  }
-
-  gridType_ = gridType;
-  gridCol_ = gridCol;
-}
-
-/* setting x-axis label                         *
- * PRE : -                                      *
- * POST: xlabel initialized with given position */
-void Figure::xlabel(const std::string& label, double pos)
-{
-  xMglLabel_ = MglLabel(label, pos);
-}
-
-/* setting y-axis label                         *
- * PRE : -                                      *
- * POST: ylabel initialized with given position */
-void Figure::ylabel(const std::string& label, double pos)
-{
-  yMglLabel_ = MglLabel(label, pos);
-}
-
-/* set or unset legend                                       *
- * PRE : -                                                   *
- * POST: if on is true legend will be plotted, otherwise not */
-void Figure::legend(const double& xPos, const double& yPos)
-{
-  // print a warning if the user has given a position which will probably not appear on the plot
-  if (std::abs(xPos) > 2 || std::abs(yPos) > 2){
-    std::cerr << "* Figure - Warning * Legend may be out of the graphic due to large xPos or yPos\n";
-  }
-
-  // set legend_ to true so we know we have to activate the legend later
-  legend_ = true;
-  // keeping track of the position of the legend
-  legendPos_ = std::pair<double, double>(xPos, yPos);
-}
-
-/* plot a function given by a string                                                            *
- * PRE : proper format of the input, e.g.: "3*x^2 + exp(x)", see documentation for more details *
- * POST: plot the function in given style                                                       */
-MglPlot& Figure::fplot(const std::string& function, std::string style)
-{
-#if NDEBUG
-  std::cout << "Called fplot!\n";
-#endif
-
-  // checking if a style is given, 
-  // if yes: use it and delete it from the style-container,
-  // if no: get a style from the style container
-  if (style.size() == 0) {
-    style = styles_.get_next();
-  }
-  else {
-    styles_.eliminate(style);
-  }
-
-  // put the plot in the plot queue 
-  plots_.emplace_back(std::unique_ptr<MglFPlot>(new MglFPlot(function, style)));
-  return *plots_.back().get();
-}
-
-/* set ranges                                                   *
- * PRE : -                                                      *
- * POST: new ranges will be: x = [xMin, xMax], y = [yMin, yMax] */
-void Figure::ranges(const double& xMin, const double& xMax, const double& yMin, const double& yMax)
-{
-  // checking if the input is valid
-  if (xMin > xMax || yMin > yMax){
-    std::cerr << "In function Figure::ranges(): xMin must be smaller than xMax and yMin smaller than yMax!";
-  }
-
-  // ranges have been set manually, so disable automatic ranges setting
-  autoRanges_ = false;
-
-  // set ranges according to the input
-  ranges_ = {xMin, xMax, yMin, yMax};
-}
 
 /* get minimal positive ( > 0 ) value of mglData                            *
  * PRE : -                                                                  *
@@ -223,8 +48,7 @@ void Figure::ranges(const double& xMin, const double& xMax, const double& yMin, 
  *       print a warning to std::cerr if a value <= 0 encountered           *
  * NOTE: this function is only used to check ranges in logarithmic scaling  * 
  *       therefore the warning                                              */
-double minPositive(const mglData& d)
-{
+double minPositive(const mglData& d) {
   double result = std::numeric_limits<double>::max();
   bool print_warning = false;
 
@@ -247,12 +71,218 @@ double minPositive(const mglData& d)
   return result;
 }
 
+
+/*******************************************************************
+ *                   Figure class constructor                      *
+ *******************************************************************/
+
+/* constructor: set default style                                                                  *
+ * PRE : pointer to mglGraph will not cease to exist until operations are performed on this Figure *
+ * POST: default settings                                                                          */
+Figure::Figure()
+  : autoRanges_(true),
+    axis_(true),
+    barplot_(false),
+    grid_(false),
+    has_3d_(false),
+    legend_(false),
+    figHeight_(-1), // set to -1: later we will check if they have been changed manually, -1 means no
+    figWidth_(-1),  //            any other value will mean that they've been changed
+    plotHeight_(800), // quadratic plot, window size depends on wheter there are labels or not!
+    plotWidth_(800),
+    leftMargin_(-1),
+    topMargin_(-1),
+    fontSizePT_(4), // small font size
+    gridCol_("{h7}"),
+    gridType_("xy"),
+    title_(""),
+    xFunc_("x"),
+    yFunc_("y"),
+    zFunc_("z"),
+    legendPos_(1,1),
+    aspects_({1, 1, 1}), // normal axis, no shearing
+    ranges_({ std::numeric_limits<double>::max(), std::numeric_limits<double>::lowest(),
+          std::numeric_limits<double>::max(), std::numeric_limits<double>::lowest()}),
+    zranges_({std::numeric_limits<double>::max(), std::numeric_limits<double>::lowest()}),
+    styles_(MglStyle())
+    {}
+
+/*******************************************************************
+ *                 Non-template member functions                   *
+ *******************************************************************/
+
+/* setting height of the plot                                    *
+ * leftMargin                                                    *
+ *  v                                                            * 
+ * +----------+                                                  *
+ * |          |  < topMargin                                     *  
+ * | +------+ |                                                  *
+ * | | plot | |                                                  *
+ * | +------+ |                                                  * 
+ * |          |                                                  *
+ * +----------+                                                  *
+ *    window                                                     *
+ *                                                               *
+ * PRE : height should be > 0                                    *
+ * POST: height of the plot will later be set to given height    */
+void Figure::setPlotHeight(const int height) {
+  plotHeight_ = height;
+}
+
+
+/* setting width of the plot                                   *
+ * PRE : width should be > 0                                   *
+ * POST: width of the plot will later be set to given width    */
+void Figure::setPlotWidth(const int width) {
+  plotWidth_ = width;
+}
+
+
+/* setting top margin                                            *
+ * PRE : > 0                                                     *
+ * POST: top margin will be set to top                           */
+void Figure::setTopMargin(const int top) {
+  topMargin_ = top;
+}
+
+
+/* setting left margin                                           *
+ * PRE : > 0                                                     *
+ * POST: left margin will be set to left                         */
+void Figure::setLeftMargin(const int left) {
+  leftMargin_ = left;
+}
+
+
+/* setting height of the graphic                                 *
+ * PRE : height should be > 0                                    *
+ * POST: height of the graphic will later be set to given height */
+void Figure::setHeight(const int height) {
+  figHeight_ = height;
+}
+
+
+/* setting width of the graphic                                *
+ * PRE : width should be > 0                                   *
+ * POST: width of the graphic will later be set to given width */
+void Figure::setWidth(const int width) {
+  figWidth_ = width;
+}
+
+
+/* setting the font size                                          *
+ * PRE : size should be > 0                                       *
+ * POST: font size of the graphic will later be set to given size */
+void Figure::setFontSize(const int size) {
+  fontSizePT_ = size;
+}
+
+
+/* enable to manually add legend entries       *
+ * PRE : -                                     *
+ * POST: label + style are added to the legend */
+void Figure::addlabel(const std::string& label, const std::string& style) {
+  additionalLabels_.push_back(std::pair<std::string, std::string>(label, style));
+}
+
+
+/* change grid settings                                                         *
+ * PRE : -                                                                      *
+ * POST: No grid if on is false, grid style is gridType, grid color is gridCol. *
+ *       For those arguments which are not given default settings are used.     */
+void Figure::grid(bool on, const std::string& gridType,  const std::string& gridCol) {
+  if (on){
+    grid_ = true;
+  }
+  // although in the constructor grid_ is set to false this explicit setting to false
+  // is necessary as otherwise the grid couldn't be turned off once activated
+  else { 
+    grid_ = false;
+  }
+
+  gridType_ = gridType;
+  gridCol_ = gridCol;
+}
+
+
+/* setting x-axis label                         *
+ * PRE : -                                      *
+ * POST: xlabel initialized with given position */
+void Figure::xlabel(const std::string& label, double pos) {
+  xMglLabel_ = MglLabel(label, pos);
+}
+
+
+/* setting y-axis label                         *
+ * PRE : -                                      *
+ * POST: ylabel initialized with given position */
+void Figure::ylabel(const std::string& label, double pos) {
+  yMglLabel_ = MglLabel(label, pos);
+}
+
+
+/* set or unset legend                                       *
+ * PRE : -                                                   *
+ * POST: if on is true legend will be plotted, otherwise not */
+void Figure::legend(const double& xPos, const double& yPos) {
+  // print a warning if the user has given a position which will probably not appear on the plot
+  if (std::abs(xPos) > 2 || std::abs(yPos) > 2) {
+    std::cerr << "* Figure - Warning * Legend may be out of the graphic due to large xPos or yPos\n";
+  }
+
+  // set legend_ to true so we know we have to activate the legend later
+  legend_ = true;
+  // keeping track of the position of the legend
+  legendPos_ = std::pair<double, double>(xPos, yPos);
+}
+
+
+/* plot a function given by a string                                                            *
+ * PRE : proper format of the input, e.g.: "3*x^2 + exp(x)", see documentation for more details *
+ * POST: plot the function in given style                                                       */
+MglPlot& Figure::fplot(const std::string& function, std::string style) {
+#if NDEBUG
+  std::cout << "Called fplot!\n";
+#endif
+
+  // checking if a style is given, 
+  // if yes: use it and delete it from the style-container,
+  // if no: get a style from the style container
+  if (style.size() == 0) {
+    style = styles_.get_next();
+  }
+  else {
+    styles_.eliminate(style);
+  }
+
+  // put the plot in the plot queue 
+  plots_.emplace_back(std::unique_ptr<MglFPlot>(new MglFPlot(function, style)));
+  return *plots_.back().get();
+}
+
+
+/* set ranges                                                   *
+ * PRE : -                                                      *
+ * POST: new ranges will be: x = [xMin, xMax], y = [yMin, yMax] */
+void Figure::ranges(const double& xMin, const double& xMax, const double& yMin, const double& yMax) {
+  // checking if the input is valid
+  if (xMin > xMax || yMin > yMax){
+    std::cerr << "In function Figure::ranges(): xMin must be smaller than xMax and yMin smaller than yMax!";
+  }
+
+  // ranges have been set manually, so disable automatic ranges setting
+  autoRanges_ = false;
+
+  // set ranges according to the input
+  ranges_ = {xMin, xMax, yMin, yMax};
+}
+
+
 /* change ranges of plot                                                             *
  * PRE : -                                                                           *
  * POST: set ranges in such a way that all data is displayed                         *
  * NOTE: need the argument vertMargin to be able to set it to 0 when plotting in 3d  */
-void Figure::setRanges(const mglData& xd, const mglData& yd, double vertMargin)
-{
+void Figure::setRanges(const mglData& xd, const mglData& yd, double vertMargin) {
 #if NDEBUG
   std::cout << "setRanges for 2dim called\n";
 #endif
@@ -287,11 +317,11 @@ void Figure::setRanges(const mglData& xd, const mglData& yd, double vertMargin)
   ranges_[3] = std::max(yMax + yTot*vertMargin, ranges_[3]); // .. and top
 }
 
+
 /* change ranges of the plotted region in 3d                        *
  * PRE : -                                                          *
  * POST: set the ranges in such a way that all data will be visible */
-void Figure::setRanges(const mglData& xd, const mglData& yd, const mglData& zd)
-{
+void Figure::setRanges(const mglData& xd, const mglData& yd, const mglData& zd) {
 #if NDEBUG
   std::cout << "setRanges for 3dim called\n";
 #endif
@@ -318,16 +348,15 @@ void Figure::setRanges(const mglData& xd, const mglData& yd, const mglData& zd)
 /* (un-)set logscaling                                                               *
  * PRE : -                                                                           *
  * POST: linear, semilogx, semilogy or loglog scale according to bools logx and logy */
-void Figure::setlog(bool logx, bool logy, bool logz)
-{
+void Figure::setlog(bool logx, bool logy, bool logz) {
   // if logi is true set iFunc_ to "lg(i)", which will later be used to initialize the coordinate curvature (i=x,y,z)
-  if(logx){
+  if (logx){
     xFunc_ = "lg(x)";
   }
-  if(logy){
+  if (logy){
     yFunc_ = "lg(y)";
   }
-  if(logz){
+  if (logz){
     zFunc_ = "lg(z)";
   }
 }
@@ -335,8 +364,7 @@ void Figure::setlog(bool logx, bool logy, bool logz)
 /* setting title                                                    *
  * PRE : -                                                          *
  * POST: title_ variable set to 'text' with small font option (@)   */
-void Figure::title(const std::string& text)
-{
+void Figure::title(const std::string& text) {
   title_ = "@{" + text + "}";
 }
 
@@ -446,9 +474,25 @@ void Figure::save(const std::string& file) {
     gr_.Axis();
   }
 
+  // add axis at zero w/o labels if its a barplot
+  if (barplot_) {
+    // this macro block makes sure that NAN is defined
+    # ifndef NAN // check if NAN is already defined
+      # if MGL_USE_DOUBLE // if MathGL uses double use the double NAN
+        # define NAN (*(double*)mgl_nan)
+      # else
+        # define NAN (*(float*)(mgl_nan+1))
+      # endif
+    # endif
+
+    // NAN -> automatically setting axis in x-direction
+    gr_.SetOrigin(NAN, 0);
+    gr_.Axis("_");
+  }
+
   gr_.Box();
   // Plot
-  for(auto &p : plots_) {
+  for (auto &p : plots_) {
     p->plot(&gr_);
   }
 
@@ -463,7 +507,7 @@ void Figure::save(const std::string& file) {
       double bx = 1.3*double(leftMargin_)/figWidth_, // helper variables
              by = 1.1*double(topMargin_)/figHeight_;
 
-      if(xMglLabel_.str_.size() != 0) {
+      if (xMglLabel_.str_.size() != 0) {
         by *= 1.3;
       }
 
@@ -476,13 +520,12 @@ void Figure::save(const std::string& file) {
     }
   }
 
-
 #if NDEBUG
   std::cout << "Writing to file ... \n";
 #endif
 
   // Checking if to plot in png or eps and save file
-  if(file.find(".png") != std::string::npos){
+  if (file.find(".png") != std::string::npos){
     gr_.WritePNG(file.c_str());
   }
   else if (file.find(".eps") != std::string::npos){

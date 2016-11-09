@@ -1,6 +1,7 @@
 # ifndef TIMER_HPP
 # define TIMER_HPP
 
+# include <iostream>
 # include <chrono>
 # include <vector>
 

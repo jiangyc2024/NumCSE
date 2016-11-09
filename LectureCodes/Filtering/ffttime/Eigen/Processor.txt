@@ -1,0 +1,7 @@
+ubuntu 14.04 LTS
+Intel® Core™ i7-3517U CPU @ 1.90GHz × 4
+64-bit 
+
+gcc (Ubuntu 4.8.4-2ubuntu1~14.04.3) 4.8.4
+
+CXX_FLAGS = -O3 -DNDEBUG

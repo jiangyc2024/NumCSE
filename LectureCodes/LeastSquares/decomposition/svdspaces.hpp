@@ -15,13 +15,16 @@ using Eigen::MatrixXd;
 const double EPS = std::numeric_limits<double>::epsilon();
 
 /* SAM_LISTING_BEGIN_0 */
-// Computation of the numerical rank of a non-zero matrix by means of SVD
-// A complete implementation would have to test for \Blue{$\VA\approx\Vzero$}
-MatrixXd::Index rank_ncse(const MatrixXd &A, double tol = EPS) {
+// Computation of the numerical rank of a non-zero matrix by means of
+// singular value decomposition, cf. \eqref{eq:numrank}.
+MatrixXd::Index rank_by_svd(const MatrixXd &A, double tol = EPS) {
+  if (A.norm() == 0) return MatrixXd::Index(0);
   Eigen::JacobiSVD<MatrixXd> svd(A);
   const VectorXd sv = svd.singularValues(); // Get \com{sorted} singular values as vector
+  MatrixXd::Index n = sv.size(); 
   MatrixXd::Index r = 0;
-  while (sv(r) >= sv(0)*tol) r++; // Test \com{relative} size of singular values
+  // Test \com{relative} size of singular values
+  while ((r<n) && (sv(r) >= sv(0)*tol)) r++; 
   return r;
 }
 /* SAM_LISTING_END_0 */
