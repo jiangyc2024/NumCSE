@@ -89,11 +89,11 @@ VectorXd toepmult(const VectorXd & c, const VectorXd & r,
 	int n = c.size();
 
 	VectorXcd cr_tmp = c.cast<std::complex<double>>();
-	cr_tmp.conservativeResize(2*n);
+	cr_tmp.conservativeResize(2*n); // New values set to 0 by default
 	cr_tmp.tail(n-1).real() = r.tail(n-1).reverse();
 	
 	VectorXcd  x_tmp = x.cast<std::complex<double>>();
-	x_tmp.conservativeResize(2*n);
+	x_tmp.conservativeResize(2*n);  // New values set to 0 by default
 
     VectorXd y = pconvfft(cr_tmp, x_tmp).real();
 	y.conservativeResize(n);
@@ -114,7 +114,7 @@ VectorXd ttmatsolve(const VectorXd & h, const VectorXd & y)
 		   "h and y have different lengths!");
 	int n = h.size();
 	
-	VectorXd h_tmp(n);
+	VectorXd h_tmp(n); // All values set to 0 by default
 	h_tmp(0) = h(0);
 
     MatrixXd T = toeplitz(h,h_tmp);
