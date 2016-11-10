@@ -30,7 +30,7 @@ void trigipequidtiming() {
     for (int k = 0; k < Nruns; ++k) {
       t1.start(); trigpolycoeff(t, y, a, b); t1.lap();
       checksum += a(0) + b(0);
-      t2.start(); trigipequid(y, ac, bc); t2.lap();
+      t2.start(); std::tie(ac, bc) = trigipequid(y); t2.lap();
       checksum += ac(0) + bc(0);
     }
 
