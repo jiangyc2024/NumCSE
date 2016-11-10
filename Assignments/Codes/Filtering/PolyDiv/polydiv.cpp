@@ -117,7 +117,7 @@ VectorXd polyDiv(const VectorXd & uv, const VectorXd & u)
 		}
 	}
 #else // TEMPLATE
-	// TODO: divide polynomials $uv$ and $u$ efficiently (no remainder)
+	// TODO: make sure that $uv$ can be divided by $u$
 #endif // TEMPLATE
 /* SAM_LISTING_END_3 */
 
