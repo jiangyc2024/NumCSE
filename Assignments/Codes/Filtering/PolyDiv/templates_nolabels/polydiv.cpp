@@ -82,7 +82,7 @@ VectorXd polyDiv(const VectorXd & uv, const VectorXd & u)
 	VectorXd u_tmp  = u;
 	u_tmp.conservativeResize(dim);
 
-	// TODO: divide polynomials $uv$ and $u$ efficiently (no remainder)
+	// TODO: make sure that $uv$ can be divided by $u$
 
 	VectorXd v;
 
