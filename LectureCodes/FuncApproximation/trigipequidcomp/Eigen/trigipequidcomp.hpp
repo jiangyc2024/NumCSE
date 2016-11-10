@@ -6,12 +6,10 @@ using Eigen::ArrayXcd;
 using Eigen::VectorXcd;
 
 /* SAM_LISTING_BEGIN_0 */
-void trigipequidcomp(const VectorXcd& a, const VectorXcd& b, const unsigned N, VectorXcd& y) {
+VectorXcd trigipequidcomp(const VectorXcd& a, const VectorXcd& b, const unsigned N) {
   const unsigned n = a.size() - 1;
-  if (N < (2*n - 1)) {
-    std::cerr << "N is too small! Must be larger than 2*a.size() - 4.\n";
-    return;
-  }
+  assert (N >= (2*n - 1) && "N is too small! Must be larger than 2*a.size() - 4.");
+
   const std::complex<double> i(0,1); // imaginary unit
   // build vector \Blue{$\gamma$}
   VectorXcd gamma(2*n + 1);
@@ -30,9 +28,11 @@ void trigipequidcomp(const VectorXcd& a, const VectorXcd& b, const unsigned N, V
   VectorXcd v = fft.fwd(chCon).conjugate();
 
   // multiplicate with conjugate fourier matrix
-  y = VectorXcd(N);
+  VectorXcd y(N);
   for (unsigned k = 0; k < N; ++k) {
     y(k) = v(k) * std::exp( -2.*k*n*M_PI/N*i );
   }
+
+  return y;
 }
 /* SAM_LISTING_END_0 */

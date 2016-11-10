@@ -2,6 +2,7 @@
 # include <complex>
 # include <Eigen/Dense>
 # include "intpolyval_complex.hpp"
+# include "ipvclass.hpp"
 
 using Eigen::VectorXd;
 using Eigen::VectorXcd;
@@ -26,7 +27,8 @@ void trigpolyval(const VectorXd& t, const VectorXd& y, const VectorXd& x, Vector
   // Rescaled values, according to \Blue{$q(t) = e^{-2\pi int}\cdot p(e^{2\pi it})$}
   VectorXcd z = ((2*n*M_PI*i*t).array().exp() * y.array()).matrix();
   // Evaluation of interpolating polynomial on unit circle, see Code~\ref{barycentricformula}
-  VectorXcd p; intpolyval(tc, z, xc, p);
+  BarycPolyInterp<std::complex<double>> baryPolInt(tc);
+  auto p = baryPolInt.eval<VectorXcd>(z, xc);
   // Undo the scaling, see \eqref{eq:scale} 
   VectorXcd qc = ((-2*n*M_PI*i*x).array().exp() * p.array()).matrix();
   q = qc.real(); // imaginary part is zero, cut it off

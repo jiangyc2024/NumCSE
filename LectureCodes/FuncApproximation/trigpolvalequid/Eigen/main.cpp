@@ -13,7 +13,7 @@ int main() {
     VectorXd y = VectorXd::LinSpaced(n, 0, 1).array().pow(2).matrix();
 
     VectorXd q, x = VectorXd::LinSpaced(neval, 0, 1);
-    trigpolyvalequid(y, neval, q);
+    q = trigpolyvalequid(y, neval);
 
     fig_nonp.plot(x, q).label("N = " + std::to_string(n));
   }
@@ -26,11 +26,11 @@ int main() {
   fig_p.fplot("sin(2*pi*x)*cos(4*pi*x)", "k|").label("Exact");
 
   for (auto n : N) {
-    Eigen::ArrayXd t = Eigen::ArrayXd::LinSpaced(n, 0, 1),
-             y = (2*M_PI*t).sin()*(4*M_PI*t).cos();
+    Eigen::VectorXd t = Eigen::ArrayXd::LinSpaced(n, 0, 1);
+	Eigen::VectorXd y = (2*M_PI*t.array()).sin()*(4*M_PI*t.array()).cos();
 
     VectorXd q, x = VectorXd::LinSpaced(neval, 0, 1);
-    trigpolyvalequid(y, neval, q);
+    q = trigpolyvalequid(y, neval);
 
     fig_p.plot(x, q).label("N = " + std::to_string(n));
   }

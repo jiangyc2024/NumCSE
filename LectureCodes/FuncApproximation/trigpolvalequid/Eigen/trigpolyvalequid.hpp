@@ -10,16 +10,15 @@ using Eigen::VectorXd;
 // in equidistant points \Blue{$\frac{k}{N}$}, \Blue{$k=0,N-1$}
 // IN : \texttt{y} = vector of values to be interpolated
 //      \texttt{q} (COMPLEX!) will be used to save the return values
-void trigpolyvalequid(const VectorXd y, const int M, VectorXd& q) {
+template <class SCALAR>
+VectorXd trigpolyvalequid(const Eigen::Matrix<SCALAR,Eigen::Dynamic,1> y, const int M) {
   const int N = y.size();
-  if (N % 2 == 0) {
-    std::cerr << "Number of points must be odd!\n";
-    return;
-  }
+  assert(N % 2 != 0 && "Number of points must be odd!");
+
   const int n = (N - 1)/2;
   // computing coefficient \Blue{$\gamma_j$}, see \eqref{tip:FM}
   VectorXcd a, b;
-  trigipequid(y, a, b);
+  std::tie(a,b) = trigipequid(y);
 
   std::complex<double> i(0,1);
   VectorXcd gamma(2*n + 1);
@@ -43,6 +42,6 @@ void trigpolyvalequid(const VectorXd y, const int M, VectorXd& q) {
     q_complex(k) = v(k) * std::exp( -2.*k*n*M_PI/M*i );
   }
   // complex part is zero up to machine precision, cut off!
-  q = q_complex.real();
+  return q_complex.real();
 }
 /* SAM_LISTING_END_0 */

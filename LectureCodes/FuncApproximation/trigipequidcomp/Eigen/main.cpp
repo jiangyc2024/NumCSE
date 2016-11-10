@@ -5,8 +5,8 @@ int main() {
   const unsigned N = 10;
   VectorXd y = VectorXd::LinSpaced(5, 0, 1);
   VectorXcd a, b, q;
-  trigipequid(y, a, b);
-  trigipequidcomp(a, b, N, q);
+  std::tie(a,b) = trigipequid(y);
+  q = trigipequidcomp(a, b, N);
 
   std::cout << q << "\n";
 
