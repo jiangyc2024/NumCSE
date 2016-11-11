@@ -4,7 +4,6 @@
 #include <iomanip>
 #include <limits>
 #include <vector>
-#include <cstdlib>
 
 #include <Eigen/Dense>
 #include <unsupported/Eigen/FFT>
@@ -17,6 +16,16 @@
 
 using namespace Eigen;
 
+template <typename T>
+std::vector<size_t> ordered(std::vector<T> const& values) {
+    std::vector<size_t> indices(values.size());
+    std::iota(begin(indices), end(indices), static_cast<size_t>(0));
+    std::sort(begin(indices), end(indices),
+		[&](size_t a, size_t b) { return values[a] < values[b]; }
+    );
+    return indices;
+}
+
 /* @brief 
  * @param[in] x
  * @param[in] t
@@ -28,14 +37,15 @@ VectorXd tentBasCoeff(const VectorXd &x, const VectorXd &t,
 					  const VectorXd &y);
 
 {
+	assert(t.size() == y.size() && "t and y must have same size!")
+	
 	// Initialization
 	size_t n = x.size();
 	size_t m = t.size();
-	VectorXd x_sorted = x;
-	VectorXd t_sorted = t;
-	std::sort(x_sorted.begin(), x_sorted.end());
-	std::sort(t_sorted.begin(), t_sorted.end());
+	auto x_indices = ordered(x);
+	auto t_indices = ordered(t);
 	
+#if SOLUTION
 	size_t j;
 	
 	j = 0;
@@ -44,8 +54,8 @@ VectorXd tentBasCoeff(const VectorXd &x, const VectorXd &t,
 		bool nodeOK = false;
 		while(j < m) {
 			
-			bool inInterval = (x_sorted(i) < t_sorted(j)) &&
-							  (t_sorted(j) < x_sorted(i+1));
+			bool inInterval = (x(x_indices[i]) < t(t_indices[j])) &&
+							  (t(t_indices[j]) < x(x_indices[i+1]));
 			++j;
 			
 			if(inInterval) {
@@ -66,25 +76,29 @@ VectorXd tentBasCoeff(const VectorXd &x, const VectorXd &t,
 		bool isLarger = false;
 		while(j < m) {
 			
-			if(x_sorted(i) < t_sorted(j)) {
+			if(x(x_indices[i]) < t(t_indices[j])) {
 				isLarger = true;
 				break;
 			} else {
 				++j;
 			}
 			
-			if(j != 0) {
-				// s += nodo a sx con j-1
+			// Tent function of left node (descending)
+			if(j != 0 && isLarger) {
+				// Does not work if $x_i$ is outside of $[t_min,t_max]$
+				s(x_indices[i]) += y(t_indices[j-1]) *
+					   (x(x_indices[i])   - t(t_indices[j])) /
+				       (t(t_indices[j-1]) - t(t_indices[j]));
 			}
+			// Tent function of right node (ascending)
 			if(isLarger) {
-				// s += nodo a dx con j
+				// Does not work if there is no $t_j$ which is $> x_i$
+				s(x_indices[i]) += y(t_indices[j]) *
+					   (x(x_indices[i]) - t(t_indices[j-1])) /
+				       (t(t_indices[j]) - t(t_indices[j-1]));
 			}
 		}
-		
 	}
-
-#if SOLUTION
-	
 #else // TEMPLATE
     // TODO: 
 #endif // TEMPLATE
