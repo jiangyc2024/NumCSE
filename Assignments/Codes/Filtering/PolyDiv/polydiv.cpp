@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <limits>
 #include <vector>
+#include <cstdlib>
 
 #include <Eigen/Dense>
 #include <unsupported/Eigen/FFT>
@@ -112,8 +113,7 @@ VectorXd polyDiv(const VectorXd & uv, const VectorXd & u)
 			// No problem
 			break;
 		} else if(u_tmp(i) > epsilon) {
-			std::quick_exit(EXIT_FAILURE);
-			break;
+            std::exit(EXIT_FAILURE);
 		}
 	}
 #else // TEMPLATE
