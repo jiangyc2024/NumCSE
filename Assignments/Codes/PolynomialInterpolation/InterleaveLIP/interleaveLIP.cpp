@@ -27,10 +27,10 @@ std::vector<size_t> ordered(std::vector<T> const& values) {
 }
 
 /* @brief 
- * @param[in] x
- * @param[in] t
- * @param[in] y
- * @param[out] s
+ * @param[in] x 
+ * @param[in] t 
+ * @param[in] y 
+ * @param[out] s 
  */
 /* SAM_LISTING_BEGIN_0 */
 VectorXd tentBasCoeff(const VectorXd &x, const VectorXd &t,
@@ -107,7 +107,20 @@ VectorXd tentBasCoeff(const VectorXd &x, const VectorXd &t,
 }
 /* SAM_LISTING_END_0 */
 
-
+/* @brief 
+ * @param[in] x 
+ * @param[in] t 
+ * @param[in] y 
+ */
+/* SAM_LISTING_BEGIN_1 */
+class PwLinIP { 
+public:
+  PWLinIP(const VectorXd &x,const VectorXd &t,const VectorXd &y);
+  double operator (double arg) const; 
+private:
+  
+};
+/* SAM_LISTING_END_1 */
 
 int main() {
 	// Initialization
