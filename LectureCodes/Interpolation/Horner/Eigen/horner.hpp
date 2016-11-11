@@ -10,16 +10,18 @@
 using Eigen::VectorXd;
 
 /* SAM_LISTING_BEGIN_0 */
-/* Efficient evaluation of a polynomial in monomial representation 
- * using the Horner scheme \eqref{intp:Horner}
- * IN: p = vector of \com{monomial coefficients}, length = degree + 1
- *     x = vector of evaluation points 
- * OUT: y = polynomial evaluated at x */
-void horner(const VectorXd& p, const VectorXd& x, VectorXd& y) {
-  const VectorXd::Index n = x.size();
+// Efficient evaluation of a polynomial in monomial representation 
+// using the Horner scheme \eqref{intp:Horner}
+// IN: p = vector of \com{monomial coefficients}, length = degree + 1
+// (leading coefficient in p(0), \matlab convention \cref{rem:polyMatlab})
+//     t = vector of evaluation points \Blue{$t_i$}
+// OUT: y = polynomial evaluated at \Blue{$t_i$} 
+void horner(const VectorXd& p, const VectorXd& t, VectorXd& y) {
+  const VectorXd::Index n = t.size();
   y.resize(n); y = p(0)*VectorXd::Ones(n);
-  for (unsigned i = 1; i < p.size(); ++i) {
-    y = x.cwiseProduct(y) + p(i)*VectorXd::Ones(n);
-  }
+  for (unsigned i = 1; i < p.size(); ++i) 
+    y = t.cwiseProduct(y) + p(i)*VectorXd::Ones(n);
 }
 /* SAM_LISTING_END_0 */
+
+
