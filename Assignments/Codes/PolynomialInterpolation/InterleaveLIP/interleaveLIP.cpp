@@ -28,7 +28,10 @@ public:
 	PwLinIP(const VectorXd &x, const VectorXd &t, const VectorXd &y);
 	double operator()(double arg) const;
 private:
-	MatrixXd f;
+	VectorXd x_;
+	VectorXd t_;
+	VectorXd y_;
+	VectorXd s_;
 	VectorXd tentBasCoeff(const VectorXd &x, const VectorXd &t,
 						  const VectorXd &y) const;
 };
@@ -46,7 +49,6 @@ VectorXd PwLinIP::tentBasCoeff(const VectorXd &x, const VectorXd &t,
 
 {
 	// Initialization
-	size_t m = x.size();
 	size_t n = t.size();
 	auto x_indices = ordered(x);
 	auto t_indices = ordered(t);
@@ -54,13 +56,17 @@ VectorXd PwLinIP::tentBasCoeff(const VectorXd &x, const VectorXd &t,
 	// sorted vectors and e.g. for each knot $x_j$ looks
 	// for the closest node $t_{i1}$ and the next closest node $t_{i2}$.
 	// However, such solution will not become more efficient
-	// if you give as input already sorted vectors.
+	// if you give as input already sorted vectors: for each knot $x_j$
+	// you will always have to iterate along the sorted vector $t$
+	// to find the included node $t_i$.
+	
+	VectorXd s = VectorXd::Zero(n);
 	
 #if SOLUTION
-	size_t i;
-	
-	i = 0;
-	for(size_t j=0; j<(m-1); ++j) {
+	// Check condition of subproblem 5.5.c
+	size_t i = 0;
+	size_t k;
+	for(size_t j=0; j<(n-1); ++j) {
 		
 		bool nodeOK = false;
 		while(i < n) {
@@ -70,6 +76,11 @@ VectorXd PwLinIP::tentBasCoeff(const VectorXd &x, const VectorXd &t,
 			
 			if(inInterval) {
 				nodeOK = true;
+				if(i == j) { // Index of interval which contains 2 nodes
+							 // $t_i$ and $t_{i+1}$. After that, we have
+							 // $i > j$...
+					k = j;
+				}
 				break;
 			} else {
 				++i;
@@ -80,36 +91,31 @@ VectorXd PwLinIP::tentBasCoeff(const VectorXd &x, const VectorXd &t,
 		}
 	}
 	
-	VectorXd s = VectorXd::Zero(n);
+	// 1. Find slope $\gamma$ and intercept $\beta$
+	// in interval $k$ with 2 nodes
+	// 2. Find $s_k$ and $s_{k+1}$
+	double gamma = (y(t_indices[k+1]) - y(t_indices[k])) /
+				   (t(t_indices[k+1]) - t(t_indices[k]));
+	double beta = y(t_indices[k]) - gamma * t(t_indices[k]);
 	
-	i = 0;
-	for(size_t j=0; j<m; ++j) {
+	s(x_indices[k])   = gamma * x(x_indices[k])   + beta;
+	s(x_indices[k+1]) = gamma * x(x_indices[k+1]) + beta;
+	
+	
+	
+	for(j=k-1; j>=0; --j) {
+		gamma = (s(x_indices[j+1]) - y(t_indices[j])) /
+				(x(x_indices[j+1]) - t(t_indices[j]));
+		beta = y(t_indices[j]) - gamma * t(t_indices[j]);
 		
-		bool isLarger = false;
-		while(i < n) {
-			
-			if(x(x_indices[j]) < t(t_indices[i])) {
-				isLarger = true;
-				break;
-			} else {
-				++i;
-			}
-			
-			// Tent function of left node (descending)
-			if(i != 0 && isLarger) {
-				// Does not run if $x_j$ is outside of $[t_min,t_max]$
-				s(x_indices[j]) += y(t_indices[i-1]) *
-					   (x(x_indices[j])   - t(t_indices[i])) /
-				       (t(t_indices[i-1]) - t(t_indices[i]));
-			}
-			// Tent function of right node (ascending)
-			if(isLarger) {
-				// Does not run if there is no $t_i$ which is $> x_j$
-				s(x_indices[j]) += y(t_indices[i]) *
-					   (x(x_indices[j]) - t(t_indices[i-1])) /
-				       (t(t_indices[i]) - t(t_indices[i-1]));
-			}
-		}
+		s(x_indices[j]) = gamma * x(x_indices[j]) + beta;
+	}
+	for(j=k+2; j<n; ++j) {
+		gamma = (y(t_indices[j]) - s(x_indices[j-1])) /
+				(t(t_indices[j]) - x(x_indices[j-1]));
+		beta = s(x_indices[j-1]) - gamma * x(x_indices[j-1]);
+		
+		s(x_indices[j]) = gamma * x(x_indices[j]) + beta;
 	}
 #else // TEMPLATE
     // TODO: 
@@ -123,24 +129,37 @@ VectorXd PwLinIP::tentBasCoeff(const VectorXd &x, const VectorXd &t,
 PwLinIP::PwLinIP(const VectorXd &x, const VectorXd &t,
 				 const VectorXd &y)
 {
-	assert(t.size() == y.size() && "t and y must have same size!");
+	assert(t.size() == y.size() && t.size() == x.size() &&
+		  "x, t, y must have same size!");
 	
-	f.resize(t.size(), 2);
+	size_t n = t.size();
+	x_.resize(n);
+	t_.resize(n);
+	y_.resize(n);
+	
+	auto x_indices = ordered(x);
+	for(size_t i=0; i < n; ++i) {
+		x_(i) = x[x_indices[i]];
+	}
 	
 	auto t_indices = ordered(t);
-	
-	for(size_t i=0; i < t.size(); ++i) {
-		f.row(i) << t[t_indices[i]], y[t_indices[i]];
+	for(size_t i=0; i < n; ++i) {
+		t_(i) = t[t_indices[i]];
+		y_(i) = y[t_indices[i]];
 	}
+	
+	s_ = tentBasCoeff(x_, t_, y_);
 }
 
 double PwLinIP::operator()(double arg) const
 {
-	VectorXd x(1); x << arg;
 	
-	VectorXd s = tentBasCoeff(x, f.col(0), f.col(1));
 	
-	return s(0);
+	
+	
+	
+	
+	return;
 }
 /* SAM_LISTING_END_2 */
 
