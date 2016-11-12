@@ -9,6 +9,7 @@
 #include <iostream>
 #include <iomanip>
 #include <limits>
+#include <utility>
 #include <vector>
 
 #include <Eigen/Dense>
@@ -18,80 +19,81 @@
 
 using namespace Eigen;
 
-/* @brief Polynomial multiplication -- naive implementation
- * @param[in] u Vector of coefficients of polynomial $u$
- * @param[in] v Vector of coefficients of polynomial $v$
- * @param[out] uv Vector of coefficients of polynomial $uv = u*v$
+template <typename T>
+std::vector<size_t> ordered(std::vector<T> const& values) {
+    std::vector<size_t> indices(values.size());
+    std::iota(begin(indices), end(indices), static_cast<size_t>(0));
+    std::sort(begin(indices), end(indices),
+		[&](size_t a, size_t b) { return values[a] < values[b]; }
+    );
+    return indices;
+}
+
+/* @brief 
+ * @param[in] x 
+ * @param[in] t 
+ * @param[in] y 
  */
-VectorXd polyMult_naive(const VectorXd & u, const VectorXd & v)
-{
-    // Initialization
-    int m = u.size();
-    int n = v.size();
-    int dim = std::max(m, n);
-    
-    VectorXd u_tmp = u;
-    u_tmp.conservativeResize(dim);
-    VectorXd v_tmp = v;
-    v_tmp.conservativeResize(dim);
-    
-    VectorXd uv(m+n-1); // Degree is (m-1) + (n-1)
+class PwLinIP { 
+public:
+  PWLinIP(const VectorXd &x, const VectorXd &t, const VectorXd &y);
+  double operator(double arg) const;
+private:
+  MatrixXd f;
+  VectorXd tentBasCoeff(const VectorXd &x, const VectorXd &t,
+						const VectorXd &y);
+};
 
-    // TODO: multiply polynomials $u$ and $v$ naively
+/* @brief 
+ * @param[in] x 
+ * @param[in] t 
+ * @param[in] y 
+ * @param[out] s 
+ */
+VectorXd PWLinIP::tentBasCoeff(const VectorXd &x, const VectorXd &t,
+							   const VectorXd &y)
 
-	return uv;
-}
-
-/* @brief Polynomial multiplication -- efficient implementation
- * @param[in] u Vector of coefficients of polynomial $u$
- * @param[in] v Vector of coefficients of polynomial $v$
- * @param[out] uv Vector of coefficients of polynomial $uv = u*v$
-*/
-VectorXd polyMult_fast(const VectorXd & u, const VectorXd & v)
 {
 	// Initialization
-	int m = u.size();
-	int n = v.size();
-
-	VectorXd u_tmp = u;
-	u_tmp.conservativeResize(u.size() + n - 1);
-	VectorXd v_tmp = v;
-	v_tmp.conservativeResize(v.size() + m - 1);
-
-	VectorXd uv;
-
-// TODO: multiply polynomials $u$ and $v$ efficiently
-
-	return uv;
-}
-
-/* @brief Polynomial division -- efficient implementation
- * @param[in] uv Vector of coefficients of polynomial $uv$
- * @param[in] u Vector of coefficients of polynomial $u$
- * @param[out] uv Vector of coefficients of polynomial $v$
- * from $uv = u*v$ (division without remainder)
-*/
-VectorXd polyDiv(const VectorXd & uv, const VectorXd & u)
-{
-	// Initialization
-	int mn = uv.size();
-	int m = u.size();
-	int dim = std::max(mn, m);
+	size_t m = x.size();
+	size_t n = t.size();
+	auto x_indices = ordered(x);
+	auto t_indices = ordered(t);
+	// You can also implement a solution which does not need
+	// sorted vectors and e.g. for each knot $x_j$ looks
+	// for the closest node $t_{i1}$ and the next closest node $t_{i2}$.
+	// However, such solution will not become more efficient
+	// if you give as input already sorted vectors.
 	
-	VectorXd uv_tmp = uv;
-	uv_tmp.conservativeResize(dim);
-	VectorXd u_tmp  = u;
-	u_tmp.conservativeResize(dim);
+    // TODO: 
 
-	// TODO: make sure that $uv$ can be divided by $u$
-
-	VectorXd v;
-
-	// TODO: divide polynomials $uv$ and $u$ efficiently (no remainder)
-
-	v.conservativeResize(mn - m + 1); // (mn-1) - (m-1) + 1
-	return v;
+	return s;
 }
+
+PWLinIP::PWLinIP(const VectorXd &x, const VectorXd &t,
+				 const VectorXd &y)
+{
+	assert(t.size() == y.size() && "t and y must have same size!");
+	
+	f.resize(t.size(), 2);
+	
+	auto t_indices = ordered(t);
+	
+	for(size_t i=0; i < t.size(); ++i) {
+		f.row(i) << t[t_indices[i]], y[t_indices[i]];
+	}
+}
+
+double PWLinIP::operator(double arg) const
+{
+	VectorXd x(1); x << arg;
+	
+	VectorXd s = tentBasCoeff(x, f.col(0), f.col(1));
+	
+	return s(0);
+}
+
+
 
 int main() {
 	// Initialization

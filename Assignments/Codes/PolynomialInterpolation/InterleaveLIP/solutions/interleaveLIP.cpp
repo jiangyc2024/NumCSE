@@ -1,14 +1,20 @@
 #include <algorithm>
 #include <cstdlib>
 #include <iostream>
-#include <numeric>
+#include <iomanip>
+#include <limits>
+#include <utility>
 #include <vector>
 
 #include <Eigen/Dense>
+#include <unsupported/Eigen/FFT>
+
+#include "timer.h"
 
 using namespace Eigen;
 
-std::vector<size_t> ordered(const VectorXd &values) {
+template <typename T>
+std::vector<size_t> ordered(std::vector<T> const& values) {
     std::vector<size_t> indices(values.size());
     std::iota(begin(indices), end(indices), static_cast<size_t>(0));
     std::sort(begin(indices), end(indices),
@@ -25,12 +31,12 @@ std::vector<size_t> ordered(const VectorXd &values) {
 /* SAM_LISTING_BEGIN_1 */
 class PwLinIP { 
 public:
-	PwLinIP(const VectorXd &x, const VectorXd &t, const VectorXd &y);
-	double operator()(double arg) const;
+  PWLinIP(const VectorXd &x, const VectorXd &t, const VectorXd &y);
+  double operator(double arg) const;
 private:
-	MatrixXd f;
-	VectorXd tentBasCoeff(const VectorXd &x, const VectorXd &t,
-						  const VectorXd &y) const;
+  MatrixXd f;
+  VectorXd tentBasCoeff(const VectorXd &x, const VectorXd &t,
+						const VectorXd &y);
 };
 /* SAM_LISTING_END_1 */
 
@@ -41,8 +47,8 @@ private:
  * @param[out] s 
  */
 /* SAM_LISTING_BEGIN_0 */
-VectorXd PwLinIP::tentBasCoeff(const VectorXd &x, const VectorXd &t,
-							   const VectorXd &y) const
+VectorXd PWLinIP::tentBasCoeff(const VectorXd &x, const VectorXd &t,
+							   const VectorXd &y)
 
 {
 	// Initialization
@@ -56,7 +62,6 @@ VectorXd PwLinIP::tentBasCoeff(const VectorXd &x, const VectorXd &t,
 	// However, such solution will not become more efficient
 	// if you give as input already sorted vectors.
 	
-#if SOLUTION
 	size_t i;
 	
 	i = 0;
@@ -111,16 +116,13 @@ VectorXd PwLinIP::tentBasCoeff(const VectorXd &x, const VectorXd &t,
 			}
 		}
 	}
-#else // TEMPLATE
-    // TODO: 
-#endif // TEMPLATE
 
 	return s;
 }
 /* SAM_LISTING_END_0 */
 
 /* SAM_LISTING_BEGIN_2 */
-PwLinIP::PwLinIP(const VectorXd &x, const VectorXd &t,
+PWLinIP::PWLinIP(const VectorXd &x, const VectorXd &t,
 				 const VectorXd &y)
 {
 	assert(t.size() == y.size() && "t and y must have same size!");
@@ -134,7 +136,7 @@ PwLinIP::PwLinIP(const VectorXd &x, const VectorXd &t,
 	}
 }
 
-double PwLinIP::operator()(double arg) const
+double PWLinIP::operator(double arg) const
 {
 	VectorXd x(1); x << arg;
 	
@@ -144,6 +146,76 @@ double PwLinIP::operator()(double arg) const
 }
 /* SAM_LISTING_END_2 */
 
-int main() {
 
+
+int main() {
+	// Initialization
+	int m = 4;
+	int n = 3;
+	VectorXd u(m);
+	VectorXd v(n);
+	u << 1, 2, 3, 4;
+	v << 10, 20, 30;
+
+	// Compute with both functions
+	std::cout << "Check that all functions are correct" << std::endl;
+
+	VectorXd uv_1 = polyMult_naive(u, v);
+	std::cout << "Naive multiplicator: "
+			  << std::endl << uv_1 << std::endl;
+
+	VectorXd uv_2 = polyMult_fast(u, v);
+	std::cout << "Efficient multiplicator: "
+			  << std::endl << uv_2 << std::endl;
+
+	std::cout << "Error = " << (uv_1 - uv_2).norm() << std::endl;
+
+	VectorXd v_new = polyDiv(uv_2, u);
+	std::cout << "Error of efficient division = " << (v - v_new).norm()
+			  << std::endl;
+
+	// Initialization
+	int repeats = 3;
+	VectorXd uv;
+
+	// Compute runtimes of different multiplicators
+	std::cout << "Runtime comparison of naive v efficient multiplicator"
+			  << std::endl;
+
+	// Header
+	std::cout << std::setw(20) << "n"
+			  << std::setw(20) << "time naive [s]"
+			  << std::setw(20) << "time fast [s]"
+			  << std::endl;
+
+	// Loop over vector size
+	for(int p = 2; p <= 15; ++p) {
+		// Timers
+		Timer tm_naive, tm_effic;
+		int n = pow(2,p);
+
+		// Repeat test many times
+		for(int r = 0; r < repeats; ++r) {
+			u = VectorXd::Random(n);
+			v = VectorXd::Random(n);
+
+			// Compute runtime of naive multiplicator
+			tm_naive.start();
+			uv = polyMult_naive(u, v);
+			tm_naive.stop();
+			// Compute runtime of efficient multiplicator
+			tm_effic.start();
+			uv = polyMult_fast(u, v);
+			tm_effic.stop();
+		}
+		
+		
+		// Print runtimes
+		std::cout << std::setw(20) << n
+				  << std::scientific << std::setprecision(3)
+				  << std::setw(20) << tm_naive.min()
+				  << std::setw(20) << tm_effic.min()
+				  << std::endl;
+	}
+	
 }

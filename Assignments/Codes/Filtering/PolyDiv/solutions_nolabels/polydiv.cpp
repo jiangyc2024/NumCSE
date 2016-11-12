@@ -5,6 +5,7 @@
 //// This file is part of the NumCSE repository.
 ////
 #include <algorithm>
+#include <cstdlib>
 #include <iostream>
 #include <iomanip>
 #include <limits>
@@ -99,8 +100,7 @@ VectorXd polyDiv(const VectorXd & uv, const VectorXd & u)
 			// No problem
 			break;
 		} else if(u_tmp(i) > epsilon) {
-			std::quick_exit(EXIT_FAILURE);
-			break;
+            std::exit(EXIT_FAILURE);
 		}
 	}
 
