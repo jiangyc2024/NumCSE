@@ -92,7 +92,7 @@ VectorXd PwLinIP::tentBasCoeff(const VectorXd &x, const VectorXd &t,
 	}
 	
 	// 1. Find slope $\gamma$ and intercept $\beta$
-	// in interval $k$ with 2 nodes
+	// in interval with 2 nodes $k$
 	// 2. Find $s_k$ and $s_{k+1}$
 	double gamma = (y(t_indices[k+1]) - y(t_indices[k])) /
 				   (t(t_indices[k+1]) - t(t_indices[k]));
@@ -101,16 +101,18 @@ VectorXd PwLinIP::tentBasCoeff(const VectorXd &x, const VectorXd &t,
 	s(x_indices[k])   = gamma * x(x_indices[k])   + beta;
 	s(x_indices[k+1]) = gamma * x(x_indices[k+1]) + beta;
 	
-	
-	
-	for(j=k-1; j>=0; --j) {
+	// Find intercept, slope and value $s$ at the lower bound $x$
+	// for all intervals on the left of interval with 2 nodes $k$
+	for(int j=k-1; j>=0; --j) {
 		gamma = (s(x_indices[j+1]) - y(t_indices[j])) /
 				(x(x_indices[j+1]) - t(t_indices[j]));
 		beta = y(t_indices[j]) - gamma * t(t_indices[j]);
 		
 		s(x_indices[j]) = gamma * x(x_indices[j]) + beta;
 	}
-	for(j=k+2; j<n; ++j) {
+	// Find intercept, slope and value $s$ at the upper bound $x$
+	// for all intervals on the right of interval with 2 nodes $k$
+	for(int j=k+2; j<n; ++j) {
 		gamma = (y(t_indices[j]) - s(x_indices[j-1])) /
 				(t(t_indices[j]) - x(x_indices[j-1]));
 		beta = s(x_indices[j-1]) - gamma * x(x_indices[j-1]);
@@ -138,12 +140,12 @@ PwLinIP::PwLinIP(const VectorXd &x, const VectorXd &t,
 	y_.resize(n);
 	
 	auto x_indices = ordered(x);
-	for(size_t i=0; i < n; ++i) {
+	for(size_t i=0; i<n; ++i) {
 		x_(i) = x[x_indices[i]];
 	}
 	
 	auto t_indices = ordered(t);
-	for(size_t i=0; i < n; ++i) {
+	for(size_t i=0; i<n; ++i) {
 		t_(i) = t[t_indices[i]];
 		y_(i) = y[t_indices[i]];
 	}
@@ -152,14 +154,26 @@ PwLinIP::PwLinIP(const VectorXd &x, const VectorXd &t,
 }
 
 double PwLinIP::operator()(double arg) const
-{
-	
-	
-	
-	
-	
-	
-	return;
+{	
+	if(arg < x_(0) || arg > x_(x_.size()-1)) {
+		
+		return 0;
+	} else {
+		
+		size_t j = 1; // Already checked that arg >= x_(0)
+		while(j < x_.size()) {
+			if(arg < x_(j)) {
+				break;
+			} else {
+				++j;
+			}
+		}
+		
+		double gamma = (s_(j) - s_(j-1)) / (x_(j) - x_(j-1));
+		double beta = s_(j-1) - gamma * x_(j-1);
+		
+		return gamma * arg + beta;
+	}
 }
 /* SAM_LISTING_END_2 */
 
