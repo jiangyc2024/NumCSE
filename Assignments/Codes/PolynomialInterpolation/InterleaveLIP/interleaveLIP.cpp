@@ -3,6 +3,7 @@
 #include <iostream>
 #include <iomanip>
 #include <limits>
+#include <utility>
 #include <vector>
 
 #include <Eigen/Dense>
@@ -30,37 +31,58 @@ std::vector<size_t> ordered(std::vector<T> const& values) {
  * @param[in] x 
  * @param[in] t 
  * @param[in] y 
+ */
+/* SAM_LISTING_BEGIN_1 */
+class PwLinIP { 
+public:
+  PWLinIP(const VectorXd &x, const VectorXd &t, const VectorXd &y);
+  double operator(double arg) const;
+private:
+  MatrixXd f;
+  VectorXd tentBasCoeff(const VectorXd &x, const VectorXd &t,
+						const VectorXd &y);
+};
+/* SAM_LISTING_END_1 */
+
+/* @brief 
+ * @param[in] x 
+ * @param[in] t 
+ * @param[in] y 
  * @param[out] s 
  */
 /* SAM_LISTING_BEGIN_0 */
-VectorXd tentBasCoeff(const VectorXd &x, const VectorXd &t,
-					  const VectorXd &y);
+VectorXd PWLinIP::tentBasCoeff(const VectorXd &x, const VectorXd &t,
+							   const VectorXd &y)
 
 {
-	assert(t.size() == y.size() && "t and y must have same size!")
-	
 	// Initialization
-	size_t n = x.size();
-	size_t m = t.size();
+	size_t m = x.size();
+	size_t n = t.size();
 	auto x_indices = ordered(x);
 	auto t_indices = ordered(t);
+	// You can also implement a solution which does not need
+	// sorted vectors and e.g. for each knot $x_j$ looks
+	// for the closest node $t_{i1}$ and the next closest node $t_{i2}$.
+	// However, such solution will not become more efficient
+	// if you give as input already sorted vectors.
 	
 #if SOLUTION
-	size_t j;
+	size_t i;
 	
-	j = 0;
-	for(size_t i=0; i<(n-1); ++i) {
+	i = 0;
+	for(size_t j=0; j<(m-1); ++j) {
 		
 		bool nodeOK = false;
-		while(j < m) {
+		while(i < n) {
 			
-			bool inInterval = (x(x_indices[i]) < t(t_indices[j])) &&
-							  (t(t_indices[j]) < x(x_indices[i+1]));
-			++j;
+			bool inInterval = (x(x_indices[j]) < t(t_indices[i])) &&
+							  (t(t_indices[i]) < x(x_indices[j+1]));
 			
 			if(inInterval) {
 				nodeOK = true;
 				break;
+			} else {
+				++i;
 			}
 		}
 		if(!nodeOK) {
@@ -70,32 +92,32 @@ VectorXd tentBasCoeff(const VectorXd &x, const VectorXd &t,
 	
 	VectorXd s = VectorXd::Zero(n);
 	
-	j = 0;
-	for(size_t i=0; i<n; ++i) {
+	i = 0;
+	for(size_t j=0; j<m; ++j) {
 		
 		bool isLarger = false;
-		while(j < m) {
+		while(i < n) {
 			
-			if(x(x_indices[i]) < t(t_indices[j])) {
+			if(x(x_indices[j]) < t(t_indices[i])) {
 				isLarger = true;
 				break;
 			} else {
-				++j;
+				++i;
 			}
 			
 			// Tent function of left node (descending)
-			if(j != 0 && isLarger) {
-				// Does not work if $x_i$ is outside of $[t_min,t_max]$
-				s(x_indices[i]) += y(t_indices[j-1]) *
-					   (x(x_indices[i])   - t(t_indices[j])) /
-				       (t(t_indices[j-1]) - t(t_indices[j]));
+			if(i != 0 && isLarger) {
+				// Does not run if $x_j$ is outside of $[t_min,t_max]$
+				s(x_indices[j]) += y(t_indices[i-1]) *
+					   (x(x_indices[j])   - t(t_indices[i])) /
+				       (t(t_indices[i-1]) - t(t_indices[i]));
 			}
 			// Tent function of right node (ascending)
 			if(isLarger) {
-				// Does not work if there is no $t_j$ which is $> x_i$
-				s(x_indices[i]) += y(t_indices[j]) *
-					   (x(x_indices[i]) - t(t_indices[j-1])) /
-				       (t(t_indices[j]) - t(t_indices[j-1]));
+				// Does not run if there is no $t_i$ which is $> x_j$
+				s(x_indices[j]) += y(t_indices[i]) *
+					   (x(x_indices[j]) - t(t_indices[i-1])) /
+				       (t(t_indices[i]) - t(t_indices[i-1]));
 			}
 		}
 	}
@@ -107,20 +129,32 @@ VectorXd tentBasCoeff(const VectorXd &x, const VectorXd &t,
 }
 /* SAM_LISTING_END_0 */
 
-/* @brief 
- * @param[in] x 
- * @param[in] t 
- * @param[in] y 
- */
-/* SAM_LISTING_BEGIN_1 */
-class PwLinIP { 
-public:
-  PWLinIP(const VectorXd &x,const VectorXd &t,const VectorXd &y);
-  double operator (double arg) const; 
-private:
-  
-};
-/* SAM_LISTING_END_1 */
+/* SAM_LISTING_BEGIN_2 */
+PWLinIP::PWLinIP(const VectorXd &x, const VectorXd &t,
+				 const VectorXd &y)
+{
+	assert(t.size() == y.size() && "t and y must have same size!");
+	
+	f.resize(t.size(), 2);
+	
+	auto t_indices = ordered(t);
+	
+	for(size_t i=0; i < t.size(); ++i) {
+		f.row(i) << t[t_indices[i]], y[t_indices[i]];
+	}
+}
+
+double PWLinIP::operator(double arg) const
+{
+	VectorXd x(1); x << arg;
+	
+	VectorXd s = tentBasCoeff(x, f.col(0), f.col(1));
+	
+	return s(0);
+}
+/* SAM_LISTING_END_2 */
+
+
 
 int main() {
 	// Initialization
