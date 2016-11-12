@@ -4,5 +4,7 @@
     "contributors" : "",
 
     "name": "LinearInterpolant",
-    "all" : ["linearinterpolant.cpp"]
+    "all" : ["linearinterpolant.cpp",
+	"tent_basis_functions.eps"
+	]
 }

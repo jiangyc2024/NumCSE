@@ -6,9 +6,11 @@
 
 #include <Eigen/Dense>
 
+#include <figure/figure.hpp>
+
 using namespace Eigen;
 
-std::vector<size_t> ordered(const VectorXd &values) {
+std::vector<size_t> order(const VectorXd &values) {
     std::vector<size_t> indices(values.size());
     std::iota(begin(indices), end(indices), static_cast<size_t>(0));
     std::sort(begin(indices), end(indices),
@@ -17,10 +19,10 @@ std::vector<size_t> ordered(const VectorXd &values) {
     return indices;
 }
 
-/* @brief 
- * @param[in] x 
- * @param[in] t 
- * @param[in] y 
+/* @brief Intepolator class
+ * @param[in] x Vector of knots
+ * @param[in] t Vector of nodes
+ * @param[in] y Vector of values of interpolant in nodes
  */
 /* SAM_LISTING_BEGIN_1 */
 class PwLinIP { 
@@ -37,11 +39,11 @@ private:
 };
 /* SAM_LISTING_END_1 */
 
-/* @brief 
- * @param[in] x 
- * @param[in] t 
- * @param[in] y 
- * @param[out] s 
+/* @brief Compute values of interpolant in knots $\Vx$ from $(t_i,y_i)$
+ * @param[in] x Vector of knots
+ * @param[in] t Vector of nodes
+ * @param[in] y Vector of values of interpolant in nodes $\Vt$
+ * @param[out] s Vector of values of interpolant in knots $\Vx$
  */
 /* SAM_LISTING_BEGIN_0 */
 VectorXd PwLinIP::tentBasCoeff(const VectorXd &x, const VectorXd &t,
@@ -50,8 +52,8 @@ VectorXd PwLinIP::tentBasCoeff(const VectorXd &x, const VectorXd &t,
 {
 	// Initialization
 	size_t n = t.size();
-	auto x_indices = ordered(x);
-	auto t_indices = ordered(t);
+	auto x_indices = order(x);
+	auto t_indices = order(t);
 	// You can also implement a solution which does not need
 	// sorted vectors and e.g. for each knot $x_j$ looks
 	// for the closest node $t_{i1}$ and the next closest node $t_{i2}$.
@@ -65,14 +67,14 @@ VectorXd PwLinIP::tentBasCoeff(const VectorXd &x, const VectorXd &t,
 #if SOLUTION
 	// Check condition of subproblem 5.5.c
 	size_t i = 0;
-	size_t k;
+	size_t k = 0;
 	for(size_t j=0; j<(n-1); ++j) {
 		
 		bool nodeOK = false;
 		while(i < n) {
 			
-			bool inInterval = (x(x_indices[j]) < t(t_indices[i])) &&
-							  (t(t_indices[i]) < x(x_indices[j+1]));
+			bool inInterval = (x(x_indices[j]) <= t(t_indices[i])) &&
+							  (t(t_indices[i]) <= x(x_indices[j+1]));
 			
 			if(inInterval) {
 				nodeOK = true;
@@ -139,12 +141,12 @@ PwLinIP::PwLinIP(const VectorXd &x, const VectorXd &t,
 	t_.resize(n);
 	y_.resize(n);
 	
-	auto x_indices = ordered(x);
+	auto x_indices = order(x);
 	for(size_t i=0; i<n; ++i) {
 		x_(i) = x[x_indices[i]];
 	}
 	
-	auto t_indices = ordered(t);
+	auto t_indices = order(t);
 	for(size_t i=0; i<n; ++i) {
 		t_(i) = t[t_indices[i]];
 		y_(i) = y[t_indices[i]];
@@ -162,7 +164,7 @@ double PwLinIP::operator()(double arg) const
 		
 		size_t j = 1; // Already checked that arg >= x_(0)
 		while(j < x_.size()) {
-			if(arg < x_(j)) {
+			if(arg <= x_(j)) {
 				break;
 			} else {
 				++j;
@@ -171,12 +173,56 @@ double PwLinIP::operator()(double arg) const
 		
 		double gamma = (s_(j) - s_(j-1)) / (x_(j) - x_(j-1));
 		double beta = s_(j-1) - gamma * x_(j-1);
-		
+
 		return gamma * arg + beta;
 	}
 }
 /* SAM_LISTING_END_2 */
 
+/* SAM_LISTING_BEGIN_3 */
 int main() {
+	// Initialization
+	size_t n = 11;
+	VectorXd x = VectorXd::LinSpaced(n,0,10);
+	VectorXd t(n);
+	t(0) = 0; t.tail(n-1).setLinSpaced(n-1,0.5,9.5);
+	VectorXd y = VectorXd::Ones(n);
+	
+	PwLinIP cardinalBasis(x, t, y);
+	
+	VectorXd s(n);
+	for(size_t j=0; j<n; ++j) {
+		s(j) = cardinalBasis(x(j));
+	}
+	
+#if INTERNAL
+	mgl::Figure fig;
+	fig.xlabel("t");
+	fig.ylabel("y");
+	
+	VectorXd t_left(2);
+	t_left << t(0), t(1);
+	VectorXd y_left(2);
+	y_left << y(0), 0;
+	fig.plot(t_left, y_left, "b");
+	fig.plot(t_left, y_left, "b*");
+	for(size_t i=1; i<n-1; ++i) {
+		VectorXd t_(3);
+		t_ << t(i-1), t(i), t(i+1);
+		VectorXd y_(3);
+		y_ << 0, y(i), 0;
+		fig.plot(t_, y_, "b");
+		fig.plot(t_, y_, "b*");
+	}
+	VectorXd t_right(2);
+	t_right << t(n-2), t(n-1);
+	VectorXd y_right(2);
+	y_right << 0, y(n-1);
+	fig.plot(t_right, y_right, "b");
+	fig.plot(t_right, y_right, "b*");
 
+	fig.title("Tent basis functions");
+	fig.save("tent_basis_functions.eps");
+#endif // INTERNAL
 }
+/* SAM_LISTING_END_3 */
