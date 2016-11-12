@@ -12,9 +12,11 @@
 
 #include <Eigen/Dense>
 
+#include <figure/figure.hpp>
+
 using namespace Eigen;
 
-std::vector<size_t> ordered(const VectorXd &values) {
+std::vector<size_t> order(const VectorXd &values) {
     std::vector<size_t> indices(values.size());
     std::iota(begin(indices), end(indices), static_cast<size_t>(0));
     std::sort(begin(indices), end(indices),
@@ -23,55 +25,66 @@ std::vector<size_t> ordered(const VectorXd &values) {
     return indices;
 }
 
-/* @brief 
- * @param[in] x 
- * @param[in] t 
- * @param[in] y 
+/* @brief Intepolator class
+ * @param[in] x Vector of knots
+ * @param[in] t Vector of nodes
+ * @param[in] y Vector of values of interpolant in nodes
  */
 class PwLinIP { 
 public:
 	PwLinIP(const VectorXd &x, const VectorXd &t, const VectorXd &y);
 	double operator()(double arg) const;
 private:
-	MatrixXd f;
+	VectorXd x_;
+	VectorXd t_;
+	VectorXd y_;
+	VectorXd s_;
 	VectorXd tentBasCoeff(const VectorXd &x, const VectorXd &t,
 						  const VectorXd &y) const;
 };
 
-/* @brief 
- * @param[in] x 
- * @param[in] t 
- * @param[in] y 
- * @param[out] s 
+/* @brief Compute values of interpolant in knots $\Vx$ from $(t_i,y_i)$
+ * @param[in] x Vector of knots
+ * @param[in] t Vector of nodes
+ * @param[in] y Vector of values of interpolant in nodes $\Vt$
+ * @param[out] s Vector of values of interpolant in knots $\Vx$
  */
 VectorXd PwLinIP::tentBasCoeff(const VectorXd &x, const VectorXd &t,
 							   const VectorXd &y) const
 
 {
 	// Initialization
-	size_t m = x.size();
 	size_t n = t.size();
-	auto x_indices = ordered(x);
-	auto t_indices = ordered(t);
+	auto x_indices = order(x);
+	auto t_indices = order(t);
 	// You can also implement a solution which does not need
 	// sorted vectors and e.g. for each knot $x_j$ looks
 	// for the closest node $t_{i1}$ and the next closest node $t_{i2}$.
 	// However, such solution will not become more efficient
-	// if you give as input already sorted vectors.
+	// if you give as input already sorted vectors: for each knot $x_j$
+	// you will always have to iterate along the sorted vector $t$
+	// to find the included node $t_i$.
 	
-	size_t i;
+	VectorXd s = VectorXd::Zero(n);
 	
-	i = 0;
-	for(size_t j=0; j<(m-1); ++j) {
+	// Check condition of subproblem 5.5.c
+	size_t i = 0;
+	size_t k = 0;
+	for(size_t j=0; j<(n-1); ++j) {
 		
 		bool nodeOK = false;
 		while(i < n) {
 			
-			bool inInterval = (x(x_indices[j]) < t(t_indices[i])) &&
-							  (t(t_indices[i]) < x(x_indices[j+1]));
+			bool inInterval = (x(x_indices[j]) <= t(t_indices[i])) &&
+							  (t(t_indices[i]) <= x(x_indices[j+1]));
 			
 			if(inInterval) {
 				nodeOK = true;
+				if(i == j) { // Index of interval which contains 2 nodes
+							 // $t_i$ and $t_{i+1}$. After that, we have
+							 // $i > j$...
+					k = j;
+				}
 				break;
 			} else {
 				++i;
@@ -82,36 +95,33 @@ VectorXd PwLinIP::tentBasCoeff(const VectorXd &x, const VectorXd &t,
 		}
 	}
 	
-	VectorXd s = VectorXd::Zero(n);
+	// 1. Find slope $\gamma$ and intercept $\beta$
+	// in interval with 2 nodes $k$
+	// 2. Find $s_k$ and $s_{k+1}$
+	double gamma = (y(t_indices[k+1]) - y(t_indices[k])) /
+				   (t(t_indices[k+1]) - t(t_indices[k]));
+	double beta = y(t_indices[k]) - gamma * t(t_indices[k]);
 	
-	i = 0;
-	for(size_t j=0; j<m; ++j) {
+	s(x_indices[k])   = gamma * x(x_indices[k])   + beta;
+	s(x_indices[k+1]) = gamma * x(x_indices[k+1]) + beta;
+	
+	// Find intercept, slope and value $s$ at the lower bound $x$
+	// for all intervals on the left of interval with 2 nodes $k$
+	for(int j=k-1; j>=0; --j) {
+		gamma = (s(x_indices[j+1]) - y(t_indices[j])) /
+				(x(x_indices[j+1]) - t(t_indices[j]));
+		beta = y(t_indices[j]) - gamma * t(t_indices[j]);
 		
-		bool isLarger = false;
-		while(i < n) {
-			
-			if(x(x_indices[j]) < t(t_indices[i])) {
-				isLarger = true;
-				break;
-			} else {
-				++i;
-			}
-			
-			// Tent function of left node (descending)
-			if(i != 0 && isLarger) {
-				// Does not run if $x_j$ is outside of $[t_min,t_max]$
-				s(x_indices[j]) += y(t_indices[i-1]) *
-					   (x(x_indices[j])   - t(t_indices[i])) /
-				       (t(t_indices[i-1]) - t(t_indices[i]));
-			}
-			// Tent function of right node (ascending)
-			if(isLarger) {
-				// Does not run if there is no $t_i$ which is $> x_j$
-				s(x_indices[j]) += y(t_indices[i]) *
-					   (x(x_indices[j]) - t(t_indices[i-1])) /
-				       (t(t_indices[i]) - t(t_indices[i-1]));
-			}
-		}
+		s(x_indices[j]) = gamma * x(x_indices[j]) + beta;
+	}
+	// Find intercept, slope and value $s$ at the upper bound $x$
+	// for all intervals on the right of interval with 2 nodes $k$
+	for(int j=k+2; j<n; ++j) {
+		gamma = (y(t_indices[j]) - s(x_indices[j-1])) /
+				(t(t_indices[j]) - x(x_indices[j-1]));
+		beta = s(x_indices[j-1]) - gamma * x(x_indices[j-1]);
+		
+		s(x_indices[j]) = gamma * x(x_indices[j]) + beta;
 	}
 
 	return s;
@@ -120,26 +130,64 @@ VectorXd PwLinIP::tentBasCoeff(const VectorXd &x, const VectorXd &t,
 PwLinIP::PwLinIP(const VectorXd &x, const VectorXd &t,
 				 const VectorXd &y)
 {
-	assert(t.size() == y.size() && "t and y must have same size!");
+	assert(t.size() == y.size() && t.size() == x.size() &&
+		  "x, t, y must have same size!");
 	
-	f.resize(t.size(), 2);
+	size_t n = t.size();
+	x_.resize(n);
+	t_.resize(n);
+	y_.resize(n);
 	
-	auto t_indices = ordered(t);
-	
-	for(size_t i=0; i < t.size(); ++i) {
-		f.row(i) << t[t_indices[i]], y[t_indices[i]];
+	auto x_indices = order(x);
+	for(size_t i=0; i<n; ++i) {
+		x_(i) = x[x_indices[i]];
 	}
+	
+	auto t_indices = order(t);
+	for(size_t i=0; i<n; ++i) {
+		t_(i) = t[t_indices[i]];
+		y_(i) = y[t_indices[i]];
+	}
+	
+	s_ = tentBasCoeff(x_, t_, y_);
 }
 
 double PwLinIP::operator()(double arg) const
-{
-	VectorXd x(1); x << arg;
-	
-	VectorXd s = tentBasCoeff(x, f.col(0), f.col(1));
-	
-	return s(0);
+{	
+	if(arg < x_(0) || arg > x_(x_.size()-1)) {
+		
+		return 0;
+	} else {
+		
+		size_t j = 1; // Already checked that arg >= x_(0)
+		while(j < x_.size()) {
+			if(arg <= x_(j)) {
+				break;
+			} else {
+				++j;
+			}
+		}
+		
+		double gamma = (s_(j) - s_(j-1)) / (x_(j) - x_(j-1));
+		double beta = s_(j-1) - gamma * x_(j-1);
+
+		return gamma * arg + beta;
+	}
 }
 
 int main() {
-
+	// Initialization
+	size_t n = 11;
+	VectorXd x = VectorXd::LinSpaced(n,0,10);
+	VectorXd t(n);
+	t(0) = 0; t.tail(n-1).setLinSpaced(n-1,0.5,9.5);
+	VectorXd y = VectorXd::Ones(n);
+	
+	PwLinIP cardinalBasis(x, t, y);
+	
+	VectorXd s(n);
+	for(size_t j=0; j<n; ++j) {
+		s(j) = cardinalBasis(x(j));
+	}
+	
 }
