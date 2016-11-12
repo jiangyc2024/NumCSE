@@ -158,7 +158,7 @@ double PwLinIP::operator()(double arg) const
 		return 0;
 	} else {
 		
-		size_t j = 1; // Already checked that arg >= x_(0)
+		size_t j = 1; // Already checked that $arg \geq x_0$
 		while(j < x_.size()) {
 			if(arg <= x_(j)) {
 				break;
