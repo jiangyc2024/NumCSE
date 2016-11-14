@@ -1,3 +1,10 @@
+///////////////////////////////////////////////////////////////////////////
+/// Demonstration code for lecture "Numerical Methods for CSE" @ ETH Zurich
+/// (C) 2016 SAM, D-MATH
+/// Author(s): N.N.
+/// Repository: https://gitlab.math.ethz.ch/NumCSE/NumCSE/
+/// Do not remove this header.
+//////////////////////////////////////////////////////////////////////////
 # include <iostream>
 # include <vector>
 # include <Eigen/Dense>
@@ -10,16 +17,18 @@ using Eigen::VectorXd;
 /* SAM_LISTING_BEGIN_0 */
 void append(VectorXd&, const VectorXd&); // forward declaration of append()
 
-// Investigation of interpolation error norms for cubic Hermite interpolation of \Blue{$f$} (handle \texttt{f})
+// Investigation of interpolation error norms for cubic Hermite interpolation of \Blue{$f$}
+// (passed through Functor \texttt{f})
 // on \Blue{$[a,b]$} with linearly averaged slopes according to \eqref{pwintp:AverageSlopes}.
 // \texttt{N} gives the maximum number of mesh intervals
 template <class Function, class Derivative>
-void hermiteapprox(const Function& f, const Derivative& df, const double a, const double b, const unsigned N) {
+void hermiteapprox(const Function& f, const Derivative& df,
+		   const double a, const double b, const unsigned N) {
   std::vector<double> l2err, linferr, h; // save error and stepwidths in these vectors 
   for (unsigned j = 2; j <= N; ++j) {
-    // \texttŧ{xx} is the fine mesh on which the error norms are computed
+    // {xx}: the fine mesh on which the error norms are computed
     VectorXd xx(1); xx << a;     
-    // \texttt{val} contains the hermite approximated values in \texttt{xx}
+    // {val}: Hermite approximated values in points contained in {xx}
     VectorXd val(1); val << f(a);
 
     VectorXd t = VectorXd::LinSpaced(j, a, b); // mesh nodes

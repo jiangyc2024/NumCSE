@@ -18,7 +18,7 @@ template <class Function>
 void hermiteapprox(const Function& f, const double a, const double b, const unsigned N) {
   std::vector<double> l2err, linferr, h; // save error and stepwidth in these vectors
   for (unsigned j = 2; j <= N; ++j) {
-    // \texttŧ{xx} is the fine mesh on which the error norms are computed
+    // \texttt{xx} is the fine mesh on which the error norms are computed
     VectorXd xx(1); xx << a;     
     // \texttt{val} contains the hermite approximated values in \texttt{xx}
     VectorXd val(1); val << f(a);
