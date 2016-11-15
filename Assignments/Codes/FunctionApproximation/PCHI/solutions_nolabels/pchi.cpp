@@ -20,18 +20,18 @@ using namespace Eigen;
 enum class Slope { Zero, Reconstructed };
 
 /*!
- * \brief Implements a piecewise cubic Herite interpolation.
+ * \brief Implements a piecewise cubic Hermite interpolation.
  * Uses equidistant meshes and various methods of slope reconstruction.
  *
  */
 class PCHI {
 public:
     /*!
-     *! \brief Construct the slopes frome the data
-     *! Either using dinite-differences or assuming $f'(x_j) = 0$
-     *! \param[in] t vector of nodes (assumed equidistant and sorted)
-     *! \param[in] y vector of values at nodes $t$
-     *! \param[in] s Flag to set if you want to reconstruct or set slopes to zero
+     *! \brief Construct the slopes from the data.
+     *! Use finite-differences or setting $s'(x_j) = 0$.
+     *! \param[in] t Vector of nodes (assumed equidistant and sorted).
+     *! \param[in] y Vector of values at nodes $t$.
+     *! \param[in] s Flag to set if you want to reconstruct or set the slopes to zero.
      */
     PCHI(const VectorXd & t,
          const VectorXd & y,
@@ -89,11 +89,9 @@ PCHI::PCHI(const VectorXd & t,
 
             break;
     }
-
 }
 
 VectorXd PCHI::operator() (const VectorXd & x) const {
-
     VectorXd ret(x.size());
 
     int i_star = 0;
@@ -158,7 +156,7 @@ int main() {
                     );
         N.push_back(1. / i);
 
-        // Se how interpolant looks
+        // See how interpolant looks
         if( i == 16 ) {
             {
                 mgl::Figure fig;
