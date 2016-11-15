@@ -28,8 +28,8 @@ public:
     /*!
      * \brief operator () Evaluation operator.
      * Return the value of $I$ at $x$, i.e. $I(x)$.
-     * Performs bound checks (i.e. if $x < t_0$ or $x >= t_n$ )
-     * \param x Value $x \in \mathbf{R}$.
+     * Performs bound checks (i.e. if $x < t_0$ or $x >= t_n$ ).
+     * \param x Value $x \in \mathbb{R}$.
      * \return Value $I(x)$.
      */
     double operator() (double x);
