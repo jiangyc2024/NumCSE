@@ -1,3 +1,9 @@
+//// 
+//// Copyright (C) 2016 SAM (D-MATH) @ ETH Zurich
+//// Author(s): lfilippo <filippo.leonardi@sam.math.ethz.ch> 
+//// Contributors: tille, jgacon, dcasati
+//// This file is part of the NumCSE repository.
+////
 #include <iostream>
 #include <Eigen/Dense>
 
@@ -6,11 +12,9 @@ using namespace Eigen;
 // Evaluate the Legendre polynomials and its derivatives in vector $x$ 
 // using the 3-term recursion formulae.
 // The outputs are the matrices $Lx$ and $DLx$.
-/* SAM_LISTING_BEGIN_0 */
 void legvals(const VectorXd& x, MatrixXd& Lx, MatrixXd& DLx) {
   const int n = Lx.cols()-1;
   const int N = x.size();
-#if SOLUTION
   for (int j = 0; j < N; ++j) {
     Lx(j,0) = 1.;
     Lx(j,1) = x(j);
@@ -22,34 +26,22 @@ void legvals(const VectorXd& x, MatrixXd& Lx, MatrixXd& DLx) {
 				 (k-1.)/k*DLx(j,k-2);
     }
   }
-#else // TEMPLATE
-    // TODO: evaluate Legendre polynomials
-#endif // TEMPLATE
 }
-/* SAM_LISTING_END_0 */
 
 // Evaluate $P_n(x)$ for a scalar $x$ and integer $n$.
-/* SAM_LISTING_BEGIN_1 */
 double Pnx(const double x, const int n) {
   VectorXd Px(n+1);
-#if SOLUTION
   Px(0) = 1.; Px(1) = x;
   for (int k=2; k<n+1; k++){
     Px(k) = (2*k-1.)/k*x*Px(k-1)-(k-1.)/k*Px(k-2);
   }
-#else // TEMPLATE
-    // TODO: evaluate $P_n(x)$
-#endif // TEMPLATE
   return Px(n);
 }
-/* SAM_LISTING_END_1 */
 
 // Find the Gauss points using the secant method without regula falsi.
-/* SAM_LISTING_BEGIN_2 */
 MatrixXd gaussPts(const int n, const double rtol=1e-10,
 							   const double atol=1e-12) {
   MatrixXd zeros(n,n);
-#if SOLUTION
   double x0, x1, f0, f1, s;
   for (int k = 1; k < n+1; ++k) {
     for (int j = 1; j < k+1; ++j) {
@@ -64,31 +56,26 @@ MatrixXd gaussPts(const int n, const double rtol=1e-10,
       for (int i = 0; i < 1e4; ++i) {
         f1 = Pnx(x1, k);
         s = f1*(x1-x0)/(f1-f0);
-        x0 = x1; f0 = f1;
+        if (Pnx(x1-s, k)*f1 < 0) {
+          x0 = x1; f0 = f1;
+        }
         x1 -= s;
-        if ( (std::abs(s) < std::max(atol, rtol*std::min(std::abs(x0),
-              std::abs(x1)))) ) {
+        if ( (std::abs(s) < std::max(atol, rtol*std::min(std::abs(x0), std::abs(x1)))) ) {
           zeros(j-1, k-1) = x1;
           break;
         }
       }
     }
   }
-#else // TEMPLATE
-    // TODO: secant method without regula falsi
-#endif // TEMPLATE
   return zeros;
 }
-/* SAM_LISTING_END_2 */
 
 // Find the Gauss points using the secant method with regula falsi.
 // The standard secant method may be obtained
-// by commenting out line 106.
-/* SAM_LISTING_BEGIN_3 */
+// by commenting out lines 92 and 93.
 MatrixXd gaussPts_regulaFalsi(const int n, const double rtol=1e-10,
 										   const double atol=1e-12) {
   MatrixXd zeros(n,n);
-#if SOLUTION
   double x0, x1, f0, f1, s;
   for (int k = 1; k < n+1; ++k) {
     for (int j = 1; j < k+1; ++j) {
@@ -103,8 +90,9 @@ MatrixXd gaussPts_regulaFalsi(const int n, const double rtol=1e-10,
       for (int i = 0; i < 1e4; ++i) {
         f1 = Pnx(x1, k);
         s = f1*(x1-x0)/(f1-f0);
-        if (Pnx(x1-s, k)*f1 < 0) // NEW LINE: regula falsi
+        if (Pnx(x1-s, k)*f1 < 0) {
           x0 = x1; f0 = f1;
+        }
         x1 -= s;
         if ( (std::abs(s) < std::max(atol, rtol*std::min(std::abs(x0),
 			  std::abs(x1)))) ) {
@@ -114,21 +102,16 @@ MatrixXd gaussPts_regulaFalsi(const int n, const double rtol=1e-10,
       }
     }
   }
-#else // TEMPLATE
-    // TODO: secant method with regula falsi
-#endif // TEMPLATE
   return zeros;
 }
-/* SAM_LISTING_END_3 */
 
 int main() {
   const int n = 8;
-  MatrixXd zeros;
   
   // Secant method without regula falsi
   std::cout << "---> Secant method without regula falsi\n";
   
-  zeros = gaussPts(n);
+  MatrixXd zeros = gaussPts(n);
   std::cout << "Zeros:\n" << zeros << "\n";
     
   for (int k = 1; k < n+1; ++k) {
@@ -143,7 +126,7 @@ int main() {
   // Secant method with regula falsi
   std::cout << "---> Secant method with regula falsi\n";
   
-  zeros = gaussPts_regulaFalsi(n);
+  MatrixXd zeros = gaussPts_regulaFalsi(n);
   std::cout << "Zeros:\n" << zeros << "\n";
     
   for (int k = 1; k < n+1; ++k) {
