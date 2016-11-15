@@ -55,13 +55,13 @@ PCHI::PCHI(const Eigen::VectorXd & t,
     //// Reconstruction of the slope,
     switch(s) {
     /* SAM_LISTING_BEGIN_1 */
-        /// CASE: assuming f'(x_j) = 0   (error: O(1))
+        /// CASE: assuming $s'(x_j) = 0$ (error: $O(1)$)
         case Slope::Zero:
     // TODO: set the slopes assuming $s'(x_j) = 0$
             break;
     /* SAM_LISTING_END_1 */
     /* SAM_LISTING_BEGIN_2 */
-        /// CASE: second order finite difference (error: O(h^2))
+        /// CASE: second order finite differences (error: $O(h^2)$)
         case Slope::Reconstructed:
         default:
 
@@ -81,7 +81,7 @@ Eigen::VectorXd PCHI::operator() (Eigen::VectorXd x) const {
 
     return ret;
 }
-/* SAM_LISTING_BEGIN_2 */
+/* SAM_LISTING_END_2 */
 
 int main() {
     // Interpoland

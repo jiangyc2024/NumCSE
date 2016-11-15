@@ -58,11 +58,11 @@ PCHI::PCHI(const Eigen::VectorXd & t,
 
     //// Reconstruction of the slope,
     switch(s) {
-        /// CASE: assuming f'(x_j) = 0   (error: O(1))
+        /// CASE: assuming $s'(x_j) = 0$ (error: $O(1)$)
         case Slope::Zero:
     // TODO: set the slopes assuming $s'(x_j) = 0$
             break;
-        /// CASE: second order finite difference (error: O(h^2))
+        /// CASE: second order finite differences (error: $O(h^2)$)
         case Slope::Reconstructed:
         default:
 
