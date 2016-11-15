@@ -1,0 +1,8 @@
+{
+    "author" : "",
+    "email" : "",
+    "contributors" : "",
+
+    "name": "ChebIntp2",
+    "all" : ["adaptivepolyintp.cpp"]
+}
