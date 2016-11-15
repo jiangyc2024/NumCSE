@@ -14,40 +14,50 @@
 
 #include <figure.hpp>
 
+using namespace Eigen;
+
 // Flag for slope reconstruction type
 enum class Slope { Zero, Reconstructed };
 
-//! \breif Implements a piecewise cubic Herite interpolation on equidistant meshes.
+/*!
+ * \brief Implements a piecewise cubic Herite interpolation.
+ * Uses equidistant meshes and various methods of slope reconstruction.
+ *
+ */
 class PCHI {
 public:
-    //! \brief Construct the slopes frome the data
-    //! Either using dinite-differences or assuming $f'(x_j) = 0$
-    //! \param[in] t vector of nodes (assumed equidistant and sorted)
-    //! \param[in] y vector of values at nodes $t$
-    //! \param[in] s Flag to set if you want to reconstruct or set slopes to zero
-    PCHI(const Eigen::VectorXd & t,
-         const Eigen::VectorXd & y,
+    /*!
+     *! \brief Construct the slopes frome the data
+     *! Either using dinite-differences or assuming $f'(x_j) = 0$
+     *! \param[in] t vector of nodes (assumed equidistant and sorted)
+     *! \param[in] y vector of values at nodes $t$
+     *! \param[in] s Flag to set if you want to reconstruct or set slopes to zero
+     */
+    PCHI(const VectorXd & t,
+         const VectorXd & y,
          Slope s = Slope::Reconstructed);
 
-    //! \brief Evaluate the intepolant at the nodes $x$.
-    //! The input is assumed sorted, unique and inside the interval
-    //! \param[in] x The vector of points $x_i$ where to compute $s(x_i)$.
-    //! \return Values of interpolant at $x$ (vector)
-    Eigen::VectorXd operator() (Eigen::VectorXd x) const;
+    /*!
+     *! \brief Evaluate the intepolant at the nodes $x$.
+     *! The input is assumed sorted, unique and inside the interval
+     *! \param[in] x The vector of points $x_i$ where to compute $s(x_i)$.
+     *! \return Values of interpolant at $x$ (vector)
+     */
+    VectorXd operator() (const VectorXd & x) const;
 
 private:
     // Provided nodes and values $(t,y)$ to compute spline,
     // Eigen vectors, $c$ contains slopes
-    // All have the same size
-    Eigen::VectorXd t, y, c;
+    // All have the same size $n$
+    VectorXd t, y, c;
     // Difference $t(i)-t(i-1)$
     double h;
     // Size of $t$, $y$ and $c$.
     int n;
 };
 
-PCHI::PCHI(const Eigen::VectorXd & t,
-           const Eigen::VectorXd & y,
+PCHI::PCHI(const VectorXd & t,
+           const VectorXd & y,
            Slope s)
     : t(t), y(y), c(t.size()) {
     // Sanity check
@@ -72,11 +82,11 @@ PCHI::PCHI(const Eigen::VectorXd & t,
 
 }
 
-Eigen::VectorXd PCHI::operator() (Eigen::VectorXd x) const {
+VectorXd PCHI::operator() (const VectorXd & x) const {
 
-    Eigen::VectorXd ret(x.size());
+    VectorXd ret(x.size());
 
-
+    // TODO: implement evaluation operator, returning $s(x)$.
 
     return ret;
 }
@@ -90,40 +100,42 @@ int main() {
     int M = 1000; // Number of  points in which to evaluate the interpoland
 
     // Precompute values at which evaluate f
-    Eigen::VectorXd x = Eigen::VectorXd::LinSpaced(M, -a, a);
-    Eigen::VectorXd fx = x.unaryExpr(f);
+    VectorXd x = VectorXd::LinSpaced(M, -a, a);
+    VectorXd fx = x.unaryExpr(f);
 
     // Store error and number of nodes
     std::vector<double> N, err_reconstr, err_zero;
 
     for(int i = 2; i <= 512; i = i << 1) {
         // Define subintervals and evaluate f there (find pairs (t,y))
-        Eigen::VectorXd t = Eigen::VectorXd::LinSpaced(i, -a, a);
-        Eigen::VectorXd y = t.unaryExpr(f);
+        VectorXd t = VectorXd::LinSpaced(i, -a, a);
+        VectorXd y = t.unaryExpr(f);
 
         // Construct PCHI with zero and reconstructed slopes
-        PCHI P_reconstr(t,y),
-             P_zero(t, y, Slope::Zero);
+        PCHI s_reconstr(t,y),
+             s_zero(t, y, Slope::Zero);
+
+        // Evaluate interpolant
+        VectorXd s_zero_x = s_zero(x);
+        VectorXd s_reconstr_x = s_reconstr(x);
 
         // Compute infinity norm of error
-        Eigen::VectorXd P_zero_x = P_zero(x);
-        Eigen::VectorXd P_reconstr_x = P_reconstr(x);
         err_reconstr.push_back(
-                    (P_reconstr_x - fx).lpNorm<Eigen::Infinity>()
+                    (s_reconstr_x - fx).lpNorm<Infinity>()
                     );
         err_zero.push_back(
-                    (P_zero_x - fx).lpNorm<Eigen::Infinity>()
+                    (s_zero_x - fx).lpNorm<Infinity>()
                     );
         N.push_back(i);
 
         // Se how interpolant looks
-        if( i == 512 ) {
+        if( i == 16 ) {
             {
                 mgl::Figure fig;
                 fig.title("Interpolant with zero slope");
                 fig.xlabel("t");
                 fig.ylabel("y");
-                fig.plot(x, P_zero_x, "r").label("P_{zero}");
+                fig.plot(x, s_zero_x, "r").label("s_{zero}");
                 fig.plot(x, fx, "b-").label("f");
                 fig.legend();
                 fig.save("p_zero");
@@ -133,7 +145,7 @@ int main() {
                 fig.title("Interpolant with reconstructed slope");
                 fig.xlabel("t");
                 fig.ylabel("y");
-                fig.plot(x, P_reconstr_x, "r").label("P_{reconstr}");
+                fig.plot(x, s_reconstr_x, "r").label("s_{reconstr}");
                 fig.plot(x, fx, "b-").label("f");
                 fig.legend();
                 fig.save("p_reconstr");
@@ -141,13 +153,14 @@ int main() {
         }
     }
 
+    // Error plot
     mgl::Figure fig;
     fig.title("Error VS no. of nodes");
     fig.setlog(true, true);
     fig.xlabel("No. of interpolation nodes");
-    fig.ylabel("max |f(t) - P_\cdot(t)|");
-    fig.plot(N, err_zero, "r").label("P_{zero}");
-    fig.plot(N, err_reconstr, "b").label("P_{reconstr}");
+    fig.ylabel("max |f(t) - s(t)|");
+    fig.plot(N, err_zero, "r").label("s_{zero}");
+    fig.plot(N, err_reconstr, "b").label("s_{reconstr}");
     fig.legend();
     fig.save("pchi_conv");
 }
