@@ -4,6 +4,5 @@
     "contributors" : "",
 
     "name": "ChebPolyProperties",
-    "all" : ["ChebOrthog.cpp",
-			 "ChebBest.cpp"]
+    "all" : ["chebpolyproperties.cpp"]
 }

@@ -146,13 +146,8 @@ include_directories(${FIGURE_INCLUDE_DIR}/..)
 
 ### ChebPolyProperties
 
-# make ChebOrthog
-set(SRCS ChebOrthog.cpp)
-add_executable(ChebOrthog ${SRCS})
-target_link_libraries(ChebOrthog Figure ${MATHGL2_LIBRARIES})
-
-# make ChebBest
-set(SRCS ChebBest.cpp)
-add_executable(ChebBest ${SRCS})
-target_link_libraries(ChebBest Figure ${MATHGL2_LIBRARIES})
+# make chebpolyproperties
+set(SRCS chebpolyproperties.cpp)
+add_executable(chebpolyproperties ${SRCS})
+target_link_libraries(chebpolyproperties Figure ${MATHGL2_LIBRARIES})
 
