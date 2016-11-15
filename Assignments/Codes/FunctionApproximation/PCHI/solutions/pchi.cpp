@@ -158,7 +158,7 @@ int main() {
         err_zero.push_back(
                     (s_zero_x - fx).lpNorm<Infinity>()
                     );
-        N.push_back(i);
+        N.push_back(1. / i);
 
         // Se how interpolant looks
         if( i == 16 ) {
@@ -168,7 +168,7 @@ int main() {
                 fig.xlabel("t");
                 fig.ylabel("y");
                 fig.plot(x, s_zero_x, "r").label("s_{zero}");
-                fig.plot(x, fx, "b-").label("f");
+                fig.plot(x, fx, "b--").label("f");
                 fig.legend();
                 fig.save("p_zero");
             }
@@ -178,7 +178,7 @@ int main() {
                 fig.xlabel("t");
                 fig.ylabel("y");
                 fig.plot(x, s_reconstr_x, "r").label("s_{reconstr}");
-                fig.plot(x, fx, "b-").label("f");
+                fig.plot(x, fx, "b--").label("f");
                 fig.legend();
                 fig.save("p_reconstr");
             }
@@ -189,10 +189,12 @@ int main() {
     mgl::Figure fig;
     fig.title("Error VS no. of nodes");
     fig.setlog(true, true);
-    fig.xlabel("No. of interpolation nodes");
+    fig.xlabel("h");
     fig.ylabel("max |f(t) - s(t)|");
-    fig.plot(N, err_zero, "r").label("s_{zero}");
+    fig.fplot("x", "k|").label("O(h)");
+    fig.fplot("x^3", "k|").label("O(h^{3})");
     fig.plot(N, err_reconstr, "b").label("s_{reconstr}");
+    fig.plot(N, err_zero, "r").label("s_{zero}");
     fig.legend();
     fig.save("pchi_conv");
 }
