@@ -4,5 +4,6 @@
     "contributors" : "",
 
     "name": "ChebIntp2",
-    "all" : ["adaptivepolyintp.cpp"]
+    "all" : ["adaptivepolyintp.cpp"],
+    "lib" : ["intpolyval.hpp"]
 }
