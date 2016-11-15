@@ -26,8 +26,7 @@ void adaptivepolyintp(const Function& f, const double a, const double b,
                       const double tol, const unsigned N,
                       Eigen::VectorXd& adaptive_nodes,
                       /* Ignore the following line for part a) */
-                      Eigen::VectorXd& error_vs_step_no =
-                          Eigen::VectorXd::Zero()) {
+                      Eigen::VectorXd& error_vs_step_no) {
     // Generate sampling points and evaluate $f$ there
     Eigen::VectorXd sampling_points =
             Eigen::VectorXd::LinSpaced(N, a, b),

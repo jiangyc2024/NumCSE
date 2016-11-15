@@ -56,11 +56,10 @@ MatrixXd gaussPts(const int n, const double rtol=1e-10,
       for (int i = 0; i < 1e4; ++i) {
         f1 = Pnx(x1, k);
         s = f1*(x1-x0)/(f1-f0);
-        if (Pnx(x1-s, k)*f1 < 0) {
-          x0 = x1; f0 = f1;
-        }
+        x0 = x1; f0 = f1;
         x1 -= s;
-        if ( (std::abs(s) < std::max(atol, rtol*std::min(std::abs(x0), std::abs(x1)))) ) {
+        if ( (std::abs(s) < std::max(atol, rtol*std::min(std::abs(x0),
+              std::abs(x1)))) ) {
           zeros(j-1, k-1) = x1;
           break;
         }
@@ -72,7 +71,7 @@ MatrixXd gaussPts(const int n, const double rtol=1e-10,
 
 // Find the Gauss points using the secant method with regula falsi.
 // The standard secant method may be obtained
-// by commenting out lines 92 and 93.
+// by commenting out line 106.
 MatrixXd gaussPts_regulaFalsi(const int n, const double rtol=1e-10,
 										   const double atol=1e-12) {
   MatrixXd zeros(n,n);
@@ -90,9 +89,8 @@ MatrixXd gaussPts_regulaFalsi(const int n, const double rtol=1e-10,
       for (int i = 0; i < 1e4; ++i) {
         f1 = Pnx(x1, k);
         s = f1*(x1-x0)/(f1-f0);
-        if (Pnx(x1-s, k)*f1 < 0) {
+        if (Pnx(x1-s, k)*f1 < 0) // NEW LINE: regula falsi
           x0 = x1; f0 = f1;
-        }
         x1 -= s;
         if ( (std::abs(s) < std::max(atol, rtol*std::min(std::abs(x0),
 			  std::abs(x1)))) ) {
@@ -107,11 +105,12 @@ MatrixXd gaussPts_regulaFalsi(const int n, const double rtol=1e-10,
 
 int main() {
   const int n = 8;
+  MatrixXd zeros;
   
   // Secant method without regula falsi
   std::cout << "---> Secant method without regula falsi\n";
   
-  MatrixXd zeros = gaussPts(n);
+  zeros = gaussPts(n);
   std::cout << "Zeros:\n" << zeros << "\n";
     
   for (int k = 1; k < n+1; ++k) {
@@ -126,7 +125,7 @@ int main() {
   // Secant method with regula falsi
   std::cout << "---> Secant method with regula falsi\n";
   
-  MatrixXd zeros = gaussPts_regulaFalsi(n);
+  zeros = gaussPts_regulaFalsi(n);
   std::cout << "Zeros:\n" << zeros << "\n";
     
   for (int k = 1; k < n+1; ++k) {

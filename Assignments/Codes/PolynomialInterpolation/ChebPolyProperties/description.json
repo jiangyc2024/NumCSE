@@ -3,6 +3,7 @@
     "email" : "",
     "contributors" : "",
 
-    "name": "InterleaveLIP",
-    "all" : ["interleaveLIP.cpp"]
+    "name": "ChebPolyProperties",
+    "all" : ["ChebOrthog.cpp",
+			 "ChebBest.cpp"]
 }

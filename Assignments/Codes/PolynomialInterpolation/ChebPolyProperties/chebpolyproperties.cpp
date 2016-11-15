@@ -1,20 +1,15 @@
+#include <cmath>
 #include <iostream>
-#include <math.h>
 #include <vector>
 #include <Eigen/Dense>
+#include "chebpolmult.hpp"
 
 using namespace std;
 
-//Evaluate the Chebyshev polynomials up to order n in x.
-vector<double> chebpolmult(const int &n,const double &x)
-{
-    vector<double> V={1,x};
-    for (int k=1; k<n; k++)
-        V.push_back(2*x*V[k]-V[k-1]);
-    return V;
-}
-
-// Compute the best approximation of the function f with Chebyshev polynomials. alpha is the output vector of coefficients.
+// Compute the best approximation of the function $f$
+// with Chebyshev polynomials.
+// $\alpha$ is the output vector of coefficients.
+/* SAM_LISTING_BEGIN_0 */
 template <typename Function>
 void bestpolchebnodes(const Function &f, Eigen::VectorXd &alpha) {
     int n=alpha.size()-1;
@@ -37,20 +32,39 @@ void bestpolchebnodes(const Function &f, Eigen::VectorXd &alpha) {
             alpha(k)+=2*fn(j)*scal(j,k)/(n+1);
         }
     }
-        alpha(0)=alpha(0)/2;
+    alpha(0)=alpha(0)/2;
 }
+/* SAM_LISTING_END_0 */
 
-// Test the implementation.
 int main(){
+	int n;
+	
+/* SAM_LISTING_BEGIN_1 */
+// Check the orthogonality of Chebyshev polynomials
+    n=10;
+    vector<double> V;
+    Eigen::MatrixXd scal(n+1,n+1);
+    for (int j=0; j<n+1; j++) {
+        V=chebpolmult(n,cos(M_PI*(2*j+1)/2/(n+1)));
+        for (int k=0; k<n+1; k++) scal(j,k)=V[k];
+    }
+    cout<<"Scalar products: "<<endl;
+    for (int k=0; k<n+1; k++)
+        for (int l=k+1; l<n+1; l++)
+            cout<<scal.col(k).dot(scal.col(l))<<endl;
+/* SAM_LISTING_END_1 */
+
+/* SAM_LISTING_BEGIN_2 */
+// Test the implementation
     auto f = [] (double & x) {return 1/(pow(5*x,2)+1);};
-    int n=20;
+    n=20;
     Eigen::VectorXd alpha(n+1);
     bestpolchebnodes(f, alpha);
     
-    //Compute the error
+    // Compute the error
     Eigen::VectorXd X = Eigen::VectorXd::LinSpaced(1e6,-1,1);
     auto qn = [&alpha,&n] (double & x) {
-        double temp;
+        double temp=0;
         vector<double> V=chebpolmult(n,x);
         for (int k=0; k<n+1; k++) temp+=alpha(k)*V[k];
         return temp;
@@ -58,4 +72,5 @@ int main(){
     double err_max=abs(f(X(0))-qn(X(0)));
     for (int i=1; i<1e6; i++) err_max=std::max(err_max,abs(f(X(i))-qn(X(i))));
     cout<<"Error: "<< err_max <<endl;
+/* SAM_LISTING_END_2 */
 }

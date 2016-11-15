@@ -26,8 +26,7 @@ void adaptivepolyintp(const Function& f, const double a, const double b,
                       const double tol, const unsigned N,
                       Eigen::VectorXd& adaptive_nodes,
                       /* Ignore the following line for part a) */
-                      Eigen::VectorXd& error_vs_step_no =
-                          Eigen::VectorXd::Zero()) {
+                      Eigen::VectorXd& error_vs_step_no) {
     // Generate sampling points and evaluate $f$ there
     Eigen::VectorXd sampling_points =
             Eigen::VectorXd::LinSpaced(N, a, b),
@@ -39,9 +38,9 @@ void adaptivepolyintp(const Function& f, const double a, const double b,
     double fmax = fvals_at_sampling_points.cwiseAbs().maxCoeff();
 
     // Adaptive mesh (initial node)
-    std::vector<double> t { (a+b)/2. },     // Set of interpolation nodes
-                        y { f((a+b)/2.) },  // Values at nodes
-                        errors;             // Error at nodes
+    std::vector<double> t { (a+b)/2. }, // Set of interpolation nodes
+                        y { static_cast<double>(f((a+b)/2.)) }, // Values at nodes
+                        errors;         // Error at nodes
 
 
     for (int i = 0; i < N; ++i) {

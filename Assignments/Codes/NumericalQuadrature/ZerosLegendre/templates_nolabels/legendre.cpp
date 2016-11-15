@@ -35,7 +35,7 @@ MatrixXd gaussPts(const int n, const double rtol=1e-10,
 
 // Find the Gauss points using the secant method with regula falsi.
 // The standard secant method may be obtained
-// by commenting out lines 92 and 93.
+// by commenting out line 106.
 MatrixXd gaussPts_regulaFalsi(const int n, const double rtol=1e-10,
 										   const double atol=1e-12) {
   MatrixXd zeros(n,n);
@@ -45,11 +45,12 @@ MatrixXd gaussPts_regulaFalsi(const int n, const double rtol=1e-10,
 
 int main() {
   const int n = 8;
+  MatrixXd zeros;
   
   // Secant method without regula falsi
   std::cout << "---> Secant method without regula falsi\n";
   
-  MatrixXd zeros = gaussPts(n);
+  zeros = gaussPts(n);
   std::cout << "Zeros:\n" << zeros << "\n";
     
   for (int k = 1; k < n+1; ++k) {
@@ -64,7 +65,7 @@ int main() {
   // Secant method with regula falsi
   std::cout << "---> Secant method with regula falsi\n";
   
-  MatrixXd zeros = gaussPts_regulaFalsi(n);
+  zeros = gaussPts_regulaFalsi(n);
   std::cout << "Zeros:\n" << zeros << "\n";
     
   for (int k = 1; k < n+1; ++k) {
