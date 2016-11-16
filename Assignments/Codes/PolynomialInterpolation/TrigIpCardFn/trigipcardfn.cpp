@@ -8,12 +8,40 @@
 
 #include <figure.hpp>
 
+#include "trigpolyvalequid.hpp"
+
 using namespace Eigen;
 
+void plot_basis(int n) {
+    const int M = 1e3;
+
+    ArrayXd t = ArrayXd::LinSpaced(M, 0, 1);
+    ArrayXd e = ArrayXd::Zero(2*n+1);
+    e(0) = 1;
+    VectorXd y;
+    trigpolyvalequid(e, 1e3, y);
+
+//    Array t_shift;
+//    t_shift.resizeLike(t);
+//    t << t.tail(), t.head();
+    ArrayXd y_shift;
+    y_shift.resizeLike(t);
+    y_shift << y.tail(M / (2*n+1)), y.head(2*n*M / (2*n+1));
+
+    mgl::Figure fig;
+    fig.title("b_0(t)");
+    fig.xlabel("t");
+    fig.ylabel("y");
+    fig.plot(t, y_shift, "r").label("b_0(t)");
+    fig.legend();
+    fig.save("b0_n");
+}
+
 /*!
- * \brief trigIpL
- * \param n
- * \return
+ * \brief trigIpL Compute $\lambda(n)$.
+ *
+ * \param[in] n
+ * \return Value $\lambda(n)$.
  */
 /* SAM_LISTING_END_3 */
 double trigIpL(std::size_t n) {
@@ -40,16 +68,17 @@ double trigIpL(std::size_t n) {
                 .cwiseAbs()
                 .maxCoeff();
 
+#if INTENRAL
         std::stringstream title, name, legend;
         title << "b_j, j = " << j;
         name << "b_j, j = " << j;
         legend << "b_j, j = " << j;
-#if INTENRAL
         mgl::Figure fig;
         fig.title(title.str().c_str());
         fig.xlabel("t");
         fig.ylabel("y");
-        fig.plot(t, t.unaryExpr(bj) / sint, "r").label(legend.str().c_str());
+        fig.plot(t, t.unaryExpr(bj) / sint, "r")
+                .label(legend.str().c_str());
         fig.legend();
         fig.save(name.str().c_str());
 #endif // INTERNAL
@@ -62,6 +91,10 @@ double trigIpL(std::size_t n) {
 /* SAM_LISTING_END_0 */
 
 int main() {
+
+    const int n = 5;
+    plot_basis(n);
+
     const int s = 11;
 
     std::cout << std::setw(s) << "2^k"
