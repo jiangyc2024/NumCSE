@@ -20,6 +20,7 @@ void plot_basis(int n) {
     // Mesh size
     const int M = 1e3;
 
+#if SOLUTION
     // Basis vector e_1
     ArrayXd e = ArrayXd::Zero(2*n+1);
     e(0) = 1;
@@ -27,9 +28,9 @@ void plot_basis(int n) {
     trigpolyvalequid(e, 1e3, y);
 
     // Shift function right a bit
-    ArrayXd y_shift;
-    y_shift.resizeLike(t);
-    y_shift << y.tail(M / (2*n+1)), y.head(2*n*M / (2*n+1));
+    ArrayXd y_shift(M);
+    unsigned int h = M / (2*n+1);
+    y_shift << y.tail(h), y.head(M - h);
 
     ArrayXd t = ArrayXd::LinSpaced(M, 0, 1);
     mgl::Figure fig;
@@ -39,6 +40,9 @@ void plot_basis(int n) {
     fig.plot(t, y_shift, "r").label("b_0(t)");
     fig.legend();
     fig.save("b0_n");
+#else // TEMPLATE
+    // TODO: plot the basis $b_n$.
+#endif // TEMPLATE
 }
 
 /*!
@@ -72,7 +76,7 @@ double trigIpL(std::size_t n) {
                 .cwiseAbs()
                 .maxCoeff();
 
-#if INTENRAL
+#if INTERNAL
         std::stringstream title, name, legend;
         title << "b_j, j = " << j;
         name << "b_j, j = " << j;
@@ -89,7 +93,7 @@ double trigIpL(std::size_t n) {
     }
     return ret / 2. / (n + 1/2.);
 #else // TEMPLATE
-
+    // TODO: implement the function returning $\lambda(n)$
 #endif // TEMPLATE
 }
 /* SAM_LISTING_END_0 */
@@ -107,8 +111,16 @@ int main() {
               << std::setw(s) << "lambda(k)" << std::endl;
 
     for(unsigned int i = 1 << 2; i < (1 << 15); i = i << 1) {
-        std::cout << std::setw(s) << i
-                  << std::setw(s) << trigIpL(i) << std::endl;
+        double l = trigIpL(i);
+#if INTERNAL
+        std::cout << std::setprecision(3)
+                  << std::setw(s) << i << " &"
+                  << std::setw(s) << l << " \\\\" << std::endl;
+#else
+        std::cout << std::setprecision(3)
+                  << std::setw(s) << i
+                  << std::setw(s) << l << std::endl;
+#endif // INTERNAL
 
     }
 }
