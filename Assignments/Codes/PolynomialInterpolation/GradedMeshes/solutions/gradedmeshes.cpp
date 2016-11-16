@@ -107,84 +107,65 @@ VectorXd PwLineIntp(const VectorXd &x, const VectorXd &t,
 
 
 int main() {
-//~ /* SAM_LISTING_BEGIN_1 */
-//~ // Compute convergence rate for interpolation by piecewise linear polyn.
-//~ // Uniform mesh in $[0,1]$, singular $f(t) = t^\alpha$, h-convergence
-//~ {
-	//~ // Initialization
-	//~ size_t NumAlph = 15;
-	//~ size_t NumN = 50;
-	//~ VectorXd alphas = VectorXd::LinSpaced(NumAlph,0.1,2.9);
-	//~ VectorXd nn = VectorXd::LinSpaced(NumN,1,50); // Used nodes
+/* SAM_LISTING_BEGIN_1 */
+// Compute convergence rate for interpolation by piecewise linear polyn.
+// Uniform mesh in $[0,1]$, singular $f(t) = t^\alpha$, h-convergence
+{
+	// Initialization
+	size_t NumAlph = 15;
+	size_t NumN = 50;
+	VectorXd alphas = VectorXd::LinSpaced(NumAlph,0.1,2.9);
+	VectorXd nn = VectorXd::LinSpaced(NumN,1,50); // Used nodes
 	
-	//~ // Evaluation points
-	//~ VectorXd x = VectorXd::LinSpaced(1000,0,1);
+	// Evaluation points
+	VectorXd x = VectorXd::LinSpaced(1000,0,1);
 
-	//~ MatrixXd Err(NumAlph,NumN); // Error with max norm
-	//~ MatrixXd LocErr(NumAlph,NumN); // Location of maximal error
-	//~ for(size_t i=0; i<NumN; ++i) {
-		//~ size_t n = nn(i);
+	MatrixXd Err(NumAlph,NumN); // Error with max norm
+	MatrixXd LocErr(NumAlph,NumN); // Location of maximal error
+	for(size_t i=0; i<NumN; ++i) {
+		size_t n = nn(i);
 		
-		//~ // Nodes
-		//~ VectorXd t = VectorXd::LinSpaced(n+1,0,1);
+		// Nodes
+		VectorXd t = VectorXd::LinSpaced(n+1,0,1);
 		
-		//~ for(size_t j=0; j<NumAlph; ++j) {
-			//~ VectorXd s = x.array().pow(alphas(j));
-			//~ VectorXd y = t.array().pow(alphas(j));
+		for(size_t j=0; j<NumAlph; ++j) {
+			VectorXd s = x.array().pow(alphas(j));
+			VectorXd y = t.array().pow(alphas(j));
 			
-			//~ VectorXd p = PwLineIntp(x, t, y); // Interpolation
+			VectorXd p = PwLineIntp(x, t, y); // Interpolation
 			
-			//~ size_t PosErr;
-			//~ Err(j,i) = (s - p).cwiseAbs().maxCoeff(&PosErr);
+			size_t PosErr;
+			Err(j,i) = (s - p).cwiseAbs().maxCoeff(&PosErr);
 			
-			//~ // PosErr is index of point in $x$ with max error
-			//~ // LocErr is index of subinterval  with max error
-			//~ std::vector<double> tmp(t.size());
-			//~ VectorXd::Map(&tmp.front(), t.size()) = t -
-						   //~ x(PosErr)*VectorXd::Ones(t.size());
-			//~ LocErr(j,i) = count_if(tmp.begin(), tmp.end(),
-						   //~ [] (double val) {return val <= 0;}) - 1;
-			//~ // "count\_if" only works when $t$ are already sorted!
+			// PosErr is index of point in $x$ with max error
+			// LocErr is index of subinterval  with max error
+			std::vector<double> tmp(t.size());
+			VectorXd::Map(&tmp.front(), t.size()) = t -
+						   x(PosErr)*VectorXd::Ones(t.size());
+			LocErr(j,i) = count_if(tmp.begin(), tmp.end(),
+						   [] (double val) {return val <= 0;}) - 1;
+			// "count\_if" only works when $t$ are already sorted!
 			
-			// Warning if the maximal error is not where expected
+			//~ // Warning if the maximal error is not where expected
 			//~ if((alphas(j)<2 && LocErr(j,i)!=0) ||
 			   //~ (alphas(j)>2 && LocErr(j,i)!=n-1)) {
 				//~ std::cout << "(alpha=" << alphas(j) << ", N=" << n <<
 				//~ "), max. err. in interval " << LocErr(j,i) << std::endl;
 			//~ }
-		//~ }
-	//~ }
+		}
+	}
 
-//~ #if INTERNAL
-    //~ mgl::Figure fig1;
-    //~ fig1.title("Pw. lin. intp. on uniform meshes: error in max-norm");
-    //~ fig1.setlog(true, true); // Set loglog scale
-    //~ for(size_t i=0; i<NumAlph; ++i) {
-		//~ fig1.plot(nn, Err.row(i)).label("alpha="+std::to_string(alphas(i)));
-	//~ }
-	//~ fig1.xlabel("n = # subintervals");
-    //~ fig1.legend(0, 0);
-    //~ fig1.save("PwLineConv_1.eps");
-//~ #endif // INTERNAL
 
-	//~ // Estimate convergence rate
-	//~ VectorXd rates(NumAlph);
-	//~ for(size_t i=0; i<NumAlph; ++i) {
-		//~ VectorXd coeff = polyfit(nn.array().log(), Err.row(i).array().log(), 1);
-		//~ rates(i) = -coeff(0);
-	//~ }
+	// Estimate convergence rate
+	VectorXd rates(NumAlph);
+	for(size_t i=0; i<NumAlph; ++i) {
+		VectorXd coeff = polyfit(nn.array().log(), Err.row(i).array().log(), 1);
+		rates(i) = -coeff(0);
+	}
 
-//~ #if INTERNAL
-    //~ mgl::Figure fig2;
-    //~ fig2.title("Pw. lin. intp. on uniform meshes: error in max-norm");
-	//~ fig2.plot(alphas, rates);
-	//~ fig2.xlabel("alpha");
-	//~ fig2.ylabel("conv. rate");
-    //~ fig2.save("PwLineConv_2.eps");
-//~ #endif // INTERNAL
-//~ /* SAM_LISTING_END_1 */
-//~ }
-//~ {
+/* SAM_LISTING_END_1 */
+}
+{
 /* SAM_LISTING_BEGIN_2 */
 // Compute convergence rate for interpolation by piecewise linear polyn.
 // Beta-graded mesh in $[0,1]$, singular $f(t) = t^\alpha$, h-convergence
@@ -234,7 +215,7 @@ int main() {
 			}
 		}
 	}
-
+	
 	VectorXd rates(NumAlph,NumBeta);
 	for(size_t i=0; i<NumAlph; ++i) {
 
@@ -248,32 +229,32 @@ int main() {
 		}
 
 	}
-/* SAM_LISTING_END_2 */
-//~ }
-//~ {
-//~ /* SAM_LISTING_BEGIN_3 */
-//~ // Plot of algebraically graded mesh
+//~ /* SAM_LISTING_END_2 */
+}
+{
+/* SAM_LISTING_BEGIN_3 */
+// Plot of algebraically graded mesh
 
-	//~ // Initialization
-	//~ size_t n = 10;
-	//~ int beta = 2;
+	// Initialization
+	size_t n = 10;
+	int beta = 2;
 	
-	//~ VectorXd t  = VectorXd::LinSpaced(n+1,0,n)/n;
-	//~ VectorXd y  = t.array().pow(beta);
-	//~ VectorXd t_ = VectorXd::LinSpaced(101,0,1);
-	//~ VectorXd y_ = t_.array().pow(beta);
+	VectorXd t  = VectorXd::LinSpaced(n+1,0,n)/n;
+	VectorXd y  = t.array().pow(beta);
+	VectorXd t_ = VectorXd::LinSpaced(101,0,1);
+	VectorXd y_ = t_.array().pow(beta);
 	
-	//~ mgl::Figure fig;
-	//~ fig.plot(t_, y_, "r");
-	//~ for(size_t i=0; i<n+1; ++i) {
-		//~ VectorXd t_tmp(3); t_tmp << t(i), t(i), 0;
-		//~ VectorXd y_tmp(3); y_tmp << 0, y(i), y(i);
-		//~ fig.plot(t_tmp, y_tmp, "b");
-		//~ fig.plot(t_tmp.tail(2), y_tmp.head(2), " r+");
-	//~ }
-	//~ fig.xlabel("uniform mesh");
-	//~ fig.ylabel("algeb. graded mesh, beta=2");
-	//~ fig.save("GradedMesh_cpp.eps");
-//~ /* SAM_LISTING_END_3 */
-//~ }
+	mgl::Figure fig;
+	fig.plot(t_, y_, "r");
+	for(size_t i=0; i<n+1; ++i) {
+		VectorXd t_tmp(3); t_tmp << t(i), t(i), 0;
+		VectorXd y_tmp(3); y_tmp << 0, y(i), y(i);
+		fig.plot(t_tmp, y_tmp, "b");
+		fig.plot(t_tmp.tail(2), y_tmp.head(2), " r+");
+	}
+	fig.xlabel("uniform mesh");
+	fig.ylabel("algeb. graded mesh, beta=2");
+	fig.save("GradedMesh_cpp.eps");
+/* SAM_LISTING_END_3 */
+}
 }

@@ -31,13 +31,14 @@ void plot_basis(int n) {
     e(0) = 1;
     VectorXd y;
     trigpolyvalequid(e, 1e3, y);
+    
+    ArrayXd t = ArrayXd::LinSpaced(M, 0, 1);
 
     // Shift function right a bit
     ArrayXd y_shift;
     y_shift.resizeLike(t);
     y_shift << y.tail(M / (2*n+1)), y.head(2*n*M / (2*n+1));
 
-    ArrayXd t = ArrayXd::LinSpaced(M, 0, 1);
     mgl::Figure fig;
     fig.title("b_0(t)");
     fig.xlabel("t");
