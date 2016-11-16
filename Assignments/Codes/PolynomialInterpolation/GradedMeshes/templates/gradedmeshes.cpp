@@ -120,12 +120,6 @@ int main() {
 						   [] (double val) {return val <= 0;}) - 1;
 			// "count\_if" only works when $t$ are already sorted!
 			
-			//~ // Warning if the maximal error is not where expected
-			//~ if((alphas(j)<2 && LocErr(j,i)!=0) ||
-			   //~ (alphas(j)>2 && LocErr(j,i)!=n-1)) {
-				//~ std::cout << "(alpha=" << alphas(j) << ", N=" << n <<
-				//~ "), max. err. in interval " << LocErr(j,i) << std::endl;
-			//~ }
 		}
 	}
 
