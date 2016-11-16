@@ -163,8 +163,6 @@ double PwLinIP::operator()(double arg) const
 		
 		return 0;
 	} else {
-		double val = 0;
-		
 		size_t j = 1; // Already checked that $arg \geq x_0$
 		while(j < x_.size()) {
 			if(arg <= x_(j)) {
@@ -176,9 +174,8 @@ double PwLinIP::operator()(double arg) const
 		
 		double gamma = (s_(j) - s_(j-1)) / (x_(j) - x_(j-1));
 		double beta = s_(j-1) - gamma * x_(j-1);
-		val = gamma * arg + beta;
-
-		return val;
+		
+		return gamma * arg + beta;
 	}
 }
 /* SAM_LISTING_END_4 */

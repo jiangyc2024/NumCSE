@@ -188,7 +188,7 @@ int main() {
 #endif // INTERNAL
 /* SAM_LISTING_END_1 */
 }
-
+{
 /* SAM_LISTING_BEGIN_2 */
 // Compute convergence rate for interpolation by piecewise linear polyn.
 // Beta-graded mesh in $[0,1]$, singular $f(t) = t^\alpha$, h-convergence
@@ -279,5 +279,33 @@ int main() {
 #endif // INTERNAL
 	}
 /* SAM_LISTING_END_2 */
-std::cout << "funzia!!!!" << std::endl;
+}
+{
+/* SAM_LISTING_BEGIN_3 */
+// Plot of algebraically graded mesh
+
+	// Initialization
+	size_t n = 10;
+	int beta = 2;
+	
+	VectorXd t  = VectorXd::LinSpaced(n+1,0,n)/n;
+	VectorXd y  = t.array().pow(beta);
+	VectorXd t_ = VectorXd::LinSpaced(101,0,1);
+	VectorXd y_ = t_.array().pow(beta);
+	
+#if INTERNAL
+	mgl::Figure fig;
+	fig.plot(t_, y_, "r");
+	for(size_t i=0; i<n+1; ++i) {
+		VectorXd t_tmp(3); t_tmp << t(i), t(i), 0;
+		VectorXd y_tmp(3); y_tmp << 0, y(i), y(i);
+		fig.plot(t_tmp, y_tmp, "b");
+		fig.plot(t_tmp.tail(2), y_tmp.head(2), "r+");
+	}
+	fig.xlabel("uniform mesh");
+	fig.ylabel("algeb. graded mesh, beta=2");
+	fig.save("GradedMesh_cpp.eps");
+#endif // INTERNAL
+/* SAM_LISTING_END_3 */
+}
 }
