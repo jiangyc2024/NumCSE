@@ -5,6 +5,7 @@
 #include <vector>
 
 #include <Eigen/Dense>
+#include <Eigen/QR>
 
 #include <figure/figure.hpp>
 
@@ -17,6 +18,25 @@ std::vector<size_t> order(const VectorXd &values) {
 		[&](size_t a, size_t b) { return values[a] < values[b]; }
     );
     return indices;
+}
+
+void polyfit(const VectorXd &x, const VectorXd &y, VectorXd &coeff,
+			 size_t order)
+{
+	Eigen::MatrixXd A(x.size(), order+1);
+	Eigen::VectorXd result;
+
+	assert(x.size() == y.size());
+	assert(x.size() >= order + 1);
+
+	// Create matrix
+	for (size_t i=0; i<x.size(); ++i)
+		for (size_t j=0; j<order+1; ++j)
+			A(i, j) = pow(x(i), j);
+
+	// Solve for linear least squares fit
+	coeff = A.householderQr().solve(y);
+	coeff.conservativeResize(order + 1);
 }
 
 /* @brief Compute values of interpolant in knots $\Vx$ from $(t_i,y_i)$
@@ -46,7 +66,7 @@ VectorXd PwLineIntp(const VectorXd &x, const VectorXd &t,
 	// you will always have to iterate along the sorted vector $t$
 	// to find the included node $t_i$.
 	
-	VectorXd s = VectorXd::Zero(m);
+	VectorXd s(m);
 	
 #if SOLUTION
 	size_t i = 0;
@@ -55,7 +75,7 @@ VectorXd PwLineIntp(const VectorXd &x, const VectorXd &t,
 		bool intpOK = false;
 		while(i < n-1) {
 			
-			bool inInterval = (t(t_indices[i]) <= x(x_indices[j]) &&
+			bool inInterval = (t(t_indices[i]) <= x(x_indices[j])) &&
 							  (x(x_indices[j]) <= t(t_indices[i+1]));
 			
 			if(inInterval) {
@@ -99,119 +119,54 @@ int main() {
 	
 	// Points for evaluation and norm
 	VectorXd x = VectorXd::LinSpaced(1000,0,1);
-	VectorXd s = x.replicate<1,NumAlph>().cwiseProduct(
-				   alphas.transpose().replicate<x.size(),1>() );
+	MatrixXd s = (x.replicate(1,NumAlph)).cwiseProduct(
+					alphas.transpose().replicate(x.size(),1) );
 
 	MatrixXd Err(NumAlph,NumN); // Error with max norm
 	MatrixXd LocErr(NumAlph,NumN); // Location of maximal error
 	for(size_t i=0; i<NumN; ++i) {
 		size_t n = nn(i);
 		VectorXd t = VectorXd::LinSpaced(n+1,0,1); // Nodes
-		VectorXd y = t.replicate<1,NumAlph>().cwiseProduct(
-					   alphas.transpose().replicate<t.size(),1>() );
+		MatrixXd y = t.replicate(1,NumAlph).cwiseProduct(
+					   alphas.transpose().replicate(t.size(),1) );
 				   
 		for(size_t j=0; j<NumAlph; ++j) {
-			VectorXd P = PWlineIntp(t, y.col(j), x); // Interpolation
+			VectorXd p = PwLineIntp(x, t, y.col(j)); // Interpolation
 			size_t PosErr;
-			Err(j,k) = (s.col(j) - P).cwiseAbs().maxCoeff(&PosErr);
+			Err(j,i) = (s.col(j) - p).cwiseAbs().maxCoeff(&PosErr);
 			// PosErr is the index of the point in $x$ with max error
 			// LocErr is the index of the subinterval with max error
-			
-			bool IsOdd (int i) { return ((i%2)==1); }
-			
-			vector<double> tmp(t.size());
-			VectorXd::Map(&tmp[0], t.size()) = t - x(PosErr);
-			size_t LocErr(j,k) = count_if(tmp.begin(), tmp.end(),
-								 [] (double val) {return val < 0;}) - 1;
+			std::vector<double> tmp(t.size());
+			VectorXd::Map(&tmp.front(), t.size()) = t -
+						   x(PosErr)*VectorXd::Ones(t.size());
+			LocErr(j,i) = count_if(tmp.begin(), tmp.end(),
+							   [] (double val) {return val < 0;}) - 1;
 			// Warning if the maximal error is not where expected
-			if((alphas(j)<2 && LocErr(j,k)!=1) || (alphas(j)>2 && LocErr(j,k)!=n)) {
+			if((alphas(j)<2 && LocErr(j,i)!=1) || (alphas(j)>2 && LocErr(j,i)!=n)) {
 				std::cerr << "(alpha=" << alphas(j) << ", N=" << n <<
-				"), max. err. in interval " << LocErr(j,k) << std::endl;
+				"), max. err. in interval " << LocErr(j,i) << std::endl;
 			}
 		}
 	}
 	
-	% estimate the convergence rate
-rates = zeros(1,NumAlph);
-for j =1:NumAlph
-    ord = polyfit(log(nn), log(Err(j,:)), 1);
-    % check the use of polyfit:
-    %loglog([1,5], [1,5^ord(1)]*exp(ord(2))/2,'k--' );
-    rates(j) = -ord(1);
-end
-	
-	
-	
-figure;  
-loglog(nn,Err,'.-','linewidth',2);
-hold on; set(gca,'xtick',[3 5 10 20 50])
-title('Piecewise linear intp. on uniform meshes: error in max-norm');
-xlabel('n = # subintervals');
-for j=1:NumAlph, leg{j} = sprintf('alpha=%4.2f',alphas(j)); end;
-legend(leg, 'location','nwo');
+std::cout << Err << std::endl;
 
-% plot the convergence rate
-axes('Position', [.1, .1, .3, .2]);
-plot(alphas, rates,'-o','linewidth',2);
-axis([alphas(1),alphas(end),0,2.2]);
-xlabel('alpha');  ylabel('conv. rate');
-hold on; plot([0 2],[0 2],'r', [2,alphas(end)],[2,2],'r');
-print -depsc2 'PWlineConv.eps';
+//~ #if INTERNAL
+    //~ mgl::Figure fig;
+    //~ fig.title("Piecewise linear intp. on uniform meshes: error in max-norm");
+    //~ fig.ranges(2, 100, 1e-5, 1);
+    //~ fig.setlog(true, true); // Set loglog scale
+    //~ for(size_t i=0; i<NumAlph; ++i)
+		//~ fig.plot(nn, Err.row(i)).label("alpha="+alphas(j));
+	//~ fig.xlabel("n = # subintervals");
+    //~ fig.legend(0, 1);
+    //~ fig.save("PwLineConv_cpp.eps");
+//~ #endif // INTERNAL
 
-alpha_orders = [alphas(:),rates(:)]  % display conv. rates
-	
-	
-	
+
 	
 /* SAM_LISTING_END_1 */
 
 
 
-	
-	
-	
-	
-	// Initialization
-	size_t n = 11;
-	VectorXd x = VectorXd::LinSpaced(n,0,10);
-	VectorXd t(n);
-	t(0) = 0; t.tail(n-1).setLinSpaced(n-1,0.5,9.5);
-	VectorXd y = VectorXd::Ones(n);
-	
-	PwLinIP cardinalBasis(x, t, y);
-	
-	VectorXd s(n);
-	for(size_t j=0; j<n; ++j) {
-		s(j) = cardinalBasis(x(j));
-	}
-	
-#if INTERNAL
-	mgl::Figure fig;
-	fig.xlabel("t");
-	fig.ylabel("y");
-	
-	VectorXd t_left(2);
-	t_left << t(0), t(1);
-	VectorXd y_left(2);
-	y_left << y(0), 0;
-	fig.plot(t_left, y_left, "b");
-	fig.plot(t_left, y_left, "b*");
-	for(size_t i=1; i<n-1; ++i) {
-		VectorXd t_(3);
-		t_ << t(i-1), t(i), t(i+1);
-		VectorXd y_(3);
-		y_ << 0, y(i), 0;
-		fig.plot(t_, y_, "b");
-		fig.plot(t_, y_, "b*");
-	}
-	VectorXd t_right(2);
-	t_right << t(n-2), t(n-1);
-	VectorXd y_right(2);
-	y_right << 0, y(n-1);
-	fig.plot(t_right, y_right, "b");
-	fig.plot(t_right, y_right, "b*");
-
-	fig.title("Tent basis functions");
-	fig.save("tent_basis_functions.eps");
-#endif // INTERNAL
 }
