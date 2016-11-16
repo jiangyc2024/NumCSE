@@ -118,7 +118,7 @@ int main() {
 	VectorXd nn = VectorXd::LinSpaced(NumN,1,50); // Used nodes
 	
 	// Points for evaluation and norm
-	VectorXd x = VectorXd::LinSpaced(1000,0,1);
+	VectorXd x = VectorXd::LinSpaced(100,0,0.5);
 	MatrixXd s = (x.replicate(1,NumAlph)).cwiseProduct(
 					alphas.transpose().replicate(x.size(),1) );
 
@@ -132,24 +132,29 @@ int main() {
 				   
 		for(size_t j=0; j<NumAlph; ++j) {
 			VectorXd p = PwLineIntp(x, t, y.col(j)); // Interpolation
+			
 			size_t PosErr;
 			Err(j,i) = (s.col(j) - p).cwiseAbs().maxCoeff(&PosErr);
-			// PosErr is the index of the point in $x$ with max error
-			// LocErr is the index of the subinterval with max error
-			std::vector<double> tmp(t.size());
-			VectorXd::Map(&tmp.front(), t.size()) = t -
-						   x(PosErr)*VectorXd::Ones(t.size());
-			LocErr(j,i) = count_if(tmp.begin(), tmp.end(),
-							   [] (double val) {return val < 0;}) - 1;
-			// Warning if the maximal error is not where expected
-			if((alphas(j)<2 && LocErr(j,i)!=1) || (alphas(j)>2 && LocErr(j,i)!=n)) {
-				std::cerr << "(alpha=" << alphas(j) << ", N=" << n <<
-				"), max. err. in interval " << LocErr(j,i) << std::endl;
+			
+			if(Err(j,i) > 1e-10) { // Ignore rounding errors
+				// PosErr is index of point in $x$ with max error
+				// LocErr is index of subinterval  with max error
+				std::vector<double> tmp(t.size());
+				VectorXd::Map(&tmp.front(), t.size()) = t -
+							   x(PosErr)*VectorXd::Ones(t.size());
+				LocErr(j,i) = count_if(tmp.begin(), tmp.end(),
+							   [] (double val) {return val <= 0;}) - 1;
+				// "count\_if" only works when $t$ are already sorted!
+				
+				// Warning if the maximal error is not where expected
+				if((alphas(j)<2 && LocErr(j,i)!=0) ||
+				   (alphas(j)>2 && LocErr(j,i)!=n-1)) {
+					std::cout << "(alpha=" << alphas(j) << ", N=" << n <<
+					"), max. err. in interval " << LocErr(j,i) << std::endl;
+				}
 			}
 		}
 	}
-	
-std::cout << Err << std::endl;
 
 //~ #if INTERNAL
     //~ mgl::Figure fig;
@@ -162,11 +167,6 @@ std::cout << Err << std::endl;
     //~ fig.legend(0, 1);
     //~ fig.save("PwLineConv_cpp.eps");
 //~ #endif // INTERNAL
-
-
 	
 /* SAM_LISTING_END_1 */
-
-
-
 }
