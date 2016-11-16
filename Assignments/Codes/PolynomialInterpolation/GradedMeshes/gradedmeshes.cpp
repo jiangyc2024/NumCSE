@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <numeric>
+#include <string>
 #include <vector>
 
 #include <Eigen/Dense>
@@ -20,8 +21,7 @@ std::vector<size_t> order(const VectorXd &values) {
     return indices;
 }
 
-void polyfit(const VectorXd &x, const VectorXd &y, VectorXd &coeff,
-			 size_t order)
+VectorXd polyfit(const VectorXd &x, const VectorXd &y, size_t order)
 {
 	Eigen::MatrixXd A(x.size(), order+1);
 	Eigen::VectorXd result;
@@ -30,13 +30,17 @@ void polyfit(const VectorXd &x, const VectorXd &y, VectorXd &coeff,
 	assert(x.size() >= order + 1);
 
 	// Create matrix
-	for (size_t i=0; i<x.size(); ++i)
-		for (size_t j=0; j<order+1; ++j)
+	for (size_t i=0; i<x.size(); ++i) {
+		for (size_t j=0; j<order+1; ++j) {
 			A(i, j) = pow(x(i), j);
+		}
+	}
 
 	// Solve for linear least squares fit
-	coeff = A.householderQr().solve(y);
+	VectorXd coeff = A.householderQr().solve(y);
 	coeff.conservativeResize(order + 1);
+	
+	return coeff;
 }
 
 /* @brief Compute values of interpolant in knots $\Vx$ from $(t_i,y_i)$
@@ -109,64 +113,171 @@ VectorXd PwLineIntp(const VectorXd &x, const VectorXd &t,
 int main() {
 /* SAM_LISTING_BEGIN_1 */
 // Compute convergence rate for interpolation by piecewise linear polyn.
-// Uniform mesh in [0,1], singular f(t) = t^alpha, h-convergence
-	
+// Uniform mesh in $[0,1]$, singular $f(t) = t^\alpha$, h-convergence
+{
 	// Initialization
 	size_t NumAlph = 15;
 	size_t NumN = 50;
 	VectorXd alphas = VectorXd::LinSpaced(NumAlph,0.1,2.9);
 	VectorXd nn = VectorXd::LinSpaced(NumN,1,50); // Used nodes
 	
-	// Points for evaluation and norm
-	VectorXd x = VectorXd::LinSpaced(100,0,0.5);
-	MatrixXd s = (x.replicate(1,NumAlph)).cwiseProduct(
-					alphas.transpose().replicate(x.size(),1) );
+	// Evaluation points
+	VectorXd x = VectorXd::LinSpaced(1000,0,1);
 
 	MatrixXd Err(NumAlph,NumN); // Error with max norm
 	MatrixXd LocErr(NumAlph,NumN); // Location of maximal error
 	for(size_t i=0; i<NumN; ++i) {
 		size_t n = nn(i);
-		VectorXd t = VectorXd::LinSpaced(n+1,0,1); // Nodes
-		MatrixXd y = t.replicate(1,NumAlph).cwiseProduct(
-					   alphas.transpose().replicate(t.size(),1) );
-				   
+		
+		// Nodes
+		VectorXd t = VectorXd::LinSpaced(n+1,0,1);
+		
 		for(size_t j=0; j<NumAlph; ++j) {
-			VectorXd p = PwLineIntp(x, t, y.col(j)); // Interpolation
+			VectorXd s = x.array().pow(alphas(j));
+			VectorXd y = t.array().pow(alphas(j));
+			
+			VectorXd p = PwLineIntp(x, t, y); // Interpolation
 			
 			size_t PosErr;
-			Err(j,i) = (s.col(j) - p).cwiseAbs().maxCoeff(&PosErr);
+			Err(j,i) = (s - p).cwiseAbs().maxCoeff(&PosErr);
 			
-			if(Err(j,i) > 1e-10) { // Ignore rounding errors
+			// PosErr is index of point in $x$ with max error
+			// LocErr is index of subinterval  with max error
+			std::vector<double> tmp(t.size());
+			VectorXd::Map(&tmp.front(), t.size()) = t -
+						   x(PosErr)*VectorXd::Ones(t.size());
+			LocErr(j,i) = count_if(tmp.begin(), tmp.end(),
+						   [] (double val) {return val <= 0;}) - 1;
+			// "count\_if" only works when $t$ are already sorted!
+			
+			//~ // Warning if the maximal error is not where expected
+			//~ if((alphas(j)<2 && LocErr(j,i)!=0) ||
+			   //~ (alphas(j)>2 && LocErr(j,i)!=n-1)) {
+				//~ std::cout << "(alpha=" << alphas(j) << ", N=" << n <<
+				//~ "), max. err. in interval " << LocErr(j,i) << std::endl;
+			//~ }
+		}
+	}
+
+#if INTERNAL
+    mgl::Figure fig1;
+    fig1.title("Pw. lin. intp. on uniform meshes: error in max-norm");
+    fig1.setlog(true, true); // Set loglog scale
+    for(size_t i=0; i<NumAlph; ++i) {
+		fig1.plot(nn, Err.row(i)).label("alpha="+std::to_string(alphas(i)));
+	}
+	fig1.xlabel("n = # subintervals");
+    fig1.legend(0, 0);
+    fig1.save("PwLineConv_1.eps");
+#endif // INTERNAL
+
+	// Estimate convergence rate
+	VectorXd rates(NumAlph);
+	for(size_t i=0; i<NumAlph; ++i) {
+		VectorXd coeff = polyfit(nn.array().log(), Err.row(i).array().log(), 1);
+		rates(i) = -coeff(0);
+	}
+
+#if INTERNAL
+    mgl::Figure fig2;
+    fig2.title("Pw. lin. intp. on uniform meshes: error in max-norm");
+	fig2.plot(alphas, rates);
+	fig2.xlabel("alpha");
+	fig2.ylabel("conv. rate");
+    fig2.save("PwLineConv_2.eps");
+#endif // INTERNAL
+/* SAM_LISTING_END_1 */
+}
+
+/* SAM_LISTING_BEGIN_2 */
+// Compute convergence rate for interpolation by piecewise linear polyn.
+// Beta-graded mesh in $[0,1]$, singular $f(t) = t^\alpha$, h-convergence
+// for different betas
+
+	// Initialization
+	size_t NumAlph = 3;
+	size_t NumBeta = 9;
+	size_t NumN = 50;
+	VectorXd alphas(NumAlph); alphas << 0.5, 0.75, 4/3;
+	VectorXd betas = VectorXd::LinSpaced(NumBeta,1,50);
+	VectorXd nn = VectorXd::LinSpaced(NumN,1,50); // Used nodes
+	
+	// Evaluation points
+	VectorXd x = VectorXd::LinSpaced(1000,0,1);
+	std::vector<MatrixXd> Err(NumAlph); // Error with max norm (3D data)
+	std::vector<MatrixXd> LocErr(NumAlph); // Location of maximal error (3D data)
+	for(size_t i=0; i<NumAlph; ++i) {
+		Err[i] = MatrixXd(NumBeta,NumN);
+		LocErr[i] = MatrixXd(NumBeta,NumN);
+	}
+	
+	for(size_t i=0; i<NumN; ++i) {
+		size_t n = nn(i);
+		
+		for(size_t j=0; j<NumBeta; ++j) {
+			// Nodes
+			VectorXd t = VectorXd::LinSpaced(n+1,0,1).array().pow(betas(j));
+
+			for(size_t k=0; k<NumAlph; ++k) {
+				VectorXd s = x.array().pow(alphas(k));
+				VectorXd y = t.array().pow(alphas(k));
+				
+				VectorXd p = PwLineIntp(x, t, y); // Interpolation
+				
+				size_t PosErr;
+				Err[k](j,i) = (s - p).cwiseAbs().maxCoeff(&PosErr);
+				
 				// PosErr is index of point in $x$ with max error
 				// LocErr is index of subinterval  with max error
 				std::vector<double> tmp(t.size());
 				VectorXd::Map(&tmp.front(), t.size()) = t -
 							   x(PosErr)*VectorXd::Ones(t.size());
-				LocErr(j,i) = count_if(tmp.begin(), tmp.end(),
+				LocErr[k](j,i) = count_if(tmp.begin(), tmp.end(),
 							   [] (double val) {return val <= 0;}) - 1;
 				// "count\_if" only works when $t$ are already sorted!
-				
-				// Warning if the maximal error is not where expected
-				if((alphas(j)<2 && LocErr(j,i)!=0) ||
-				   (alphas(j)>2 && LocErr(j,i)!=n-1)) {
-					std::cout << "(alpha=" << alphas(j) << ", N=" << n <<
-					"), max. err. in interval " << LocErr(j,i) << std::endl;
-				}
 			}
 		}
 	}
 
-//~ #if INTERNAL
-    //~ mgl::Figure fig;
-    //~ fig.title("Piecewise linear intp. on uniform meshes: error in max-norm");
-    //~ fig.ranges(2, 100, 1e-5, 1);
-    //~ fig.setlog(true, true); // Set loglog scale
-    //~ for(size_t i=0; i<NumAlph; ++i)
-		//~ fig.plot(nn, Err.row(i)).label("alpha="+alphas(j));
-	//~ fig.xlabel("n = # subintervals");
-    //~ fig.legend(0, 1);
-    //~ fig.save("PwLineConv_cpp.eps");
-//~ #endif // INTERNAL
-	
-/* SAM_LISTING_END_1 */
+	VectorXd rates(NumAlph,NumBeta);
+	for(size_t i=0; i<NumAlph; ++i) {
+#if INTERNAL
+		mgl::Figure fig1;
+		fig1.title("Pw. lin. intp. on uniform meshes: "
+				   +std::to_string(alphas(i)));
+		fig1.setlog(true, true); // Set loglog scale
+		for(size_t j=0; j<NumBeta; ++j) {
+			fig1.plot(nn, Err[i].row(j)).label("beta="+std::to_string(betas(j)));
+		}
+		fig1.xlabel("n = # subintervals");
+		fig1.legend(0, 0);
+		fig1.save("PwLineGraded_1_"+std::to_string(alphas(i))+".eps");
+#endif // INTERNAL
+
+		// Estimate convergence rate
+		for(size_t j=0; j<NumBeta; ++j) {
+			size_t skip = 4;
+			VectorXd row = Err[i].row(j);
+			VectorXd coeff = polyfit(nn.tail(nn.size()-skip).array().log(),
+							 row.tail(row.size()-skip).array().log(),1);
+			rates(i) = -coeff(0);
+		}
+
+#if INTERNAL
+		mgl::Figure fig2;
+		fig2.title("Pw. lin. intp. on uniform meshes: "
+				   +std::to_string(alphas(i)));
+		size_t m2;
+		size_t m1 = rates.row(i).maxCoeff(&m2);
+		VectorXd betas_(1); betas_ << betas(m2);
+		VectorXd rates_(1); rates_ << m1;
+		fig2.plot(betas,  rates.row(i));
+		fig2.plot(betas_, rates_, "+");
+		fig2.xlabel("beta");
+		fig2.ylabel("conv. rate");
+		fig2.save("PwLineGraded_2_"+std::to_string(alphas(i))+".eps");
+#endif // INTERNAL
+	}
+/* SAM_LISTING_END_2 */
+std::cout << "funzia!!!!" << std::endl;
 }
