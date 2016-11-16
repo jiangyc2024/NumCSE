@@ -125,6 +125,8 @@ VectorXd PwLinIP::tentBasCoeff(const VectorXd &x, const VectorXd &t,
 }
 /* SAM_LISTING_END_0 */
 
+/* @brief Constructor of intepolator class
+ */
 /* SAM_LISTING_BEGIN_2 */
 PwLinIP::PwLinIP(const VectorXd &x, const VectorXd &t,
 				 const VectorXd &y)
@@ -151,8 +153,10 @@ PwLinIP::PwLinIP(const VectorXd &x, const VectorXd &t,
 	s_ = tentBasCoeff(x_, t_, y_);
 }
 
+/* @brief Operator() of intepolator class
+ */
 double PwLinIP::operator()(double arg) const
-{	
+{
 	if(arg < x_(0) || arg > x_(x_.size()-1)) {
 		
 		return 0;

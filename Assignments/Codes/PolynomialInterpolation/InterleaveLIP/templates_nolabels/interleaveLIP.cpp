@@ -35,10 +35,7 @@ public:
 	PwLinIP(const VectorXd &x, const VectorXd &t, const VectorXd &y);
 	double operator()(double arg) const;
 private:
-	VectorXd x_;
-	VectorXd t_;
-	VectorXd y_;
-	VectorXd s_;
+    // TODO: private members of intepolator class
 	VectorXd tentBasCoeff(const VectorXd &x, const VectorXd &t,
 						  const VectorXd &y) const;
 };
@@ -67,57 +64,27 @@ VectorXd PwLinIP::tentBasCoeff(const VectorXd &x, const VectorXd &t,
 	
 	VectorXd s = VectorXd::Zero(n);
 	
-    // TODO: 
+    // TODO: compute interpolant in knots $\Vx$ from $(t_i,y_i)$
 
 	return s;
 }
 
+/* @brief Constructor of intepolator class
+ */
 PwLinIP::PwLinIP(const VectorXd &x, const VectorXd &t,
 				 const VectorXd &y)
 {
 	assert(t.size() == y.size() && t.size() == x.size() &&
 		  "x, t, y must have same size!");
 	
-	size_t n = t.size();
-	x_.resize(n);
-	t_.resize(n);
-	y_.resize(n);
-	
-	auto x_indices = order(x);
-	for(size_t i=0; i<n; ++i) {
-		x_(i) = x[x_indices[i]];
-	}
-	
-	auto t_indices = order(t);
-	for(size_t i=0; i<n; ++i) {
-		t_(i) = t[t_indices[i]];
-		y_(i) = y[t_indices[i]];
-	}
-	
-	s_ = tentBasCoeff(x_, t_, y_);
+    // TODO: implement constructor of intepolator class
 }
 
+/* @brief Operator() of intepolator class
+ */
 double PwLinIP::operator()(double arg) const
-{	
-	if(arg < x_(0) || arg > x_(x_.size()-1)) {
-		
-		return 0;
-	} else {
-		
-		size_t j = 1; // Already checked that $arg \geq x_0$
-		while(j < x_.size()) {
-			if(arg <= x_(j)) {
-				break;
-			} else {
-				++j;
-			}
-		}
-		
-		double gamma = (s_(j) - s_(j-1)) / (x_(j) - x_(j-1));
-		double beta = s_(j-1) - gamma * x_(j-1);
-
-		return gamma * arg + beta;
-	}
+{
+    // TODO: implement operator() of intepolator class
 }
 
 int main() {

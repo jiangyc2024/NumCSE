@@ -30,10 +30,14 @@ public:
 	PwLinIP(const VectorXd &x, const VectorXd &t, const VectorXd &y);
 	double operator()(double arg) const;
 private:
+#if SOLUTION
 	VectorXd x_;
 	VectorXd t_;
 	VectorXd y_;
 	VectorXd s_;
+#else // TEMPLATE
+    // TODO: private members of intepolator class
+#endif // TEMPLATE
 	VectorXd tentBasCoeff(const VectorXd &x, const VectorXd &t,
 						  const VectorXd &y) const;
 };
@@ -122,13 +126,15 @@ VectorXd PwLinIP::tentBasCoeff(const VectorXd &x, const VectorXd &t,
 		s(x_indices[j]) = gamma * x(x_indices[j]) + beta;
 	}
 #else // TEMPLATE
-    // TODO: 
+    // TODO: compute interpolant in knots $\Vx$ from $(t_i,y_i)$
 #endif // TEMPLATE
 
 	return s;
 }
 /* SAM_LISTING_END_0 */
 
+/* @brief Constructor of intepolator class
+ */
 /* SAM_LISTING_BEGIN_2 */
 PwLinIP::PwLinIP(const VectorXd &x, const VectorXd &t,
 				 const VectorXd &y)
@@ -136,6 +142,7 @@ PwLinIP::PwLinIP(const VectorXd &x, const VectorXd &t,
 	assert(t.size() == y.size() && t.size() == x.size() &&
 		  "x, t, y must have same size!");
 	
+#if SOLUTION
 	size_t n = t.size();
 	x_.resize(n);
 	t_.resize(n);
@@ -153,10 +160,16 @@ PwLinIP::PwLinIP(const VectorXd &x, const VectorXd &t,
 	}
 	
 	s_ = tentBasCoeff(x_, t_, y_);
+#else // TEMPLATE
+    // TODO: implement constructor of intepolator class
+#endif // TEMPLATE
 }
 
+/* @brief Operator() of intepolator class
+ */
 double PwLinIP::operator()(double arg) const
-{	
+{
+#if SOLUTION
 	if(arg < x_(0) || arg > x_(x_.size()-1)) {
 		
 		return 0;
@@ -176,6 +189,9 @@ double PwLinIP::operator()(double arg) const
 
 		return gamma * arg + beta;
 	}
+#else // TEMPLATE
+    // TODO: implement operator() of intepolator class
+#endif // TEMPLATE
 }
 /* SAM_LISTING_END_2 */
 
