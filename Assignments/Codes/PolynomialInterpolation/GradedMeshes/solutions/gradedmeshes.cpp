@@ -72,7 +72,6 @@ VectorXd PwLineIntp(const VectorXd &x, const VectorXd &t,
 	
 	VectorXd s(m);
 	
-#if SOLUTION
 	size_t i = 0;
 	for(size_t j=0; j<m; ++j) {
 		
@@ -100,9 +99,6 @@ VectorXd PwLineIntp(const VectorXd &x, const VectorXd &t,
 			std::exit(EXIT_FAILURE); // $x \not\in [t_min,t_max]$
 		}
 	}
-#else // TEMPLATE
-    // TODO: 
-#endif // TEMPLATE
 
 	return s;
 }
@@ -241,18 +237,6 @@ int main() {
 
 	VectorXd rates(NumAlph,NumBeta);
 	for(size_t i=0; i<NumAlph; ++i) {
-#if INTERNAL
-		mgl::Figure fig1;
-		fig1.title("Pw. lin. intp. on uniform meshes: "
-				   +std::to_string(alphas(i)));
-		fig1.setlog(true, true); // Set loglog scale
-		for(size_t j=0; j<NumBeta; ++j) {
-			fig1.plot(nn, Err[i].row(j)).label("beta="+std::to_string(betas(j)));
-		}
-		fig1.xlabel("n = # subintervals");
-		fig1.legend(0, 0);
-		fig1.save("PwLineGraded_1_"+std::to_string(alphas(i))+".eps");
-#endif // INTERNAL
 
 		// Estimate convergence rate
 		for(size_t j=0; j<NumBeta; ++j) {
@@ -263,20 +247,6 @@ int main() {
 			rates(i) = -coeff(0);
 		}
 
-#if INTERNAL
-		mgl::Figure fig2;
-		fig2.title("Pw. lin. intp. on uniform meshes: "
-				   +std::to_string(alphas(i)));
-		size_t m2;
-		size_t m1 = rates.row(i).maxCoeff(&m2);
-		VectorXd betas_(1); betas_ << betas(m2);
-		VectorXd rates_(1); rates_ << m1;
-		fig2.plot(betas,  rates.row(i));
-		fig2.plot(betas_, rates_, "+");
-		fig2.xlabel("beta");
-		fig2.ylabel("conv. rate");
-		fig2.save("PwLineGraded_2_"+std::to_string(alphas(i))+".eps");
-#endif // INTERNAL
 	}
 /* SAM_LISTING_END_2 */
 //~ }

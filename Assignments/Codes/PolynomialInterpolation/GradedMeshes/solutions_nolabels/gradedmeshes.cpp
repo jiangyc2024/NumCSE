@@ -1,3 +1,9 @@
+//// 
+//// Copyright (C) 2016 SAM (D-MATH) @ ETH Zurich
+//// Author(s): lfilippo <filippo.leonardi@sam.math.ethz.ch> 
+//// Contributors: tille, jgacon, dcasati
+//// This file is part of the NumCSE repository.
+////
 #include <algorithm>
 #include <cstdlib>
 #include <iostream>
@@ -49,7 +55,6 @@ VectorXd polyfit(const VectorXd &x, const VectorXd &y, size_t order)
  * @param[in] y Vector of values of interpolant in nodes $\Vt$
  * @param[out] s Vector of values of interpolant in knots $\Vx$
  */
-/* SAM_LISTING_BEGIN_0 */
 VectorXd PwLineIntp(const VectorXd &x, const VectorXd &t,
 					const VectorXd &y)
 
@@ -72,7 +77,6 @@ VectorXd PwLineIntp(const VectorXd &x, const VectorXd &t,
 	
 	VectorXd s(m);
 	
-#if SOLUTION
 	size_t i = 0;
 	for(size_t j=0; j<m; ++j) {
 		
@@ -100,18 +104,13 @@ VectorXd PwLineIntp(const VectorXd &x, const VectorXd &t,
 			std::exit(EXIT_FAILURE); // $x \not\in [t_min,t_max]$
 		}
 	}
-#else // TEMPLATE
-    // TODO: 
-#endif // TEMPLATE
 
 	return s;
 }
-/* SAM_LISTING_END_0 */
 
 
 
 int main() {
-//~ /* SAM_LISTING_BEGIN_1 */
 //~ // Compute convergence rate for interpolation by piecewise linear polyn.
 //~ // Uniform mesh in $[0,1]$, singular $f(t) = t^\alpha$, h-convergence
 //~ {
@@ -186,10 +185,8 @@ int main() {
 	//~ fig2.ylabel("conv. rate");
     //~ fig2.save("PwLineConv_2.eps");
 //~ #endif // INTERNAL
-//~ /* SAM_LISTING_END_1 */
 //~ }
 //~ {
-/* SAM_LISTING_BEGIN_2 */
 // Compute convergence rate for interpolation by piecewise linear polyn.
 // Beta-graded mesh in $[0,1]$, singular $f(t) = t^\alpha$, h-convergence
 // for different betas
@@ -241,18 +238,6 @@ int main() {
 
 	VectorXd rates(NumAlph,NumBeta);
 	for(size_t i=0; i<NumAlph; ++i) {
-#if INTERNAL
-		mgl::Figure fig1;
-		fig1.title("Pw. lin. intp. on uniform meshes: "
-				   +std::to_string(alphas(i)));
-		fig1.setlog(true, true); // Set loglog scale
-		for(size_t j=0; j<NumBeta; ++j) {
-			fig1.plot(nn, Err[i].row(j)).label("beta="+std::to_string(betas(j)));
-		}
-		fig1.xlabel("n = # subintervals");
-		fig1.legend(0, 0);
-		fig1.save("PwLineGraded_1_"+std::to_string(alphas(i))+".eps");
-#endif // INTERNAL
 
 		// Estimate convergence rate
 		for(size_t j=0; j<NumBeta; ++j) {
@@ -263,25 +248,9 @@ int main() {
 			rates(i) = -coeff(0);
 		}
 
-#if INTERNAL
-		mgl::Figure fig2;
-		fig2.title("Pw. lin. intp. on uniform meshes: "
-				   +std::to_string(alphas(i)));
-		size_t m2;
-		size_t m1 = rates.row(i).maxCoeff(&m2);
-		VectorXd betas_(1); betas_ << betas(m2);
-		VectorXd rates_(1); rates_ << m1;
-		fig2.plot(betas,  rates.row(i));
-		fig2.plot(betas_, rates_, "+");
-		fig2.xlabel("beta");
-		fig2.ylabel("conv. rate");
-		fig2.save("PwLineGraded_2_"+std::to_string(alphas(i))+".eps");
-#endif // INTERNAL
 	}
-/* SAM_LISTING_END_2 */
 //~ }
 //~ {
-//~ /* SAM_LISTING_BEGIN_3 */
 //~ // Plot of algebraically graded mesh
 
 	//~ // Initialization
@@ -304,6 +273,5 @@ int main() {
 	//~ fig.xlabel("uniform mesh");
 	//~ fig.ylabel("algeb. graded mesh, beta=2");
 	//~ fig.save("GradedMesh_cpp.eps");
-//~ /* SAM_LISTING_END_3 */
 //~ }
 }
