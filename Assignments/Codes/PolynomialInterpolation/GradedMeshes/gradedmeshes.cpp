@@ -280,7 +280,7 @@ int main() {
 		fig2.save("PwLineGraded_2_"+std::to_string(alphas(i))+".eps");
 #endif // INTERNAL
 	}
-//~ /* SAM_LISTING_END_2 */
+/* SAM_LISTING_END_2 */
 }
 {
 /* SAM_LISTING_BEGIN_3 */

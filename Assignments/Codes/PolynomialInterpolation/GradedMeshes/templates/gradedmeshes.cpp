@@ -197,7 +197,7 @@ int main() {
 		}
 
 	}
-//~ /* SAM_LISTING_END_2 */
+/* SAM_LISTING_END_2 */
 }
 {
 /* SAM_LISTING_BEGIN_3 */
