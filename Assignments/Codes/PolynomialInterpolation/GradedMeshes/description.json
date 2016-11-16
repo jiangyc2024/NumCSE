@@ -1,0 +1,8 @@
+{
+    "author" : "",
+    "email" : "",
+    "contributors" : "",
+
+    "name": "GradedMeshes",
+    "all" : ["gradedmeshes.cpp"]
+}

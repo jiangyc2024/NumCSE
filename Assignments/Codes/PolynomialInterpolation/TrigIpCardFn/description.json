@@ -1,0 +1,10 @@
+{
+    "author" : "",
+    "email" : "",
+    "contributors" : "",
+
+    "name": "TrigIpCardFn",
+    "all" : ["trigipcardfn.cpp"],
+    "solutions" : ["b0_n.eps"],
+    "lib" : ["trigipequid.hpp", "trigpolyvalequid.hpp"]
+}
