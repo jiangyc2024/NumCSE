@@ -25,7 +25,7 @@ void plot_basis(int n) {
     e(0) = 1;
     VectorXd y;
     trigpolyvalequid(e, 1e3, y);
-    
+
     ArrayXd t = ArrayXd::LinSpaced(M, 0, 1);
 
     // Shift function right a bit
@@ -65,7 +65,7 @@ double trigIpL(std::size_t n) {
 
         auto trim_nans = [] (double t) {
 
-            return isnan(t) ? 0 : t;
+            return std::isnan(t) ? 0 : t;
         };
 
         ret += (t.unaryExpr(bj) / sint)
