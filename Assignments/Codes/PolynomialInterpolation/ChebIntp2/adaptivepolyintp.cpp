@@ -1,5 +1,6 @@
-# include <cmath>
-# include <figure/figure.hpp>
+#include <cmath>
+#include <mgl2/mgl.h>
+#include <figure/figure.hpp>
 
 #include "intpolyval.hpp"
 
@@ -210,7 +211,7 @@ int extra_test() {
 
   return 0;
 }
-#endif INTERNAL
+#endif // INTERNAL
 
 int main() {
   /* SAM_LISTING_BEGIN_2 */
