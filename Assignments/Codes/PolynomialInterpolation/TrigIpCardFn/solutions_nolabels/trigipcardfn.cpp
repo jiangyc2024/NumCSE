@@ -31,7 +31,7 @@ void plot_basis(int n) {
     e(0) = 1;
     VectorXd y;
     trigpolyvalequid(e, 1e3, y);
-    
+
     ArrayXd t = ArrayXd::LinSpaced(M, 0, 1);
 
     // Shift function right a bit
@@ -69,7 +69,7 @@ double trigIpL(std::size_t n) {
 
         auto trim_nans = [] (double t) {
 
-            return isnan(t) ? 0 : t;
+            return std::isnan(t) ? 0 : t;
         };
 
         ret += (t.unaryExpr(bj) / sint)
@@ -77,20 +77,6 @@ double trigIpL(std::size_t n) {
                 .cwiseAbs()
                 .maxCoeff();
 
-#if INTENRAL
-        std::stringstream title, name, legend;
-        title << "b_j, j = " << j;
-        name << "b_j, j = " << j;
-        legend << "b_j, j = " << j;
-        mgl::Figure fig;
-        fig.title(title.str().c_str());
-        fig.xlabel("t");
-        fig.ylabel("y");
-        fig.plot(t, t.unaryExpr(bj) / sint, "r")
-                .label(legend.str().c_str());
-        fig.legend();
-        fig.save(name.str().c_str());
-#endif // INTERNAL
     }
     return ret / 2. / (n + 1/2.);
 }

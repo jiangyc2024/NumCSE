@@ -73,7 +73,7 @@ double trigIpL(std::size_t n) {
                 .cwiseAbs()
                 .maxCoeff();
 
-#if INTENRAL
+#if INTERNAL
         std::stringstream title, name, legend;
         title << "b_j, j = " << j;
         name << "b_j, j = " << j;

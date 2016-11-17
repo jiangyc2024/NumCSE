@@ -1,5 +1,6 @@
-# include <cmath>
-# include <figure/figure.hpp>
+#include <cmath>
+#include <mgl2/mgl.h>
+#include <figure/figure.hpp>
 
 #include "intpolyval.hpp"
 

@@ -25,7 +25,7 @@ void plot_basis(int n) {
     e(0) = 1;
     VectorXd y;
     trigpolyvalequid(e, 1e3, y);
-    
+
     ArrayXd t = ArrayXd::LinSpaced(M, 0, 1);
 
     // Shift function right a bit
