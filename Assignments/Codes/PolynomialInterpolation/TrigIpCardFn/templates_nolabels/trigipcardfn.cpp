@@ -46,6 +46,7 @@ void plot_basis(int n) {
     fig.plot(t, y_shift, "r").label("b_0(t)");
     fig.legend();
     fig.save("b0_n");
+
 }
 
 /*!

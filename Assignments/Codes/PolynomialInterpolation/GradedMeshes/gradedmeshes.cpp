@@ -8,6 +8,8 @@
 #include <Eigen/Dense>
 #include <Eigen/QR>
 
+#include <mgl2/mgl.h>
+
 #include <figure/figure.hpp>
 
 using namespace Eigen;
