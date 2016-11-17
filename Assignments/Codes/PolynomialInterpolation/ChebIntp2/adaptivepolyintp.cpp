@@ -177,10 +177,12 @@ int extra_test() {
 
   std::cout << "Analytic function -> analytic.eps & analyticError.eps\n";
 
+  VectorXd xg_ = xg.unaryExpr(g);
+  VectorXd yg_ = tg.unaryExpr(g);
   pg.title("Step function");
-  pg.plot(xg, xg.unaryExpr(g), "b").label("Function");
+  pg.plot(xg, xg_, "b").label("Function");
   pg.plot(xg, Ig, "r|").label("Interpolation");
-  pg.plot(tg, tg.unaryExpr(g), " co").label("Data");
+  pg.plot(tg, yg_, " co").label("Data");
   pf.legend(0.5, 1);
   pg.save("step");
 
