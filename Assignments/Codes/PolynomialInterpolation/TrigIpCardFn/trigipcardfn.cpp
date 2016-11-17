@@ -65,7 +65,7 @@ double trigIpL(std::size_t n) {
 
         auto trim_nans = [] (double t) {
 
-            return isnan(t) ? 0 : t;
+            return std::isnan(t) ? 0 : t;
         };
 
         ret += (t.unaryExpr(bj) / sint)
