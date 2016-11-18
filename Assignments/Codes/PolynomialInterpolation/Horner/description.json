@@ -4,5 +4,6 @@
     "contributors" : "",
 
     "name": "Horner",
-    "all" : ["horner.cpp"]
+    "all" : ["horner.cpp"],
+    "lib" : ["timer.h"]
 }
