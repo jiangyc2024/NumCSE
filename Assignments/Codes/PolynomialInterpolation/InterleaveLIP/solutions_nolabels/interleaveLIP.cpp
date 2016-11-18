@@ -37,15 +37,15 @@ std::vector<size_t> order(const VectorXd &values) {
 class PwLinIP { 
 public:
     /*!
-     * @brief
-     * @param[in] x Vector of knots
-     * @param[in] t Vector of nodes
-     * @param[in] y Vector of values of interpolant in nodes
+     * \brief
+     * \param[in] x Vector of knots
+     * \param[in] t Vector of nodes
+     * \param[in] y Vector of values of interpolant in nodes
      */
 	PwLinIP(const VectorXd &x, const VectorXd &t, const VectorXd &y);
 
     /*!
-     * @brief operator() evaluate interpolant at $arg$.
+     * \brief operator() evaluate interpolant at $arg$.
      */
 	double operator()(double arg) const;
 private:
@@ -54,11 +54,11 @@ private:
 	VectorXd y_;
 	VectorXd s_;
     /*!
-     * @brief Compute values of interpolant in knots $\mathbf{x}$ from $(t_i,y_i)$
-     * @param[in] x Vector of knots
-     * @param[in] t Vector of nodes
-     * @param[in] y Vector of values of interpolant in nodes $\Vt$
-     * @param[out] s Vector of values of interpolant in knots $\Vx$
+     * \brief Compute values of interpolant in knots $\mathbf{x}$ from $(t_i,y_i)$
+     * \param[in] x Vector of knots
+     * \param[in] t Vector of nodes
+     * \param[in] y Vector of values of interpolant in nodes $\Vt$
+     * \param[out] s Vector of values of interpolant in knots $\Vx$
      */
 	VectorXd tentBasCoeff(const VectorXd &x, const VectorXd &t,
 						  const VectorXd &y) const;
