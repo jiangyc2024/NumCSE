@@ -40,7 +40,7 @@ std::pair<double, double> evaldp_naive(const CoeffVec& c, const double x) {
   std::pair<double, double> p;
   double px,dpx;
   int n=c.size();
-
+    
     // TODO: evaluate a polynomial using naive implementation
 
   return p;
@@ -49,6 +49,6 @@ std::pair<double, double> evaldp_naive(const CoeffVec& c, const double x) {
 int main() {
   std::vector<double> c {3, 1, 5, 7, 9};
   double x = .123;
-
+    
     // TODO: check implementations and compare runtimes
 }

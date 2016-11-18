@@ -151,3 +151,8 @@ set(SRCS eval_deriv.cpp)
 add_executable(eval_deriv ${SRCS})
 target_link_libraries(eval_deriv Figure ${MATHGL2_LIBRARIES})
 
+# make horner
+set(SRCS horner.cpp)
+add_executable(horner ${SRCS})
+target_link_libraries(horner Figure ${MATHGL2_LIBRARIES})
+

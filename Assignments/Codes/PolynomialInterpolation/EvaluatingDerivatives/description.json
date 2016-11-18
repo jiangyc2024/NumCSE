@@ -4,6 +4,6 @@
     "contributors" : "",
 
     "name": "EvaluatingDerivatives",
-    "all" : ["eval_deriv.cpp"],
-    "lib" : ["polyfit.hpp", "polyval.hpp"]
+    "all" : ["eval_deriv.cpp", "horner.cpp"],
+    "lib" : ["polyfit.hpp", "polyval.hpp", "timer.h"]
 }
