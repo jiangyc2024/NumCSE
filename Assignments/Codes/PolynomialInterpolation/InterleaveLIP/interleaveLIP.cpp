@@ -10,6 +10,11 @@
 
 using namespace Eigen;
 
+/*!
+ * \brief order "argsort": find indices sorting a vector
+ * \param values Array for which we want to find the sorting indices
+ * \return Permutation of indices resulting in sorting of values
+ */
 std::vector<size_t> order(const VectorXd &values) {
     std::vector<size_t> indices(values.size());
     std::iota(begin(indices), end(indices), static_cast<size_t>(0));
@@ -19,15 +24,24 @@ std::vector<size_t> order(const VectorXd &values) {
     return indices;
 }
 
-/* @brief Intepolator class
- * @param[in] x Vector of knots
- * @param[in] t Vector of nodes
- * @param[in] y Vector of values of interpolant in nodes
+/*!
+ * @brief Intepolator class
+ * Construct and evaluate a piecevise linear interpolation.
  */
 /* SAM_LISTING_BEGIN_1 */
 class PwLinIP { 
 public:
+    /*!
+     * @brief
+     * @param[in] x Vector of knots
+     * @param[in] t Vector of nodes
+     * @param[in] y Vector of values of interpolant in nodes
+     */
 	PwLinIP(const VectorXd &x, const VectorXd &t, const VectorXd &y);
+
+    /*!
+     * @brief operator() evaluate interpolant at $arg$.
+     */
 	double operator()(double arg) const;
 private:
 #if SOLUTION
@@ -38,17 +52,18 @@ private:
 #else // TEMPLATE
     // TODO: private members of intepolator class
 #endif // TEMPLATE
+    /*!
+     * @brief Compute values of interpolant in knots $\mathbf{x}$ from $(t_i,y_i)$
+     * @param[in] x Vector of knots
+     * @param[in] t Vector of nodes
+     * @param[in] y Vector of values of interpolant in nodes $\Vt$
+     * @param[out] s Vector of values of interpolant in knots $\Vx$
+     */
 	VectorXd tentBasCoeff(const VectorXd &x, const VectorXd &t,
 						  const VectorXd &y) const;
 };
 /* SAM_LISTING_END_1 */
 
-/* @brief Compute values of interpolant in knots $\Vx$ from $(t_i,y_i)$
- * @param[in] x Vector of knots
- * @param[in] t Vector of nodes
- * @param[in] y Vector of values of interpolant in nodes $\Vt$
- * @param[out] s Vector of values of interpolant in knots $\Vx$
- */
 /* SAM_LISTING_BEGIN_0 */
 VectorXd PwLinIP::tentBasCoeff(const VectorXd &x, const VectorXd &t,
 							   const VectorXd &y) const
@@ -134,8 +149,6 @@ VectorXd PwLinIP::tentBasCoeff(const VectorXd &x, const VectorXd &t,
 }
 /* SAM_LISTING_END_0 */
 
-/* @brief Constructor of intepolator class
- */
 /* SAM_LISTING_BEGIN_2 */
 PwLinIP::PwLinIP(const VectorXd &x, const VectorXd &t,
 				 const VectorXd &y)
@@ -167,8 +180,6 @@ PwLinIP::PwLinIP(const VectorXd &x, const VectorXd &t,
 }
 /* SAM_LISTING_END_2 */
 
-/* @brief Operator() of intepolator class
- */
  /* SAM_LISTING_BEGIN_4 */
 double PwLinIP::operator()(double arg) const
 {
@@ -197,46 +208,45 @@ double PwLinIP::operator()(double arg) const
 int main() {
 	// Initialization
 	size_t n = 11;
+
+    // Nodes
 	VectorXd x = VectorXd::LinSpaced(n,0,10);
 	VectorXd t(n);
 	t(0) = 0; t.tail(n-1).setLinSpaced(n-1,0.5,9.5);
-	VectorXd y = VectorXd::Ones(n);
 
-	PwLinIP cardinalBasis(x, t, y);
-	
-    VectorXd s(n);
-    for(size_t j=0; j<n; ++j) {
-        s(j) = cardinalBasis(x(j));
-    }
-	
-#if INTERNAL
     mgl::Figure fig;
     fig.xlabel("t");
     fig.ylabel("y");
-	
-    VectorXd t_left(2);
-    t_left << t(0), t(1);
-    VectorXd y_left(2);
-    y_left << y(0), 0;
-    fig.plot(t_left, y_left, "b");
-    fig.plot(t_left, y_left, "b*");
-    for(size_t i=1; i<n-1; ++i) {
-        VectorXd t_(3);
-        t_ << t(i-1), t(i), t(i+1);
-        VectorXd y_(3);
-        y_ << 0, y(i), 0;
-        fig.plot(t_, y_, "b");
-        fig.plot(t_, y_, "b*");
-    }
-    VectorXd t_right(2);
-    t_right << t(n-2), t(n-1);
-    VectorXd y_right(2);
-    y_right << 0, y(n-1);
-    fig.plot(t_right, y_right, "b");
-    fig.plot(t_right, y_right, "b*");
 
-    fig.title("Tent basis functions");
-    fig.save("tent_basis_functions.eps");
-#endif // INTERNAL
+    // Plot colors
+    const unsigned int M = 3;
+    std::vector<std::string> C = {"b", "r", "m"};
+
+    // Loop over basis functions
+    for(unsigned int i = 0; i < M; ++i) {
+        // Basis function $e_i$
+        VectorXd y = VectorXd::Zero(n);
+        y(i) = 1;
+
+        // Create interpoland with values $y$
+        PwLinIP cardinalBasis(x, t, y);
+
+        // Plotting values
+        unsigned int N = 1000;
+        VectorXd xval = VectorXd::LinSpaced(N,0,10);
+        VectorXd s(N);
+        for(size_t j=0; j<N; ++j) {
+            s(j) = cardinalBasis(xval(j));
+        }
+
+        std::stringstream ss;
+        ss << "Basis k = " << i;
+        fig.plot(xval, s, C[i].c_str()).label(ss.str().c_str());
+        fig.legend();
+
+        fig.title("Tent basis functions");
+        fig.save("tent_basis_functions.eps");
+    }
+
 }
 /* SAM_LISTING_END_3 */
