@@ -26,7 +26,7 @@ void plot_basis(int n) {
     // Mesh size
     const int M = 1e3;
 
-    // Basis vector e_1
+    // Basis vector $e_1$
     ArrayXd e = ArrayXd::Zero(2*n+1);
     e(0) = 1;
     VectorXd y;
@@ -57,28 +57,22 @@ void plot_basis(int n) {
 double trigIpL(std::size_t n) {
     double ret = 0;
 
+    // Nodes where to evaluate
     ArrayXd t = ArrayXd::LinSpaced(1e4, 0, 1);
-
-    ArrayXd sint = t.unaryExpr([] (double t) {
-        return std::sin(M_PI*t);
-    });
-    for(unsigned int j = 0; j <= 2*n; ++j) {
-        auto bj = [j] (double t) {
-            return std::sin(2.*M_PI*(j+.5)*t);
-        };
-
-        auto trim_nans = [] (double t) {
-
-            return std::isnan(t) ? 0 : t;
-        };
-
-        ret += (t.unaryExpr(bj) / sint)
-                .unaryExpr(trim_nans)
-                .cwiseAbs()
-                .maxCoeff();
-
+    // Will contain value of funtion at all nodes
+    ArrayXd s = ArrayXd::Zero(t.size());
+    // Sum over all basis functions
+    for(unsigned int k = 1; k <= n; ++k) {
+        // Compute sum of cosines
+        ArrayXd b = ArrayXd::Constant(t.size(), 0.5);
+        for(unsigned int j = 0; j <= 2*n; ++j) {
+            double tk = (k + 0.5) / (2*n+1.);
+            b += cos(2*M_PI*j*(t-tk));
+        }
+        s += b.cwiseAbs();
     }
-    return ret / 2. / (n + 1/2.);
+    // Find max and rescale
+    return s.maxCoeff() / (n + 1/2.);
 }
 
 int main() {
