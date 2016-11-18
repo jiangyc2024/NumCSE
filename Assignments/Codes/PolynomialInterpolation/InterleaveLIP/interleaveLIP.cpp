@@ -209,34 +209,34 @@ int main() {
         s(j) = cardinalBasis(x(j));
     }
 	
-//#if INTERNAL
-//	mgl::Figure fig;
-//	fig.xlabel("t");
-//	fig.ylabel("y");
+#if INTERNAL
+    mgl::Figure fig;
+    fig.xlabel("t");
+    fig.ylabel("y");
 	
-//	VectorXd t_left(2);
-//	t_left << t(0), t(1);
-//	VectorXd y_left(2);
-//	y_left << y(0), 0;
-//	fig.plot(t_left, y_left, "b");
-//	fig.plot(t_left, y_left, "b*");
-//	for(size_t i=1; i<n-1; ++i) {
-//		VectorXd t_(3);
-//		t_ << t(i-1), t(i), t(i+1);
-//		VectorXd y_(3);
-//		y_ << 0, y(i), 0;
-//		fig.plot(t_, y_, "b");
-//		fig.plot(t_, y_, "b*");
-//	}
-//	VectorXd t_right(2);
-//	t_right << t(n-2), t(n-1);
-//	VectorXd y_right(2);
-//	y_right << 0, y(n-1);
-//	fig.plot(t_right, y_right, "b");
-//	fig.plot(t_right, y_right, "b*");
+    VectorXd t_left(2);
+    t_left << t(0), t(1);
+    VectorXd y_left(2);
+    y_left << y(0), 0;
+    fig.plot(t_left, y_left, "b");
+    fig.plot(t_left, y_left, "b*");
+    for(size_t i=1; i<n-1; ++i) {
+        VectorXd t_(3);
+        t_ << t(i-1), t(i), t(i+1);
+        VectorXd y_(3);
+        y_ << 0, y(i), 0;
+        fig.plot(t_, y_, "b");
+        fig.plot(t_, y_, "b*");
+    }
+    VectorXd t_right(2);
+    t_right << t(n-2), t(n-1);
+    VectorXd y_right(2);
+    y_right << 0, y(n-1);
+    fig.plot(t_right, y_right, "b");
+    fig.plot(t_right, y_right, "b*");
 
-//	fig.title("Tent basis functions");
-//	fig.save("tent_basis_functions.eps");
-//#endif // INTERNAL
+    fig.title("Tent basis functions");
+    fig.save("tent_basis_functions.eps");
+#endif // INTERNAL
 }
 /* SAM_LISTING_END_3 */
