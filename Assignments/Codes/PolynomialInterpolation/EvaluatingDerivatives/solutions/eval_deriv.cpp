@@ -2,7 +2,7 @@
 
 #include <Eigen/Dense>
 
-#include <figure.hpp>
+#include <figure/figure.hpp>
 
 #include "polyfit.hpp"
 #include "polyval.hpp"
