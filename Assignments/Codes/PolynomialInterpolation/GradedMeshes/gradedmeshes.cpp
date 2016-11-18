@@ -29,7 +29,7 @@ VectorXd polyfit(const VectorXd &x, const VectorXd &y, size_t order)
     Eigen::VectorXd result;
 
     assert(x.size() == y.size());
-    assert(x.size() >= order + 1);
+    assert(x.size() >= order+1);
 
     // Create matrix
     for (size_t i=0; i<x.size(); ++i) {
@@ -81,8 +81,8 @@ VectorXd PwLineIntp(const VectorXd &x, const VectorXd &t,
         bool intpOK = false;
         while(i < n-1) {
 
-            bool inInterval = (t(t_indices[i]) <= x(x_indices[j])) &&
-                              (x(x_indices[j]) <= t(t_indices[i+1]));
+            bool inInterval = (t(t_indices[i]) < x(x_indices[j])) &&
+                              (x(x_indices[j]) < t(t_indices[i+1]));
 
             if(inInterval) {
                 intpOK = true;
@@ -94,12 +94,19 @@ VectorXd PwLineIntp(const VectorXd &x, const VectorXd &t,
                 s(x_indices[j]) = gamma * x(x_indices[j]) + beta;
 
                 break;
+            } else if (std::abs(x(x_indices[j]) - t(t_indices[i]))   < 1e-6) { // Else comparison fails...
+                intpOK = true;
+                s(x_indices[j]) = y(t_indices[i]);
+                break;
+            } else if (std::abs(x(x_indices[j]) - t(t_indices[i+1])) < 1e-6) { // Else comparison fails...
+                intpOK = true;
+                s(x_indices[j]) = y(t_indices[i+1]);
+                break;
             } else {
                 ++i;
             }
         }
         if(!intpOK) {
-            std::cout << "Error!"<< std::endl;
             std::exit(EXIT_FAILURE); // $x \not\in [t_min,t_max]$
         }
     }
@@ -114,10 +121,10 @@ VectorXd PwLineIntp(const VectorXd &x, const VectorXd &t,
 
 
 int main() {
-/* SAM_LISTING_BEGIN_1 */
+    {
 // Compute convergence rate for interpolation by piecewise linear polyn.
 // Uniform mesh in $[0,1]$, singular $f(t) = t^\alpha$, h-convergence
-    {
+/* SAM_LISTING_BEGIN_1 */
         // Initialization
         size_t NumAlph = 15;
         size_t NumN = 50;
@@ -152,7 +159,6 @@ int main() {
                 LocErr(j,i) = count_if(tmp.begin(), tmp.end(),
                                        [] (double val) {return val <= 0;}) - 1;
                 // "count\_if" only works when $t$ are already sorted!
-
 #if INTERNAL
                 //< // Warning if the maximal error is not where expected
                 //< if((alphas(j)<2 && LocErr(j,i)!=0) ||
@@ -184,7 +190,6 @@ int main() {
         }
 
 #if INTERNAL
-        std::cout << "naidsndsan" <<std::endl;
         mgl::Figure fig2;
         fig2.title("Pw. lin. intp. on uniform meshes: error in max-norm");
         fig2.plot(alphas, rates);
@@ -192,124 +197,124 @@ int main() {
         fig2.ylabel("conv. rate");
         fig2.save("PwLineConv_2.eps");
 #endif // INTERNAL
-        /* SAM_LISTING_END_1 */
+/* SAM_LISTING_END_1 */
     }
-{
-/* SAM_LISTING_BEGIN_2 */
+    {
 // Compute convergence rate for interpolation by piecewise linear polyn.
 // Beta-graded mesh in $[0,1]$, singular $f(t) = t^\alpha$, h-convergence
 // for different betas
+/* SAM_LISTING_BEGIN_2 */
+        // Initialization
+        size_t NumAlph = 3;
+        size_t NumBeta = 9;
+        size_t NumN = 50;
+        VectorXd alphas(NumAlph); alphas << 0.5, 0.75, 4/3;
+        VectorXd betas = VectorXd::LinSpaced(NumBeta,1,50);
+        VectorXd nn = VectorXd::LinSpaced(NumN,1,50); // Used nodes
 
-    // Initialization
-    size_t NumAlph = 3;
-    size_t NumBeta = 9;
-    size_t NumN = 50;
-    VectorXd alphas(NumAlph); alphas << 0.5, 0.75, 4/3;
-    VectorXd betas = VectorXd::LinSpaced(NumBeta,1,50);
-    VectorXd nn = VectorXd::LinSpaced(NumN,1,50); // Used nodes
+        // Evaluation points
+        VectorXd x = VectorXd::LinSpaced(1000,0,1);
+        std::vector<MatrixXd> Err(NumAlph); // Error with max norm (3D data)
+        std::vector<MatrixXd> LocErr(NumAlph); // Location of maximal error (3D data)
+        for(size_t i=0; i<NumAlph; ++i) {
+            Err[i] = MatrixXd(NumBeta,NumN);
+            LocErr[i] = MatrixXd(NumBeta,NumN);
+        }
 
-    // Evaluation points
-    VectorXd x = VectorXd::LinSpaced(1000,0,1);
-    std::vector<MatrixXd> Err(NumAlph); // Error with max norm (3D data)
-    std::vector<MatrixXd> LocErr(NumAlph); // Location of maximal error (3D data)
-    for(size_t i=0; i<NumAlph; ++i) {
-        Err[i] = MatrixXd(NumBeta,NumN);
-        LocErr[i] = MatrixXd(NumBeta,NumN);
-    }
+        for(size_t i=0; i<NumN; ++i) {
+            size_t n = nn(i);
 
-    for(size_t i=0; i<NumN; ++i) {
-        size_t n = nn(i);
+            for(size_t j=0; j<NumBeta; ++j) {
+                // Nodes
+                VectorXd t = VectorXd::LinSpaced(n+1,0,1).array().pow(betas(j));
 
-        for(size_t j=0; j<NumBeta; ++j) {
-            // Nodes
-            VectorXd t = VectorXd::LinSpaced(n+1,0,1).array().pow(betas(j));
+                for(size_t k=0; k<NumAlph; ++k) {
+                    VectorXd s = x.array().pow(alphas(k));
+                    VectorXd y = t.array().pow(alphas(k));
 
-            for(size_t k=0; k<NumAlph; ++k) {
-                VectorXd s = x.array().pow(alphas(k));
-                VectorXd y = t.array().pow(alphas(k));
+                    VectorXd p = PwLineIntp(x, t, y); // Interpolation
 
-                VectorXd p = PwLineIntp(x, t, y); // Interpolation
+                    size_t PosErr;
+                    Err[k](j,i) = (s - p).cwiseAbs().maxCoeff(&PosErr);
 
-                size_t PosErr;
-                Err[k](j,i) = (s - p).cwiseAbs().maxCoeff(&PosErr);
-
-                // PosErr is index of point in $x$ with max error
-                // LocErr is index of subinterval  with max error
-                std::vector<double> tmp(t.size());
-                VectorXd::Map(&tmp.front(), t.size()) = t -
-                               x(PosErr)*VectorXd::Ones(t.size());
-                LocErr[k](j,i) = count_if(tmp.begin(), tmp.end(),
-                               [] (double val) {return val <= 0;}) - 1;
-                // "count\_if" only works when $t$ are already sorted!
+                    // PosErr is index of point in $x$ with max error
+                    // LocErr is index of subinterval  with max error
+                    std::vector<double> tmp(t.size());
+                    VectorXd::Map(&tmp.front(), t.size()) = t -
+                                   x(PosErr)*VectorXd::Ones(t.size());
+                    LocErr[k](j,i) = count_if(tmp.begin(), tmp.end(),
+                                   [] (double val) {return val <= 0;}) - 1;
+                    // "count\_if" only works when $t$ are already sorted!
+                }
             }
         }
-    }
 
-    VectorXd rates(NumAlph,NumBeta);
-    for(size_t i=0; i<NumAlph; ++i) {
+        MatrixXd rates(NumAlph,NumBeta);
+        for(size_t i=0; i<NumAlph; ++i) {
 #if INTERNAL
-        mgl::Figure fig1;
-        fig1.title("Pw. lin. intp. on uniform meshes: "
-                   +std::to_string(alphas(i)));
-        fig1.setlog(true, true); // Set loglog scale
-        for(size_t j=0; j<NumBeta; ++j) {
-            fig1.plot(nn, Err[i].row(j)).label("beta="+std::to_string(betas(j)));
-        }
-        fig1.xlabel("n = # subintervals");
-        fig1.legend(0, 0);
-        fig1.save("PwLineGraded_1_"+std::to_string(alphas(i))+".eps");
+            mgl::Figure fig1;
+            fig1.title("Pw. lin. intp. on uniform meshes: "
+                       +std::to_string(alphas(i)));
+            fig1.setlog(true, true); // Set loglog scale
+            for(size_t j=0; j<NumBeta; ++j) {
+                fig1.plot(nn, Err[i].row(j)).label("beta="+std::to_string(betas(j)));
+            }
+            fig1.xlabel("n = # subintervals");
+            fig1.legend(0, 0);
+            fig1.save("PwLineGraded_1_"+std::to_string(alphas(i))+".eps");
 #endif // INTERNAL
 
-        // Estimate convergence rate
-        for(size_t j=0; j<NumBeta; ++j) {
-            size_t skip = 4;
-            VectorXd row = Err[i].row(j);
-            VectorXd coeff = polyfit(nn.tail(nn.size()-skip).array().log(),
-                             row.tail(row.size()-skip).array().log(),1);
-            rates(i) = -coeff(0);
-        }
+            // Estimate convergence rate
+            for(size_t j=0; j<NumBeta; ++j) {
+                size_t skip = 4;
+                VectorXd row = Err[i].row(j);
+                VectorXd coeff = polyfit(nn.tail(nn.size()-skip).array().log(),
+                                 row.tail(row.size()-skip).array().log(),1);
+                rates(i) = -coeff(0);
+            }
 
 #if INTERNAL
-        mgl::Figure fig2;
-        fig2.title("Pw. lin. intp. on uniform meshes: "
-                   +std::to_string(alphas(i)));
-        size_t m2;
-        size_t m1 = rates.row(i).maxCoeff(&m2);
-        VectorXd betas_(1); betas_ << betas(m2);
-        VectorXd rates_(1); rates_ << m1;
-        fig2.plot(betas,  rates.row(i));
-        fig2.plot(betas_, rates_, "+");
-        fig2.xlabel("beta");
-        fig2.ylabel("conv. rate");
-        fig2.save("PwLineGraded_2_"+std::to_string(alphas(i))+".eps");
+            mgl::Figure fig2;
+            fig2.title("Pw. lin. intp. on uniform meshes: "
+                       +std::to_string(alphas(i)));
+            size_t m2;
+            size_t m1 = rates.row(i).maxCoeff(&m2);
+            VectorXd betas_(1); betas_ << betas(m2);
+            VectorXd rates_(1); rates_ << m1;
+            fig2.plot(betas,  rates.row(i));
+            fig2.plot(betas_, rates_, "+");
+            fig2.xlabel("beta");
+            fig2.ylabel("conv. rate");
+            fig2.save("PwLineGraded_2_"+std::to_string(alphas(i))+".eps");
 #endif // INTERNAL
-    }
+        }
 /* SAM_LISTING_END_2 */
-}
-{
-/* SAM_LISTING_BEGIN_3 */
-// Plot of algebraically graded mesh
-
-    // Initialization
-    size_t n = 10;
-    int beta = 2;
-
-    VectorXd t  = VectorXd::LinSpaced(n+1,0,n)/n;
-    VectorXd y  = t.array().pow(beta);
-    VectorXd t_ = VectorXd::LinSpaced(101,0,1);
-    VectorXd y_ = t_.array().pow(beta);
-
-    mgl::Figure fig;
-    fig.plot(t_, y_, "r");
-    for(size_t i=0; i<n+1; ++i) {
-        VectorXd t_tmp(3); t_tmp << t(i), t(i), 0;
-        VectorXd y_tmp(3); y_tmp << 0, y(i), y(i);
-        fig.plot(t_tmp, y_tmp, "b");
-        fig.plot(t_tmp.tail(2), y_tmp.head(2), " r+");
     }
-    fig.xlabel("uniform mesh");
-    fig.ylabel("algeb. graded mesh, beta=2");
-    fig.save("GradedMesh_cpp.eps");
+    {
+// Plot of algebraically graded mesh
+/* SAM_LISTING_BEGIN_3 */
+        // Initialization
+        size_t n = 10;
+        int beta = 2;
+
+        VectorXd t  = VectorXd::LinSpaced(n+1,0,n)/n;
+        VectorXd y  = t.array().pow(beta);
+        VectorXd t_ = VectorXd::LinSpaced(101,0,1);
+        VectorXd y_ = t_.array().pow(beta);
+
+#if INTERNAL
+        mgl::Figure fig;
+        fig.plot(t_, y_, "r");
+        for(size_t i=0; i<n+1; ++i) {
+            VectorXd t_tmp(3); t_tmp << t(i), t(i), 0;
+            VectorXd y_tmp(3); y_tmp << 0, y(i), y(i);
+            fig.plot(t_tmp, y_tmp, "b");
+            fig.plot(t_tmp.tail(2), y_tmp.head(2), " r+");
+        }
+        fig.xlabel("uniform mesh");
+        fig.ylabel("algeb. graded mesh, beta=2");
+        fig.save("GradedMesh_cpp.eps");
+#endif // INTERNAL
 /* SAM_LISTING_END_3 */
-}
+    }
 }

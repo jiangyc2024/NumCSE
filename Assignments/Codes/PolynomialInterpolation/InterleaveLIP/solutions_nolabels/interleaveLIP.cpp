@@ -106,7 +106,6 @@ VectorXd PwLinIP::tentBasCoeff(const VectorXd &x, const VectorXd &t,
 			}
 		}
         if(!intervalOK) {
-            std::cout << "I failed" << std::endl;
             std::exit(EXIT_FAILURE);
         }
 	}
