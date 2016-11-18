@@ -20,18 +20,19 @@ void plot_basis(int n) {
     // Mesh size
     const int M = 1e3;
 
-    // Basis vector e_1
+    /* SAM_LISTING_BEGIN_1 */
+    // Basis vector $e_1$
     ArrayXd e = ArrayXd::Zero(2*n+1);
     e(0) = 1;
     VectorXd y;
     trigpolyvalequid(e, 1e3, y);
-    
+
     ArrayXd t = ArrayXd::LinSpaced(M, 0, 1);
 
     // Shift function right a bit
-    ArrayXd y_shift;
-    y_shift.resizeLike(t);
-    y_shift << y.tail(M / (2*n+1)), y.head(2*n*M / (2*n+1));
+    ArrayXd y_shift(M);
+    unsigned int h = M / (2*n+1);
+    y_shift << y.tail(h), y.head(M - h);
 
     mgl::Figure fig;
     fig.title("b_0(t)");
@@ -40,6 +41,7 @@ void plot_basis(int n) {
     fig.plot(t, y_shift, "r").label("b_0(t)");
     fig.legend();
     fig.save("b0_n");
+    /* SAM_LISTING_BEGIN_1 */
 }
 
 /*!
@@ -52,42 +54,22 @@ void plot_basis(int n) {
 double trigIpL(std::size_t n) {
     double ret = 0;
 
+    // Nodes where to evaluate
     ArrayXd t = ArrayXd::LinSpaced(1e4, 0, 1);
-
-    ArrayXd sint = t.unaryExpr([] (double t) {
-        return std::sin(M_PI*t);
-    });
-    for(unsigned int j = 0; j <= 2*n; ++j) {
-        auto bj = [j] (double t) {
-            return std::sin(2.*M_PI*(j+.5)*t);
-        };
-
-        auto trim_nans = [] (double t) {
-
-            return isnan(t) ? 0 : t;
-        };
-
-        ret += (t.unaryExpr(bj) / sint)
-                .unaryExpr(trim_nans)
-                .cwiseAbs()
-                .maxCoeff();
-
-#if INTENRAL
-        std::stringstream title, name, legend;
-        title << "b_j, j = " << j;
-        name << "b_j, j = " << j;
-        legend << "b_j, j = " << j;
-        mgl::Figure fig;
-        fig.title(title.str().c_str());
-        fig.xlabel("t");
-        fig.ylabel("y");
-        fig.plot(t, t.unaryExpr(bj) / sint, "r")
-                .label(legend.str().c_str());
-        fig.legend();
-        fig.save(name.str().c_str());
-#endif // INTERNAL
+    // Will contain value of funtion at all nodes
+    ArrayXd s = ArrayXd::Zero(t.size());
+    // Sum over all basis functions
+    for(unsigned int k = 1; k <= n; ++k) {
+        // Compute sum of cosines
+        ArrayXd b = ArrayXd::Constant(t.size(), 0.5);
+        for(unsigned int j = 0; j <= 2*n; ++j) {
+            double tk = (k + 0.5) / (2*n+1.);
+            b += cos(2*M_PI*j*(t-tk));
+        }
+        s += b.cwiseAbs();
     }
-    return ret / 2. / (n + 1/2.);
+    // Find max and rescale
+    return s.maxCoeff() / (n + 1/2.);
 }
 /* SAM_LISTING_END_0 */
 
@@ -104,8 +86,10 @@ int main() {
               << std::setw(s) << "lambda(k)" << std::endl;
 
     for(unsigned int i = 1 << 2; i < (1 << 15); i = i << 1) {
-        std::cout << std::setw(s) << i
-                  << std::setw(s) << trigIpL(i) << std::endl;
+        double l = trigIpL(i);
+        std::cout << std::setprecision(3)
+                  << std::setw(s) << i
+                  << std::setw(s) << l << std::endl;
 
     }
 }
