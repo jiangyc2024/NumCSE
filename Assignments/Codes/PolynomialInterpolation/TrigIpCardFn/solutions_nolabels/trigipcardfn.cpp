@@ -32,12 +32,13 @@ void plot_basis(int n) {
     VectorXd y;
     trigpolyvalequid(e, 1e3, y);
 
+    ArrayXd t = ArrayXd::LinSpaced(M, 0, 1);
+
     // Shift function right a bit
     ArrayXd y_shift(M);
     unsigned int h = M / (2*n+1);
     y_shift << y.tail(h), y.head(M - h);
 
-    ArrayXd t = ArrayXd::LinSpaced(M, 0, 1);
     mgl::Figure fig;
     fig.title("b_0(t)");
     fig.xlabel("t");
@@ -68,7 +69,7 @@ double trigIpL(std::size_t n) {
 
         auto trim_nans = [] (double t) {
 
-            return isnan(t) ? 0 : t;
+            return std::isnan(t) ? 0 : t;
         };
 
         ret += (t.unaryExpr(bj) / sint)

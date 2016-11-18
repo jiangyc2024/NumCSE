@@ -80,8 +80,8 @@ void BarycPolyInterp<NODESCALAR>::init_lambda(void) {
   for (unsigned k = 0; k < n; ++k) {
     // little workaround: in \eigen cannot subtract a vector
     // from a scalar; multiply scalar by vector of ones
-    lambda(k) = 1./((t(k)*VectorXd::Ones(k)-t.head(k)).prod()* 
-            (t(k)*VectorXd::Ones(n-k-1)-t.tail(n-k-1)).prod());
+    lambda(k) = 1./((t(k)*nodeVec_t::Ones(k)-t.head(k)).prod()* 
+            (t(k)*nodeVec_t::Ones(n-k-1)-t.tail(n-k-1)).prod());
   }
 }
 /* SAM_LISTING_END_3 */

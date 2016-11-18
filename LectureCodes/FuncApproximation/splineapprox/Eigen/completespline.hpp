@@ -4,10 +4,11 @@
 using Eigen::VectorXd;
 using Eigen::SparseMatrix;
 
-// perform complete cubic spline interpolation of data \Blue{$(t, y)$} and evaluate at points \texttt{x}
-// implementation at the bottom
+// Forward declarations; implementations below
 VectorXd spline(const VectorXd& t, const VectorXd& y, const double c0, const double cn, const VectorXd& x);
+VectorXd eval(const VectorXd& x, const VectorXd& t, const VectorXd& y, const VectorXd& c);
 
+/* SAM_LISTING_BEGIN_0 */
 // get coefficients for complete cubic spline interpolation
 // IN : \Blue{$(t, y)$} = set of interpolation data
 //      \texttt{c0, cn} = slope at start and end point
@@ -50,6 +51,16 @@ VectorXd coeffsCSI(const VectorXd& t, const VectorXd& y, const double c0, const 
   return c;
 }
 
+// perform complete cubic spline interpolation of data \Blue{$(t_i, y_i)$}
+// and evaluate at many points passed in vector \texttt{x}
+VectorXd spline(const VectorXd& t, const VectorXd& y,
+		const double c0, const double cn, const VectorXd& x) {
+  const VectorXd c = coeffsCSI(t, y, c0, cn);
+  return eval(x, t, y, c);
+}
+/* SAM_LISTING_END_0 */
+
+/* SAM_LISTING_BEGIN_1 */
 // evaluate cubic spline at a point x
 // IN : \texttt{x} = evaluation point
 //      \Blue{$(t, y)$} = set of interpolation data
@@ -75,8 +86,10 @@ double eval(const double x, const VectorXd& t, const VectorXd& y, const VectorXd
   const double res = y(i)*(1 - 3*tau2 + 2*tau3) + y(i + 1)*(3*tau2 - 2*tau3) + h(i)*c(i)*(tau - 2*tau2 + tau3) + h(i)*c(i + 1)*(tau3 - tau2);
   return res;
 }
+/* SAM_LISTING_END_0 */
 
-// evaluate cubic spline at a vector x
+/* SAM_LISTING_BEGIN_1 */
+// evaluate cubic spline at a vector x of points
 // IN : \texttt{x} = evaluation points
 //      \Blue{$(t, y)$} = set of interpolation data
 //      \texttt{c} = vector of coefficients
@@ -88,8 +101,5 @@ VectorXd eval(const VectorXd& x, const VectorXd& t, const VectorXd& y, const Vec
   }
   return fx;
 }
+/* SAM_LISTING_END_0 */
 
-VectorXd spline(const VectorXd& t, const VectorXd& y, const double c0, const double cn, const VectorXd& x) {
-  const VectorXd c = coeffsCSI(t, y, c0, cn);
-  return eval(x, t, y, c);
-}

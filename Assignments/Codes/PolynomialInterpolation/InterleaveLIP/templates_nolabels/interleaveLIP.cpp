@@ -84,7 +84,7 @@ PwLinIP::PwLinIP(const VectorXd &x, const VectorXd &t,
  */
 double PwLinIP::operator()(double arg) const
 {
-    // TODO: implement operator() of intepolator class
+	return 0; // TODO: implement operator() of intepolator class
 }
 
 int main() {

@@ -78,14 +78,16 @@ PwLinIP::PwLinIP(const VectorXd &x, const VectorXd &t,
 	
     // TODO: implement constructor of intepolator class
 }
+/* SAM_LISTING_END_2 */
 
 /* @brief Operator() of intepolator class
  */
+ /* SAM_LISTING_BEGIN_4 */
 double PwLinIP::operator()(double arg) const
 {
-    // TODO: implement operator() of intepolator class
+	return 0; // TODO: implement operator() of intepolator class
 }
-/* SAM_LISTING_END_2 */
+/* SAM_LISTING_END_4 */
 
 /* SAM_LISTING_BEGIN_3 */
 int main() {

@@ -56,7 +56,7 @@ void benchmark(int n, double tol, int maxit, bool calcError, int &iterations, in
 	if (calcError)
 	{
 		// compute reference eigenvalue with eigensolver
-		Eigen::EigenSolver<Eigen::MatrixXd> solver(A);
+		Eigen::EigenSolver<Eigen::MatrixXd> solver((Eigen::MatrixXd(A)));
 		double lminEx = solver.eigenvalues().real().minCoeff();
 
 		Eigen::VectorXd resVec = Eigen::VectorXd::Map(res.data(), res.size());
@@ -71,7 +71,7 @@ void benchmark(int n, double tol, int maxit, bool calcError, int &iterations, in
 	if (calcError)
 	{
 		// compute reference eigenvalue with eigensolver
-		Eigen::EigenSolver<Eigen::MatrixXd> solverB(B);
+		Eigen::EigenSolver<Eigen::MatrixXd> solverB((Eigen::MatrixXd(B)));
 		double lminEx = solverB.eigenvalues().real().minCoeff();
 
 		Eigen::VectorXd resVec = Eigen::VectorXd::Map(res.data(), res.size());

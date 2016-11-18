@@ -4,8 +4,9 @@
 //// Contributors: tille, jgacon, dcasati
 //// This file is part of the NumCSE repository.
 ////
-# include <cmath>
-# include <figure/figure.hpp>
+#include <cmath>
+#include <mgl2/mgl.h>
+#include <figure/figure.hpp>
 
 #include "intpolyval.hpp"
 
