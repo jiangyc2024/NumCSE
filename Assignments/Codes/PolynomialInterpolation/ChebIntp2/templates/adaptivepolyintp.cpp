@@ -34,7 +34,6 @@ void adaptivepolyintp(const Function& f, const double a, const double b,
 }
 /* SAM_LISTING_END_1 */
 
-
 int main() {
   /* SAM_LISTING_BEGIN_2 */
   // Declare test functions

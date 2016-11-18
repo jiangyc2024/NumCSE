@@ -16,6 +16,11 @@
 
 using namespace Eigen;
 
+/*!
+ * \brief order "argsort": find indices sorting a vector
+ * \param values Array for which we want to find the sorting indices
+ * \return Permutation of indices resulting in sorting of values
+ */
 std::vector<size_t> order(const VectorXd &values) {
     std::vector<size_t> indices(values.size());
     std::iota(begin(indices), end(indices), static_cast<size_t>(0));
@@ -25,30 +30,40 @@ std::vector<size_t> order(const VectorXd &values) {
     return indices;
 }
 
-/* @brief Intepolator class
- * @param[in] x Vector of knots
- * @param[in] t Vector of nodes
- * @param[in] y Vector of values of interpolant in nodes
+/*!
+ * @brief Intepolator class
+ * Construct and evaluate a piecevise linear interpolation.
  */
 class PwLinIP { 
 public:
+    /*!
+     * \brief
+     * \param[in] x Vector of knots
+     * \param[in] t Vector of nodes
+     * \param[in] y Vector of values of interpolant in nodes
+     */
 	PwLinIP(const VectorXd &x, const VectorXd &t, const VectorXd &y);
+
+    /*!
+     * \brief operator() evaluate interpolant at $arg$.
+     */
 	double operator()(double arg) const;
 private:
 	VectorXd x_;
 	VectorXd t_;
 	VectorXd y_;
 	VectorXd s_;
+    /*!
+     * \brief Compute values of interpolant in knots $\mathbf{x}$ from $(t_i,y_i)$
+     * \param[in] x Vector of knots
+     * \param[in] t Vector of nodes
+     * \param[in] y Vector of values of interpolant in nodes $\Vt$
+     * \param[out] s Vector of values of interpolant in knots $\Vx$
+     */
 	VectorXd tentBasCoeff(const VectorXd &x, const VectorXd &t,
 						  const VectorXd &y) const;
 };
 
-/* @brief Compute values of interpolant in knots $\Vx$ from $(t_i,y_i)$
- * @param[in] x Vector of knots
- * @param[in] t Vector of nodes
- * @param[in] y Vector of values of interpolant in nodes $\Vt$
- * @param[out] s Vector of values of interpolant in knots $\Vx$
- */
 VectorXd PwLinIP::tentBasCoeff(const VectorXd &x, const VectorXd &t,
 							   const VectorXd &y) const
 
@@ -72,14 +87,14 @@ VectorXd PwLinIP::tentBasCoeff(const VectorXd &x, const VectorXd &t,
 	size_t k = 0;
 	for(size_t j=0; j<(n-1); ++j) {
 		
-		bool nodeOK = false;
+        bool intervalOK = false;
 		while(i < n) {
 			
-			bool inInterval = (x(x_indices[j]) <= t(t_indices[i])) &&
-							  (t(t_indices[i]) <= x(x_indices[j+1]));
+            bool inInterval = (x(x_indices[j]) < t(t_indices[i])) &&
+                              (t(t_indices[i]) < x(x_indices[j+1]));
 			
 			if(inInterval) {
-				nodeOK = true;
+                intervalOK = true;
 				if(i == j) { // Index of interval which contains 2 nodes
 							 // $t_i$ and $t_{i+1}$. After that, we have
 							 // $i > j$...
@@ -90,9 +105,9 @@ VectorXd PwLinIP::tentBasCoeff(const VectorXd &x, const VectorXd &t,
 				++i;
 			}
 		}
-		if(!nodeOK) {
-			std::exit(EXIT_FAILURE);
-		}
+        if(!intervalOK) {
+            std::exit(EXIT_FAILURE);
+        }
 	}
 	
 	// 1. Find slope $\gamma$ and intercept $\beta$
@@ -127,8 +142,6 @@ VectorXd PwLinIP::tentBasCoeff(const VectorXd &x, const VectorXd &t,
 	return s;
 }
 
-/* @brief Constructor of intepolator class
- */
 PwLinIP::PwLinIP(const VectorXd &x, const VectorXd &t,
 				 const VectorXd &y)
 {
@@ -154,43 +167,65 @@ PwLinIP::PwLinIP(const VectorXd &x, const VectorXd &t,
 	s_ = tentBasCoeff(x_, t_, y_);
 }
 
-/* @brief Operator() of intepolator class
- */
 double PwLinIP::operator()(double arg) const
 {
 	if(arg < x_(0) || arg > x_(x_.size()-1)) {
 		
 		return 0;
 	} else {
-		size_t j = 1; // Already checked that $arg \geq x_0$
-		while(j < x_.size()) {
-			if(arg <= x_(j)) {
-				break;
-			} else {
-				++j;
-			}
-		}
+        std::vector<double> x(x_.size()-1); // Exclude $x_0$ from search of interval including $arg$
+        VectorXd::Map(&x.front(), x_.size()-1) = x_.tail(x_.size()-1);
+        size_t j = std::lower_bound(x.begin(), x.end(), arg) - x.begin() + 1; // Binary search
+        // '+1' is needed to restore indexing from $x_0$
+
+        double gamma = (s_(j) - s_(j-1)) / (x_(j) - x_(j-1));
+        double beta = s_(j-1) - gamma * x_(j-1);
 		
-		double gamma = (s_(j) - s_(j-1)) / (x_(j) - x_(j-1));
-		double beta = s_(j-1) - gamma * x_(j-1);
-		
-		return gamma * arg + beta;
+        return gamma * arg + beta;
 	}
 }
 
 int main() {
 	// Initialization
 	size_t n = 11;
+
+    // Nodes
 	VectorXd x = VectorXd::LinSpaced(n,0,10);
 	VectorXd t(n);
 	t(0) = 0; t.tail(n-1).setLinSpaced(n-1,0.5,9.5);
-	VectorXd y = VectorXd::Ones(n);
-	
-	PwLinIP cardinalBasis(x, t, y);
-	
-	VectorXd s(n);
-	for(size_t j=0; j<n; ++j) {
-		s(j) = cardinalBasis(x(j));
-	}
-	
+
+    mgl::Figure fig;
+    fig.xlabel("t");
+    fig.ylabel("y");
+
+    // Plot colors
+    const unsigned int M = 3;
+    std::vector<std::string> C = {"b", "r", "m"};
+
+    // Loop over basis functions
+    for(unsigned int i = 0; i < M; ++i) {
+        // Basis function $e_i$
+        VectorXd y = VectorXd::Zero(n);
+        y(i) = 1;
+
+        // Create interpoland with values $y$
+        PwLinIP cardinalBasis(x, t, y);
+
+        // Plotting values
+        unsigned int N = 1000;
+        VectorXd xval = VectorXd::LinSpaced(N,0,10);
+        VectorXd s(N);
+        for(size_t j=0; j<N; ++j) {
+            s(j) = cardinalBasis(xval(j));
+        }
+
+        std::stringstream ss;
+        ss << "Basis k = " << i;
+        fig.plot(xval, s, C[i].c_str()).label(ss.str().c_str());
+        fig.legend();
+
+        fig.title("Tent basis functions");
+        fig.save("tent_basis_functions.eps");
+    }
+
 }

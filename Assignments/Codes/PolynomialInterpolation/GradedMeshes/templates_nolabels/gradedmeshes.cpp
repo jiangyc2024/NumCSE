@@ -35,7 +35,7 @@ VectorXd polyfit(const VectorXd &x, const VectorXd &y, size_t order)
     Eigen::VectorXd result;
 
     assert(x.size() == y.size());
-    assert(x.size() >= order + 1);
+    assert(x.size() >= order+1);
 
     // Create matrix
     for (size_t i=0; i<x.size(); ++i) {
@@ -87,9 +87,9 @@ VectorXd PwLineIntp(const VectorXd &x, const VectorXd &t,
 
 
 int main() {
+    {
 // Compute convergence rate for interpolation by piecewise linear polyn.
 // Uniform mesh in $[0,1]$, singular $f(t) = t^\alpha$, h-convergence
-    {
         // Initialization
         size_t NumAlph = 15;
         size_t NumN = 50;
@@ -124,7 +124,6 @@ int main() {
                 LocErr(j,i) = count_if(tmp.begin(), tmp.end(),
                                        [] (double val) {return val <= 0;}) - 1;
                 // "count\_if" only works when $t$ are already sorted!
-
             }
         }
 
@@ -137,92 +136,79 @@ int main() {
         }
 
     }
-{
+    {
 // Compute convergence rate for interpolation by piecewise linear polyn.
 // Beta-graded mesh in $[0,1]$, singular $f(t) = t^\alpha$, h-convergence
 // for different betas
+        // Initialization
+        size_t NumAlph = 3;
+        size_t NumBeta = 9;
+        size_t NumN = 50;
+        VectorXd alphas(NumAlph); alphas << 0.5, 0.75, 4/3;
+        VectorXd betas = VectorXd::LinSpaced(NumBeta,1,50);
+        VectorXd nn = VectorXd::LinSpaced(NumN,1,50); // Used nodes
 
-    // Initialization
-    size_t NumAlph = 3;
-    size_t NumBeta = 9;
-    size_t NumN = 50;
-    VectorXd alphas(NumAlph); alphas << 0.5, 0.75, 4/3;
-    VectorXd betas = VectorXd::LinSpaced(NumBeta,1,50);
-    VectorXd nn = VectorXd::LinSpaced(NumN,1,50); // Used nodes
+        // Evaluation points
+        VectorXd x = VectorXd::LinSpaced(1000,0,1);
+        std::vector<MatrixXd> Err(NumAlph); // Error with max norm (3D data)
+        std::vector<MatrixXd> LocErr(NumAlph); // Location of maximal error (3D data)
+        for(size_t i=0; i<NumAlph; ++i) {
+            Err[i] = MatrixXd(NumBeta,NumN);
+            LocErr[i] = MatrixXd(NumBeta,NumN);
+        }
 
-    // Evaluation points
-    VectorXd x = VectorXd::LinSpaced(1000,0,1);
-    std::vector<MatrixXd> Err(NumAlph); // Error with max norm (3D data)
-    std::vector<MatrixXd> LocErr(NumAlph); // Location of maximal error (3D data)
-    for(size_t i=0; i<NumAlph; ++i) {
-        Err[i] = MatrixXd(NumBeta,NumN);
-        LocErr[i] = MatrixXd(NumBeta,NumN);
-    }
+        for(size_t i=0; i<NumN; ++i) {
+            size_t n = nn(i);
 
-    for(size_t i=0; i<NumN; ++i) {
-        size_t n = nn(i);
+            for(size_t j=0; j<NumBeta; ++j) {
+                // Nodes
+                VectorXd t = VectorXd::LinSpaced(n+1,0,1).array().pow(betas(j));
 
-        for(size_t j=0; j<NumBeta; ++j) {
-            // Nodes
-            VectorXd t = VectorXd::LinSpaced(n+1,0,1).array().pow(betas(j));
+                for(size_t k=0; k<NumAlph; ++k) {
+                    VectorXd s = x.array().pow(alphas(k));
+                    VectorXd y = t.array().pow(alphas(k));
 
-            for(size_t k=0; k<NumAlph; ++k) {
-                VectorXd s = x.array().pow(alphas(k));
-                VectorXd y = t.array().pow(alphas(k));
+                    VectorXd p = PwLineIntp(x, t, y); // Interpolation
 
-                VectorXd p = PwLineIntp(x, t, y); // Interpolation
+                    size_t PosErr;
+                    Err[k](j,i) = (s - p).cwiseAbs().maxCoeff(&PosErr);
 
-                size_t PosErr;
-                Err[k](j,i) = (s - p).cwiseAbs().maxCoeff(&PosErr);
-
-                // PosErr is index of point in $x$ with max error
-                // LocErr is index of subinterval  with max error
-                std::vector<double> tmp(t.size());
-                VectorXd::Map(&tmp.front(), t.size()) = t -
-                               x(PosErr)*VectorXd::Ones(t.size());
-                LocErr[k](j,i) = count_if(tmp.begin(), tmp.end(),
-                               [] (double val) {return val <= 0;}) - 1;
-                // "count\_if" only works when $t$ are already sorted!
+                    // PosErr is index of point in $x$ with max error
+                    // LocErr is index of subinterval  with max error
+                    std::vector<double> tmp(t.size());
+                    VectorXd::Map(&tmp.front(), t.size()) = t -
+                                   x(PosErr)*VectorXd::Ones(t.size());
+                    LocErr[k](j,i) = count_if(tmp.begin(), tmp.end(),
+                                   [] (double val) {return val <= 0;}) - 1;
+                    // "count\_if" only works when $t$ are already sorted!
+                }
             }
         }
-    }
 
-    VectorXd rates(NumAlph,NumBeta);
-    for(size_t i=0; i<NumAlph; ++i) {
+        MatrixXd rates(NumAlph,NumBeta);
+        for(size_t i=0; i<NumAlph; ++i) {
 
-        // Estimate convergence rate
-        for(size_t j=0; j<NumBeta; ++j) {
-            size_t skip = 4;
-            VectorXd row = Err[i].row(j);
-            VectorXd coeff = polyfit(nn.tail(nn.size()-skip).array().log(),
-                             row.tail(row.size()-skip).array().log(),1);
-            rates(i) = -coeff(0);
+            // Estimate convergence rate
+            for(size_t j=0; j<NumBeta; ++j) {
+                size_t skip = 4;
+                VectorXd row = Err[i].row(j);
+                VectorXd coeff = polyfit(nn.tail(nn.size()-skip).array().log(),
+                                 row.tail(row.size()-skip).array().log(),1);
+                rates(i) = -coeff(0);
+            }
+
         }
-
     }
-}
-{
+    {
 // Plot of algebraically graded mesh
+        // Initialization
+        size_t n = 10;
+        int beta = 2;
 
-    // Initialization
-    size_t n = 10;
-    int beta = 2;
+        VectorXd t  = VectorXd::LinSpaced(n+1,0,n)/n;
+        VectorXd y  = t.array().pow(beta);
+        VectorXd t_ = VectorXd::LinSpaced(101,0,1);
+        VectorXd y_ = t_.array().pow(beta);
 
-    VectorXd t  = VectorXd::LinSpaced(n+1,0,n)/n;
-    VectorXd y  = t.array().pow(beta);
-    VectorXd t_ = VectorXd::LinSpaced(101,0,1);
-    VectorXd y_ = t_.array().pow(beta);
-
-    mgl::Figure fig;
-    fig.plot(t_, y_, "r");
-    for(size_t i=0; i<n+1; ++i) {
-        VectorXd t_tmp(3); t_tmp << t(i), t(i), 0;
-        VectorXd y_tmp(3); y_tmp << 0, y(i), y(i);
-        fig.plot(t_tmp, y_tmp, "b");
-        fig.plot(t_tmp.tail(2), y_tmp.head(2), " r+");
     }
-    fig.xlabel("uniform mesh");
-    fig.ylabel("algeb. graded mesh, beta=2");
-    fig.save("GradedMesh_cpp.eps");
-}
 }

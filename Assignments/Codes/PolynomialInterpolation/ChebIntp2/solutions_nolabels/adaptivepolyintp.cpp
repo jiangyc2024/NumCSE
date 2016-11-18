@@ -94,7 +94,6 @@ void adaptivepolyintp(const Function& f, const double a, const double b,
 
 }
 
-
 int main() {
   // Declare test functions
   auto f1 = [](double t) { return std::sin(std::exp(2*t)); };

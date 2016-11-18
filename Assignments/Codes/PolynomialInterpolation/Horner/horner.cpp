@@ -15,6 +15,7 @@ template <typename CoeffVec>
 std::pair<double, double> evaldp (const CoeffVec& c, const double x) {
   std::pair<double, double> p;
   double px, dpx;
+#if SOLUTION
   int s = c.size();
 
   px = c[0];
@@ -25,6 +26,9 @@ std::pair<double, double> evaldp (const CoeffVec& c, const double x) {
     
   p.first = px;
   p.second = dpx;
+#else // TEMPLATE
+  // TODO: compute pair p using Horner scheme
+#endif // TEMPLATE
   return p;
 }
 /* SAM_LISTING_END_0 */
@@ -38,6 +42,7 @@ template <typename CoeffVec>
 std::pair<double, double> evaldp_naive(const CoeffVec& c, const double x) {
   std::pair<double, double> p;
   double px,dpx;
+#if SOLUTION
   int n=c.size();
     
   px = c[0]*std::pow(x, n-1);
@@ -48,6 +53,9 @@ std::pair<double, double> evaldp_naive(const CoeffVec& c, const double x) {
     
   p.first = px;
   p.second = dpx;
+#else // TEMPLATE
+  // TODO: compute pair p using "naive" implementation
+#endif // TEMPLATE
   return p;
 }
 /* SAM_LISTING_END_1 */
