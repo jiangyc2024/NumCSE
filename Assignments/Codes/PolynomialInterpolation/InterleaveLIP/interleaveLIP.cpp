@@ -74,14 +74,14 @@ VectorXd PwLinIP::tentBasCoeff(const VectorXd &x, const VectorXd &t,
 	size_t k = 0;
 	for(size_t j=0; j<(n-1); ++j) {
 		
-		bool nodeOK = false;
+        bool intervalOK = false;
 		while(i < n) {
 			
-			bool inInterval = (x(x_indices[j]) <= t(t_indices[i])) &&
-							  (t(t_indices[i]) <= x(x_indices[j+1]));
+            bool inInterval = (x(x_indices[j]) < t(t_indices[i])) &&
+                              (t(t_indices[i]) < x(x_indices[j+1]));
 			
 			if(inInterval) {
-				nodeOK = true;
+                intervalOK = true;
 				if(i == j) { // Index of interval which contains 2 nodes
 							 // $t_i$ and $t_{i+1}$. After that, we have
 							 // $i > j$...
@@ -92,9 +92,10 @@ VectorXd PwLinIP::tentBasCoeff(const VectorXd &x, const VectorXd &t,
 				++i;
 			}
 		}
-		if(!nodeOK) {
-			std::exit(EXIT_FAILURE);
-		}
+        if(!intervalOK) {
+            std::cout << "I failed" << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
 	}
 	
 	// 1. Find slope $\gamma$ and intercept $\beta$
@@ -176,19 +177,15 @@ double PwLinIP::operator()(double arg) const
 		
 		return 0;
 	} else {
-		size_t j = 1; // Already checked that $arg \geq x_0$
-		while(j < x_.size()) {
-			if(arg <= x_(j)) {
-				break;
-			} else {
-				++j;
-			}
-		}
+        std::vector<double> x(x_.size()-1); // Exclude $x_0$ from search of interval including $arg$
+        VectorXd::Map(&x.front(), x_.size()-1) = x_.tail(x_.size()-1);
+        size_t j = std::lower_bound(x.begin(), x.end(), arg) - x.begin() + 1; // Binary search
+        // '+1' is needed to restore indexing from $x_0$
+
+        double gamma = (s_(j) - s_(j-1)) / (x_(j) - x_(j-1));
+        double beta = s_(j-1) - gamma * x_(j-1);
 		
-		double gamma = (s_(j) - s_(j-1)) / (x_(j) - x_(j-1));
-		double beta = s_(j-1) - gamma * x_(j-1);
-		
-		return gamma * arg + beta;
+        return gamma * arg + beta;
 	}
 #else // TEMPLATE
 	return 0; // TODO: implement operator() of intepolator class
@@ -204,42 +201,42 @@ int main() {
 	VectorXd t(n);
 	t(0) = 0; t.tail(n-1).setLinSpaced(n-1,0.5,9.5);
 	VectorXd y = VectorXd::Ones(n);
-	
+
 	PwLinIP cardinalBasis(x, t, y);
 	
-	VectorXd s(n);
-	for(size_t j=0; j<n; ++j) {
-		s(j) = cardinalBasis(x(j));
-	}
+    VectorXd s(n);
+    for(size_t j=0; j<n; ++j) {
+        s(j) = cardinalBasis(x(j));
+    }
 	
-#if INTERNAL
-	mgl::Figure fig;
-	fig.xlabel("t");
-	fig.ylabel("y");
+//#if INTERNAL
+//	mgl::Figure fig;
+//	fig.xlabel("t");
+//	fig.ylabel("y");
 	
-	VectorXd t_left(2);
-	t_left << t(0), t(1);
-	VectorXd y_left(2);
-	y_left << y(0), 0;
-	fig.plot(t_left, y_left, "b");
-	fig.plot(t_left, y_left, "b*");
-	for(size_t i=1; i<n-1; ++i) {
-		VectorXd t_(3);
-		t_ << t(i-1), t(i), t(i+1);
-		VectorXd y_(3);
-		y_ << 0, y(i), 0;
-		fig.plot(t_, y_, "b");
-		fig.plot(t_, y_, "b*");
-	}
-	VectorXd t_right(2);
-	t_right << t(n-2), t(n-1);
-	VectorXd y_right(2);
-	y_right << 0, y(n-1);
-	fig.plot(t_right, y_right, "b");
-	fig.plot(t_right, y_right, "b*");
+//	VectorXd t_left(2);
+//	t_left << t(0), t(1);
+//	VectorXd y_left(2);
+//	y_left << y(0), 0;
+//	fig.plot(t_left, y_left, "b");
+//	fig.plot(t_left, y_left, "b*");
+//	for(size_t i=1; i<n-1; ++i) {
+//		VectorXd t_(3);
+//		t_ << t(i-1), t(i), t(i+1);
+//		VectorXd y_(3);
+//		y_ << 0, y(i), 0;
+//		fig.plot(t_, y_, "b");
+//		fig.plot(t_, y_, "b*");
+//	}
+//	VectorXd t_right(2);
+//	t_right << t(n-2), t(n-1);
+//	VectorXd y_right(2);
+//	y_right << 0, y(n-1);
+//	fig.plot(t_right, y_right, "b");
+//	fig.plot(t_right, y_right, "b*");
 
-	fig.title("Tent basis functions");
-	fig.save("tent_basis_functions.eps");
-#endif // INTERNAL
+//	fig.title("Tent basis functions");
+//	fig.save("tent_basis_functions.eps");
+//#endif // INTERNAL
 }
 /* SAM_LISTING_END_3 */

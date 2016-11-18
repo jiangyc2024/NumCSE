@@ -185,6 +185,7 @@ public:
         // Here $\Delta W_{16,5} = W_{16} - x_5 = V - x_5$.
         return V * R / (V - x(5));
 #else // TEMPLATE
+        return 0;
         // TODO: use SMW formula to compute the solution of $A_{R_x} x = b$
         // Compute and return the impedance of the system.
 #endif // TEMPLATE
