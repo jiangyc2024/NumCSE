@@ -59,7 +59,7 @@ PCHI::PCHI(const VectorXd & t,
     // Sanity check
     n = t.size();
     assert( n == y.size() && "t and y must have same dimension." );
-    assert( n >= 3 && "Need at least two nodes." );
+    assert( n >= 3 && "Need at least three nodes." );
     h = t(1) - t(0);
 
     //// Reconstruction of the slope,
@@ -95,22 +95,26 @@ PCHI::PCHI(const VectorXd & t,
 VectorXd PCHI::operator() (const VectorXd & x) const {
     VectorXd ret(x.size());
 
-    int i_star = 0;
+    int i_star = 1;
     double tmp, t1, y1, y2, c1, c2, a1, a2, a3;
     for(int j = 0; j < x.size(); ++j) {
-        // Stores the current interval index
-        // and some temporary variable
-        // Find interval (porting of hermloceval Matlab code 3.4.6)
-        if( t(i_star) < x(j) || i_star == 0) {
-            ++i_star;
-            t1 = t(i_star-1);
-            y1 = y(i_star-1);
-            y2 = y(i_star);
-            c1 = c(i_star-1);
-            c2 = c(i_star);
-            a1 = y2 - y1;
-            a2 = a1 - h*c1;
-            a3 = h*c2 - a1 - a2;
+        // Stores the current interval index and some temporary variable
+        // Find the interval for $x_j$ (porting of 'hermloceval' Matlab code 3.4.6)
+        // while assuming that $x$ values are sorted and within $[t_{\min},t_{\max}]$
+        while(i_star < t.size()) {
+            bool inInterval = (t(i_star-1) < x(j)) && (x(j) < t(i_star));
+            if(inInterval) {
+                t1 = t(i_star-1);
+                y1 = y(i_star-1);
+                y2 = y(i_star);
+                c1 = c(i_star-1);
+                c2 = c(i_star);
+                a1 = y2 - y1;
+                a2 = a1 - h*c1;
+                a3 = h*c2 - a1 - a2;
+            } else {
+                ++i_star;
+            }
         }
         // Compute $s(x(j))$
         tmp = ( x(j) - t1 ) / h;
@@ -136,7 +140,7 @@ int main() {
     // Store error and number of nodes
     std::vector<double> N, err_reconstr, err_zero;
 
-    for(int i = 2; i <= 512; i = i << 1) {
+    for(int i = 3; i <= 512; i = i << 1) {
         // Define subintervals and evaluate f there (find pairs (t,y))
         VectorXd t = VectorXd::LinSpaced(i, -a, a);
         VectorXd y = t.unaryExpr(f);
