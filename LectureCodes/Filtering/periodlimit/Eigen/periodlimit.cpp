@@ -4,6 +4,7 @@
 # include "stem.hpp" // simple classed which uses Figure for plotting
 using Eigen::VectorXd; using Eigen::VectorXcd;
 
+/* SAM_LISTING_BEGIN_0 */
 // Visualize limit \Blue{$m\to\infty$} for a \Blue{$2m+!$}-periodic signal and
 // its discrete Fourier transform ``squeezed'' into \Blue{$[0,1]$}.
 int main() {
@@ -45,3 +46,4 @@ int main() {
   }
   return 0;
 }
+/* SAM_LISTING_END_0 */
