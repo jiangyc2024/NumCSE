@@ -59,7 +59,7 @@ PCHI::PCHI(const VectorXd & t,
     // Sanity check
     n = t.size();
     assert( n == y.size() && "t and y must have same dimension." );
-    assert( n >= 3 && "Need at least two nodes." );
+    assert( n >= 3 && "Need at least three nodes." );
     h = t(1) - t(0);
 
     //// Reconstruction of the slope,
@@ -106,7 +106,7 @@ int main() {
     // Store error and number of nodes
     std::vector<double> N, err_reconstr, err_zero;
 
-    for(int i = 2; i <= 512; i = i << 1) {
+    for(int i = 3; i <= 512; i = i << 1) {
         // Define subintervals and evaluate f there (find pairs (t,y))
         VectorXd t = VectorXd::LinSpaced(i, -a, a);
         VectorXd y = t.unaryExpr(f);

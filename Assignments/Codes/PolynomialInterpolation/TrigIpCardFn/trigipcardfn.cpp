@@ -42,7 +42,7 @@ void plot_basis(int n) {
     fig.plot(t, y_shift, "r").label("b_0(t)");
     fig.legend();
     fig.save("b0_n");
-    /* SAM_LISTING_BEGIN_1 */
+    /* SAM_LISTING_END_1 */
 #else // TEMPLATE
     // TODO: plot the basis $b_n$.
 #endif // TEMPLATE
@@ -64,10 +64,10 @@ double trigIpL(std::size_t n) {
     // Will contain value of funtion at all nodes
     ArrayXd s = ArrayXd::Zero(t.size());
     // Sum over all basis functions
-    for(unsigned int k = 1; k <= n; ++k) {
+    for(unsigned int k = 0; k <= 2*n; ++k) {
         // Compute sum of cosines
         ArrayXd b = ArrayXd::Constant(t.size(), 0.5);
-        for(unsigned int j = 0; j <= 2*n; ++j) {
+        for(unsigned int j = 1; j <= n; ++j) {
             double tk = (k + 0.5) / (2*n+1.);
             b += cos(2*M_PI*j*(t-tk));
         }
