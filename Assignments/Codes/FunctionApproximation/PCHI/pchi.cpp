@@ -126,7 +126,9 @@ VectorXd PCHI::operator() (const VectorXd & x) const {
 
             ++j;
         } else {
+            // Otherwise, go to next interval
             ++i_star;
+            // Terminate if outside any interval
             if(i_star >= t.size() - 1) break;
             continue;
         }
