@@ -13,8 +13,10 @@
 /* SAM_LISTING_BEGIN_1 */
 template<typename Function>
 double quadU(const Function& f, const unsigned n) {
+    // Value of integral
+    double I = 0;
     // TODO: Implement quadrature
-    return q;
+    return I;
 }
 /* SAM_LISTING_END_1 */
 int main(){

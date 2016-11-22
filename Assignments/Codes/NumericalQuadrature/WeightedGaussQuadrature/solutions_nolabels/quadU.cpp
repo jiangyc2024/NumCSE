@@ -18,13 +18,19 @@
  */
 template<typename Function>
 double quadU(const Function& f, const unsigned n) {
-    double q = 0, w, xi;
+    // Value of integral
+    double I = 0;
     for (unsigned j = 0; j < n; j++) {
-        w = M_PI/(n+1) * std::pow(std::sin((j+1)*M_PI/(n+1)), 2);
-        xi = std::cos( (j+1.)/(n+1)*M_PI );
-        q += w*f(xi);
+
+        // Weight
+        double w = M_PI/(n+1) * std::pow(std::sin((j+1)*M_PI/(n+1)), 2);
+
+        // Node
+        double xi = std::cos( (j+1.)/(n+1)*M_PI );
+
+        I += w*f(xi);
     }
-    return q;
+    return I;
 }
 int main(){
     // Integrand

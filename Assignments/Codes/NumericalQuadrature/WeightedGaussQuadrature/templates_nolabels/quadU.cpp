@@ -18,8 +18,10 @@
  */
 template<typename Function>
 double quadU(const Function& f, const unsigned n) {
+    // Value of integral
+    double I = 0;
     // TODO: Implement quadrature
-    return q;
+    return I;
 }
 int main(){
     // TODO: Test the implementation.
