@@ -4,7 +4,7 @@
     "contributors" : "",
 
     "name": "GaussianQuadrature",
-    "all" : ["gaussCong.cpp", "gaussCongCV.cpp"],
+    "all" : ["gaussConv.cpp", "gaussConvCV.cpp"],
     "solutions" : ["GaussConv.eps", "GaussConvCV.eps"],
     "lib" : ["gaussquad.hpp"]
 }

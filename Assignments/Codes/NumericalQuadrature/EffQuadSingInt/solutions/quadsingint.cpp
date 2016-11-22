@@ -21,18 +21,25 @@ double quadsingint(const Function& f, const unsigned n) {
     double I = 0.;
     // Method selects one of the two possible solutions
 #if METHOD == 1 // $s = \sqrt(1 \pm t)$
+    // Will use same node twice
     QuadRule Q = gauleg(n);
 
     for(unsigned i = 0; i < n; ++i) {
+        // Transform nodes
         double x = (Q.nodes(i) + 1.) / 2.;
+        // Weights
         double w = Q.weights(i) * x * x * std::sqrt(2. - x * x);
+        // Symmetric summation
         I += w * (f(x*x - 1) + f(-x*x + 1));
     }
 #elif METHOD == 2 // $t = cos(s)$
+    // We are actually using twice the number of nodes than Method 1
     QuadRule Q = gauleg(2*n);
     
     for(unsigned i = 0; i < 2*n; ++i) {
+        // Evualuate transformation
         double x = sin(Q.nodes(i) * M_PI_2);
+        // Weights
         double w = Q.weights(i) * cos(Q.nodes(i) * M_PI_2) * cos(Q.nodes(i) * M_PI_2);
         I += w * f(x) * M_PI_2;
     }

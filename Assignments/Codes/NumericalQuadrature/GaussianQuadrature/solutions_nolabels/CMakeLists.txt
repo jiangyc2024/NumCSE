@@ -146,13 +146,13 @@ include_directories(${FIGURE_INCLUDE_DIR}/..)
 
 ### GaussianQuadrature
 
-# make gaussCong
-set(SRCS gaussCong.cpp)
-add_executable(gaussCong ${SRCS})
-target_link_libraries(gaussCong Figure ${MATHGL2_LIBRARIES})
+# make gaussConv
+set(SRCS gaussConv.cpp)
+add_executable(gaussConv ${SRCS})
+target_link_libraries(gaussConv Figure ${MATHGL2_LIBRARIES})
 
-# make gaussCongCV
-set(SRCS gaussCongCV.cpp)
-add_executable(gaussCongCV ${SRCS})
-target_link_libraries(gaussCongCV Figure ${MATHGL2_LIBRARIES})
+# make gaussConvCV
+set(SRCS gaussConvCV.cpp)
+add_executable(gaussConvCV ${SRCS})
+target_link_libraries(gaussConvCV Figure ${MATHGL2_LIBRARIES})
 
