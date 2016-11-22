@@ -4,5 +4,6 @@
     "contributors" : "",
 
     "name": "WeightedGaussQuadrature",
-    "all" : ["quadU.cpp"]
+    "all" : ["quadU.cpp"],
+    "solutions" : ["quadU.cpp", "quadUCvg.eps"]
 }

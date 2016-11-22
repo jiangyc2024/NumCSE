@@ -4,5 +4,6 @@
     "contributors" : "",
 
     "name": "ImproperIntegrals",
-    "all" : ["quadinf.cpp"]
+    "all" : ["quadinf.cpp"],
+    "solutions" : ["quadinfCvg.eps"]
 }
