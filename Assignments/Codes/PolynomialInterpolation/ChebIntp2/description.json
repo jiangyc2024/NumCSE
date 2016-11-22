@@ -1,0 +1,10 @@
+{
+    "author" : "",
+    "email" : "",
+    "contributors" : "",
+
+    "name": "ChebIntp2",
+    "all" : ["adaptivepolyintp.cpp"],
+    "solutions" : ["cvg.eps"],
+    "lib" : ["intpolyval.hpp"]
+}

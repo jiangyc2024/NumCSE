@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cstdlib>
 #include <iostream>
 #include <iomanip>
 #include <limits>
@@ -25,9 +26,9 @@ VectorXd polyMult_naive(const VectorXd & u, const VectorXd & v)
     int dim = std::max(m, n);
     
     VectorXd u_tmp = u;
-    u_tmp.conservativeResize(dim);
+    u_tmp.conservativeResizeLike(VectorXd::Zero(dim));
     VectorXd v_tmp = v;
-    v_tmp.conservativeResize(dim);
+    v_tmp.conservativeResizeLike(VectorXd::Zero(dim));
     
     VectorXd uv(m+n-1); // Degree is (m-1) + (n-1)
 
@@ -50,9 +51,9 @@ VectorXd polyMult_fast(const VectorXd & u, const VectorXd & v)
 	int n = v.size();
 
 	VectorXd u_tmp = u;
-	u_tmp.conservativeResize(u.size() + n - 1);
+	u_tmp.conservativeResizeLike(VectorXd::Zero(u.size() + n - 1));
 	VectorXd v_tmp = v;
-	v_tmp.conservativeResize(v.size() + m - 1);
+	v_tmp.conservativeResizeLike(VectorXd::Zero(v.size() + m - 1));
 
 	VectorXd uv;
 
@@ -77,9 +78,9 @@ VectorXd polyDiv(const VectorXd & uv, const VectorXd & u)
 	int dim = std::max(mn, m);
 	
 	VectorXd uv_tmp = uv;
-	uv_tmp.conservativeResize(dim);
+	uv_tmp.conservativeResizeLike(VectorXd::Zero(dim));
 	VectorXd u_tmp  = u;
-	u_tmp.conservativeResize(dim);
+	u_tmp.conservativeResizeLike(VectorXd::Zero(dim));
 
 /* SAM_LISTING_BEGIN_3 */
 	// TODO: make sure that $uv$ can be divided by $u$
@@ -89,7 +90,8 @@ VectorXd polyDiv(const VectorXd & uv, const VectorXd & u)
 
 	// TODO: divide polynomials $uv$ and $u$ efficiently (no remainder)
 
-	v.conservativeResize(mn - m + 1); // (mn-1) - (m-1) + 1
+	v.conservativeResizeLike(VectorXd::Zero(mn - m + 1));
+										// (mn-1) - (m-1) + 1
 	return v;
 }
 /* SAM_LISTING_END_2 */

@@ -1,8 +1,16 @@
+///////////////////////////////////////////////////////////////////////////
+/// Demonstration code for lecture "Numerical Methods for CSE" @ ETH Zurich
+/// (C) 2016 SAM, D-MATH
+/// Author(s): N.N.
+/// Repository: https://gitlab.math.ethz.ch/NumCSE/NumCSE/
+/// Do not remove this header.
+//////////////////////////////////////////////////////////////////////////
 # include <iostream>
 # include <cmath> // needed for std::log()
 # include <vector>
 # include <Eigen/Dense>
 # include <figure/figure.hpp>
+/* SAM_LISTING_BEGIN_0 */
 # include "polyfit.hpp" // provides polyfit(), see NumCSE/Utils
 # include "feval.hpp" // provides feval(), see NumCSE/Utils
 # include "completespline.hpp" // provides spline()
@@ -65,3 +73,5 @@ void splineapprox(Function& f, Derivative& df, const double a, const double b, c
   fig.legend(1, 0);
   err.save("approx_" + plotname);
 }
+/* SAM_LISTING_END_0 */
+
