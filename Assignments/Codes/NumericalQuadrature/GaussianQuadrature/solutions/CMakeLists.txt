@@ -151,8 +151,3 @@ set(SRCS gaussConv.cpp)
 add_executable(gaussConv ${SRCS})
 target_link_libraries(gaussConv Figure ${MATHGL2_LIBRARIES})
 
-# make gaussConvCV
-set(SRCS gaussConvCV.cpp)
-add_executable(gaussConvCV ${SRCS})
-target_link_libraries(gaussConvCV Figure ${MATHGL2_LIBRARIES})
-

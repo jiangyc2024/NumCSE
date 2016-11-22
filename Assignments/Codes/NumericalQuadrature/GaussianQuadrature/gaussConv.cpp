@@ -131,12 +131,12 @@ int main() {
     const double I_ex = 0.870267525725852642;
 
     // $f(x) = \sinh x$
-    std::function<double(double)> fh = [](double x) {
+    std::function<double(double)> f = [](double x) {
         return std::sinh(x);
     };
 
     // PART 1
-    gaussConv(fh, I_ex);
+    gaussConv(f, I_ex);
 
     // PART 2
     gaussConvCV(f, I_ex);
