@@ -1,7 +1,8 @@
-#include "gaussquad.hpp"
 #include <iomanip>
 #include <iostream>
 #include <cmath>
+
+#include "gaussquad.hpp"
 
 //! @brief Compute $\int_a^b f(x) dx \approx \sum w_i f(x_i)$ (with scaling of w and x)
 //! @tparam func template type for function handle f (e.g. lambda func.)
@@ -10,28 +11,36 @@
 //! @param[in] f integrand
 //! @param[in] N number of quadrature points
 //! @return Approximation of integral $\int_a^b f(x) dx$
+/* SAM_LISTING_BEGIN_1 */
 template <class Function>
-double evalgaussquad(const double a, const double b, Function&& f, const QuadRule& Q) {
-    // Compute the qudrature and scale the interal according to inteval [a,b]
+double evalgaussquad(const double a, const double b,
+                     const Function& f,
+                     const QuadRule& Q) {
     double I = 0;
     for(int i = 0; i < Q.weights.size(); ++i) {
         I += f( (Q.nodes(i) + 1) * (b - a) / 2 + a ) * Q.weights(i);
     }
     return I * (b - a) / 2.;
 }
+/* SAM_LISTING_END_1 */
 
-//! @brief Compute double integral $\int_\Delta f(x,b) dx dy$ using nested Gauss quadrature
-//! @tparam func template type for function handle f (e.g. lambda func.), having operator (double x, double y) -> double
+//! @brief Compute double integral $\int_\Delta f(x,b) dx dy$.
+//! Use nested Gauss quadrature.
+//! @tparam func Template type for function handle f (e.g. lambda func.),
+//! having operator (double x, double y) -> double
 //! @param[in] f integrand, f(x,y) must be defined
 //! @param[in] N number of quadrature points (in each direction)
 //! @return Approximation of integral $\int_\Delta f(x,b) dx dy$
+/* SAM_LISTING_BEGIN_2 */
 template <class Function>
-double gaussquadtriangle(Function&& f, const unsigned N) {
+double gaussquadtriangle(const Function& f, const unsigned N) {
     // Get nodes/weights for integral over dx and dy
     QuadRule Q = gaussquad(N);   
 
-    // We define an auxiliary function of x defined as f\_y := [\&y] (double x) \{ return f(x,y) \}, where we fix y
-    // We define the function g, as the function of y defined as $g(y) := \int_0^{1-y} f_y(x) dx = \int_0^{1-y} I(x,y) dx$
+    // We define an auxiliary function of x defined
+    // as f\_y := [\&y] (double x) \{ return f(x,y) \}, where we fix y
+    // We define the function g, as the function of y
+    // defined as $g(y) := \int_0^{1-y} f_y(x) dx = \int_0^{1-y} I(x,y) dx$
     auto g = [&f, &Q] (double y) { 
       return evalgaussquad(0, 1-y, [&f, &y] (double x) { return f(x,y); }, Q); 
     };
@@ -53,11 +62,15 @@ double gaussquadtriangle(Function&& f, const unsigned N) {
     // Rescale interval
     return I * (b - a) / 2.;
     */
+
 }
+/* SAM_LISTING_END_2 */
 
 int main() {
+    /* SAM_LISTING_BEGIN_3 */
     // Parameters
     const double alpha = 1, p = 0, q = 0;
+
     // Laser beam intensity
     auto I = [alpha, p, q] (double x, double y) { 
       return std::exp(- alpha * ( (x-p)*(x-p) + (y-q)*(y-q) ) ); 
@@ -69,11 +82,20 @@ int main() {
     const double I_ex = 0.366046550000405;
 
     // Observed: exponential convergence (as exepcted)
-    std::cout << std::setw(3) << "N" << std::setw(15) << "I_approx" << std::setw(15) << "error" << std::endl;
+    std::cout << std::setw(3) << "N"
+              << std::setw(15) << "I_approx"
+              << std::setw(15) << "error"
+              << std::endl;
     for(unsigned N = 1; N < max_N; ++N) {
+
         double I_approx = gaussquadtriangle(I, N);
-        std::cout << std::setw(3) << N << std::setw(15) << I_approx << std::setw(15) << std::abs(I_ex - I_approx) << std::endl;
+
+        std::cout << std::setw(3) << N
+                  << std::setw(15) << I_approx
+                  << std::setw(15) << std::abs(I_ex - I_approx)
+                  << std::endl;
     }
 
     return 0;
 }
+/* SAM_LISTING_END_3 */

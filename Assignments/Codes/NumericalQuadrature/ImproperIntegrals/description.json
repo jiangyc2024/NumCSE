@@ -5,5 +5,6 @@
 
     "name": "ImproperIntegrals",
     "all" : ["quadinf.cpp"],
-    "solutions" : ["quadinfCvg.eps"]
+    "solutions" : ["quadinfCvg.eps"],
+    "lib" : ["golubwelsh.hpp"]
 }
