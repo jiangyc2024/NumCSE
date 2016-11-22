@@ -71,5 +71,5 @@ int main() {
     }
 
     return 0;
+    /* SAM_LISTING_END_3 */
 }
-/* SAM_LISTING_END_3 */
