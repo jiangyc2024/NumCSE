@@ -18,6 +18,7 @@ double evalgaussquad(const double a, const double b,
                      const QuadRule& Q) {
     double I = 0;
 #if SOLUTION
+    // Loop over all nodes/weights pairs
     for(int i = 0; i < Q.weights.size(); ++i) {
         I += f( (Q.nodes(i) + 1) * (b - a) / 2 + a ) * Q.weights(i);
     }
@@ -107,5 +108,5 @@ int main() {
     }
 
     return 0;
+    /* SAM_LISTING_END_3 */
 }
-/* SAM_LISTING_END_3 */
