@@ -20,7 +20,7 @@ template <class Function>
 double quadsingint(const Function& f, const unsigned n) {
     double I = 0.;
     // Method selects one of the two possible solutions
-#if METHOD == 1 // s = sqrt(1 \pm t)
+#if METHOD == 1 // $s = \sqrt(1 \pm t)$
     QuadRule Q = gauleg(n);
 
     for(unsigned i = 0; i < n; ++i) {
@@ -28,7 +28,7 @@ double quadsingint(const Function& f, const unsigned n) {
         double w = Q.weights(i) * x * x * std::sqrt(2. - x * x);
         I += w * (f(x*x - 1) + f(-x*x + 1));
     }
-#elif METHOD == 2 // t = cos(s)
+#elif METHOD == 2 // $t = cos(s)$
     QuadRule Q = gauleg(2*n);
     
     for(unsigned i = 0; i < 2*n; ++i) {
@@ -49,7 +49,7 @@ int main(int argc, char ** argv) {
     // "Exact" integral
     double I_ex = 0.483296828976607;
 
-    // If you want to test monomials as f, use this data and set MONOMIAL_TEST to true
+    // If you want to test monomials as f, use this data and set MONOMIAL\_TEST to true
 #if MONOMIAL_TEST
     std::vector<double> ex = { M_PI_2, 0., M_PI_2 / 4, 0, M_PI_2 / 8, 0, M_PI_2 * 5 / 64};
     assert(argc > 1);
@@ -57,7 +57,7 @@ int main(int argc, char ** argv) {
     std::cout << "TEST: Monomial of degree:" << n << std::endl;
     auto f = [&n] (double t) { return std::pow(t, n); };
     I_ex = ex[n];
-#else // END MONOMIAL_TEST
+#else // END MONOMIAL\_TEST
     // Test function
     auto f = [] (double t) { return 1. / (2. + std::exp(3*t) ); };
 #endif
