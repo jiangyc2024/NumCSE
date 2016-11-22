@@ -25,16 +25,16 @@ void gaussrule(int n, Eigen::VectorXd & w, Eigen::VectorXd & xi) {
         Eigen::EigenSolver<Eigen::MatrixXd> eig(J);
         
         xi = eig.eigenvalues().real();
-        w = 2 * eig.eigenEigen::VectorXds().real()
+        w = 2 * eig.eigenvectors().real()
                                   .topRows<1>()
                                   .cwiseProduct( 
-                                      eig.eigenEigen::VectorXds()
+                                      eig.eigenvectors()
                                          .real()
                                          .topRows<1>()
                                   );
     }
     
-    std::Eigen::VectorXd<std::pair<double,double>> P;
+    std::vector<std::pair<double,double>> P;
     P.reserve(n);
     for(unsigned int i = 0; i < n; ++i) {
         P.push_back(std::pair<double,double>(xi(i),w(i)));
