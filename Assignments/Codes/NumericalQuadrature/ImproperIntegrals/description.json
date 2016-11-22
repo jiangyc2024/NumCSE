@@ -3,6 +3,6 @@
     "email" : "",
     "contributors" : "",
 
-    "name": "ZerosLegendre",
-    "all" : ["legendre.cpp"]
+    "name": "ImproperIntegrals",
+    "all" : ["quadinf.cpp"]
 }

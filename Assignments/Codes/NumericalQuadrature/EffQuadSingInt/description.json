@@ -3,6 +3,7 @@
     "email" : "",
     "contributors" : "",
 
-    "name": "ZerosLegendre",
-    "all" : ["legendre.cpp"]
+    "name": "EffQuadSingInt",
+    "all" : ["quadsingint.cpp"],
+    "lib" : ["gauleg.hpp"]
 }

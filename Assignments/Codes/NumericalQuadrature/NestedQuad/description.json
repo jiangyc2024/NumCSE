@@ -3,6 +3,7 @@
     "email" : "",
     "contributors" : "",
 
-    "name": "ZerosLegendre",
-    "all" : ["legendre.cpp"]
+    "name": "NestedQuad",
+    "all" : ["laserquad.cpp"],
+    "lib" : ["gaussquad.hpp"]
 }

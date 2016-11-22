@@ -3,6 +3,7 @@
     "email" : "",
     "contributors" : "",
 
-    "name": "ZerosLegendre",
-    "all" : ["legendre.cpp"]
+    "name": "GaussianQuadrature",
+    "all" : ["gaussCong.cpp", "gaussCongCV.cpp"],
+    "lib" : ["gaussquad.hpp"]
 }

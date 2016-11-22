@@ -3,6 +3,6 @@
     "email" : "",
     "contributors" : "",
 
-    "name": "ZerosLegendre",
-    "all" : ["legendre.cpp"]
+    "name": "GaussPts",
+    "all" : ["gauss_pts.cpp"]
 }
