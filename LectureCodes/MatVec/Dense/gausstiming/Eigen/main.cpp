@@ -10,6 +10,7 @@
 #include <iomanip>
 
 #include <Eigen/Dense>
+#include "gausstiming.hpp"
 
 int main () {
 	std::cout << std::scientific << std::setprecision(3) << gausstiming() << std::endl;
