@@ -41,7 +41,8 @@ double evalgaussquad(const double a, const double b,
 template <class Function>
 double gaussquadtriangle(const Function& f, const unsigned N) {
     // Get nodes/weights for integral over dx and dy
-    QuadRule Q = gaussquad(N);   
+    QuadRule Q;
+    gaussquad(N, Q);
 
 #if SOLUTION
     // We define an auxiliary function of x defined
