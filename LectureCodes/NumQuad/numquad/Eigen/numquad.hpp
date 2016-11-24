@@ -1,7 +1,7 @@
 # include <vector>
 # include <Eigen/Dense>
 # include "polyfit.hpp"
-# include "gaussquad.hpp"
+# include "./gaussquad.hpp"
 
 template <class Function>
 std::vector<double> numquad(Function& F, const double a, const double b, const unsigned N, const std::string mode) {
@@ -13,7 +13,7 @@ std::vector<double> numquad(Function& F, const double a, const double b, const u
     // using the struct QuadRule from gaussquad.hpp
 
     for (unsigned n = 1; n <= N; ++n) {
-      QuadRule qr = gaussquad(n); // get nodes and weights
+      QuadRule qr = gaussquad_(n); // get nodes and weights
       // gaussquad returns nodes on [-1, 1] we must transform them to [a, b]
       Eigen::VectorXd x = (a + (b - a)/2*(qr.nodes.array() + 1)).matrix();
 
