@@ -73,7 +73,7 @@ VectorXd PwLinIP::tentBasCoeff(const VectorXd &x, const VectorXd &t,
 	auto x_indices = order(x);
 	auto t_indices = order(t);
 	// You can also implement a solution which does not need
-	// sorted vectors and e.g. for each knot $x_j$ looks
+    // sorted vectors and e.g.\ for each knot $x_j$ looks
 	// for the closest node $t_{i1}$ and the next closest node $t_{i2}$.
 	// However, such solution will not become more efficient
 	// if you give as input already sorted vectors: for each knot $x_j$

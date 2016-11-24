@@ -70,7 +70,7 @@ VectorXd PwLineIntp(const VectorXd &x, const VectorXd &t,
     size_t m = x.size();
     auto x_indices = order(x);
     // You can also implement a solution which does not need
-    // sorted vectors and e.g. for each knot $x_j$ looks
+    // sorted vectors and e.g.\ for each knot $x_j$ looks
     // for the closest node $t_{i1}$ and the next closest node $t_{i2}$.
     // However, such solution will not become more efficient
     // if you give as input already sorted vectors: for each knot $x_j$
@@ -111,7 +111,7 @@ VectorXd PwLineIntp(const VectorXd &x, const VectorXd &t,
             }
         }
         if(!intpOK) {
-            std::exit(EXIT_FAILURE); // $x \not\in [t_min,t_max]$
+            std::exit(EXIT_FAILURE); // $x \not\in [t_{\min},t_{\max}]$
         }
     }
 
