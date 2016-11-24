@@ -51,7 +51,8 @@ void gaussConv(const Function& fh, const double I_ex) {
     const unsigned N = 50; // Max. no. of nodes
 
     for (unsigned n = 1; n <= N; ++n) {
-        QuadRule qr = gaussquad(n); // Create quadrature rule
+        QuadRule qr;
+        gaussquad(n, qr); // Create quadrature rule
 
         double I = integrate(qr, f); // Compute integral
 
@@ -92,7 +93,8 @@ void gaussConvCV(const Function& f, const double I_ex) {
     const unsigned N = 50; // Max. no. of nodes
 
     for (unsigned n = 1; n <= N; ++n) {
-        QuadRule qr = gaussquad(n); // Obtain quadrature rule
+        QuadRule qr;
+        gaussquad(n, qr); // Obtain quadrature rule
 
         // Transform nodes and weights to new interval
         Eigen::VectorXd w = qr.weights * M_PI/2;
