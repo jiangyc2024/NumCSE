@@ -1,31 +1,23 @@
-# include <cmath>
 # include <Eigen/Dense>
 # include <Eigen/Eigenvalues>
 
+/* SAM_LISTING_BEGIN_0 */
 struct QuadRule {
   Eigen::VectorXd nodes, weights;
 };
 
-QuadRule gaussquad(const unsigned n) {
-  QuadRule qr;
-  qr.nodes.resize(n);
-  qr.weights.resize(n);
-  if (n == 0) {
-    qr.nodes(0) = 0;
-    qr.weights(0) = 2;
-  } else {
-    Eigen::VectorXd b(n-1);
-    Eigen::MatrixXd J = Eigen::MatrixXd::Zero(n,n);
-
-    for(unsigned i = 1; i < n; ++i) {
-      double d = i / std::sqrt(4.*i*i - 1.);
-      J(i,i-1) = d;
-      J(i-1,i) = d;
-    }
-    Eigen::EigenSolver<Eigen::MatrixXd> eig(J);
-
-    qr.nodes = eig.eigenvalues().real();
-    qr.weights = 2 * eig.eigenvectors().real().topRows<1>().cwiseProduct(eig.eigenvectors().real().topRows<1>());
+void gaussquad(const unsigned n, QuadRule& qr) {
+  // Initialize bidiagonal matrix \Blue{$\VJ_n$}
+  Eigen::MatrixXd M = Eigen::MatrixXd::Zero(n, n);
+  for (unsigned i = 1; i < n; ++i) {
+    const double b = i/std::sqrt(4.*i*i - 1.); // \Label[line]{gw:3}
+    M(i,i-1) = b; M(i-1,i) = b;                // \Label[line]{gw:3x}
   }
-  return qr;
+  // \eigen's built-in helper class for eigenvalue problems
+  // (use method for symmetric matrices, exploiting the structure)
+  Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eig(M);
+
+  qr.nodes = eig.eigenvalues();
+  qr.weights = 2*eig.eigenvectors().topRows<1>().array().pow(2); // \Label[line]{gw:4}
 }
+/* SAM_LISTING_END_0 */
