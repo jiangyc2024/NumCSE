@@ -1,0 +1,10 @@
+{
+    "author" : "",
+    "email" : "",
+    "contributors" : "",
+
+    "name": "GaussianQuadrature",
+    "all" : ["gaussConv.cpp"],
+    "solutions" : ["GaussConv.eps", "GaussConvCV.eps"],
+    "lib" : ["gaussquad.hpp"]
+}

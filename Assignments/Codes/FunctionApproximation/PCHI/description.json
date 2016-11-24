@@ -4,5 +4,6 @@
     "contributors" : "",
 
     "name": "PCHI",
-    "all" : ["pchi.cpp"]
+    "all" : ["pchi.cpp"],
+    "solutions" : ["pchi_conv.eps", "p_zero.eps", "p_reconstr.eps"]
 }

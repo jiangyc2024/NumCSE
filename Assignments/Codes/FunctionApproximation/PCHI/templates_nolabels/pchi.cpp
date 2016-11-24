@@ -104,7 +104,7 @@ int main() {
     // Store error and number of nodes
     std::vector<double> N, err_reconstr, err_zero;
 
-    for(int i = 3; i <= 512; i = i << 1) {
+    for(int i = 4; i <= 512; i = i << 1) {
         // Define subintervals and evaluate f there (find pairs (t,y))
         VectorXd t = VectorXd::LinSpaced(i, -a, a);
         VectorXd y = t.unaryExpr(f);
@@ -125,6 +125,8 @@ int main() {
                     (s_zero_x - fx).lpNorm<Infinity>()
                     );
         N.push_back(1. / i);
+
+        std::cout << i << " " <<  err_zero.back() << " " <<  err_reconstr.back() << std::endl;
 
         // See how interpolant looks
         if( i == 16 ) {

@@ -65,7 +65,7 @@ VectorXd PwLineIntp(const VectorXd &x, const VectorXd &t,
     size_t m = x.size();
     auto x_indices = order(x);
     // You can also implement a solution which does not need
-    // sorted vectors and e.g. for each knot $x_j$ looks
+    // sorted vectors and e.g.\ for each knot $x_j$ looks
     // for the closest node $t_{i1}$ and the next closest node $t_{i2}$.
     // However, such solution will not become more efficient
     // if you give as input already sorted vectors: for each knot $x_j$
@@ -120,7 +120,7 @@ int main() {
                         x(PosErr)*VectorXd::Ones(t.size());
                 LocErr(j,i) = count_if(tmp.begin(), tmp.end(),
                                        [] (double val) {return val <= 0;}) - 1;
-                // "count\_if" only works when $t$ are already sorted!
+                // "count\_if" only works if $t$ are already sorted!
             }
         }
 
@@ -141,10 +141,10 @@ int main() {
 /* SAM_LISTING_BEGIN_2 */
         // Initialization
         size_t NumAlph = 3;
-        size_t NumBeta = 9;
+        size_t NumBeta = 11;
         size_t NumN = 50;
         VectorXd alphas(NumAlph); alphas << 0.5, 0.75, 4/3;
-        VectorXd betas = VectorXd::LinSpaced(NumBeta,1,50);
+        VectorXd betas = VectorXd::LinSpaced(NumBeta,1,31);
         VectorXd nn = VectorXd::LinSpaced(NumN,1,50); // Used nodes
 
         // Evaluation points

@@ -1,0 +1,8 @@
+{
+    "author" : "",
+    "email" : "",
+    "contributors" : "",
+
+    "name": "QuadraturePlots",
+    "all" : ["ExQuadPlots.eps", "ExQuadPlots.jpg"]
+}

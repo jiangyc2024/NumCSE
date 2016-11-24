@@ -1,0 +1,10 @@
+{
+    "author" : "",
+    "email" : "",
+    "contributors" : "",
+
+    "name": "NestedQuad",
+    "all" : ["laserquad.cpp"],
+    "lib" : ["gaussquad.hpp"],
+    "solutions" : ["laserquadCvg.eps"]
+}

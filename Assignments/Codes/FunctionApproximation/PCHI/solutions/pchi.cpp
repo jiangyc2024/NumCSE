@@ -95,30 +95,34 @@ PCHI::PCHI(const VectorXd & t,
 VectorXd PCHI::operator() (const VectorXd & x) const {
     VectorXd ret(x.size());
 
-    int i_star = 1;
+    int i_star = 0;
     double tmp, t1, y1, y2, c1, c2, a1, a2, a3;
-    for(int j = 0; j < x.size(); ++j) {
+    for(int j = 0; j < x.size();) {
         // Stores the current interval index and some temporary variable
         // Find the interval for $x_j$ (porting of 'hermloceval' Matlab code 3.4.6)
         // while assuming that $x$ values are sorted and within $[t_{\min},t_{\max}]$
-        while(i_star < t.size()) {
-            bool inInterval = (t(i_star-1) < x(j)) && (x(j) < t(i_star));
-            if(inInterval) {
-                t1 = t(i_star-1);
-                y1 = y(i_star-1);
-                y2 = y(i_star);
-                c1 = c(i_star-1);
-                c2 = c(i_star);
-                a1 = y2 - y1;
-                a2 = a1 - h*c1;
-                a3 = h*c2 - a1 - a2;
-            } else {
-                ++i_star;
-            }
+        if( t(i_star) <= x(j) && x(j) <= t(i_star+1)) {
+            t1 = t(i_star);
+            y1 = y(i_star);
+            y2 = y(i_star+1);
+            c1 = c(i_star);
+            c2 = c(i_star+1);
+            a1 = y2 - y1;
+            a2 = a1 - h*c1;
+            a3 = h*c2 - a1 - a2;
+
+            // Compute $s(x(j))$
+            tmp = ( x(j) - t1 ) / h;
+            ret(j) = y1 + ( a1 + ( a2+a3*tmp ) * ( tmp - 1. ) ) * tmp;
+
+            ++j;
+        } else {
+            // Otherwise, go to next interval
+            ++i_star;
+            // Terminate if outside any interval
+            if(i_star >= t.size() - 1) break;
+            continue;
         }
-        // Compute $s(x(j))$
-        tmp = ( x(j) - t1 ) / h;
-        ret(j) = y1 + ( a1 + ( a2+a3*tmp ) * ( tmp - 1. ) ) * tmp;
     }
 
     return ret;
@@ -133,6 +137,7 @@ int main() {
     double a = 5; // Interval bounds will be (-a,a)
     int M = 1000; // Number of  points in which to evaluate the interpoland
 
+    /* SAM_LISTING_BEGIN_4 */
     // Precompute values at which evaluate f
     VectorXd x = VectorXd::LinSpaced(M, -a, a);
     VectorXd fx = x.unaryExpr(f);
@@ -140,7 +145,7 @@ int main() {
     // Store error and number of nodes
     std::vector<double> N, err_reconstr, err_zero;
 
-    for(int i = 3; i <= 512; i = i << 1) {
+    for(int i = 4; i <= 512; i = i << 1) {
         // Define subintervals and evaluate f there (find pairs (t,y))
         VectorXd t = VectorXd::LinSpaced(i, -a, a);
         VectorXd y = t.unaryExpr(f);
@@ -161,6 +166,8 @@ int main() {
                     (s_zero_x - fx).lpNorm<Infinity>()
                     );
         N.push_back(1. / i);
+
+        std::cout << i << " " <<  err_zero.back() << " " <<  err_reconstr.back() << std::endl;
 
         // See how interpolant looks
         if( i == 16 ) {
@@ -199,4 +206,5 @@ int main() {
     fig.plot(N, err_zero, "r").label("s_{zero}");
     fig.legend();
     fig.save("pchi_conv");
+    /* SAM_LISTING_END_4 */
 }

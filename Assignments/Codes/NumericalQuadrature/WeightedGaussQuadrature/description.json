@@ -1,0 +1,9 @@
+{
+    "author" : "",
+    "email" : "",
+    "contributors" : "",
+
+    "name": "WeightedGaussQuadrature",
+    "all" : ["quadU.cpp"],
+    "solutions" : ["quadU.cpp", "quadUCvg.eps"]
+}

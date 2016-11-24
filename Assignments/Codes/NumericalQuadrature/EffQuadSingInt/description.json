@@ -1,0 +1,9 @@
+{
+    "author" : "",
+    "email" : "",
+    "contributors" : "",
+
+    "name": "EffQuadSingInt",
+    "all" : ["quadsingint.cpp"],
+    "lib" : ["gauleg.hpp"]
+}

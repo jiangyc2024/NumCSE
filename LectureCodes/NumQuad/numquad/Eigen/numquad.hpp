@@ -10,11 +10,10 @@ std::vector<double> numquad(Function& F, const double a, const double b, const u
   res.reserve(N);
 
   if (mode == "gauss") {
-    // using the strucht QuadRule from gaussquad.hpp
-    QuadRule qr;
+    // using the struct QuadRule from gaussquad.hpp
 
     for (unsigned n = 1; n <= N; ++n) {
-      gaussquad(n, qr); // get nodes and weights
+      QuadRule qr = gaussquad(n); // get nodes and weights
       // gaussquad returns nodes on [-1, 1] we must transform them to [a, b]
       Eigen::VectorXd x = (a + (b - a)/2*(qr.nodes.array() + 1)).matrix();
 

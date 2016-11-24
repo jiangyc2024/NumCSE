@@ -4,5 +4,6 @@
     "contributors" : "",
 
     "name": "ZerosLegendre",
-    "all" : ["legendre.cpp"]
+    "all" : ["legendre.cpp"],
+    "solutions" : ["secant.eps"]
 }
