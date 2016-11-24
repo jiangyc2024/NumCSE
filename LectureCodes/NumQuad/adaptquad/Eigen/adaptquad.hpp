@@ -6,17 +6,15 @@ using Eigen::VectorXd;
 /* SAM_LISTING_BEGIN_0 */
 // Adaptive multilevel quadrature of a function passed in \texttt{f}.
 // The vector \texttt{M} passes the positions of current quadrature nodes
-// 
 template <class Function>
 double adaptquad(Function& f, VectorXd& M,double rtol,double atol) {
   const std::size_t n = M.size(); // number of nodes
   VectorXd h = M.tail(n-1)-M.head(n-1), // distance of quadature nodes \Label[line]{aq:1}
-           mp = 0.5*(M.head(n-1)+M.tail(n-1)); // midpoints of intervals \Label[line]{aq:2}
+           mp = 0.5*(M.head(n-1)+M.tail(n-1)); // midpoints \Label[line]{aq:2}
   // Values of integrand at nodes and midpoints \Label[line]{aq:3}
   VectorXd fx(n), fm(n - 1);
   for (unsigned i = 0; i < n; ++i) fx(i) = f(M(i));
   for (unsigned j = 0; j < n - 1; ++j) fm(j) = f(mp(j)); 
-
   // trapezoidal rule \eqref{eq:comptrap} \Label[line]{aq:4}
   const VectorXd trp_loc = 1./4*h.cwiseProduct(fx.head(n-1)+2*fm+fx.tail(n-1));
   // Simpson rule \eqref{eq:compsimp} \Label[line]{aq:5}
@@ -29,7 +27,7 @@ double adaptquad(Function& f, VectorXd& M,double rtol,double atol) {
   // estimate for quadrature error \Label[line]{aq:8}
   const double err_tot = est_loc.sum(); 
 
-  // Termination based on \eqref{eq:aqstop}
+  // \com{STOP}: Termination based on \eqref{eq:aqstop}
   if ( err_tot > rtol*std::abs(I) && err_tot > atol ) { // \Label[line]{aq:term}
     // find cells where error is large
     std::vector<double> new_cells;
@@ -44,9 +42,10 @@ double adaptquad(Function& f, VectorXd& M,double rtol,double atol) {
     // (necessary to convert std::vector to Eigen vector)
     Eigen::Map<VectorXd> tmp(new_cells.data(), new_cells.size()); 
     VectorXd new_M(M.size() + tmp.size()); 
-    new_M << M, tmp; // concatenate old cells and new cells 
-    std::sort(new_M.data(),new_M.data()+new_M.size()); // sort new nodes
-    I = adaptquad(f, new_M, rtol, atol); // recurse \Label[line]{aq:10}
+    new_M << M, tmp; // concatenate old cells and new cells
+    // nodes of a mesh are supposed to be sorted
+    std::sort(new_M.data(),new_M.data()+new_M.size()); 
+    I = adaptquad(f, new_M, rtol, atol); // recursion \Label[line]{aq:10}
   }
   return I;
 }

@@ -1,3 +1,12 @@
+///////////////////////////////////////////////////////////////////////////
+/// Demonstration code for lecture "Numerical Methods for CSE" @ ETH Zurich
+/// (C) 2016 SAM, D-MATH
+/// Author(s): N.N.
+/// Repository: https://gitlab.math.ethz.ch/NumCSE/NumCSE/
+/// Do not remove this header.
+//////////////////////////////////////////////////////////////////////////
+
+/* SAM_LISTING_BEGIN_0 */
 template <typename FuncType,typename JacType,typename VecType>
 void newton_stc(const FuncType &F,const JacType &DF,
 	        VecType &x,double rtol,double atol)
@@ -13,3 +22,4 @@ void newton_stc(const FuncType &F,const JacType &DF,
   // Termination based on simplified Newton correction
   while ((sn > rtol*x.norm()) && (sn > atol));
 }
+/* SAM_LISTING_END_0 */
