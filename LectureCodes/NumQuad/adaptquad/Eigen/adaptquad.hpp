@@ -8,8 +8,8 @@ using Eigen::VectorXd;
 // The vector \texttt{M} passes the positions of current quadrature nodes
 // 
 template <class Function>
-double adaptquad(Function& f, VectorXd& M, const double rtol, const double atol) {
-  const unsigned n = M.size(); // number of nodes
+double adaptquad(Function& f, VectorXd& M,double rtol,double atol) {
+  const std::size_t n = M.size(); // number of nodes
   VectorXd h = M.tail(n-1)-M.head(n-1), // distance of quadature nodes \Label[line]{aq:1}
            mp = 0.5*(M.head(n-1)+M.tail(n-1)); // midpoints of intervals \Label[line]{aq:2}
   // Values of integrand at nodes and midpoints \Label[line]{aq:3}
@@ -25,7 +25,7 @@ double adaptquad(Function& f, VectorXd& M, const double rtol, const double atol)
   // Simpson approximation for the integral value\Label[line]{aq:6}
   double I = simp_loc.sum(); 
   // local error estimate \eqref{eq:aqest}\Label[line]{aq:7}
-  const VectorXd est_loc = (simp_loc - trp_loc).cwiseAbs(); 
+  const VectorXd est_loc = (simp_loc-trp_loc).cwiseAbs(); 
   // estimate for quadrature error \Label[line]{aq:8}
   const double err_tot = est_loc.sum(); 
 
@@ -34,8 +34,8 @@ double adaptquad(Function& f, VectorXd& M, const double rtol, const double atol)
     // find cells where error is large
     std::vector<double> new_cells;
     for (unsigned i = 0; i < est_loc.size(); ++i) {
-      // if local error > 0.9/(no of intervals)*(total error) add new cell
-      if (est_loc(i) > 0.9/(n - 1)*err_tot) { 
+      // \com{MARK} by criterion \eqref{eq:mark} \& \com{REFINE} by \eqref{eq:aqref}
+      if (est_loc(i) > 0.9/(n-1)*err_tot) { 
         // new quadrature point = midpoint of interval with large error
         new_cells.push_back(mp(i));
       }}
@@ -45,7 +45,7 @@ double adaptquad(Function& f, VectorXd& M, const double rtol, const double atol)
     Eigen::Map<VectorXd> tmp(new_cells.data(), new_cells.size()); 
     VectorXd new_M(M.size() + tmp.size()); 
     new_M << M, tmp; // concatenate old cells and new cells 
-    std::sort(new_M.data(), new_M.data() + new_M.size()); // sort new mesh
+    std::sort(new_M.data(),new_M.data()+new_M.size()); // sort new nodes
     I = adaptquad(f, new_M, rtol, atol); // recurse \Label[line]{aq:10}
   }
   return I;
