@@ -36,30 +36,41 @@ double gaussquadtriangle(const Function& f, const unsigned N) {
     QuadRule Q;
     gaussquad(N, Q);
 
-//#if SOLUTION
-    // We define an auxiliary function of x defined
-    // as f\_y := [\&y] (double x) \{ return f(x,y) \}, where we fix y.
-    // We define the function $g$ as the function of $y$
-    // $g(y) := \int_0^{1-y} f_y(x) dx$, which is $= \int_0^{1-y} I(x,y) dx$
-    auto g = [&f, &Q] (double y) { 
-      return evalgaussquad(0, 1-y, [&f, &y] (double x) { return f(x,y); }, Q); 
+    // TODO: Compute double integral
+    return 0;
+}
+/* SAM_LISTING_END_2 */
+
+int main() {
+    /* SAM_LISTING_BEGIN_3 */
+    // Parameters
+    const double alpha = 1, p = 0, q = 0;
+
+    // Laser beam intensity
+    auto I = [alpha, p, q] (double x, double y) { 
+      return std::exp(- alpha * ( (x-p)*(x-p) + (y-q)*(y-q) ) ); 
     };
-    // We integrate the function g over y from 0 to 1
-    return evalgaussquad(0, 1, g, Q);
+    
+    // Max num of Gauss points to use (in each direction)
+    const unsigned max_N = 12;
+    // "Exact" integral
+    const double I_ex = 0.366046550000405;
 
-    /* EQUIVALENT: Loop based, copy-and-paste implementation
-    // Integration over y from 0 to 1 of $g(y) := \int_0^{1-y} I(x,y) dx$
-    double I = 0;
-    double a = 0., b  = 1.;
-    for(int i = 0; i < Q.weights.size(); ++i) {
-        // Find out the y at which we are
-        double y = (qr.x(i) + 1) * (b - a) / 2 + a;
-        // Define $f_y(x)$ (y is fixed and f\_y is a function of x)
-        auto f_y = [&f, &y] (double x) { return f(x,y); };
-        // Compute g(y) as \int_0^{1-y} I(x,y) dx
-        I += evalgaussquad(0, 1-y, f_y, Q) * Q.weights(i);
+    // Observed: exponential convergence (as exepcted)
+    std::cout << std::setw(3) << "N"
+              << std::setw(15) << "I_approx"
+              << std::setw(15) << "error"
+              << std::endl;
+    for(unsigned N = 1; N < max_N; ++N) {
+
+        double I_approx = gaussquadtriangle(I, N);
+
+        std::cout << std::setw(3) << N
+                  << std::setw(15) << I_approx
+                  << std::setw(15) << std::abs(I_ex - I_approx)
+                  << std::endl;
     }
-    // Rescale interval
-    return I * (b - a) / 2.;
-    */
 
+    return 0;
+    /* SAM_LISTING_END_3 */
+}

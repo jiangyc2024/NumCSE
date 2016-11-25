@@ -44,11 +44,11 @@ double gaussquadtriangle(const Function& f, const unsigned N) {
     QuadRule Q;
     gaussquad(N, Q);
 
-//#if SOLUTION
+#if SOLUTION
     // We define an auxiliary function of x defined
     // as f\_y := [\&y] (double x) \{ return f(x,y) \}, where we fix y.
     // We define the function $g$ as the function of $y$
-    // $g(y) := \int_0^{1-y} f_y(x) dx$, which is $= \int_0^{1-y} I(x,y) dx$
+    // $g(y) := \int_0^{1-y} f_y(x) dx$, which is $= \int_0^{1-y} I(x,y) dx$.
     auto g = [&f, &Q] (double y) { 
       return evalgaussquad(0, 1-y, [&f, &y] (double x) { return f(x,y); }, Q); 
     };
@@ -70,7 +70,6 @@ double gaussquadtriangle(const Function& f, const unsigned N) {
     // Rescale interval
     return I * (b - a) / 2.;
     */
-
 #else // TEMPLATE
     // TODO: Compute double integral
     return 0;

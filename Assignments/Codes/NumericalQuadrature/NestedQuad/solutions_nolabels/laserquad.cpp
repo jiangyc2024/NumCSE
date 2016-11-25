@@ -42,11 +42,10 @@ double gaussquadtriangle(const Function& f, const unsigned N) {
     QuadRule Q;
     gaussquad(N, Q);
 
-//#if SOLUTION
     // We define an auxiliary function of x defined
     // as f\_y := [\&y] (double x) \{ return f(x,y) \}, where we fix y.
     // We define the function $g$ as the function of $y$
-    // $g(y) := \int_0^{1-y} f_y(x) dx$, which is $= \int_0^{1-y} I(x,y) dx$
+    // $g(y) := \int_0^{1-y} f_y(x) dx$, which is $= \int_0^{1-y} I(x,y) dx$.
     auto g = [&f, &Q] (double y) { 
       return evalgaussquad(0, 1-y, [&f, &y] (double x) { return f(x,y); }, Q); 
     };
@@ -68,4 +67,36 @@ double gaussquadtriangle(const Function& f, const unsigned N) {
     // Rescale interval
     return I * (b - a) / 2.;
     */
+}
 
+int main() {
+    // Parameters
+    const double alpha = 1, p = 0, q = 0;
+
+    // Laser beam intensity
+    auto I = [alpha, p, q] (double x, double y) { 
+      return std::exp(- alpha * ( (x-p)*(x-p) + (y-q)*(y-q) ) ); 
+    };
+    
+    // Max num of Gauss points to use (in each direction)
+    const unsigned max_N = 12;
+    // "Exact" integral
+    const double I_ex = 0.366046550000405;
+
+    // Observed: exponential convergence (as exepcted)
+    std::cout << std::setw(3) << "N"
+              << std::setw(15) << "I_approx"
+              << std::setw(15) << "error"
+              << std::endl;
+    for(unsigned N = 1; N < max_N; ++N) {
+
+        double I_approx = gaussquadtriangle(I, N);
+
+        std::cout << std::setw(3) << N
+                  << std::setw(15) << I_approx
+                  << std::setw(15) << std::abs(I_ex - I_approx)
+                  << std::endl;
+    }
+
+    return 0;
+}
