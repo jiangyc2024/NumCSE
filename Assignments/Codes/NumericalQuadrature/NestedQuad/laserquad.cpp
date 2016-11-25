@@ -24,7 +24,7 @@ double evalgaussquad(const double a, const double b,
     }
     return I * (b - a) / 2.;
 #else // TEMPLATE
-    // TODO: Compute the qudrature and scale the interal according to inteval [a,b]
+    // TODO: Compute the qudrature and scale the interal according to interval $[a,b]$
     return I;
 #endif
 }
@@ -44,11 +44,11 @@ double gaussquadtriangle(const Function& f, const unsigned N) {
     QuadRule Q;
     gaussquad(N, Q);
 
-#if SOLUTION
+//#if SOLUTION
     // We define an auxiliary function of x defined
-    // as f\_y := [\&y] (double x) \{ return f(x,y) \}, where we fix y
-    // We define the function g, as the function of y
-    // defined as $g(y) := \int_0^{1-y} f_y(x) dx = \int_0^{1-y} I(x,y) dx$
+    // as f\_y := [\&y] (double x) \{ return f(x,y) \}, where we fix y.
+    // We define the function $g$ as the function of $y$
+    // $g(y) := \int_0^{1-y} f_y(x) dx$, which is $= \int_0^{1-y} I(x,y) dx$
     auto g = [&f, &Q] (double y) { 
       return evalgaussquad(0, 1-y, [&f, &y] (double x) { return f(x,y); }, Q); 
     };
