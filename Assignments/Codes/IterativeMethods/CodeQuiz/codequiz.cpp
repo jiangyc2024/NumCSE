@@ -58,7 +58,7 @@ double myfunction_modified(double x) {
     }
     return y+z+dz;
 #else // TEMPLATE
-    // TODO: modify  myfunction to perform a fixed number of iterations
+    // TODO: modify myfunction to perform a fixed number of iterations
     return 0;
 #endif // TEMPLATE
 }

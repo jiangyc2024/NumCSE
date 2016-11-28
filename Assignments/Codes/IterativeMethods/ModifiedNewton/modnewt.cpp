@@ -21,7 +21,6 @@ void mod_newt_step_scalar(const argument & x, argument & x_next, function&& f, j
     x_next = y - f(y) / df(x);
 }
 
-
 //! \brief Implements a single step of the modified newton
 //! \tparam argument type of argument to function f: such as double or vector etc...
 //! \tparam function type for the function f, likely a lambda function
@@ -120,5 +119,4 @@ int main() {
     
     // Part 2: solve system
     mod_newt_sys();
-    
 }

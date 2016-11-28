@@ -1,8 +1,0 @@
-{
-    "author" : "",
-    "email" : "",
-    "contributors" : "",
-
-    "name": "JuliaSet",
-    "all" : ["juliaset.cpp"]
-}

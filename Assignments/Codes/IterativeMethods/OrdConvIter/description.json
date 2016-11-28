@@ -1,8 +1,0 @@
-{
-    "author" : "",
-    "email" : "",
-    "contributors" : "",
-
-    "name": "OrdConvIter",
-    "all" : ["ordconviter.cpp"]
-}
