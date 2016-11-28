@@ -3,6 +3,6 @@
     "email" : "",
     "contributors" : "",
 
-    "name": "CodeQuiz",
-    "all" : ["codequiz.cpp"]
+    "name": "NonLinElectr",
+    "all" : ["nonlinear_circuit.cpp"]
 }

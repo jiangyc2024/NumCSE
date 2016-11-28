@@ -3,6 +3,7 @@
     "email" : "",
     "contributors" : "",
 
-    "name": "CodeQuiz",
-    "all" : ["codequiz.cpp"]
+    "name": "ModifiedNewton",
+    "all" : ["modnewt.cpp"],
+	"lib" : ["general_nonlinear_solver.h"]
 }

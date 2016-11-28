@@ -3,6 +3,6 @@
     "email" : "",
     "contributors" : "",
 
-    "name": "CodeQuiz",
-    "all" : ["codequiz.cpp"]
+    "name": "QuasiLin",
+    "all" : ["quasilin.cpp"]
 }
