@@ -1,4 +1,4 @@
-project(ZerosLegendre)
+project(HermTypeQuad)
 cmake_minimum_required(VERSION 2.8)
 
 #
@@ -144,10 +144,5 @@ endif()
 include_directories(${FIGURE_INCLUDE_DIR})
 include_directories(${FIGURE_INCLUDE_DIR}/..)
 
-### ZerosLegendre
-
-# make legendre
-set(SRCS legendre.cpp)
-add_executable(legendre ${SRCS})
-target_link_libraries(legendre Figure ${MATHGL2_LIBRARIES})
+### HermTypeQuad
 

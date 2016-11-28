@@ -4,3 +4,15 @@
 //// Contributors: tille, jgacon, dcasati
 //// This file is part of the NumCSE repository.
 ////
+#include <iostream>
+#include <limits>
+#include <cmath>
+#include <vector>
+#include <iostream>
+#include <cmath>
+
+int main(int argc, char**argv) {
+    int n = 10;
+
+    // TODO: approximate order
+}
