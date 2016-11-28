@@ -1,4 +1,4 @@
-project(HermTypeQuad)
+project(CodeQuiz)
 cmake_minimum_required(VERSION 2.8)
 
 #
@@ -144,5 +144,10 @@ endif()
 include_directories(${FIGURE_INCLUDE_DIR})
 include_directories(${FIGURE_INCLUDE_DIR}/..)
 
-### HermTypeQuad
+### CodeQuiz
+
+# make codequiz
+set(SRCS codequiz.cpp)
+add_executable(codequiz ${SRCS})
+target_link_libraries(codequiz Figure ${MATHGL2_LIBRARIES})
 
