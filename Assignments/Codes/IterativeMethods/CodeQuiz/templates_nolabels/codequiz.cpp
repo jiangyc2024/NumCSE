@@ -7,6 +7,7 @@
 #include <iostream>
 #include <limits>
 #include <cmath>
+#include <cassert>
 
 double myfunction(double x) {
     double log2=0.693147180559945;

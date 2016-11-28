@@ -1,6 +1,7 @@
 #include <iostream>
 #include <limits>
 #include <cmath>
+#include <cassert>
 
 /*!
  * \brief myfunction Implement log(x) using Newton method

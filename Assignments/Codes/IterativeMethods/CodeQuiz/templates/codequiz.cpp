@@ -1,6 +1,7 @@
 #include <iostream>
 #include <limits>
 #include <cmath>
+#include <cassert>
 
 /* SAM_LISTING_BEGIN_1 */
 double myfunction(double x) {
