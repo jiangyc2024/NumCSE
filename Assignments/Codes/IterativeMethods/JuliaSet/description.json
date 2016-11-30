@@ -1,0 +1,9 @@
+{
+    "author" : "",
+    "email" : "",
+    "contributors" : "",
+
+    "name": "JuliaSet",
+    "all" : ["julia.cpp"],
+	"lib" : ["grid.hpp"]
+}

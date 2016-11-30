@@ -4,5 +4,6 @@
     "contributors" : "",
 
     "name": "OrdConvIter",
-    "all" : ["ordconviter.cpp"]
+    "all" : ["ordconviter.cpp"],
+	"lib" : ["grid.hpp"]
 }
