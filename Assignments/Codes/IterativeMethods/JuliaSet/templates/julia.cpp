@@ -46,7 +46,7 @@ int main()
 
 // TODO: analyze Newton iteration
 
-    // normalize results for plot
+    // Normalize results for plot
     C = (C.array()/double(C.maxCoeff())).matrix();
 
     mglData Xd(X.rows(), X.cols(), X.data());

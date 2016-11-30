@@ -13,15 +13,15 @@
 
 using namespace Eigen;
 
-/* @brief
- * @param[in]
- * @param[out]
+/* @brief Newton's method to approximate $x^{(0)}$
+ * @param[in] x0_ Initial guess
+ * @param[out] x0 Final estimation of $x^{(0)}$, given convergence of Newton's method
  */
 double newton_arctan(double x0_) {
 
     double x0 = x0_;
 
-// TODO:
+// TODO: approximate $x^{(0)}$ using Newton's method
 
     return x0;
 }

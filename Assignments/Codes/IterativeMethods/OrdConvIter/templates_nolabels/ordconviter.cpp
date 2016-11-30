@@ -43,6 +43,7 @@ int main()
     Func kmin;
 
 // TODO: compute $k_{\min}$
+    Mat k_ = Mat::Zero(eps_msh.rows(), eps_msh.cols());
 
     // Normalize results for plot
     k_ = (k_.array()/double(k_.maxCoeff())).matrix();

@@ -4,12 +4,13 @@
 
 #include <Eigen/Dense>
 
+
 using namespace Eigen;
 
 /* @brief Steffensen's method
  * @param[in] f Function handler
  * @param[in] x0 Initial guess
- * @param[out] x All estimations of Steffensen's method until convergence
+ * @param[out] x All estimations returned by Steffensen's iterations until convergence
  */
 /* SAM_LISTING_BEGIN_0 */
 template <class function>
@@ -68,4 +69,5 @@ int main() {
     for(unsigned i=0; i<n; ++i) {
         std::cout << x(i) << "\t" << errs(i) << "\t" << residuals(i) << "\t" << ratios(i) << std::endl;
     }
+
 }
