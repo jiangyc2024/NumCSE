@@ -13,18 +13,20 @@ class Func {
     Mat operator()(Mat& eps, Mat tau, double C, double p)
     {
         Mat num = tau.array().log(); num += (1/(p-1))*std::log(C)*Mat::Ones(tau.rows(),tau.cols());
-        Mat den = eps;               den += (1/(p-1))*std::log(C)*Mat::Ones(tau.rows(),tau.cols());
+        Mat den = (eps * pow(C, 1/(p-1))).array().log();
+
         Mat kmin = (num.cwiseQuotient(den)).array().log() / std::log(p);
 
         // Consider only gridpoints where eps is larger than tau
-        for(unsigned i=0; i<kmin.rows()-2; ++i) {
-            for(unsigned j=0; j<kmin.cols()-2; ++j) {
+        for(unsigned i=0; i<kmin.rows(); ++i) {
+            for(unsigned j=0; j<kmin.cols(); ++j) {
                 kmin(i,j) = std::ceil(kmin(i,j));
                 if(i > j) {
                     kmin(i,j) = 0;
                 }
             }
         }
+
         return kmin;
     }
 };
@@ -48,19 +50,18 @@ int main()
     Func kmin;
     Mat k_ = kmin(eps_msh, tau_msh, C, p);
 
-//    // normalize results for plot
-//    C = (C.array()/double(C.maxCoeff())).matrix();
+    // Normalize results for plot
+    k_ = (k_.array()/double(k_.maxCoeff())).matrix();
 
     mglData eps(eps_msh.rows(), eps_msh.cols(), eps_msh.data());
     mglData tau(tau_msh.rows(), tau_msh.cols(), tau_msh.data());
     mglData k(k_.rows(), k_.cols(), k_.data());
 
     mglGraph gr;
-//    gr.SetRanges(0,eps_max,0,eps_max);
     gr.SetRanges(eps.Minimal(), eps.Maximal(), tau.Minimal(), tau.Maximal());
-    gr.Colorbar("bcwyr");
+    gr.Colorbar("kRryw");
     gr.Title("Minimal number of iterations for error < tau");
     gr.Axis(); gr.Label('x',"epsilon_0",0); gr.Label('y',"tau",0);
-    gr.Tile(eps, tau, k, "bcwyr");
+    gr.Tile(eps, tau, k, "kRryw");
     gr.WriteEPS("k_min.eps");
 }
