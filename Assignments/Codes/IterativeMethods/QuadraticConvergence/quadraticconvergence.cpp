@@ -11,9 +11,10 @@ using namespace Eigen;
  * @param[out]
  */
 /* SAM_LISTING_BEGIN_0 */
-double newton_arctan(double x0) {
+template <class function>
+VectorXd steffensen(function&& f, double x0) {
 
-    double x0_ = x0;
+    VectorXd x(1); x(0) = x0;
 
 #if SOLUTION
     double upd = 1;
@@ -21,35 +22,53 @@ double newton_arctan(double x0) {
 
     while(std::abs(upd) > eps) {
 
-        double x1 = x0_ - (2*x0_-(1+x0_*x0_)*std::atan(x0_)) / (1-2*x0_*std::atan(x0_));
-//        double x1 = (-x0_+(1-x0_*x0_)*std::atan(x0_)) / (1-2*x0_*std::atan(x0_));
-
-        upd = (x1 - x0_) / x1;
-        x0_ =  x1;
-        std::cout << "x0 = " << x1 << ", accuracy = " << upd << std::endl;
+        double fx = f(x(x.size()-1)); // Only 2 evaluations of $f$ at each step
+        if(fx != 0) {
+            upd =  fx*fx / (f(x(x.size()-1)+fx)-fx);
+            double x_new = x(x.size()-1) - upd;
+            x.conservativeResize(x.size()+1);
+            x(x.size()-1) = x_new;
+        } else {
+            upd = 0;
+        }
     }
 #else // TEMPLATE
 // TODO:
 #endif // TEMPLATE
 
-    return x0_;
+    return x;
 }
 /* SAM_LISTING_END_0 */
 
 int main() {
-	// Initialization
-    double x0  = 2; // Initial guess
+    // Initialization
+    // Different definitions of $f$ with the same zero:
+    auto f = [] (double x) { return x*std::exp(x)-1; };
+//    auto f = [] (double x) { return std::exp(x)-1/x; };
+//    auto f = [] (double x) { return x-std::exp(-x); };
+    double x0 = 1;
+    double x_star = 0.567143290409784; // From Matlab: x_star = fzero(f,x0);
 
-    // Netwon's method
-    double x0_ = newton_arctan(x0);
+    // Steffensen's method
+    VectorXd x = steffensen(f, x0);
 
-//    figure;
-//    x1 = x0-atan(x0)*(1+x0^2);   x2 = x1-atan(x1)*(1+x1^2);
-//    X=[-2:0.01:2];
-//    plot(X, atan(X),'k',...
-//        X,  2*(X)-(1+(X).^2).*atan((X)),'r--',...
-//        [x0, x1, x1, x2, x2], [atan(x0), 0, atan(x1), 0, atan(x2)],...
-//        [x0,x1],[0,0],'ro',[-2,2], [0,0],'k','linewidth',2);
-//    legend('arctan', 'g', 'Newton critical iteration');axis equal;
-//    print -depsc2 'ex_NewtonArctan.eps'
+    // Compute errors
+    unsigned n = x.size();
+    VectorXd residuals(n), errs(n), log_errs(n);
+    for(unsigned i=0; i<n; ++i) {
+        residuals(i) = f(x(i));
+        errs(i) = std::abs(x(i)-x_star);
+        log_errs(i) = std::log(errs(i));
+    }
+    VectorXd ratios = VectorXd::Zero(n);
+    for(unsigned i=2; i<n; ++i) {
+        ratios(i) = (log_errs(i)   - log_errs(i-1)) /
+                    (log_errs(i-1) - log_errs(i-2));
+    }
+
+    // Print output
+    std::cout << "x" << "\t" << "errors" << "\t" << "residuals" <<" \t" << "ratios" << std::endl;
+    for(unsigned i=0; i<n; ++i) {
+        std::cout << x(i) << "\t" << errs(i) << "\t" << residuals(i) << "\t" << ratios(i) << std::endl;
+    }
 }
