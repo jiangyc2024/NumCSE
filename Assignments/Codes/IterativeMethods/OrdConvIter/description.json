@@ -5,5 +5,5 @@
 
     "name": "OrdConvIter",
     "all" : ["ordconviter.cpp"],
-	"lib" : ["grid.hpp"]
+	"lib" : ["meshgrid.hpp"]
 }

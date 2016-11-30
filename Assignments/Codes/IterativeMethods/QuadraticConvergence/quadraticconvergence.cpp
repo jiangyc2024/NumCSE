@@ -6,9 +6,10 @@
 
 using namespace Eigen;
 
-/* @brief
- * @param[in]
- * @param[out]
+/* @brief Steffensen's method
+ * @param[in] f Function handler
+ * @param[in] x0 Initial guess
+ * @param[out] x All estimations of Steffensen's method until convergence
  */
 /* SAM_LISTING_BEGIN_0 */
 template <class function>
@@ -33,7 +34,7 @@ VectorXd steffensen(function&& f, double x0) {
         }
     }
 #else // TEMPLATE
-// TODO:
+// TODO: Steffensen's method
 #endif // TEMPLATE
 
     return x;
