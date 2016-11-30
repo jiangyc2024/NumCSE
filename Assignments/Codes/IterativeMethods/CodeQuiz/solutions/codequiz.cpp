@@ -23,7 +23,7 @@ double myfunction(double x) {
     }
     return y+z+dz;
 }
-/* SAM_LISTING_BEGIN_1 */
+/* SAM_LISTING_END_1 */
 
 /*!
  * \brief myfunction_modified Implement log(x) using Newton method
@@ -49,7 +49,7 @@ double myfunction_modified(double x) {
     }
     return y+z+dz;
 }
-/* SAM_LISTING_BEGIN_2 */
+/* SAM_LISTING_END_2 */
 
 int main(int argc, char**argv) {
     // x will contain the first argument to the command line

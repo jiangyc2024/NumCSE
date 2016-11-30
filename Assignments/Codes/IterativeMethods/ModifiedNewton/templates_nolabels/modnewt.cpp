@@ -1,3 +1,9 @@
+//// 
+//// Copyright (C) 2016 SAM (D-MATH) @ ETH Zurich
+//// Author(s): lfilippo <filippo.leonardi@sam.math.ethz.ch> 
+//// Contributors: tille, jgacon, dcasati
+//// This file is part of the NumCSE repository.
+////
 #include <utility>
 #include <iostream>
 #include <vector>
@@ -23,7 +29,6 @@ double norm(const VectorXd & x) { return x.norm(); }
  *! \param[in] eps tolerance to break iterations when res(x) < eps
  *! \param[in] max_itr maximal number of iterations
  */
-/* SAM_LISTING_BEGIN_3 */
 template <class StepFunction, class Vector, class ErrorFunction>
 bool general_nonlinear_solver(const StepFunction& step, 
                               Vector & x, 
@@ -58,7 +63,6 @@ bool general_nonlinear_solver(const StepFunction& step,
               << " reached, err = " << r << "." << std::endl;
     return false;
 }
-/* SAM_LISTING_END_3 */
 
 /*!
  *! \brief Implements a single step of the modified newton
@@ -70,7 +74,6 @@ bool general_nonlinear_solver(const StepFunction& step,
  *! \param[in] df function handle for jacobian df of f
  *! \return next step x_{k+1} of modified Newton
  */
-/* SAM_LISTING_BEGIN_1 */
 template <typename Scalar, class Function, class Jacobian>
 Scalar mod_newt_step_scalar(const Scalar& x, 
                             const Function& f, 
@@ -78,7 +81,6 @@ Scalar mod_newt_step_scalar(const Scalar& x,
     Scalar y = x + f(x) / df(x);
     return y - f(y) / df(x);
 }
-/* SAM_LISTING_END_1 */
 
 /*!
  *! \brief Implements a single step of the modified newton
@@ -90,7 +92,6 @@ Scalar mod_newt_step_scalar(const Scalar& x,
  *! \param[in] df function handle for jacobian df of f
  *! \return x_next next step x_{k+1} of modified Newton
  */
-/* SAM_LISTING_BEGIN_4 */
 template <typename Vector, class Function, class Jacobian>
 Vector mod_newt_step_system(const Vector & x, 
                             const Function& f, const Jacobian& df) {
@@ -99,13 +100,11 @@ Vector mod_newt_step_system(const Vector & x,
     Vector y = x + lu.solve(f(x));
     return y - lu.solve(f(y));
 }
-/* SAM_LISTING_END_4 */
 
 /**
  *! \brief Solve a scalar non-linear eq. with the modified Newton.
  * Test the empirical order of convergence of the method.
  */
-/* SAM_LISTING_BEGIN_2 */
 void mod_newt_ord() {
     // Setting up values, functions and jacobian
     const double a = 0.123;
@@ -168,12 +167,10 @@ void mod_newt_ord() {
         std::cout << std::endl;
     }
 }
-/* SAM_LISTING_END_2 */
 
 /*!
  *! \brief Solve a system non-linear eq. with the modified Newton
  */
-/* SAM_LISTING_BEGIN_5 */
 void mod_newt_sys() {
     
     // Function parameters
@@ -231,7 +228,6 @@ void mod_newt_sys() {
               << std::endl << F(x_system) 
               << std::endl;
 }
-/* SAM_LISTING_END_5 */
 
 int main() {
     // Part 1: solve scalar
