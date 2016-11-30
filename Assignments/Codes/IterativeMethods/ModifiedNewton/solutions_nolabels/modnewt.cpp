@@ -36,11 +36,12 @@ bool general_nonlinear_solver(const StepFunction& step,
                               double eps = 1e-8, int max_itr = 100) {
     // Temporary where to store new step
     Vector x_new = x;
+    double r = 1;
     
     for(int itr = 0; itr < max_itr; ++itr) {
         
         // Compute error (or residual)
-        double r = errf(x);
+        r = errf(x);
         
         std::cout << "[Step " << itr << "] Error: " << r << std::endl;
         
@@ -137,9 +138,10 @@ void mod_newt_ord() {
     
     // Lambda performing the next step, used to define a proper 
     // function handle to be passed to general\_nonlinear\_solver
-    auto newt_scalar_step = [&sol, &f, &df] (const double x, double & x_new) { 
-        x_new = mod_newt_step_scalar(x, f, df);
+    auto newt_scalar_step = [&sol, &f, &df] (double x) -> double { 
+        double x_new = mod_newt_step_scalar(x, f, df);
         sol.push_back(x_new);
+        return x_new;
     };
     
     // Actually perform the solution
@@ -183,9 +185,9 @@ void mod_newt_sys() {
         VectorXd tmp =  A*x + c.cwiseProduct(x.array().exp().matrix()).eval();
         return tmp;
     };
-    auto dF = [&A, &c] (const Vector & x) { 
-        Matrix C = A; 
-        Vector temp = c.cwiseProduct(x.array().exp().matrix()); 
+    auto dF = [&A, &c] (const VectorXd & x) { 
+        MatrixXd C = A; 
+        VectorXd temp = c.cwiseProduct(x.array().exp().matrix()); 
         C += temp.asDiagonal(); 
         return C; 
     };
@@ -194,7 +196,7 @@ void mod_newt_sys() {
     std::vector<double> err;
     // Define lambda for breaking condition, which also stores 
     // the error of the previous step. Must see err
-    auto rerr = [&err] (Vector & x) { 
+    auto rerr = [&err] (VectorXd & x) { 
         if(err.size() > 0) 
             return err.back();
         else return 1.;
@@ -209,7 +211,7 @@ void mod_newt_sys() {
     // must see F; dF and error vector
     // We also store the error
     auto newt_system_step = [&F, &dF, &err] (const VectorXd & x) -> VectorXd {
-        VectorXd x_new = mod_newt_step_system(x, x_new, F, dF);
+        VectorXd x_new = mod_newt_step_system(x, F, dF);
         double e = (x - x_new).norm()/ x_new.norm();
         err.push_back(e);
         return x_new;
