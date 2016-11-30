@@ -26,7 +26,7 @@ double myfunction_modified(double x) {
     while(x < 1./std::sqrt(2)) { x*=2; y-=log2; }
     double z=x-1;
     double dz=x*std::exp(-z)-1.;
-    // TODO: modify  myfunction to perform a fixed number of iterations
+    // TODO: modify myfunction to perform a fixed number of iterations
     return 0;
 }
 /* SAM_LISTING_BEGIN_2 */

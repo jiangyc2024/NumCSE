@@ -4,6 +4,5 @@
     "contributors" : "",
 
     "name": "ModifiedNewton",
-    "all" : ["modnewt.cpp"],
-	"lib" : ["general_nonlinear_solver.h"]
+    "all" : ["modnewt.cpp"]
 }
