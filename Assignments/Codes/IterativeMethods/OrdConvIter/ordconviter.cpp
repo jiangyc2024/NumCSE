@@ -57,6 +57,7 @@ int main()
     Mat k_ = kmin(eps_msh, tau_msh, C, p);
 #else // TEMPLATE
 // TODO: compute $k_{\min}$
+    Mat k_ = Mat::Zero(eps_msh.rows(), eps_msh.cols());
 #endif // TEMPLATE
 
     // Normalize results for plot
