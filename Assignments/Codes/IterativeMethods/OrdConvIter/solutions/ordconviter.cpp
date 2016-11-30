@@ -7,15 +7,16 @@
 typedef Eigen::VectorXd Vec;
 typedef Eigen::MatrixXd Mat;
 
-
 class Func {
     public:
     Mat operator()(Mat& eps, Mat tau, double C, double p)
     {
+        Mat kmin;
+
         Mat num = tau.array().log(); num += (1/(p-1))*std::log(C)*Mat::Ones(tau.rows(),tau.cols());
         Mat den = (eps * pow(C, 1/(p-1))).array().log();
 
-        Mat kmin = (num.cwiseQuotient(den)).array().log() / std::log(p);
+        kmin = (num.cwiseQuotient(den)).array().log() / std::log(p);
 
         // Consider only gridpoints where eps is larger than tau
         for(unsigned i=0; i<kmin.rows(); ++i) {
@@ -47,6 +48,7 @@ int main()
     meshgrid(eps_lin_seg, tau_lin_seg, eps_msh, tau_msh);
 
     Func kmin;
+
     Mat k_ = kmin(eps_msh, tau_msh, C, p);
 
     // Normalize results for plot

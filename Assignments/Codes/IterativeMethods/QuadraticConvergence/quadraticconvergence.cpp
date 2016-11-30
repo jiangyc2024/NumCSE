@@ -4,12 +4,16 @@
 
 #include <Eigen/Dense>
 
+#if INTERNAL
+#include <figure.hpp>
+#endif // INTERNAL
+
 using namespace Eigen;
 
 /* @brief Steffensen's method
  * @param[in] f Function handler
  * @param[in] x0 Initial guess
- * @param[out] x All estimations of Steffensen's method until convergence
+ * @param[out] x All estimations returned by Steffensen's iterations until convergence
  */
 /* SAM_LISTING_BEGIN_0 */
 template <class function>
@@ -72,4 +76,19 @@ int main() {
     for(unsigned i=0; i<n; ++i) {
         std::cout << x(i) << "\t" << errs(i) << "\t" << residuals(i) << "\t" << ratios(i) << std::endl;
     }
+
+#if INTERNAL
+    VectorXd iterates = VectorXd::LinSpaced(ratios.size(),1,ratios.size());
+
+    mgl::Figure fig;
+    fig.title("Quadratic convergence");
+    fig.ranges(1, 11, 1e-15, 10);
+    fig.setlog(true, true);
+    fig.plot(iterates, errs, " r+").label("Newton");
+    fig.fplot("x^(-2)", "k|").label("O(n^2)");
+    fig.xlabel("iterates");
+    fig.ylabel("errors");
+    fig.legend(0, 0);
+    fig.save("QuadraticConvergence");
+#endif // INTERNAL
 }

@@ -61,7 +61,7 @@ int main()
     for (int i = 0; i < X.size(); ++i){
         Vec v(2); v << *(X.data() + i), *(Y.data() + i);
 
-        // Newton iteration
+        // Newton's iteration
         for (unsigned int k = 1; k <= maxit; ++k){
             v -= Jac(v).lu().solve(Func(v));
 
@@ -82,7 +82,7 @@ int main()
 // TODO: analyze Newton iteration
 #endif // TEMPLATE
 
-    // normalize results for plot
+    // Normalize results for plot
     C = (C.array()/double(C.maxCoeff())).matrix();
 
     mglData Xd(X.rows(), X.cols(), X.data());

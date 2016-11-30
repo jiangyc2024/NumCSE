@@ -13,15 +13,12 @@
 typedef Eigen::VectorXd Vec;
 typedef Eigen::MatrixXd Mat;
 
-
-// define F and its derivative
 class F {
     public:
     Vec operator()(Vec& x)
     {
         Vec fx(2);
-        fx << x(0)*x(0)*x(0) - 3*x(0)*x(1)*x(1) - 1,
-                3*x(0)*x(0)*x(1) - x(1)*x(1)*x(1);
+// TODO: implement F
         return fx;
     }
 };
@@ -31,17 +28,14 @@ class DF {
     Mat operator()(Vec& x)
     {
         Mat dfx(2,2);
-        dfx << 3*x(0)*x(0) - 3*x(1)*x(1),
-                -6*x(0)*x(1),
-                6*x(0)*x(1),
-                3*x(0)*x(0) - 3*x(1)*x(1);
+// TODO: implement the Jacobian of F
         return dfx;
     }
 };
 
 int main()
 {
-    // exact roots of f(z) = z^3 - 1, z \in C
+    // Exact roots of f(z) = z^3 - 1, z \in C
     Vec z1(2), z2(2), z3(2);
     z1 << 1, 0;
     z2 << -0.5, 0.5*std::sqrt(3);
@@ -56,28 +50,7 @@ int main()
 
     Vec C = Vec::Ones(X.size());
 
-    F Func; DF Jac;
-    for (int i = 0; i < X.size(); ++i){
-        Vec v(2); v << *(X.data() + i), *(Y.data() + i);
-
-        // newton iteration
-        for (unsigned int k = 1; k <= maxit; ++k){
-            v -= Jac(v).lu().solve(Func(v));
-
-            // termination criterium: stop when close to one of the roots
-            if ((v - z1).norm() < tol){
-                C(i) = 1 + k;
-                break;
-            } else if ((v - z2).norm() < tol){
-                C(i) = 1 + k + maxit;
-                break;
-            } else if ((v - z3).norm() < tol){
-                C(i) = 1 + k + 2*maxit;
-                break;
-            }
-        }
-    }
-
+// TODO: analyze Newton iteration
 
     // normalize results for plot
     C = (C.array()/double(C.maxCoeff())).matrix();
