@@ -10,14 +10,14 @@
 
 using namespace Eigen;
 
-/* @brief Steffensen's method
- * @param[in] f Function handler
- * @param[in] x0 Initial guess
- * @param[out] x All estimations returned by Steffensen's iterations until convergence
+/*! @brief Steffensen's method
+ *! @param[in] f Function handler
+ *! @param[in] x0 Initial guess
+ *! @param[out] x All estimations returned by Steffensen's iterations until convergence
  */
 /* SAM_LISTING_BEGIN_0 */
-template <class function>
-VectorXd steffensen(function&& f, double x0) {
+template <class Function>
+VectorXd steffensen(const Function& f, double x0) {
 
     VectorXd x(1); x(0) = x0;
 
@@ -38,7 +38,7 @@ VectorXd steffensen(function&& f, double x0) {
         }
     }
 #else // TEMPLATE
-// TODO: Steffensen's method
+    // TODO: Steffensen's method
 #endif // TEMPLATE
 
     return x;
@@ -52,7 +52,7 @@ int main() {
 //    auto f = [] (double x) { return std::exp(x)-1/x; };
 //    auto f = [] (double x) { return x-std::exp(-x); };
     double x0 = 1;
-    double x_star = 0.567143290409784; // From Matlab: x_star = fzero(f,x0);
+    double x_star = 0.567143290409784; // From Matlab: x\_star = fzero(f,x0);
 
     // Steffensen's method
     VectorXd x = steffensen(f, x0);
