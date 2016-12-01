@@ -7,12 +7,12 @@
 
 #include "golubwelsh.hpp"
 
-#define PI  M_PI
-#define PI_HALF  M_PI_2
+#define PI M_PI
+#define PI_HALF M_PI_2
 
 /* SAM_LISTING_BEGIN_1 */
 //! @brief Compute $\int_a^b f(x) dx \approx \sum w_i f(x_i)$ (with scaling of $w$ and $x$)
-//! @tparam Function template type for function handle f (e.g. lambda func.)
+//! @tparam Function template type for function handle f (e.g.\ lambda function)
 //! @param[in] f integrand
 //! @param[in] w weights
 //! @param[in] x nodes for interval $[-1,1]$
@@ -31,7 +31,7 @@ double quad(const Function& f,
 }
 
 //! @brief Compute $\int_{-\infty}^\infty f(x) dx$ using transformation $x = \cot(t)$
-//! @tparam Function template type for function handle f (e.g. lambda func.)
+//! @tparam Function template type for function handle f (e.g.\ lambda function)
 //! @param[in] n number of Gauss points
 //! @param[in] f integrand
 //! @return Approximation of integral $\int_{-\infty}^\infty f(x) dx$

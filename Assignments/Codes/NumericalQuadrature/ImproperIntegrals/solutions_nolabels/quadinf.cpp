@@ -13,11 +13,11 @@
 
 #include "golubwelsh.hpp"
 
-#define PI  M_PI
-#define PI_HALF  M_PI_2
+#define PI M_PI
+#define PI_HALF M_PI_2
 
 //! @brief Compute $\int_a^b f(x) dx \approx \sum w_i f(x_i)$ (with scaling of $w$ and $x$)
-//! @tparam Function template type for function handle f (e.g. lambda func.)
+//! @tparam Function template type for function handle f (e.g.\ lambda function)
 //! @param[in] f integrand
 //! @param[in] w weights
 //! @param[in] x nodes for interval $[-1,1]$
@@ -36,7 +36,7 @@ double quad(const Function& f,
 }
 
 //! @brief Compute $\int_{-\infty}^\infty f(x) dx$ using transformation $x = \cot(t)$
-//! @tparam Function template type for function handle f (e.g. lambda func.)
+//! @tparam Function template type for function handle f (e.g.\ lambda function)
 //! @param[in] n number of Gauss points
 //! @param[in] f integrand
 //! @return Approximation of integral $\int_{-\infty}^\infty f(x) dx$
@@ -44,11 +44,12 @@ template <class Function>
 double quadinf(const int n, Function&& f) {
     Eigen::VectorXd w, x;
 
-    // Compute nodes and weights
+    // Compute nodes and weights of Gauss quadrature rule
+    // using Golub-Welsh algorithm
     golubwelsh(n, w, x);
 
     //! NOTE: no function cot available in c++, need to resort to trigonometric identities
-    //! Both below are valid, the first computes two trigonometric functions
+    //! Both lines below are valid, the first computes three trigonometric functions
     auto ftilde = [&f] (double x) { return f(std::cos(x)/std::sin(x)) / pow(std::sin(x),2); };
     /* auto ftilde = [&f] (double x) { double cot = std::tan(PI_HALF - x); return f(cot) * (1. + pow(cot,2)); }; */
 

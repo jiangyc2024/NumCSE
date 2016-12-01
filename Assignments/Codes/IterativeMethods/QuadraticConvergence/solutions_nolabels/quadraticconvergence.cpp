@@ -14,7 +14,7 @@
 using namespace Eigen;
 
 /* @brief Steffensen's method
- * @param[in] f Function handler
+ * @param[in] f Function handle
  * @param[in] x0 Initial guess
  * @param[out] x All estimations returned by Steffensen's iterations until convergence
  */
@@ -69,9 +69,9 @@ int main() {
     }
 
     // Print output
-    std::cout << "x" << "\t" << "errors" << "\t" << "residuals" <<" \t" << "ratios" << std::endl;
+    std::cout << "x" << "\t" << "errors" <<" \t" << "ratios" << std::endl;
     for(unsigned i=0; i<n; ++i) {
-        std::cout << x(i) << "\t" << errs(i) << "\t" << residuals(i) << "\t" << ratios(i) << std::endl;
+        std::cout << x(i) << "\t" << errs(i) << "\t" << ratios(i) << std::endl;
     }
 
 }

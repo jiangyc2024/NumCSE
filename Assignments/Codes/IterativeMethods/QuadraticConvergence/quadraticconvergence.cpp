@@ -11,7 +11,7 @@
 using namespace Eigen;
 
 /* @brief Steffensen's method
- * @param[in] f Function handler
+ * @param[in] f Function handle
  * @param[in] x0 Initial guess
  * @param[out] x All estimations returned by Steffensen's iterations until convergence
  */
