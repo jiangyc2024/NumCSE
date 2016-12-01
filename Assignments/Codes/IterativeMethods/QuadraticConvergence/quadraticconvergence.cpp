@@ -72,20 +72,20 @@ int main() {
     }
 
     // Print output
-    std::cout << "x" << "\t" << "errors" << "\t" << "residuals" <<" \t" << "ratios" << std::endl;
+    std::cout << "x" << "\t" << "errors" <<" \t" << "ratios" << std::endl;
     for(unsigned i=0; i<n; ++i) {
-        std::cout << x(i) << "\t" << errs(i) << "\t" << residuals(i) << "\t" << ratios(i) << std::endl;
+        std::cout << x(i) << "\t" << errs(i) << "\t" << ratios(i) << std::endl;
     }
 
 #if INTERNAL
-    VectorXd iterates = VectorXd::LinSpaced(ratios.size(),1,ratios.size());
+    unsigned m = ratios.size()-2;
+    VectorXd iterates = VectorXd::LinSpaced(m,1,m);
 
     mgl::Figure fig;
     fig.title("Quadratic convergence");
-    fig.ranges(1, 11, 1e-15, 10);
-    fig.setlog(true, true);
-    fig.plot(iterates, errs, " r+").label("Newton");
-    fig.fplot("x^(-2)", "k|").label("O(n^2)");
+    fig.ranges(0, m, 1, 2.5);
+    fig.plot(iterates, ratios.tail(m), " r+").label("Newton");
+    fig.fplot("2", "k|").label("rate = 2");
     fig.xlabel("iterates");
     fig.ylabel("errors");
     fig.legend(0, 0);
