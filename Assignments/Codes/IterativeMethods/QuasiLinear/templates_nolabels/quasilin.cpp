@@ -1,3 +1,9 @@
+//// 
+//// Copyright (C) 2016 SAM (D-MATH) @ ETH Zurich
+//// Author(s): lfilippo <filippo.leonardi@sam.math.ethz.ch> 
+//// Contributors: tille, jgacon, dcasati
+//// This file is part of the NumCSE repository.
+////
 #include <Eigen/Dense>
 #include <iostream>
 #include <functional> // for std::function
@@ -77,7 +83,7 @@ int main(void) {
 
     for( int itr = 0;; ) { // Forever until break
 
-        // Advance to next step, override x with x_{k+1}
+        // Advance to next step, override $x$ with $x_{k+1}$
         fix_step(x, x_new);
 
         // Compute residual
@@ -108,7 +114,6 @@ int main(void) {
 
     // Perform convergence study with Newton iteration
     std::cout << std::endl << "*** Newton method ***" << std::endl << std::endl;
-
     // auto = std::function<Eigen::VectorXd(const Eigen::VectorXd &, Eigen::VectorXd &)>
     auto newt_step = [&A, &b] (const Eigen::VectorXd & x, Eigen::VectorXd & x_new) { newton_step(A, b, x, x_new); };
 
@@ -117,7 +122,7 @@ int main(void) {
     for( int itr = 0;; ) { // Forever until break
 
 
-        // Advance to next step, override x with x_{k+1}
+        // Advance to next step, override $x$ with $x_{k+1}$
         newt_step(x, x_new);
 
         // Compute residual
