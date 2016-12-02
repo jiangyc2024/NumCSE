@@ -20,11 +20,11 @@
 //! \param[in] x previous step $x^{(k)}$
 //! \param[out] x_new next step $x^{(k+1)}$
 template <class func, class Vector>
-void fixed_point_step(func&& A, const Vector & b, const Vector & x, Vector & x_new) {
+void fixed_point_step(const func& A, const Vector & b, const Vector & x, Vector & x_new) {
     // Next step
     auto T = A(x);
     Eigen::SparseLU<Eigen::SparseMatrix<double>> Ax_lu;
-    Ax_lu.analyzePattern(T); 
+    Ax_lu.analyzePattern(T);
     Ax_lu.factorize(T);
     x_new = Ax_lu.solve(b);
 }
@@ -38,11 +38,11 @@ void fixed_point_step(func&& A, const Vector & b, const Vector & x, Vector & x_n
 //! \param[in] x previous step $x^{(k)}$
 //! \param[out] x_new next step in Newton iteration $x^{(k+1)}$
 template <class func, class Vector>
-void newton_step(func&& A, const Vector & b, const Vector & x, Vector & x_new) {
+void newton_step(const func& A, const Vector & b, const Vector & x, Vector & x_new) {
     // Reuse LU decomposition with SMW
     auto T = A(x);
     Eigen::SparseLU<Eigen::SparseMatrix<double>> Ax_lu;
-    Ax_lu.analyzePattern(T); 
+    Ax_lu.analyzePattern(T);
     Ax_lu.factorize(T);
     // Solve a bunch of systems
     auto Axinv_b = Ax_lu.solve(b);
@@ -55,7 +55,7 @@ int main(void) {
     double atol = 1e-13;
     double rtol = 1e-11;
     int max_itr = 100;
-    
+
     // Define a test vector and test rhs and x0 = b
     int n = 8;
     Eigen::SparseMatrix<double> T(n,n);
@@ -65,32 +65,32 @@ int main(void) {
         T.insert(i,i) = 0;
         if(i < n-1) T.insert(i,i+1) = 1;
     }
-    
+
     Eigen::VectorXd b = Eigen::VectorXd::Random(n);
-    
+
     // Define a lambda function implementing A(x)
     // auto = std::function<Eigen::SparseMatrix<double>(const Eigen::VectorXd &)>
     auto A = [&T, n] (const Eigen::VectorXd & x) -> Eigen::SparseMatrix<double> & { double nrm = x.norm();
         for(int i = 0; i < n; ++i) { T.coeffRef(i,i) = 3 + nrm; } return T; };
-    
+
     // Perform convergence study with fixed point iteration
     std::cout << std::endl << "*** Fixed point method ***" << std::endl << std::endl;
     // auto = std::function<Eigen::VectorXd(const Eigen::VectorXd &, Eigen::VectorXd &)>
     auto fix_step = [&A, &b] (const Eigen::VectorXd & x, Eigen::VectorXd & x_new) { fixed_point_step(A, b, x, x_new); };
-    
+
     auto x = b;
     auto x_new = x;
-    
+
     for( int itr = 0;; ) { // Forever until break
-        
+
         // Advance to next step, override x with x_{k+1}
         fix_step(x, x_new);
-        
+
         // Compute residual
         double r = (x - x_new).norm();
-        
+
         std::cout << "[Step " << itr << "] Error: " << r << std::endl;
-        
+
         // Termination conditions
         // If atol reached
         if (r < atol) {
@@ -109,28 +109,28 @@ int main(void) {
         }
         x = x_new;
     }
-    
+
     std::cout << std::endl << "x^*_fix = " << std::endl << x_new << std::endl;
-    
+
     // Perform convergence study with Newton iteration
     std::cout << std::endl << "*** Newton method ***" << std::endl << std::endl;
-    
+
     // auto = std::function<Eigen::VectorXd(const Eigen::VectorXd &, Eigen::VectorXd &)>
     auto newt_step = [&A, &b] (const Eigen::VectorXd & x, Eigen::VectorXd & x_new) { newton_step(A, b, x, x_new); };
-    
+
     x = b;
-    
+
     for( int itr = 0;; ) { // Forever until break
-        
-        
+
+
         // Advance to next step, override x with x_{k+1}
         newt_step(x, x_new);
-        
+
         // Compute residual
         double r = (x - x_new).norm();
-        
+
         std::cout << "[Step " << itr << "] Error: " << r << std::endl;
-        
+
         // Termination conditions
         // If atol reached
         if (r < atol) {
@@ -149,6 +149,6 @@ int main(void) {
         }
         x = x_new;
     }
-    
+
     std::cout << std::endl << "x^*_newt = " << std::endl << x_new << std::endl;
 }
