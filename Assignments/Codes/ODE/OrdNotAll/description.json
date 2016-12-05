@@ -4,5 +4,6 @@
     "contributors" : "",
 
     "name": "OrdNotAll",
-    "all" : ["order_not_all.cpp"]
+    "all" : ["order_not_all.cpp"],
+    "lib" : ["errors.hpp", "rkintegrator.hpp"]
 }
