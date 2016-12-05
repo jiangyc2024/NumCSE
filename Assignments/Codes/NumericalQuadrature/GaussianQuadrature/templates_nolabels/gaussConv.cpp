@@ -41,7 +41,7 @@ double integrate(const QuadRule& qr, const Function& f) {
 template <class Function>
 void gaussConv(const Function& fh, const double I_ex) {
 
-    std::vector<double> evals, // used to save no. of quad nodes
+    std::vector<double> evals, // used to save no.\ of quad nodes
             error; // used to save the error
     // TODO: compute vector of no. of nodes and of error
 

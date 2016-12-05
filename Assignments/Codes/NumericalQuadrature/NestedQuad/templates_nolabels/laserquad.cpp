@@ -11,7 +11,7 @@
 #include "gaussquad.hpp"
 
 //! @brief Compute $\int_a^b f(x) dx \approx \sum w_i f(x_i)$ (with scaling of w and x)
-//! @tparam func template type for function handle f (e.g. lambda func.)
+//! @tparam func template type for function handle f (e.g.\ lambda function)
 //! @param[in] a left boundary in [a,b]
 //! @param[in] b right boundary in [a,b]
 //! @param[in] f integrand
@@ -28,7 +28,7 @@ double evalgaussquad(const double a, const double b,
 
 //! @brief Compute double integral $\int_\Delta f(x,b) dx dy$.
 //! Use nested Gauss quadrature.
-//! @tparam func Template type for function handle f (e.g. lambda func.),
+//! @tparam func Template type for function handle f (e.g.\ lambda function),
 //! having operator (double x, double y) -> double
 //! @param[in] f integrand, f(x,y) must be defined
 //! @param[in] N number of quadrature points (in each direction)

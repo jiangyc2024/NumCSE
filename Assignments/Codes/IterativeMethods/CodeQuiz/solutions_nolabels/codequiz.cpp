@@ -18,15 +18,15 @@ double myfunction(double x) {
     // Step 1: get close to the zero
     double log2=0.693147180559945;
     double y=0;
-    while(x>std::sqrt(2)){x/=2; y+=log2;}
-    while(x<1./std::sqrt(2)){x*=2; y-=log2;}
+    while(x>std::sqrt(2)){x/=2; y+=log2;} // \Label[line]{cq:1}
+    while(x<1./std::sqrt(2)){x*=2; y-=log2;} // \Label[line]{cq:2}
     // Step 2: Newton iteration up to terminatio
-    double z=x-1;
-    double dz=x*std::exp(-z)-1.;
+    double z=x-1; // \Label[line]{cq:3}
+    double dz=x*std::exp(-z)-1.0;
     while(std::abs(dz/z)>std::numeric_limits<double>::epsilon()) {
-        z+=dz;dz=x*std::exp(-z)-1;
+        z+=dz; dz=x*std::exp(-z)-1.0;
     }
-    return y+z+dz;
+    return y+z+dz; // \Label[line]{cq:4}
 }
 
 /*!

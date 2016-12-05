@@ -13,6 +13,7 @@
 //! \param[in] b rhs vector $b \in \mathbf{R}^n$
 //! \param[in] x previous step $x^{(k)}$
 //! \param[out] x_new next step $x^{(k+1)}$
+/* SAM_LISTING_BEGIN_1 */
 template <class func, class Vector>
 void fixed_point_step(const func& A, const Vector & b, const Vector & x, Vector & x_new) {
     // Next step
@@ -22,6 +23,7 @@ void fixed_point_step(const func& A, const Vector & b, const Vector & x, Vector 
     Ax_lu.factorize(T);
     x_new = Ax_lu.solve(b);
 }
+/* SAM_LISTING_END_1 */
 
 //! \brief Implements a single step of the Netwon iteration for $x^{(k+1)}$
 //! Exploits Sherman-Morrison-Woodbury formula for fast inversion of rank-one modification of a matrix.
@@ -31,6 +33,7 @@ void fixed_point_step(const func& A, const Vector & b, const Vector & x, Vector 
 //! \param[in] b rhs vector $b \in \mathbf{R}^n$
 //! \param[in] x previous step $x^{(k)}$
 //! \param[out] x_new next step in Newton iteration $x^{(k+1)}$
+/* SAM_LISTING_BEGIN_3 */
 template <class func, class Vector>
 void newton_step(const func& A, const Vector & b, const Vector & x, Vector & x_new) {
     // Reuse LU decomposition with SMW
@@ -44,6 +47,7 @@ void newton_step(const func& A, const Vector & b, const Vector & x, Vector & x_n
     // Next step
     x_new = Axinv_b + Ax_lu.solve(x*x.transpose()*(x-Axinv_b)) / (x.norm() + x.dot(Axinv_x) );
 }
+/* SAM_LISTING_END_3 */
 
 int main(void) {
     double atol = 1e-13;
@@ -70,6 +74,7 @@ int main(void) {
     // Perform convergence study with fixed point iteration
     std::cout << std::endl << "*** Fixed point method ***" << std::endl << std::endl;
     // auto = std::function<Eigen::VectorXd(const Eigen::VectorXd &, Eigen::VectorXd &)>
+    /* SAM_LISTING_BEGIN_2 */
     auto fix_step = [&A, &b] (const Eigen::VectorXd & x, Eigen::VectorXd & x_new) { fixed_point_step(A, b, x, x_new); };
 
     auto x = b;
@@ -77,7 +82,7 @@ int main(void) {
 
     for( int itr = 0;; ) { // Forever until break
 
-        // Advance to next step, override x with x_{k+1}
+        // Advance to next step, override $x$ with $x_{k+1}$
         fix_step(x, x_new);
 
         // Compute residual
@@ -105,11 +110,12 @@ int main(void) {
     }
 
     std::cout << std::endl << "x^*_fix = " << std::endl << x_new << std::endl;
+    /* SAM_LISTING_END_2 */
 
     // Perform convergence study with Newton iteration
     std::cout << std::endl << "*** Newton method ***" << std::endl << std::endl;
-
     // auto = std::function<Eigen::VectorXd(const Eigen::VectorXd &, Eigen::VectorXd &)>
+    /* SAM_LISTING_BEGIN_4 */
     auto newt_step = [&A, &b] (const Eigen::VectorXd & x, Eigen::VectorXd & x_new) { newton_step(A, b, x, x_new); };
 
     x = b;
@@ -117,7 +123,7 @@ int main(void) {
     for( int itr = 0;; ) { // Forever until break
 
 
-        // Advance to next step, override x with x_{k+1}
+        // Advance to next step, override $x$ with $x_{k+1}$
         newt_step(x, x_new);
 
         // Compute residual
@@ -145,4 +151,5 @@ int main(void) {
     }
 
     std::cout << std::endl << "x^*_newt = " << std::endl << x_new << std::endl;
+    /* SAM_LISTING_END_4 */
 }
