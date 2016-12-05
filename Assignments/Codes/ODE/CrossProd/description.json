@@ -4,5 +4,6 @@
     "contributors" : "",
 
     "name": "CrossProd",
-    "all" : ["cross.cpp"]
+    "all" : ["cross.cpp"],
+    "lib" : ["implicit_rkintegrator.hpp"]
 }
