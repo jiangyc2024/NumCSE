@@ -5,5 +5,5 @@
 
     "name": "CrossProd",
     "all" : ["cross.cpp"],
-    "lib" : ["implicit_rkintegrator.hpp"]
+    "lib" : ["implicit_rkintegrator.hpp", "dampnewton.hpp"]
 }

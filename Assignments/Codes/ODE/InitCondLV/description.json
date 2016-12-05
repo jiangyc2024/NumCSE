@@ -4,5 +4,6 @@
     "contributors" : "",
 
     "name": "InitCondLV",
-    "all" : ["LV.cpp"]
+    "all" : ["LV.cpp"],
+    "lib" : ["ode45.hpp"]
 }

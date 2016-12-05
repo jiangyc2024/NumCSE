@@ -4,5 +4,6 @@
     "contributors" : "",
 
     "name": "MatODE",
-    "all" : ["matrix_ode.cpp"]
+    "all" : ["matrix_ode.cpp"],
+    "lib" : ["ode45.hpp"]
 }
