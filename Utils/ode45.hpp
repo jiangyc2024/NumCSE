@@ -23,6 +23,7 @@
 #include <vector>
 #include <algorithm>
 #include <utility>
+#include <exception>
 
 #include<Eigen/Dense>
 
@@ -55,7 +56,7 @@ inline T _norm(const T & t) {
     return std::abs(t);
 }
 
-class termination_error : public exception {
+class termination_error : public std::exception {
     virtual const char* what() const throw() {
         return "Integration terminated prematurely.";
     }
@@ -399,9 +400,9 @@ std::vector< std::pair<StateType, double> >
 
 template <class StateType, class RhsType>
 void ode45<StateType, RhsType>::print(void) {
-    std::cout << "---------------------------------" << std::endl;
-    std::cout << "---Report of ode solve ode45. ---" << std::endl;
-    std::cout << "---------------------------------" << std::endl;
+    std::cout << "----------------------------------" << std::endl;
+    std::cout << "--- Report of ODE solve ode45. ---" << std::endl;
+    std::cout << "----------------------------------" << std::endl;
 
     std::cout << " + Data:" << std::endl;
     std::cout << "    - current time of simulation:         " << t                          << std::endl;
@@ -422,5 +423,7 @@ void ode45<StateType, RhsType>::print(void) {
     std::cout << "    - number of (while-)loops:            " << statistics.cycles           << std::endl;
     std::cout << "    - function calls:                     " << statistics.funcalls         << std::endl;
     std::cout << " + Timing:" << std::endl;
+    std::cout << "----------------------------------" << std::endl;
+    std::cout << "----------------------------------" << std::endl;
     // TODO: time solver
 }
