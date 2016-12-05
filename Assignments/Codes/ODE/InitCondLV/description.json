@@ -3,5 +3,6 @@
     "email" : "",
     "contributors" : "",
 
-    "name": "QuadTransf"
+    "name": "InitCondLV",
+    "all" : ["LV.cpp"]
 }

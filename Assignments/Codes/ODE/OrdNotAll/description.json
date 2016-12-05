@@ -3,5 +3,6 @@
     "email" : "",
     "contributors" : "",
 
-    "name": "QuadTransf"
+    "name": "OrdNotAll",
+    "all" : ["order_not_all.cpp"]
 }

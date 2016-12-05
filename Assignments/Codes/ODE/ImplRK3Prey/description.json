@@ -3,5 +3,6 @@
     "email" : "",
     "contributors" : "",
 
-    "name": "QuadTransf"
+    "name": "ImplRK3Prey",
+    "all" : ["implicit_rk3prey.cpp"]
 }

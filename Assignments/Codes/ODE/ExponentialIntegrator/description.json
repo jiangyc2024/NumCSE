@@ -3,5 +3,6 @@
     "email" : "",
     "contributors" : "",
 
-    "name": "QuadTransf"
+    "name": "ExpEul",
+    "all" : ["ExpEul.cpp"]
 }

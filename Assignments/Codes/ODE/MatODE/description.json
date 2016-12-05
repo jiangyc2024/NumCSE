@@ -3,5 +3,6 @@
     "email" : "",
     "contributors" : "",
 
-    "name": "QuadTransf"
+    "name": "MatODE",
+    "all" : ["matrix_ode.cpp"]
 }
