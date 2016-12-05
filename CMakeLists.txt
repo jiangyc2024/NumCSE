@@ -4,9 +4,9 @@ cmake_minimum_required(VERSION 2.8)
 #
 # setup cmake
 #
-# enforce policy that target_link_libraries must refer 
+# enforce policy that target_link_libraries must refer
 # to a valid target. This avoids misconception of the
-# add_executable_numcse command in combination with a 
+# add_executable_numcse command in combination with a
 # manual call to target_link_libraries
 if(POLICY CMP0016)
   cmake_policy(SET CMP0016 NEW)
@@ -41,8 +41,8 @@ if(CMAKE_VERSION VERSION_GREATER 3.1.0 OR CMAKE_VERSION VERSION_EQUAL 3.1.0)
     set(CMAKE_CXX_STANDARD 11)
 else()
     if (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
-	# for older cmake versions
-	# (note, this CXX flag is only valid for clang and gcc, for MSVC it is not needed)
+        # for older cmake versions
+        # (note, this CXX flag is only valid for clang and gcc, for MSVC it is not needed)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
     endif()
 endif()
@@ -52,7 +52,7 @@ add_definitions(-pedantic -Wall)
 
 # disable some warnings
 if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-    # (this is only applicable on clang)            
+    # (this is only applicable on clang)
     # ignore some mathgl warnings
     add_definitions(-Wno-return-type-c-linkage -Wno-keyword-macro -Wno-missing-braces)
     #set(EXTERNAL_PROJECT_CXX_FLAGS ${EXTERNAL_PROJECT_CXX_FLAGS} -Wno-return-type-c-linkage)
@@ -155,7 +155,7 @@ if(FIGURE_FOUND)
   set(LIBS ${LIBS} ${FIGURE_LIBRARY})
   message(STATUS "Function GET_MODULES: Included Figure library in variable LIBS")
 # case if Figure is not found by FindFigure.cmake - try to get it from MathGL/FigureClass
-else() 
+else()
   set(FIGURE_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/MathGL/FigureClass/src) # directory which should contains the source files
   message(STATUS "Trying to get it from ${FIGURE_INCLUDE_DIR} ...")
 
@@ -170,9 +170,9 @@ else()
   add_library(Figure STATIC ${FIGURE_INCLUDE_DIR}/figure.cpp)
   #add_library(Figure SHARED ${FIGURE_INCLUDE_DIR}/figure.cpp)
   #target_link_libraries(Figure ${MATHGL2_LIBRARIES})
-  
+
   add_dependencies(Figure Eigen)
-  add_dependencies(Figure MathGL) 
+  add_dependencies(Figure MathGL)
 
   # as libFigure.a was not built yet (this happens when '$ make' is executed) we need to call
   # target_link_libraries(main Figure) and *not* target_link_libraries(main libFigure.a)
@@ -192,5 +192,6 @@ include_directories(${CMAKE_SOURCE_DIR}/Utils) # oh dear
 #
 add_subdirectory(LectureCodes)
 add_subdirectory(Assignments)
+add_subdirectory(Utils)
 
 add_subdirectory(FFT/BackendTimings)
