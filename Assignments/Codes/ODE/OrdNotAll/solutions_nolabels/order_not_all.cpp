@@ -20,11 +20,11 @@ using namespace Eigen;
  * to the first order system y'=f(y), y(0)=y0.
  * The function ouputs error of the solutions at the time T.
  * \tparam Function Type for r.h.s function f.
- * \param f
- * \param T
- * \param y0
- * \param A
- * \param b
+ * \param f The r.h.s function for the ODE.
+ * \param T Final time.
+ * \param y0 Initial data.
+ * \param A Butcher matrix $A$.
+ * \param b Buthcer vector $b$.
  */
 template <class Function>
 void errors(const Function &f, double T,
@@ -99,39 +99,49 @@ int main() {
     b4 << 1./6, 1./3, 1./3, 1./6;
 
     // First ODE
-    cout << endl << "1. ODE y' = (1-y)y, y(0)=.5" << endl << endl;
+    std::cout << std::endl
+              << "1. ODE y' = (1-y)y, y(0)=.5"
+              << std::endl << std::endl;
     double T = 0.1;
-    auto f = [] (VectorXd y) {VectorXd fy(1); fy << (1.-y(0))*y(0); return fy;};
+    auto f = [] (VectorXd y) {
+        VectorXd fy(1);
+        fy << (1.-y(0))*y(0);
+        return fy;};
     VectorXd y0(1); y0 << .5;
 
-    cout << "Explicit Euler"
-         << endl << endl;
+    std::cout << "Explicit Euler"
+         << std::endl << std::endl;
     errors(f, T, y0, A1, b1);
-    cout << "Trapezoidal rule"
-         << endl << endl;
+    std::cout << "Trapezoidal rule"
+         << std::endl << std::endl;
     errors(f, T, y0, A2, b2);
-    cout << "RK order 3"
-         << endl << endl;
+    std::cout << "RK order 3"
+              << std::endl << std::endl;
     errors(f, T, y0, A3, b3);
-    cout << "Classical RK order 4"
-         << endl << endl;
+    std::cout << "Classical RK order 4"
+              << std::endl << std::endl;
     errors(f, T, y0, A4, b4);
 
     // Second ODE
-    cout << endl << "2. ODE y' = |1.1 - y| + 1, y(0)=1" << endl << endl;
-    auto f2 = [] (VectorXd y) {VectorXd fy(1); fy << abs(1.1-y(0))+1.; return fy;};
+    std::cout << std::endl << "2. ODE y' = |1.1 - y| + 1, y(0)=1"
+              << std::endl << std::endl;
+    auto f2 = [] (VectorXd y) {
+        VectorXd fy(1);
+        fy << std::abs( 1.1-y(0) )+1.;
+        return fy;
+    };
     y0 << 1;
 
-    cout << "Explicit Euler"
-         << endl << endl;
+    std::cout << "Explicit Euler"
+              << std::endl << std::endl;
     errors(f2, T, y0, A1, b1);
-    cout << "Trapezoidal rule"
-         << endl << endl;
+    std::cout << "Trapezoidal rule"
+              << std::endl << std::endl;
     errors(f2, T, y0, A2, b2);
-    cout << "RK order 3"
-         << endl << endl;
+    std::cout << "RK order 3"
+              << std::endl << std::endl;
     errors(f2, T,  y0, A3, b3);
-    cout << "Classical RK order 4"
-         << endl << endl;
+    std::cout << "Classical RK order 4"
+              << std::endl << std::endl;
     errors(f2, T, y0, A4, b4);
 }
