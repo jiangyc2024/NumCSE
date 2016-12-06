@@ -8,12 +8,14 @@
 
 #include <Eigen/Dense>
 
-//! \file rkintegrator.hpp Solution for Problem 1, implementing RkIntegrator class
+//! \file rkintegrator.hpp Problem 1, implementing RkIntegrator class
 
 //! \brief Implements a Runge-Kutta explicit solver for a given Butcher tableau for autonomous ODEs
 //! \tparam State a type representing the space in which the solution lies, e.g. R^d, represented by e.g. Eigen::VectorXd.
+/* SAM_LISTING_BEGIN_0 */
 template <class State>
 class RKIntegrator {
+
 public:
     //! \brief Constructor for the RK method.
     //! Performs size checks and copies A and b into internal storage
@@ -36,11 +38,13 @@ public:
     //! \return vector containing all steps y^n (for each n) including initial and final value
     template <class Function>
     std::vector<State> solve(const Function &f, double T, const State & y0, unsigned int N) const {
+
+        std::vector<State> res;
+
         // Iniz step size
         double h = T / N;
         
         // Will contain all steps, reserve memory for efficiency
-        std::vector<State> res;
         res.reserve(N+1);
         
         // Store initial data
@@ -60,18 +64,17 @@ public:
             res.push_back(*ynew);
             std::swap(yold, ynew);
         }
-        
+
         return res;
     }
     
 private:
-    
     //! \brief Perform a single step of the RK method for the solution of the autonomous ODE
     //! Compute a single explicit RK step y^{n+1} = y_n + \sum ... starting from value y0 and storing next value in y1
     //! \tparam Function type for function implementing the rhs. Must have State operator()(State x)
     //! \param[in] f function handle for ths f, s.t. y' = f(y)
     //! \param[in] h step size
-    //! \param[in] y0 initial state 
+    //! \param[in] y0 initial state
     //! \param[out] y1 next step y^{n+1} = y^n + ...
     template <class Function>
     void step(const Function &f, double h, const State & y0, State & y1) const {
@@ -100,3 +103,4 @@ private:
     //! Size of Butcher matrix and vector A and b
     unsigned int s;
 };
+/* SAM_LISTING_END_0 */
