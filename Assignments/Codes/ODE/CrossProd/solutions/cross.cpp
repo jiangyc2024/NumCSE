@@ -30,13 +30,13 @@ std::vector<VectorXd> solve_lin_mid(const Function &f,
                                     double T,
                                     const VectorXd & y0,
                                     unsigned int N)  {
+    // Will contain all steps, reserve memory for efficiency
+    std::vector<VectorXd> res;
     /* SAM_LISTING_BEGIN_2 */
     // Initial step size
     double h = T / N;
     int d = y0.size();
 
-    // Will contain all steps, reserve memory for efficiency
-    std::vector<VectorXd> res;
     res.reserve(N+1);
     // Store initial data
     res.push_back(y0);
