@@ -4,6 +4,6 @@
     "contributors" : "",
 
     "name": "CrossProd",
-    "all" : ["cross.cpp"],
+    "all" : ["cross.cpp", "stiffrotpend.eps"],
     "lib" : ["implicit_rkintegrator.hpp", "dampnewton.hpp"]
 }
