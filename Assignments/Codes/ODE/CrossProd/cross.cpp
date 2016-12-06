@@ -20,14 +20,18 @@ using namespace Eigen;
 //! \param[in] Jf function handle for Jf, e.g. implemented using lambda funciton
 //! \param[in] T final time T
 //! \param[in] y0 initial data y(0) = y0 for y' = f(y)
-//! \param[in] N number of steps to perform. Step size is h = T / N. Steps are equidistant.
-//! \return vector containing all steps y^n (for each n) including initial and final value
-template <class Function, class Function2>
+//! \param[in] N number of steps to perform.
+//! Step size is h = T / N. Steps are equidistant.
+//! \return Vector containing all steps $y^n$ (for each n) including
+//! initial and final value.
+template <class Function, class Jacobian>
 std::vector<VectorXd> solve_lin_mid(const Function &f,
-                                           const Function2 &Jf,
-                                           double T,
-                                           const VectorXd & y0,
-                                           unsigned int N)  {
+                                    const Jacobian &Jf,
+                                    double T,
+                                    const VectorXd & y0,
+                                    unsigned int N)  {
+    /* SAM_LISTING_BEGIN_2 */
+#if SOLUTION
     // Initial step size
     double h = T / N;
     int d = y0.size();
@@ -54,13 +58,20 @@ std::vector<VectorXd> solve_lin_mid(const Function &f,
         std::swap(yold, ynew);
     }
     return res;
+#else // TEMPLATE
+    // TODO: implement linear implicit MPR
+    return 0;
+#endif // TEMPLATE
+    /* SAM_LISTING_END_2 */
 }
 
 
 int main(void) {
 
     // 1. Implicit mid-point method
-    std::cout << "1. Implicit midpoint method" << std::endl << std::endl;
+    /* SAM_LISTING_END_1 */
+    std::cout << "1. Implicit midpoint method"
+              << std::endl << std::endl;
 
     unsigned int s = 1;
     MatrixXd A(s,s);
@@ -68,22 +79,14 @@ int main(void) {
     A << 1./2.;
     b << 1.;
 
+#if SOLUTION
     // Coefficients and handle for ODE
     double c = 1.;
     Vector3d a;
     a << 1., 0., 0.;
     auto f = [&a, &c] (const Vector3d & y) -> Vector3d {
         return a.cross(y) + c*y.cross(a.cross(y));
-        };
-
-   // auto f = [&a, &c] (const Vector3d & y) {
-   //     Vector3d temp;
-   //     temp <<   a(1)*y(2) - a(2)*y(1) + c*(y(1)*(a(0)*y(1) - a(1)*y(0)) + y(2)*(a(0)*y(2) - a(2)*y(0))),
-   //     a(2)*y(0) - a(0)*y(2) - c*(y(0)*(a(0)*y(1) - a(1)*y(0)) - y(2)*(a(1)*y(2) - a(2)*y(1))),
-   //     a(0)*y(1) - a(1)*y(0) - c*(y(0)*(a(0)*y(2) - a(2)*y(0)) + y(1)*(a(1)*y(2) - a(2)*y(1)));
-   //     return temp;
-   // };
-
+    };
 
     auto Jf = [&a, &c] (const Vector3d & y) {
         Matrix3d temp;
@@ -110,14 +113,29 @@ int main(void) {
 
     auto res = RK.solve(f, Jf, T, y0, N);
     for (int i=0; i<N+1; i++) {
-        std::cout<< "norm(y(" << T*i/N << ")) = " << res[i].norm()<<std::endl;
+        std::cout<< "norm(y(" << T*i/N << ")) = "
+                 << res[i].norm() <<std::endl;
     }
+#else // TEMPLATE
+    // TODO: use implicit RK integrator to solve ode.
+#endif
+    /* SAM_LISTING_END_1 */
 
-    // 2. Linear mid-point method
-    std::cout << std::endl << "2. Linear implicit midpoint method" << std::endl << std::endl;
+    // 2. Linear implicit mid-point method
+    /* SAM_LISTING_END_3 */
+    std::cout << std::endl
+              << "2. Linear implicit midpoint method"
+              << std::endl << std::endl;
 
+#if SOLUTION
     res = solve_lin_mid(f, Jf, T, y0, N);
     for (int i=0; i<N+1; i++) {
-        std::cout<< "norm(y(" << T*i/N << ")) = " << res[i].norm()<<std::endl;
+        std::cout << "norm(y(" << T*i/N << ")) = "
+                  << res[i].norm()
+                  << std::endl;
     }
+#else // TEMPLATE
+    // TODO: use linear implicit RK integrator to solve ode.
+#endif
+    /* SAM_LISTING_END_3 */
 }
