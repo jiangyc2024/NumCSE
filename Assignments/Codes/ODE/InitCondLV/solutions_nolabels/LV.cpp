@@ -20,7 +20,6 @@ using namespace Eigen;
  * \param[in] v0 Second component.
  * \param[in] T Final time.
  */
-/* SAM_LSTING_BEGIN_1 */
 std::pair<Vector2d, Matrix2d> PhiAndW(double u0,
                                       double v0,
                                       double T) {
@@ -53,10 +52,8 @@ std::pair<Vector2d, Matrix2d> PhiAndW(double u0,
     PaW.second << wT(2), wT(4), wT(3), wT(5);
     return PaW;
 }
-/* SAM_LSTING_END_1 */
 
 int main(){
-    /* SAM_LSTING_BEGIN_2 */
     Vector2d y;
     y << 3, 2;
     double T = 5;
@@ -78,5 +75,4 @@ int main(){
 
     std::cout << "y(100) = " << std::endl
               << PaW.first << std::endl;
-    /* SAM_LSTING_END_2 */
 }

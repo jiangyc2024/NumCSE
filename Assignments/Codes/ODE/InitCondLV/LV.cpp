@@ -14,7 +14,7 @@ using namespace Eigen;
  * \param[in] v0 Second component.
  * \param[in] T Final time.
  */
-/* SAM_LSTING_BEGIN_1 */
+/* SAM_LISTING_BEGIN_1 */
 std::pair<Vector2d, Matrix2d> PhiAndW(double u0,
                                       double v0,
                                       double T) {
@@ -51,10 +51,10 @@ std::pair<Vector2d, Matrix2d> PhiAndW(double u0,
 #endif // TEMPLATE
     return PaW;
 }
-/* SAM_LSTING_END_1 */
+/* SAM_LISTING_END_1 */
 
 int main(){
-    /* SAM_LSTING_BEGIN_2 */
+    /* SAM_LISTING_BEGIN_2 */
     Vector2d y;
     y << 3, 2;
     double T = 5;
@@ -81,5 +81,5 @@ int main(){
     // TODO: Apply the Newton method to find initial data
     // giving solutions with period equal to 5.
 #endif // TEMPLATE
-    /* SAM_LSTING_END_2 */
+    /* SAM_LISTING_END_2 */
 }

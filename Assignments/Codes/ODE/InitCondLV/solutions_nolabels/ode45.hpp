@@ -27,6 +27,9 @@
 
 #include<Eigen/Dense>
 
+//! \file ode45.hpp Contains header only class for adaptive 4-5 Runge Kutta
+//! integration.
+
 /*** BEGIN AUXILIARY FUNCTIONS ***/
 
 //! \brief Compute the norm for a Eigen compatible vector.

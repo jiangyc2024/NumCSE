@@ -14,36 +14,39 @@
 
 using namespace Eigen;
 
-//! \file stabrk.cpp Solution for Problem 1, PS13, involving ode45 and matrix ODEs
+//! \file matrix_ode.cpp Solution for MatODE, involving ode45 and matrix ODEs
 
 //! \brief Solve matrix IVP Y' = -(Y-Y')*Y using ode45 up to time T
 //! \param[in] Y0 Initial data Y(0) (as matrix)
 //! \param[in] T final time of simulation
 //! \return Matrix of solution of IVP at t = T
 MatrixXd matode(const MatrixXd & Y0, double T) {
-
-    auto F = [] (const MatrixXd & M) { return -(M  - M.transpose())*M; };
+    auto F = [] (const MatrixXd & M) {
+        return -(M  - M.transpose())*M;
+    };
     ode45<MatrixXd> O(F);
 
     // Set tolerances
     O.options.atol = 10e-10;
     O.options.rtol = 10e-8;
 
-    // Return only matrix at T, (solution is vector of pairs (y(t_k), t_k) for each step k
+    // Return only matrix at $T$, (solution is vector
+    // of pairs $(y(t_k), t_k)$ for each step k
     return O.solve(Y0, T).back().first;
 }
 
 //! \brief Find if invariant is preserved after evolution with matode
 //! \param[in] Y0 Initial data Y(0) (as matrix)
 //! \param[in] T final time of simulation
-//! \return true if invariant was preserved (up to round-off), i.e. if norm was less than 10*eps
+//! \return true if invariant was preserved (up to round-off),
+//! i.e. if norm was less than 10*eps
 bool checkinvariant(const MatrixXd & M, double T) {
     MatrixXd N(3,3);
 
     N = matode(M, T);
 
     if( (N.transpose()*N-M.transpose()*M).norm() <
-        10 * std::numeric_limits<double>::epsilon()*M.norm()) {
+        10 * std::numeric_limits<double>::epsilon()* M.norm()) {
         return true;
     } else {
         return false;
@@ -74,7 +77,9 @@ MatrixXd impeulstep(const MatrixXd & A, const MatrixXd & Y0, double h) {
 //! \param[in] h step size
 //! \return next step
 MatrixXd impstep(const MatrixXd & A, const MatrixXd & Y0, double h) {
-    return (MatrixXd::Identity(3,3) - h*0.5*A).partialPivLu().solve(Y0+h*0.5*A*Y0);
+    return (MatrixXd::Identity(3,3) - h*0.5*A)
+            .partialPivLu()
+            .solve(Y0+h*0.5*A*Y0);
 }
 
 int main() {
@@ -85,7 +90,7 @@ int main() {
     MatrixXd M(n,n);
     M << 8,1,6,3,5,7,4,9,2;
 
-    std::cout << "SUBTASK 1. c)" << std::endl;
+    std::cout << "SUBTASK c)" << std::endl;
     // Test preservation of orthogonality
 
     // Build Q
@@ -125,24 +130,27 @@ int main() {
                     << std::endl;
     }
 
-    std::cout << "SUBTASK 1. d)" << std::endl;
+    std::cout << "SUBTASK d)" << std::endl;
     // Test implementation of ode45
 
-    std::cout << "M = " << std::endl << M << std::endl;
+    std::cout << "M = " << std::endl
+              << M << std::endl;
     MatrixXd  N = matode(M, T);
-    std::cout << "N = " << std::endl << N << std::endl;
+    std::cout << "N = " << std::endl
+              << N << std::endl;
 
-    std::cout << "SUBTASK 1. g)" << std::endl;
+    std::cout << "SUBTASK g)" << std::endl;
     // Test whether invariant was preserved or not
 
     bool is_invariant = checkinvariant(N, T);
 
     if( is_invariant ) {
-        std::cout << "Invariant was preserved." << std::endl;
+        std::cout << "Invariant was preserved."
+                  << std::endl;
     } else {
-        std::cout << "Invariant was NOT preserved." << std::endl;
+        std::cout << "Invariant was NOT preserved."
+                  << std::endl;
     }
-
 
     return 0;
 }
