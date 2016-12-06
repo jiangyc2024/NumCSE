@@ -1,14 +1,81 @@
 #include <iostream>
-#include <Eigen/Dense>
-#include <vector>
 #include <iomanip>
+#include <vector>
 
-#include "errors.hpp"
+#include <Eigen/Dense>
+
+#include "rkintegrator.hpp"
 
 using namespace Eigen;
-using namespace std;
+
+/*!
+ * \brief errors Approximates the order of convergence of a scheme.
+ * The scheme is a Runge Kutta scheme defined by A and b when applied
+ * to the first order system y'=f(y), y(0)=y0.
+ * The function ouputs error of the solutions at the time T.
+ * \tparam Function Type for r.h.s function f.
+ * \param f
+ * \param T
+ * \param y0
+ * \param A
+ * \param b
+ */
+/* SAM_LISTING_BEGIN_1 */
+template <class Function>
+void errors(const Function &f, double T,
+            const VectorXd &y0,
+            const MatrixXd &A, const VectorXd &b) {
+
+    RKIntegrator<VectorXd> rk(A, b);
+
+    std::vector<double> error(15);
+#if SOLUTION
+    std::vector<double> order(14);
+
+    double sum = 0;
+    int count = 0;
+    bool test = 1;
+
+    std::vector<VectorXd> y_exact = rk.solve(f, T, y0, pow(2,15));
+
+    for(int k = 0; k < 15; k++) {
+        int N = std::pow(2,k+1);
+        std::vector<VectorXd> y1 = rk.solve(f,T,y0,N);
+
+        error[k] = (y1[N] - y_exact[std::pow(2,15)]).norm();
+
+        std::cout << std::left << std::setfill(' ')
+                  << std::setw(3)  << "N = "
+                  << std::setw(7) << N
+                  << std::setw(8) << "Error = "
+                  << std::setw(13) << error[k];
+
+        if ( error[k] < y0.size() * 5e-14) {
+            test = 0;
+        }
+        if ( k>0 && test ) {
+            order[k-1]=std::log2( error[k-1] / error[k] );
+            std::cout << std::left << std::setfill(' ')
+                      << std::setw(10)
+                      << "Approximated order = " << order[k-1]
+                      << std::endl;
+            sum += order[k-1];
+            count = k;
+        }
+        else std::cout << std::endl;
+    }
+    std::cout << "Average approximated order = "
+              << sum / count
+              << std::endl << std::endl;
+#else // TEMPLATE
+    // TODO: output error and order of the method
+#endif
+}
+/* SAM_LISTING_END_1 */
 
 int main() {
+    /* SAM_LISTING_BEGIN_2 */
+#if SOLUTION
     // Construct data for Butcher schemes
     MatrixXd A1 = MatrixXd::Zero(1,1);
     VectorXd b1(1);
@@ -39,13 +106,17 @@ int main() {
     auto f = [] (VectorXd y) {VectorXd fy(1); fy << (1.-y(0))*y(0); return fy;};
     VectorXd y0(1); y0 << .5;
 
-    cout << "Explicit Euler" << endl << endl;
+    cout << "Explicit Euler"
+         << endl << endl;
     errors(f, T, y0, A1, b1);
-    cout << "Trapezoidal rule" << endl << endl;
+    cout << "Trapezoidal rule"
+         << endl << endl;
     errors(f, T, y0, A2, b2);
-    cout << "RK order 3" << endl << endl;
+    cout << "RK order 3"
+         << endl << endl;
     errors(f, T, y0, A3, b3);
-    cout << "Classical RK order 4" << endl << endl;
+    cout << "Classical RK order 4"
+         << endl << endl;
     errors(f, T, y0, A4, b4);
 
     // Second ODE
@@ -53,12 +124,20 @@ int main() {
     auto f2 = [] (VectorXd y) {VectorXd fy(1); fy << abs(1.1-y(0))+1.; return fy;};
     y0 << 1;
 
-    cout << "Explicit Euler" << endl << endl;
+    cout << "Explicit Euler"
+         << endl << endl;
     errors(f2, T, y0, A1, b1);
-    cout << "Trapezoidal rule" << endl << endl;
+    cout << "Trapezoidal rule"
+         << endl << endl;
     errors(f2, T, y0, A2, b2);
-    cout << "RK order 3" << endl << endl;
+    cout << "RK order 3"
+         << endl << endl;
     errors(f2, T,  y0, A3, b3);
-    cout << "Classical RK order 4" << endl << endl;
+    cout << "Classical RK order 4"
+         << endl << endl;
     errors(f2, T, y0, A4, b4);
+#else // TEMPLATE
+    // TODO: output error and order of the method
+#endif
+    /* SAM_LISTING_END_2 */
 }
