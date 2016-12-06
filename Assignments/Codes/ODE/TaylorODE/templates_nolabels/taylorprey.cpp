@@ -26,12 +26,12 @@ int main() {
     Eigen::VectorXd yex(d);
     yex << 0.319465882659820, 9.730809352326228;
     
-        // Coefficients and handle for prey/predator model
-        double alpha1 = 3.;
-        double alpha2 = 2.;
-        double beta1 = 0.1;
-        double beta2 = 0.1;
-        // TODO: implement a structure for the evaluation of $f$, $df$ and $d2f$ (Hessian bilinear form)
+    // Coefficients and handle for prey/predator model
+    double alpha1 = 3.;
+    double alpha2 = 2.;
+    double beta1 = 0.1;
+    double beta2 = 0.1;
+    // TODO: implement a structure for the evaluation of $f$, $df$ and $d2f$ (Hessian bilinear form)
     
     // Constructor
     TaylorIntegrator<Eigen::VectorXd> tint;

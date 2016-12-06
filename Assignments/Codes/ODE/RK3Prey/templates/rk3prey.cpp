@@ -18,7 +18,7 @@ int main() {
     double alpha2 = 2.;
     double beta1 = 0.1;
     double beta2 = 0.1;
-        // TODO: implement functor $f$ for rhs of $y(t)' = f(y(t))$
+    // TODO: implement functor $f$ for rhs of $y(t)' = f(y(t))$
     
     // Dimension of state space
     unsigned int d = 2;

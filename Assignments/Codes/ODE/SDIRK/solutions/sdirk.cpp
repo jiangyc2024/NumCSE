@@ -11,9 +11,9 @@
 //! \param[in] h size of the step
 //! \param[in] gamma parameter
 //! \return next step z1
+/* SAM_LISTING_BEGIN_0 */
 template <class StateType>
 StateType sdirkStep(const StateType & z0, double h, double gamma) {
-/* SAM_LISTING_BEGIN_0 */
     // Matrix A for evaluation of f
     Eigen::Matrix2d A;
     A << 0.,1.,-1.,-1.;
@@ -28,8 +28,8 @@ StateType sdirkStep(const StateType & z0, double h, double gamma) {
     
     // Next step
     return z0 + h*0.5*(k1 + k2);
-/* SAM_LISTING_END_0 */
 }
+/* SAM_LISTING_END_0 */
 
 //! \brief Solve autonomous IVP y'' + y' + y = 0, [y(0), y'(0)] = z0 using SDIRK method
 //! Use SDIRK method for first order ode z' = f(z), with N equidistant steps

@@ -18,16 +18,16 @@ int main() {
     double alpha2 = 2.;
     double beta1 = 0.1;
     double beta2 = 0.1;
-    #if SOLUTION
+#if SOLUTION
     auto f = [&alpha1, &alpha2, &beta1, &beta2] (const Eigen::VectorXd & y) { 
         auto temp = y;
         temp(0) *= alpha1 - beta1*y(1);
         temp(1) *= -alpha2 + beta2*y(0);
         return temp;
     };
-    #else // TEMPLATE
-        // TODO: implement functor $f$ for rhs of $y(t)' = f(y(t))$
-    #endif // TEMPLATE
+#else // TEMPLATE
+    // TODO: implement functor $f$ for rhs of $y(t)' = f(y(t))$
+#endif // TEMPLATE
     
     // Dimension of state space
     unsigned int d = 2;

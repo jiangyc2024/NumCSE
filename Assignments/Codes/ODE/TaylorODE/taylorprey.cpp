@@ -21,7 +21,7 @@ int main() {
     Eigen::VectorXd yex(d);
     yex << 0.319465882659820, 9.730809352326228;
     
-    #if SOLUTION
+#if SOLUTION
     // Structure for the evaluation of f, df and d2f (Hessian bilinear form)
     struct odefun {
         std::function<Eigen::VectorXd(const Eigen::VectorXd &)> f = [this] (const Eigen::VectorXd & y) {
@@ -50,14 +50,14 @@ int main() {
         const double beta1 = 0.1;
         const double beta2 = 0.1;
     } F;
-    #else // TEMPLATE
-        // Coefficients and handle for prey/predator model
-        double alpha1 = 3.;
-        double alpha2 = 2.;
-        double beta1 = 0.1;
-        double beta2 = 0.1;
-        // TODO: implement a structure for the evaluation of $f$, $df$ and $d2f$ (Hessian bilinear form)
-    #endif // TEMPLATE
+#else // TEMPLATE
+    // Coefficients and handle for prey/predator model
+    double alpha1 = 3.;
+    double alpha2 = 2.;
+    double beta1 = 0.1;
+    double beta2 = 0.1;
+    // TODO: implement a structure for the evaluation of $f$, $df$ and $d2f$ (Hessian bilinear form)
+#endif // TEMPLATE
     
     // Constructor
     TaylorIntegrator<Eigen::VectorXd> tint;
