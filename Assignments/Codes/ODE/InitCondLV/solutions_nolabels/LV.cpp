@@ -12,11 +12,19 @@
 #include "ode45.hpp"
 
 using namespace Eigen;
-using namespace std;
 
-//! Compute the maps Phi and W at time T, for initial data given by u0 and v0.
-pair<Vector2d,Matrix2d> PhiAndW(double u0, double v0, double T) {
-
+/*!
+ * \brief Compute the maps Phi and W at time T.
+ * Use initial data given by u0 and v0.
+ * \param[in] u0 First component.
+ * \param[in] v0 Second component.
+ * \param[in] T Final time.
+ */
+/* SAM_LSTING_BEGIN_1 */
+std::pair<Vector2d, Matrix2d> PhiAndW(double u0,
+                                      double v0,
+                                      double T) {
+    std::pair<Vector2d, Matrix2d> PaW;
     auto f = [] (const VectorXd & w) {
         Eigen::VectorXd temp(6);
         temp(0) = (2. - w(1))*w(0);
@@ -31,24 +39,29 @@ pair<Vector2d,Matrix2d> PhiAndW(double u0, double v0, double T) {
     Eigen::VectorXd w0(6);
     w0 << u0, v0, 1., 0, 0, 1.;
 
+    // Construct ode solver with r.h.s
     ode45<Eigen::VectorXd> O(f);
+    // Set options
     O.options.rtol = 1e-14;
     O.options.atol = 1e-12;
+    // Solve ODE
     auto sol = O.solve(w0, T);
+    // Extract needed component
     VectorXd wT = sol.back().first;
 
-    pair<Vector2d,Matrix2d> PaW;
-    PaW.first << wT(0), wT(1);
+    PaW.first  << wT(0), wT(1);
     PaW.second << wT(2), wT(4), wT(3), wT(5);
     return PaW;
 }
+/* SAM_LSTING_END_1 */
 
-// Apply the Newton method to find initial data giving solutions with period equal to 5.
 int main(){
+    /* SAM_LSTING_BEGIN_2 */
     Vector2d y;
     y << 3, 2;
     double T = 5;
-    pair<Vector2d,Matrix2d> PaW = PhiAndW(y(0), y(1), T);
+
+    std::pair<Vector2d,Matrix2d> PaW = PhiAndW(y(0), y(1), T);
     Vector2d F = PaW.first - y;
     Matrix2d DF;
 
@@ -59,8 +72,11 @@ int main(){
         y = y - DF.lu().solve(F);
     }
 
-    cout << "The obtained initial condition is: " << endl << y << endl;
+    std::cout << "The obtained initial condition is: "
+         << std::endl << y << std::endl;
     PaW = PhiAndW(y(0), y(1), 100);
 
-    cout << "y(100) = " << endl << PaW.first << endl;
+    std::cout << "y(100) = " << std::endl
+              << PaW.first << std::endl;
+    /* SAM_LSTING_END_2 */
 }

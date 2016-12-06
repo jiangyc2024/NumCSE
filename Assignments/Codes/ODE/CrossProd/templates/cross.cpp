@@ -30,9 +30,11 @@ std::vector<VectorXd> solve_lin_mid(const Function &f,
                                     double T,
                                     const VectorXd & y0,
                                     unsigned int N)  {
+    // Will contain all steps, reserve memory for efficiency
+    std::vector<VectorXd> res;
     /* SAM_LISTING_BEGIN_2 */
     // TODO: implement linear implicit MPR
-    return 0;
+    return res;
     /* SAM_LISTING_END_2 */
 }
 
