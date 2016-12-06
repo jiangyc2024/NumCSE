@@ -1,0 +1,8 @@
+{
+    "author" : "",
+    "email" : "",
+    "contributors" : "",
+
+    "name": "RK3Prey",
+    "all" : ["rk3prey.cpp", "rkintegrator.hpp"]
+}
