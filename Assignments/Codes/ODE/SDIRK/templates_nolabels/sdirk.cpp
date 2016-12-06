@@ -20,7 +20,7 @@
 template <class StateType>
 StateType sdirkStep(const StateType & z0, double h, double gamma) {
     // TODO: implement one step of SDIRK method
-    return 0;
+    return z0; // Placeholder
 }
 
 //! \brief Solve autonomous IVP y'' + y' + y = 0, [y(0), y'(0)] = z0 using SDIRK method

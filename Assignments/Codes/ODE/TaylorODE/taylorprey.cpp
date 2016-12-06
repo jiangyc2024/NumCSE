@@ -1,6 +1,6 @@
 #include "taylorintegrator.hpp"
 
-//! \file taylorprey.cpp Solution for Problem 3, solving prey/predator model with taylor expansion method
+//! \file taylorprey.cpp Problem 3, solving prey/predator model with taylor expansion method
 
 int main() {
 /* SAM_LISTING_BEGIN_0 */

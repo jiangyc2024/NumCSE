@@ -1,0 +1,9 @@
+{
+    "author" : "",
+    "email" : "",
+    "contributors" : "",
+
+    "name": "SystemODE",
+    "all" : ["system.cpp"],
+    "lib" : ["errors.hpp"]
+}

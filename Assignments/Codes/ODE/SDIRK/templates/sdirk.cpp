@@ -15,7 +15,7 @@
 template <class StateType>
 StateType sdirkStep(const StateType & z0, double h, double gamma) {
     // TODO: implement one step of SDIRK method
-    return 0;
+    return z0; // Placeholder
 }
 /* SAM_LISTING_END_0 */
 

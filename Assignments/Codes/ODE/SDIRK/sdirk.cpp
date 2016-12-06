@@ -31,7 +31,7 @@ StateType sdirkStep(const StateType & z0, double h, double gamma) {
     return z0 + h*0.5*(k1 + k2);
 #else // TEMPLATE
     // TODO: implement one step of SDIRK method
-    return 0;
+    return z0; // Placeholder
 #endif // TEMPLATE
 }
 /* SAM_LISTING_END_0 */
