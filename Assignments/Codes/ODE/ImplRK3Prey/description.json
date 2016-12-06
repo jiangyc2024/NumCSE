@@ -6,6 +6,6 @@
     "name": "ImplRK3Prey",
     "all" : [
         "implicit_rk3prey.cpp",
-        "dampnewton.hpp",
-        "implicit_rkintegrator.hpp"]
+        "implicit_rkintegrator.hpp"],
+    "lib" : ["dampnewton.hpp"]
 }

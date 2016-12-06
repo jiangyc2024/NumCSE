@@ -1,10 +1,12 @@
 #include <iostream>
-#include <Eigen/Dense>
 #include <vector>
+
+#include <Eigen/Dense>
 
 template <typename FuncType, typename JacType>
 void dampnewton(const FuncType &F, const JacType &DF,
-                Eigen::VectorXd &x, double rtol = 1e-4,double atol = 1e-6)
+                Eigen::VectorXd &x,
+                double rtol = 1e-4, double atol = 1e-6)
 {
     const int n = x.size();
     const double lmin = 1E-3; // Minimal damping factor
@@ -12,10 +14,10 @@ void dampnewton(const FuncType &F, const JacType &DF,
     Eigen::VectorXd s(n),st(n); // Newton corrections
     Eigen::VectorXd xn(n);      // Tentative new iterate
     double sn,stn;    // Norms of Newton corrections
-    
+
     do {
         auto jacfac = DF(x).lu(); // LU-factorize Jacobian
-        
+
         s = jacfac.solve(F(x));   // Newton correction
         sn = s.norm();            // Norm of Newton correction
         lambda *= 2.0;
