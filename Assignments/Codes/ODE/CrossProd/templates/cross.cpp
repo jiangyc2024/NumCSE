@@ -40,7 +40,7 @@ std::vector<VectorXd> solve_lin_mid(const Function &f,
 int main(void) {
 
     // 1. Implicit mid-point method
-    /* SAM_LISTING_END_1 */
+    /* SAM_LISTING_BEGIN_1 */
     std::cout << "1. Implicit midpoint method"
               << std::endl << std::endl;
 
@@ -54,7 +54,7 @@ int main(void) {
     /* SAM_LISTING_END_1 */
 
     // 2. Linear implicit mid-point method
-    /* SAM_LISTING_END_3 */
+    /* SAM_LISTING_BEGIN_3 */
     std::cout << std::endl
               << "2. Linear implicit midpoint method"
               << std::endl << std::endl;

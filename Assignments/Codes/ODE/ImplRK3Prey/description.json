@@ -4,6 +4,8 @@
     "contributors" : "",
 
     "name": "ImplRK3Prey",
-    "all" : ["implicit_rk3prey.cpp"],
-    "lib" : ["implicit_rkintegrator.hpp", "dampnewton.hpp"]
+    "all" : [
+        "implicit_rk3prey.cpp",
+        "dampnewton.hpp",
+        "implicit_rkintegrator.hpp"]
 }

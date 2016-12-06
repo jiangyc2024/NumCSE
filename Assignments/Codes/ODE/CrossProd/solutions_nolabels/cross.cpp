@@ -43,7 +43,6 @@ std::vector<VectorXd> solve_lin_mid(const Function &f,
     // Will contain all steps, reserve memory for efficiency
     std::vector<VectorXd> res;
     res.reserve(N+1);
-
     // Store initial data
     res.push_back(y0);
 
@@ -53,11 +52,13 @@ std::vector<VectorXd> solve_lin_mid(const Function &f,
     // Pointers to swap previous value
     VectorXd * yold = &ytemp1;
     VectorXd * ynew = &ytemp2;
+    MatrixXd eye = MatrixXd::Identity(3,3);
 
     // Loop over all fixed steps
     for(unsigned int k = 0; k < N; ++k) {
         // Compute, save and swap next step
-        *ynew = *yold+h*(MatrixXd::Identity(3,3)-h/2.*Jf(*yold)).lu().solve(f(*yold));
+        *ynew = *yold +
+                h*(eye - h/2. * Jf(*yold)).lu().solve(f(*yold));
         res.push_back(*ynew);
         std::swap(yold, ynew);
     }

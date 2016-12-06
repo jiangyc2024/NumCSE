@@ -39,7 +39,6 @@ std::vector<VectorXd> solve_lin_mid(const Function &f,
     // Will contain all steps, reserve memory for efficiency
     std::vector<VectorXd> res;
     res.reserve(N+1);
-
     // Store initial data
     res.push_back(y0);
 
@@ -49,11 +48,13 @@ std::vector<VectorXd> solve_lin_mid(const Function &f,
     // Pointers to swap previous value
     VectorXd * yold = &ytemp1;
     VectorXd * ynew = &ytemp2;
+    MatrixXd eye = MatrixXd::Identity(3,3);
 
     // Loop over all fixed steps
     for(unsigned int k = 0; k < N; ++k) {
         // Compute, save and swap next step
-        *ynew = *yold+h*(MatrixXd::Identity(3,3)-h/2.*Jf(*yold)).lu().solve(f(*yold));
+        *ynew = *yold +
+                h*(eye - h/2. * Jf(*yold)).lu().solve(f(*yold));
         res.push_back(*ynew);
         std::swap(yold, ynew);
     }
@@ -69,7 +70,7 @@ std::vector<VectorXd> solve_lin_mid(const Function &f,
 int main(void) {
 
     // 1. Implicit mid-point method
-    /* SAM_LISTING_END_1 */
+    /* SAM_LISTING_BEGIN_1 */
     std::cout << "1. Implicit midpoint method"
               << std::endl << std::endl;
 
@@ -122,7 +123,7 @@ int main(void) {
     /* SAM_LISTING_END_1 */
 
     // 2. Linear implicit mid-point method
-    /* SAM_LISTING_END_3 */
+    /* SAM_LISTING_BEGIN_3 */
     std::cout << std::endl
               << "2. Linear implicit midpoint method"
               << std::endl << std::endl;
