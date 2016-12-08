@@ -1,3 +1,9 @@
+//// 
+//// Copyright (C) 2016 SAM (D-MATH) @ ETH Zurich
+//// Author(s): lfilippo <filippo.leonardi@sam.math.ethz.ch> 
+//// Contributors: tille, jgacon, dcasati
+//// This file is part of the NumCSE repository.
+////
 #pragma once
 
 #include <vector>
@@ -18,7 +24,6 @@ using namespace Eigen;
  *! \tparam State a type representing the space in which the solution
  *! lies, e.g. R^d, represented by e.g. VectorXd.
  */
-/* SAM_LISTING_BEGIN_0 */
 template <class State>
 class RKIntegrator {
 public:
@@ -81,4 +86,3 @@ private:
 
 //    TODO: put here suitable internal data storage
 };
-/* SAM_LISTING_END_0 */
