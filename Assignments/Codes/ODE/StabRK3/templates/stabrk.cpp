@@ -1,6 +1,6 @@
 #include "rkintegrator.hpp"
 
-//! \file stabrk.cpp Problem 2, PS13, solving prey/predator model with RK-SSM method
+//! \file stabrk.cpp Solve prey/predator model with RK-SSM method
 
 int main() {
 /* SAM_LISTING_BEGIN_0 */
