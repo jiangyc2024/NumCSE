@@ -84,10 +84,10 @@ int main() {
     mgl::Figure fig;
     fig.title("Quadratic convergence");
     fig.ranges(0, m, 1, 2.5);
-    fig.plot(iterates, ratios.tail(m), " r+").label("Newton");
+    fig.plot(iterates, ratios.tail(m), " r+").label("Steffensen");
     fig.fplot("2", "k|").label("rate = 2");
     fig.xlabel("iterates");
-    fig.ylabel("errors");
+    fig.ylabel("ratios");
     fig.legend(0, 0);
     fig.save("QuadraticConvergence");
 #endif // INTERNAL
