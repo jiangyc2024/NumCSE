@@ -1,3 +1,9 @@
+//// 
+//// Copyright (C) 2016 SAM (D-MATH) @ ETH Zurich
+//// Author(s): lfilippo <filippo.leonardi@sam.math.ethz.ch> 
+//// Contributors: tille, jgacon, dcasati
+//// This file is part of the NumCSE repository.
+////
 #pragma once
 
 #include <cassert>
@@ -15,7 +21,6 @@
  *! \tparam State a type representing the space in which the solution lies,
  *! e.g. R^d, represented by e.g. Eigen::VectorXd.
  */
-/* SAM_LISTING_BEGIN_1 */
 template <class State>
 class TaylorIntegrator {
 public:
@@ -91,4 +96,3 @@ private:
         y1 = y0 + fy0*h + dfy0fy0*h*h/2. + (df2y0fy0 + d2fy0fy0)*h*h*h/6.;
     }
 };
-/* SAM_LISTING_END_1 */

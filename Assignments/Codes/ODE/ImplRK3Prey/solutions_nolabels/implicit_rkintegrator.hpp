@@ -1,3 +1,9 @@
+//// 
+//// Copyright (C) 2016 SAM (D-MATH) @ ETH Zurich
+//// Author(s): lfilippo <filippo.leonardi@sam.math.ethz.ch> 
+//// Contributors: tille, jgacon, dcasati
+//// This file is part of the NumCSE repository.
+////
 #pragma once
 
 #include <vector>
@@ -33,7 +39,6 @@ MatrixXd kron(const MatrixXd & A, const MatrixXd & B)
     return C;
 }
 
-/* SAM_LISTING_BEGIN_1 */
 /*!
   *! \brief Implements a Runge-Kutta implicit solver for a
   *! given Butcher tableau for autonomous ODEs.
@@ -166,4 +171,3 @@ private:
     //<! Size of Butcher matrix and vector A and b
     unsigned int s;
 };
-/* SAM_LISTING_END_1 */

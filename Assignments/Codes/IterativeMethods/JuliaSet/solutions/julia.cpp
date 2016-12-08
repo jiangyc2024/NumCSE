@@ -82,7 +82,7 @@ int main()
     gr.SetRanges(-2,2,-2,2);
     gr.SetRange('c', 0, 1);
     gr.Colorbar("bcwyr");
-    gr.Title("Juliaset for \\z^3 = 1");
+    gr.Title("Julia Set for \\z^3 = 1");
     gr.Axis();
     gr.Tile(Xd, Yd, Cd, "bcwyr");
     gr.WriteEPS("juliaset.eps");
