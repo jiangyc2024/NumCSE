@@ -47,10 +47,12 @@ public:
      */
     template <class Function>
     std::vector<State> solve(const Function &f, double T, const State & y0, unsigned int N) const {
+
         std::vector<State> res;
 
-        // Initalize step size
+        // Iniz step size
         double h = T / N;
+
         // Will contain all steps, reserve memory for efficiency
         res.reserve(N+1);
 
@@ -74,6 +76,7 @@ public:
 
         return res;
     }
+
 private:
     /*!
      *! @brief Perform a single step of the RK method.
@@ -87,8 +90,7 @@ private:
      *! @param[out] y1 next step y^{n+1} = y^n + ...
      */
     template <class Function>
-    void step(const Function &f, double h,
-              const State & y0, State & y1) const {
+    void step(const Function &f, double h, const State & y0, State & y1) const {
         // create vector holding next value
         y1 = y0;
         // Reserve space for increments
@@ -107,11 +109,11 @@ private:
         }
     }
 
-    //!< Matrix A in Butcher scheme
+    //! Matrix A in Butcher scheme
     const Eigen::MatrixXd A;
-    //!< Vector b in Butcher scheme
+    //! Vector b in Butcher scheme
     const Eigen::VectorXd b;
-    //!< Size of Butcher matrix and vector A and b
+    //! Size of Butcher matrix and vector A and b
     unsigned int s;
 };
 /* SAM_LISTING_END_0 */

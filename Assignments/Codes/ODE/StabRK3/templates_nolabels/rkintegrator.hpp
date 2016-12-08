@@ -47,12 +47,36 @@ public:
      */
     template <class Function>
     std::vector<State> solve(const Function &f, double T, const State & y0, unsigned int N) const {
+
         std::vector<State> res;
-        // TODO: computes $N$ uniform time steps for the ODE $y'(t) =
-        // f(y)$ up to time $T$ of RK method with initial value $y0$ and store
-        // all steps $y_k$ into return vector
+
+        // Iniz step size
+        double h = T / N;
+
+        // Will contain all steps, reserve memory for efficiency
+        res.reserve(N+1);
+
+        // Store initial data
+        res.push_back(y0);
+
+        // Initialize some memory to store temporary values
+        State ytemp1 = y0;
+        State ytemp2 = y0;
+        // Pointers to swap previous value
+        State * yold = &ytemp1;
+        State * ynew = &ytemp2;
+
+        // Loop over all fixed steps
+        for(unsigned int k = 0; k < N; ++k) {
+            // Compute, save and swap next step
+            step(f, h, *yold, *ynew);
+            res.push_back(*ynew);
+            std::swap(yold, ynew);
+        }
+
         return res;
     }
+
 private:
     /*!
      *! @brief Perform a single step of the RK method.
@@ -66,17 +90,30 @@ private:
      *! @param[out] y1 next step y^{n+1} = y^n + ...
      */
     template <class Function>
-    void step(const Function &f, double h,
-              const State & y0, State & y1) const {
-        // TODO: performs a single step from $y0$ to $y1$ with
-        // step size $h$ of the RK method for the IVP with rhs $f$
+    void step(const Function &f, double h, const State & y0, State & y1) const {
+        // create vector holding next value
+        y1 = y0;
+        // Reserve space for increments
+        std::vector<State> k;
+        k.reserve(s);
+
+        // Loop over the size of RK
+        for(unsigned int i = 0; i < s; ++i) {
+            // Compute increments and save them to k
+            State incr = y0;
+            for(unsigned int j = 0; j < i; ++j) {
+                incr += h*A(i,j)*k.at(j);
+            }
+            k.push_back( f( incr ) );
+            y1 += h * b(i) * k.back();
+        }
     }
 
-    //!< Matrix A in Butcher scheme
+    //! Matrix A in Butcher scheme
     const Eigen::MatrixXd A;
-    //!< Vector b in Butcher scheme
+    //! Vector b in Butcher scheme
     const Eigen::VectorXd b;
-    //!< Size of Butcher matrix and vector A and b
+    //! Size of Butcher matrix and vector A and b
     unsigned int s;
 };
 /* SAM_LISTING_END_0 */
