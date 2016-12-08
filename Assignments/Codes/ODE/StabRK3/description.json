@@ -4,5 +4,6 @@
     "contributors" : "",
 
     "name": "StabRK3",
-    "all" : ["stabrk.cpp", "rkintegrator.hpp"]
+    "all" : ["stabrk.cpp"],
+    "lib" : ["rkintegrator.hpp"]
 }
