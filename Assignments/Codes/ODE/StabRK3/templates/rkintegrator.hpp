@@ -11,8 +11,8 @@
 //! \file rkintegrator.hpp Problem 1, implementing RkIntegrator class
 
 /*!
- *! \brief Implements a Runge-Kutta explicit solver for a given
- *! Butcher tableau for autonomous ODEs
+ *! \brief A Runge-Kutta explicit solver for a given
+ *! Butcher tableau for autonomous ODEs.
  *! \tparam State a type representing the space in which the solution
  *! lies, e.g. R^d, represented by e.g. Eigen::VectorXd.
  */
