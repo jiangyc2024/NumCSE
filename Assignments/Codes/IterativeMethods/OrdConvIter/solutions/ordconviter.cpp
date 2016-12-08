@@ -1,6 +1,7 @@
 # include <Eigen/Dense>
 # include <cmath>
 # include <iostream>
+# include <string>
 # include <mgl2/mgl.h>
 # include "meshgrid.hpp"
 
@@ -52,17 +53,22 @@ int main()
     Mat k_ = kmin(eps_msh, tau_msh, C, p);
 
     // Normalize results for plot
-    k_ = (k_.array()/double(k_.maxCoeff())).matrix();
+    Mat k_norm = (k_.array()/double(k_.maxCoeff())).matrix();
 
     mglData eps(eps_msh.rows(), eps_msh.cols(), eps_msh.data());
     mglData tau(tau_msh.rows(), tau_msh.cols(), tau_msh.data());
-    mglData k(k_.rows(), k_.cols(), k_.data());
+    mglData k(k_norm.rows(), k_norm.cols(), k_norm.data());
 
     mglGraph gr;
     gr.SetRanges(eps.Minimal(), eps.Maximal(), tau.Minimal(), tau.Maximal());
-    gr.Colorbar("kRryw");
     gr.Title("Minimal number of iterations for error < tau");
     gr.Axis(); gr.Label('x',"epsilon_0",0); gr.Label('y',"tau",0);
     gr.Tile(eps, tau, k, "kRryw");
-    gr.WriteEPS("k_min.eps");
+    gr.SetRange('c', k_.minCoeff(), k_.maxCoeff());
+    gr.SetTicksVal('c', " ");
+    for(unsigned i=k_.minCoeff(); i<=k_.maxCoeff(); ++i) {
+        gr.AddTick('c', i, std::to_string(i).c_str());
+    }
+    gr.Colorbar("kRryw");
+    gr.WriteEPS("k_min_cpp.eps");
 }

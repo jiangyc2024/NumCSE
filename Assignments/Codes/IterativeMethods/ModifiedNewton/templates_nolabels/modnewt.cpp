@@ -30,10 +30,10 @@ double norm(const VectorXd & x) { return x.norm(); }
  *! \param[in] max_itr maximal number of iterations
  */
 template <class StepFunction, class Vector, class ErrorFunction>
-bool general_nonlinear_solver(const StepFunction& step, 
-                              Vector & x, 
-                              const ErrorFunction& errf, 
-                              double eps = 1e-8, int max_itr = 100) {
+bool sample_nonlinear_solver(const StepFunction& step,
+                             Vector & x,
+                             const ErrorFunction& errf,
+                             double eps = 1e-8, int max_itr = 100) {
     // Temporary where to store new step
     Vector x_new = x;
     double r = 1;
@@ -145,7 +145,7 @@ void mod_newt_ord() {
     };
     
     // Actually perform the solution
-    general_nonlinear_solver(newt_scalar_step, x_scalar, errf);
+    sample_nonlinear_solver(newt_scalar_step, x_scalar, errf);
     
     // Print solution (final)
     std::cout << std::endl 
@@ -218,7 +218,7 @@ void mod_newt_sys() {
     };
     
     // Actually performs computations
-    general_nonlinear_solver(newt_system_step, x_system, rerr);
+    sample_nonlinear_solver(newt_system_step, x_system, rerr);
     
     // Sanity check
     std::cout << std::endl << "x^*_system = " 
