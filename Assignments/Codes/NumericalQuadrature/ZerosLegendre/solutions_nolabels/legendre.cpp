@@ -45,7 +45,7 @@ MatrixXd gaussPts(const int n, const double rtol=1e-10,
   double x0, x1, f0, f1, s;
   for (int k = 1; k < n+1; ++k) {
     for (int j = 1; j < k+1; ++j) {
-      // Initialise initial guesses.
+      // Initial guesses
       if (j == 1) x0 = -1.;
       else      x0 = zeros(j-2, k-2);
       if (j == k) x1 = 1.;
@@ -78,10 +78,10 @@ MatrixXd gaussPts_regulaFalsi(const int n, const double rtol=1e-10,
   double x0, x1, f0, f1, s;
   for (int k = 1; k < n+1; ++k) {
     for (int j = 1; j < k+1; ++j) {
-      // Initialise initial guesses.
-      if (j == 1) x0 = -1.;
+      // Initial guesses
+      if (j == 1) x0 = -1;
       else      x0 = zeros(j-2, k-2);
-      if (j == k) x1 = 1.;
+      if (j == k) x1 = +1;
       else      x1 = zeros(j-1, k-2);
 
       // Secant method
