@@ -48,6 +48,7 @@ public:
     template <class Function>
     std::vector<State> solve(const Function &f, double T, const State & y0, unsigned int N) const {
         std::vector<State> res;
+#if SOLUTION
 
         // Initalize step size
         double h = T / N;
@@ -72,6 +73,11 @@ public:
             std::swap(yold, ynew);
         }
 
+#else // TEMPLATE
+        // TODO: computes $N$ uniform time steps for the ODE $y'(t) =
+        // f(y)$ up to time $T$ of RK method with initial value $y0$ and store
+        // all steps $y_k$ into return vector
+#endif // TEMPLATE
         return res;
     }
 private:
@@ -89,6 +95,7 @@ private:
     template <class Function>
     void step(const Function &f, double h,
               const State & y0, State & y1) const {
+#if SOLUTION
         // create vector holding next value
         y1 = y0;
         // Reserve space for increments
@@ -105,6 +112,10 @@ private:
             k.push_back( f( incr ) );
             y1 += h * b(i) * k.back();
         }
+#else // TEMPLATE
+        // TODO: performs a single step from $y0$ to $y1$ with
+        // step size $h$ of the RK method for the IVP with rhs $f$
+#endif // TEMPLATE
     }
 
     //!< Matrix A in Butcher scheme
