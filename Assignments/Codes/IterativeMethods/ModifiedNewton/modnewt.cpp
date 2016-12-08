@@ -95,7 +95,7 @@ template <typename Vector, class Function, class Jacobian>
 Vector mod_newt_step_system(const Vector & x, 
                             const Function& f, const Jacobian& df) {
     auto lu = df(x).lu();
-    // reusing LU decomposition
+    // Reusing LU decomposition
     Vector y = x + lu.solve(f(x));
     return y - lu.solve(f(y));
 }
@@ -109,10 +109,10 @@ Vector mod_newt_step_system(const Vector & x,
 void mod_newt_ord() {
     // Setting up values, functions and jacobian
     const double a = 0.123;
-    auto f = [&a] (double x) { return atan(x) - a; }; // function, must see a
-    auto df = [] (double x) { return 1. / (x*x+1.); }; // its derivative
+    auto f = [&a] (double x) { return atan(x) - a; }; // Function which must see $a$
+    auto df = [] (double x) { return 1. / (x*x+1.); }; // Its derivative
     
-    const double x_ex = tan(a); // exact solution
+    const double x_ex = tan(a); // Exact solution
     
     // Store solution and error at each time step
     std::vector<double> sol;
@@ -180,10 +180,10 @@ void mod_newt_sys() {
     MatrixXd A = MatrixXd::Random(4,4);
     VectorXd c = VectorXd::Random(4);
     
-    A = (A*A.transpose()).eval(); // make sure A is symmetric
-    c = c.cwiseAbs(); // make sure c is > 0 uniformly
+    A = (A*A.transpose()).eval(); // Make sure $\VA$ is symmetric
+    c = c.cwiseAbs(); // Make sure $\Vc$ is $> 0$ uniformly
     
-    // Handler for function and jacobian in standard format. Must see matrix A and vector c
+    // Handler for function and jacobian in standard format. Must see matrix $\VA$ and vector $\Vc$.
     auto F = [&A,&c] (const VectorXd & x) { 
         VectorXd tmp =  A*x + c.cwiseProduct(x.array().exp().matrix()).eval();
         return tmp;
@@ -198,7 +198,7 @@ void mod_newt_sys() {
     // Container for errors
     std::vector<double> err;
     // Define lambda for breaking condition, which also stores 
-    // the error of the previous step. Must see err
+    // the error of the previous step. Must see 'err'.
     auto rerr = [&err] (VectorXd & x) { 
         if(err.size() > 0) 
             return err.back();
@@ -210,9 +210,9 @@ void mod_newt_sys() {
               << std::endl << std::endl;
     VectorXd x_system = VectorXd::Zero(c.size()); // Initial guess
     
-    // Refactor (i.e. wrap) the step st. is compatible with general\_nonlinear\_solver,
-    // must see F; dF and error vector
-    // We also store the error
+    // Refactor (i.e.\ wrap) the step such that it is compatible with general\_nonlinear\_solver.
+    // Must see $F$, $dF$ and 'err'.
+    // We also store the error.
     auto newt_system_step = [&F, &dF, &err] (const VectorXd & x) -> VectorXd {
         VectorXd x_new = mod_newt_step_system(x, F, dF);
         double e = (x - x_new).norm()/ x_new.norm();
