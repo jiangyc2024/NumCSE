@@ -95,7 +95,7 @@ int main() {
     std::cout << "SUBTASK g)" << std::endl;
     // Test whether invariant was preserved or not
 
-    // TODO:
+    // TODO
 
     return 0;
 }

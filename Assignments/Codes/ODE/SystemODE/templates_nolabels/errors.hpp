@@ -8,7 +8,8 @@
 using namespace std;
 using namespace Eigen;
 
-// This function approximates the order of convergence of the RK scheme defined by A and b when applied to the first order system y'=f(y), y(0)=y0. We are interested in the error of the solutions at the point T.
+// This function approximates the order of convergence of the RK scheme defined by A and b when applied to the first order system y'=f(y), y(0)=y0.
+// We are interested in the error of the solutions at time T.
 
 template <class Function>
 void errors(const Function &f, const double &T, const VectorXd &y0, const MatrixXd &A, const VectorXd &b) {
