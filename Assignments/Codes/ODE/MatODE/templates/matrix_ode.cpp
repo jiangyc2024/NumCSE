@@ -104,7 +104,7 @@ int main() {
     /* SAM_LISTING_BEGIN_8 */
     // Test whether invariant was preserved or not
 
-    // TODO:
+    // TODO
     /* SAM_LISTING_END_8 */
 
     return 0;

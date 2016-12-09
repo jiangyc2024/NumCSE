@@ -8,6 +8,27 @@
 
 using namespace Eigen;
 
+/* SAM_LISTING_BEGIN_1 */
+template <class Function, class State>
+void rk4step(const Function &odefun, double h,
+             const State & y0, State & y1)
+{
+#if SOLUTION
+    // Compute values for Taylor expansion,
+    // including Jacobian and Hessian matrix
+    auto k1 = odefun(y0);
+    auto k2 = odefun(y0 + h/2*odefun(k1));
+    auto k3 = odefun(y0 + h/2*odefun(k2));
+    auto k4 = odefun(y0 + h*odefun(k3));
+
+    // Plug values into Taylor expansion for next step
+    y1 = y0 + h/6*k1 + h/3*k2 + h/3*k3 + h/6*k4;
+#else // TEMPLATE
+    // TODO: implement a single step of the classical Runge-Kutta method of order 4
+#endif // TEMPLATE
+}
+/* SAM_LISTING_END_1 */
+
 int main() {
 /* SAM_LISTING_BEGIN_0 */
 #if SOLUTION

@@ -195,7 +195,7 @@ int main() {
                   << std::endl;
     }
 #else // TEMPLATE
-    // TODO:
+    // TODO
 #endif // TEMPLATE
     /* SAM_LISTING_END_8 */
 

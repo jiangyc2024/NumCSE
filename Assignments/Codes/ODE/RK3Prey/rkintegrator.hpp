@@ -25,9 +25,9 @@ public:
     /*!
      *! \brief Constructor for the RK method.
      *! Performs size checks and copies A and b into internal storage.
-     *! \param[in] A Matrix containing coefficents of the Butcher tableau,
+     *! \param[in] $\VA$ Matrix containing coefficents of the Butcher tableau,
      *! must be (strictly) lower triangular (no check is done).
-     *! \param[in] b Vector containing coefficients of lower
+     *! \param[in] $\Vb$ Vector containing coefficients of lower
      *! part of Butcher tableau.
      */
 #if SOLUTION
@@ -46,19 +46,19 @@ public:
 
     /*!
      *! \brief Perform the solution of the ODE.
-     *! Solve an autonomous ODE y' = f(y), y(0) = y0, using a
+     *! Solve an autonomous ODE $y' = f(y)$, $y(0) = y0$, using a
      *! RK scheme given in the Butcher tableau provided in the
-     *! constructor. Performs N equidistant steps upto time
-     *! T with initial data y0.
+     *! constructor. Performs $N$ equidistant steps upto time
+     *! $T$ with initial data $y_0$.
      *! \tparam Function type for function implementing the rhs function.
      *! Must have State operator()(const State & x).
-     *! \param[in] f function handle for rhs in y' = f(y), e.g.
+     *! \param[in] $f$ function handle for rhs in $y' = f(y)$, e.g.\
      *! implemented using lambda funciton.
-     *! \param[in] T The final time T.
-     *! \param[in] y0 Initial data y(0) = y0 for y' = f(y).
-     *! \param[in] N Number of steps to perform. Step size is h = T / N.
+     *! \param[in] $T$ The final time $T$.
+     *! \param[in] $y_0$ Initial data $y(0) = y_0$ for $y' = f(y)$.
+     *! \param[in] $N$ Number of steps to perform. Step size is $h = T / N$.
      *! Steps are equidistant.
-     *! \return The vector containing all steps y^n (for each n)
+     *! \return The vector containing all steps $y^n$ (for each $n$)
      *! including initial and final value.
      */
     template <class Function>
@@ -90,7 +90,7 @@ public:
             std::swap(yold, ynew);
         }
 #else // TEMPLATE
-//        TODO: implement solver from 0 to T, calling function step appropriately
+//        TODO: implement solver from $0$ to $T$, calling function step appropriately
 #endif // TEMPLATE
         return res;
     }
@@ -99,14 +99,14 @@ private:
     /*!
      *! \brief Perform a single step of the RK method.
      *! Solve an autonomous ODE using an explicit Runge Kutta Method.
-     *! Compute a single explicit RK step y^{n+1} = y_n + \sum ...
-     *! starting from value y0 and storing next value in y1.
+     *! Compute a single explicit RK step $y^{n+1} = y_n + \sum \dots$
+     *! starting from value $y_0$ and storing next value in $y_1$.
      *! \tparam Function type for function implementing the rhs.
      *! Must have State operator()(State x)
-     *! \param[in] f function handle for ths f, s.t. y' = f(y)
-     *! \param[in] h step size
-     *! \param[in] y0 initial state
-     *! \param[out] y1 next step y^{n+1} = y^n + ...
+     *! \param[in] $f$ function handle for rhs $f$, s.t.\ $y' = f(y)$
+     *! \param[in] $h$ step size
+     *! \param[in] $y_0$ initial state
+     *! \param[out] $y_1$ next step $y^{n+1} = y^n + \dots$
      */
     template <class Function>
     void step(const Function &f, double h, const State & y0, State & y1) const {

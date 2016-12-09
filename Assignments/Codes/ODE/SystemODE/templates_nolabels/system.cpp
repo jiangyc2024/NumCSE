@@ -14,6 +14,13 @@
 
 using namespace Eigen;
 
+template <class Function, class State>
+void rk4step(const Function &odefun, double h,
+             const State & y0, State & y1)
+{
+    // TODO: implement a single step of the classical Runge-Kutta method of order 4
+}
+
 int main() {
     // TODO: compute $f$, $T$, $y_0$, $\VA$, $\Vb$ to run "errors(f, T, y0, A, b);"
 }
