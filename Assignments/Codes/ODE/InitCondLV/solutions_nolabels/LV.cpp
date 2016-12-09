@@ -54,18 +54,27 @@ std::pair<Vector2d, Matrix2d> PhiAndW(double u0,
 }
 
 int main(){
+    // Initial guess
     Vector2d y;
     y << 3, 2;
+    // Period we require
     double T = 5;
 
-    std::pair<Vector2d,Matrix2d> PaW = PhiAndW(y(0), y(1), T);
+    // Compute Phi and W from first guess
+    std::pair<Vector2d, Matrix2d> PaW = PhiAndW(y(0), y(1), T);
+    // Check error
     Vector2d F = PaW.first - y;
     Matrix2d DF;
 
+    // Until we are happy with our approximation
     while (F.norm() > 1e-5) {
+        // Test current guess
         PaW = PhiAndW(y(0), y(1), T);
+        // Find out error (we want to find a zero of the error)
         F = PaW.first - y;
+        // Find out Jacobian
         DF = PaW.second - MatrixXd::Identity(2,2);
+        // Use newton iteration
         y = y - DF.lu().solve(F);
     }
 

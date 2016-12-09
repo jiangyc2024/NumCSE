@@ -26,8 +26,10 @@ std::pair<Vector2d, Matrix2d> PhiAndW(double u0,
 
 int main(){
     /* SAM_LISTING_BEGIN_2 */
+    // Initial guess
     Vector2d y;
     y << 3, 2;
+    // Period we require
     double T = 5;
 
     // TODO: Apply the Newton method to find initial data
