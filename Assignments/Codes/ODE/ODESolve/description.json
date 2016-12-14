@@ -1,0 +1,8 @@
+{
+    "author" : "",
+    "email" : "",
+    "contributors" : "",
+
+    "name": "ODESolve",
+    "all" : ["odesolve.cpp"]
+}
