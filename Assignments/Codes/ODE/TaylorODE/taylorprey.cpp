@@ -17,12 +17,12 @@ int main() {
     // Array of number of steps (for convergence study)
     std::vector<unsigned int> N = {128, 256, 512, 1024, 2048, 4096, 8192, 16384};
     
-    // Exact value y(10) at final time T = 10 (approximated)
+    // Exact value $y(10)$ at final time $T = 10$ (approximated)
     Eigen::VectorXd yex(d);
     yex << 0.319465882659820, 9.730809352326228;
     
 #if SOLUTION
-    // Structure for the evaluation of f, df and d2f (Hessian bilinear form)
+    // Structure for the evaluation of $f$, $df$ and $d2f$ (Hessian bilinear form)
     struct odefun {
         std::function<Eigen::VectorXd(const Eigen::VectorXd &)> f = [this] (const Eigen::VectorXd & y) {
             Eigen::VectorXd temp = y;

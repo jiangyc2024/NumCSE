@@ -26,7 +26,7 @@ public:
      *! equidistant steps upto time $T$ with initial data $y_0$
      *! \tparam Function type for function implementing the
      *! rhs function (and its derivatives).
-     *! \param[in] odefun function handle for rhs $f$ and its derivatives
+     *! \param[in] 'odefun' function handle for rhs $f$ and its derivatives
      *! \param[in] $T$ final time $T$
      *! \param[in] $y_0$ initial data $y(0) = y0$ for $y' = f(y)$
      *! \param[in] $N$ number of steps to perform. Step size is $h = T / N$.
@@ -51,7 +51,7 @@ private:
      *! starting from value $y_0$ and storing next value in $y_1$
      *! \tparam Function type for function implementing the rhs
      *! and its derivatives.
-     *! \param[in] odefun function handle for rhs $f$ and the derivatives
+     *! \param[in] 'odefun' function handle for rhs $f$ and the derivatives
      *! \param[in] $h$ step size
      *! \param[in] $y_0$ initial state
      *! \param[out] $y_1$ next step $y^{n+1} = y^n + \dots$
