@@ -29,6 +29,7 @@ void newton2steps(const Func & F, const Jac & DF, VectorXd & z) {
 /* SAM_LISTING_BEGIN_2 */
 template <class Func, class Jac>
 double MIRKstep(const Func & f, const Jac & df, double y0, double h) {
+    // Coefficients of MIRK
     const double v1  = 1;
     const double v2  = 344./2025.;
     const double d21 = -164./2025.;
@@ -60,12 +61,15 @@ double MIRKsolve(const Func & f, const Jac & df, double y0, double T, unsigned i
 
 /* SAM_LISTING_BEGIN_4 */
 int main(int, char**) {
-    
+    // r.h.s
     auto f = [] (double y) -> double { return 1 + y*y; };
+    // Jacobian of $f$
     auto df = [] (double y) -> double { return 2*y; };
-    
+    // Initial data
     const double y0 = 0.;
+    // Final time
     const double T = 1.;
+    // Exact solution at t = T = 1
     const double yex = tan(1);
     
     //// PROBLEM h: TEST
