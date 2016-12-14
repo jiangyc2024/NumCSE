@@ -24,7 +24,7 @@ class RKIntegrator {
 public:
     /*!
      *! \brief Constructor for the RK method.
-     *! Performs size checks and copies A and b into internal storage.
+     *! Performs size checks and copies $\VA$ and $\Vb$ into internal storage.
      *! \param[in] $\VA$ Matrix containing coefficents of the Butcher tableau,
      *! must be (strictly) lower triangular (no check is done).
      *! \param[in] $\Vb$ Vector containing coefficients of lower
@@ -103,7 +103,7 @@ private:
      *! starting from value $y_0$ and storing next value in $y_1$.
      *! \tparam Function type for function implementing the rhs.
      *! Must have State operator()(State x)
-     *! \param[in] $f$ function handle for rhs $f$, s.t.\ $y' = f(y)$
+     *! \param[in] $f$ function handle for rhs $f$, s.t. $y' = f(y)$
      *! \param[in] $h$ step size
      *! \param[in] $y_0$ initial state
      *! \param[out] $y_1$ next step $y^{n+1} = y^n + \dots$
@@ -119,7 +119,7 @@ private:
 
         // Loop over the size of RK
         for(unsigned int i = 0; i < s; ++i) {
-            // Compute increments and save them to k
+            // Compute increments and save them to $k$
             State incr = y0;
             for(unsigned int j = 0; j < i; ++j) {
                 incr += h*A(i,j)*k.at(j);
@@ -134,11 +134,11 @@ private:
     }
 
 #if SOLUTION
-    //! Matrix A in Butcher scheme
+    //! Matrix $\VA$ in Butcher scheme
     const MatrixXd A;
-    //! Vector b in Butcher scheme
+    //! Vector $\Vb$ in Butcher scheme
     const VectorXd b;
-    //! Size of Butcher matrix and vector A and b
+    //! Size of Butcher matrix and vector $\VA$ and $\Vb$
     unsigned int s;
 #else // TEMPLATE
 //    TODO: put here suitable internal data storage

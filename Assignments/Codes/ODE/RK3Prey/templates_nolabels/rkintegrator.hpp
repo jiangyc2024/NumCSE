@@ -29,7 +29,7 @@ class RKIntegrator {
 public:
     /*!
      *! \brief Constructor for the RK method.
-     *! Performs size checks and copies A and b into internal storage.
+     *! Performs size checks and copies $\VA$ and $\Vb$ into internal storage.
      *! \param[in] $\VA$ Matrix containing coefficents of the Butcher tableau,
      *! must be (strictly) lower triangular (no check is done).
      *! \param[in] $\Vb$ Vector containing coefficients of lower
@@ -73,7 +73,7 @@ private:
      *! starting from value $y_0$ and storing next value in $y_1$.
      *! \tparam Function type for function implementing the rhs.
      *! Must have State operator()(State x)
-     *! \param[in] $f$ function handle for rhs $f$, s.t.\ $y' = f(y)$
+     *! \param[in] $f$ function handle for rhs $f$, s.t. $y' = f(y)$
      *! \param[in] $h$ step size
      *! \param[in] $y_0$ initial state
      *! \param[out] $y_1$ next step $y^{n+1} = y^n + \dots$
