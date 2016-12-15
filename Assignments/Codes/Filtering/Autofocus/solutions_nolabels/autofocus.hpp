@@ -21,4 +21,4 @@
  */
 Eigen::MatrixXd set_focus(double f0);
 
-#include "._SUPER_SECRET_FILE.cpp"
+#include "._SUPER_SECRET_FILE.hpp"

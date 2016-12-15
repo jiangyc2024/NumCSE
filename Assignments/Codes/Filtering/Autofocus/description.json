@@ -6,7 +6,7 @@
     "name": "Autofocus",
     "all" : ["autofocus.cpp",
         "autofocus.hpp",
-        "._SUPER_SECRET_FILE.cpp",
+        "._SUPER_SECRET_FILE.hpp",
         "image.pgm"
     ],
     "solutions" : [
@@ -22,5 +22,5 @@
         "spectrum_focus=3.png"
     ],
     "lib" :
-    ["pgm.hpp", "conv.hpp", "examples/"]
+    ["pgm.hpp", "conv.hpp", "examples/", "FFT/"]
 }
