@@ -151,8 +151,3 @@ set(SRCS autofocus.cpp)
 add_executable(autofocus ${SRCS})
 target_link_libraries(autofocus Figure ${MATHGL2_LIBRARIES})
 
-# make ._SUPER_SECRET_FILE
-set(SRCS ._SUPER_SECRET_FILE.cpp)
-add_executable(._SUPER_SECRET_FILE ${SRCS})
-target_link_libraries(._SUPER_SECRET_FILE Figure ${MATHGL2_LIBRARIES})
-
