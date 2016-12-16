@@ -83,7 +83,6 @@ MatrixXd impstep(const MatrixXd & A, const MatrixXd & Y0, double h) {
 }
 
 int main() {
-
     double T = 1;
     unsigned int n = 3;
 
@@ -130,18 +129,14 @@ int main() {
                     << std::endl;
     }
 
-    std::cout << "SUBTASK d)" << std::endl;
-    // Test implementation of ode45
-
+    std::cout << "Test implementation of ode45" << std::endl;
     std::cout << "M = " << std::endl
               << M << std::endl;
     MatrixXd  N = matode(M, T);
     std::cout << "N = " << std::endl
               << N << std::endl;
 
-    std::cout << "SUBTASK g)" << std::endl;
-    // Test whether invariant was preserved or not
-
+    std::cout << "Test whether invariant was preserved or not" << std::endl;
     bool is_invariant = checkinvariant(N, T);
 
     if( is_invariant ) {
@@ -151,6 +146,4 @@ int main() {
         std::cout << "Invariant was NOT preserved."
                   << std::endl;
     }
-
-    return 0;
 }
