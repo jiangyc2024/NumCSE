@@ -2,6 +2,34 @@
 
 //! \file stabrk.cpp Solve prey/predator model with RK-SSM method
 
+/* SAM_LISTING_BEGIN_1 */
+Eigen::Vector2d predprey(Eigen::Vector2d y0, double T, unsigned N)
+{
+    double h = T / N;
+    Eigen::Vector2d y_ = y0;
+
+#if SOLUTION
+    auto pp = [&] (Eigen::Vector2d y) {
+        Eigen::Vector2d y_dot;
+        y_dot(0) = (1 - y(1))*y(0);
+        y_dot(1) = (y(0) - 1)*y(1);
+        return y_dot;
+    };
+
+    for(unsigned i=0; i<N; ++i) {
+        Eigen::Vector2d k1 = pp(y_);
+        Eigen::Vector2d k2 = pp(y_ + h*k1);
+        Eigen::Vector2d k3 = pp(y_ + (h/4.)*k1 + (h/4.)*k2);
+        y_ = y_ + (h/6.)*k1 + (h/6.)*k2 + (2.*h/3.)*k3;
+    }
+#else // TEMPLATE
+    // TODO: solve the predator/prey model using the 3-stage RK-SSM of the exercise sheet
+#endif // TEMPLATE
+
+    return y_;
+}
+/* SAM_LISTING_END_1 */
+
 int main() {
 /* SAM_LISTING_BEGIN_0 */
 #if SOLUTION
