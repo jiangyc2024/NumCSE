@@ -7,5 +7,5 @@
     "all" : [
         "implicit_rk3prey.cpp",
         "implicit_rkintegrator.hpp"],
-    "lib" : ["dampnewton.hpp"]
+    "lib" : ["dampnewton.hpp", "rkintegrator.hpp"]
 }
