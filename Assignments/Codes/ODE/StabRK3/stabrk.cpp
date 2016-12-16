@@ -70,7 +70,7 @@ int main() {
 
     // Initialize RK with Butcher table
     RKIntegrator<Eigen::VectorXd> RK(A,b);
-    auto sol  = RK.solve(f, T, y0, k);
+    auto sol = RK.solve(f, T, y0, k);
     for(auto v: sol) {
         std::cout << v << std::endl;
     }

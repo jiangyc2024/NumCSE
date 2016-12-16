@@ -1,6 +1,6 @@
 #include "./rkintegrator.hpp"
 
-//! \file rk3prey.cpp Problem 1, solving prey/predator model with RK-SSM method
+//! \file rk3prey.cpp Solve prey/predator model with RK-SSM method
 
 int main() {
 /* SAM_LISTING_BEGIN_0 */
