@@ -6,27 +6,28 @@
 
 int main()
 {
-	auto f = [](double x){ return pow(x,2); };
-	auto norm = [](double x){ return fabs(x); };
+  using State_t = double;
+  using DiscEvolOp = std::function<State_t(double,State_t)>;
+  
+  auto f = [](double x){ return pow(x,2); };
+  auto norm = [](double x){ return fabs(x); };
+  
+  
+  // explicit euler (order 1) 
+  DiscEvolOp psilow = [&](double h, double y){ return  y + h*f(y); } ;
 
-
-	// explicit euler (order 1) 
-	auto psilow = [&](double h, double y){
-		return  y + h*f(y);
-	};
-
-	// explicit trapezoidal (order 2)
-	auto psihigh = [&](double h, double y){
-		double k1 = f(y);
-		double k2 = f(y + h*k1);
-		return y + (h/2.)*(k1+k2);
-	};
+  // explicit trapezoidal (order 2)
+  DiscEvolOp psihigh = [&](double h, double y){
+    double k1 = f(y);
+    double k2 = f(y + h*k1);
+    return y + (h/2.)*(k1+k2);
+  };
 
 
 	mgl::Figure lin;
 
 	double y0 = 0.5;
-	std::vector<std::pair<double, double>> states = odeintssctrl(psilow, 1, psihigh, norm, y0, 1.9, 0.2, 1e-3, 1e-3, 1e-4);
+	std::vector<std::pair<double, double>> states = odeintssctrl(psilow, 1, psihigh, y0, 1.9, 0.2, 1e-3, 1e-3, 1e-4,norm);
 
 	Eigen::VectorXd y(states.size());
 	Eigen::VectorXd t(states.size());
