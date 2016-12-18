@@ -70,7 +70,6 @@ MatrixXd impstep(const MatrixXd & A, const MatrixXd & Y0, double h) {
 /* SAM_LISTING_END_5 */
 
 int main() {
-
     /* SAM_LISTING_BEGIN_6 */
     double T = 1;
     unsigned int n = 3;
@@ -90,22 +89,17 @@ int main() {
     MatrixXd A(n,n);
     A << 0, 1, 1, -1, 0, 1, -1, -1, 0;
     MatrixXd I = MatrixXd::Identity(n,n);
+
     // TODO
     /* SAM_LISTING_END_6 */
 
-    std::cout << "SUBTASK d)" << std::endl;
     /* SAM_LISTING_BEGIN_7 */
-    // Test implementation of ode45
-
+    std::cout << "Test implementation of ode45" << std::endl;
     // TODO
     /* SAM_LISTING_END_7 */
 
-    std::cout << "SUBTASK g)" << std::endl;
     /* SAM_LISTING_BEGIN_8 */
-    // Test whether invariant was preserved or not
-
+    std::cout << "Test whether invariant was preserved or not" << std::endl;
     // TODO
     /* SAM_LISTING_END_8 */
-
-    return 0;
 }

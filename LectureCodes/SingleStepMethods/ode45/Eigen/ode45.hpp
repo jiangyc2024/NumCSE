@@ -11,7 +11,7 @@
 
 // explicit ode solver based on the Dormand–Prince method and predictive stepsize control
 template <class Func, class State, class NormFunc>
-std::vector<std::pair<double, State>> ode45(Func &f, State &initialState, double T,
+std::vector<std::pair<double, State>> rkf45(Func &f, State &initialState, double T,
 					    NormFunc &norm, double h0 = 1e-3, double reltol= 1e-7, double abstol= 1e-7,
 					    double hmin= 1e-4, bool predictiveStepsize = true)
 {

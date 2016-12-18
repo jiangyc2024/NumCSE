@@ -16,8 +16,8 @@ int main()
   auto normFunc = [](double x){ return fabs(x); };
   
   double y0 = 0.2; // initial value
-  // Invoke explicit Runge-Kutta method with stepsize control
-  std::vector<std::pair<double, double>> states = ode45(f, y0, 1, normFunc);
+  // Invoke explicit Runge-Kutta-Fehlberg method with stepsize control
+  std::vector<std::pair<double, double>> states = rkf45(f, y0, 1, normFunc);
   
   for (auto state : states)
     std::cout << "t = " << state.first << ", y = " << state.second << std::endl;

@@ -63,8 +63,8 @@ std::vector<Vector> odeintequi(const DiscEvlOp& Psi, double T, const Vector &y0,
 //! \return Vector of all steps y_0, y_1, ...
 /* SAM_LISTING_BEGIN_3 */
 template <class DiscEvlOp>
-std::vector<Vector> odeintssctrl(const DiscEvlOp& Psi, double T, const Vector &y0, double h0,
-                                 unsigned int p, double reltol, double abstol, double hmin) {
+std::vector<Vector> odeintssctrl(const DiscEvlOp& Psi, unsigned int p, const Vector &y0,
+                                 double T, double h0, double reltol, double abstol, double hmin) {
     double t = 0.;
     double h = h0;
     std::vector<Vector> Y;
@@ -74,25 +74,28 @@ std::vector<Vector> odeintssctrl(const DiscEvlOp& Psi, double T, const Vector &y
     while( t < T && h > hmin ) {
         Vector y_high = psitilde(Psi, p, std::min(T-t,h), y);
         Vector y_low = Psi(std::min(T-t,h),y);
-        double err_est = (y_high - y_low).norm();
-        
-        if( err_est < std::max(reltol*y_high.norm(),abstol) ) {
+        double est = (y_high - y_low).norm();
+        double tol = std::max(reltol*y.norm(), abstol);
+        h = h*std::max(0.5, std::min(2.,std::pow(tol/est,1./(p+1))));
+
+        if( est < tol ) {
             y = y_high;
             Y.push_back(y_high);
-            
             t += std::min(T-t,h);
-            h *= 1.1;
-        } else {
-            h /= 2.;
         }
+    }
+    if (h < hmin) {
+        std::cerr << "Warning: Failure at t="
+          << t
+          << ". Unable to meet integration tolerances without reducing the step size below the smallest value allowed ("<< hmin <<") at time t." << std::endl;
     }
     
     return Y;
 }
 /* SAM_LISTING_END_3 */
 
-int main(int, char**) {
-    
+int main()
+{
     auto f = [] (const Vector &y) -> Vector { return Vector::Ones(1) + y*y; };
     Vector y0 = Vector::Zero(1);
     double T = 1.;
