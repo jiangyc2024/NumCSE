@@ -101,9 +101,11 @@ class termination_error : public std::exception {
 //! using operators +, *, +=, *=. Moreover we require a norm StateType._norm().
 //! \tparam RhsType type of the r.h.s. function \f$f\f$, providing
 //!      StateType operator()(const StateType & y)
-template <class StateType,
-          class RhsType = std::function<StateType(const StateType &)>
-          >
+//!
+//! The actual embedded Runge-Kutta-Fehlberg method can be selected by the preprocessor
+//! flag MATLABCOEFF. If set, uses MATLAB's integrator with 7 internal stages. If not set
+//! uses a 6-stage embedded method by Petzold & Asher
+template <class StateType,class RhsType = std::function<StateType(const StateType &)>>
 class ode45 {
 public:
     //! \brief Initialize the class by providing a r.h.s.
@@ -119,17 +121,13 @@ public:
     //! until the ODE integrator breaks down.
     //! \tparam NormFunc Function type for norm function.
     //! \param[in] y0 initial data \f$y_0 = y(0)\f$.
-    //! \param[in] T final time for the integration.
+    //! \param[in] T final time for the integration (initial time = 0)
     //! \param[in] norm optional norm function (if a custom norm is needed or
     //! _norm is not defined, i.e. we use a custom vector type).
     //! \return vector of pairs \f$ (y(t), t) \f$ at snapshot times.
-    template<
-            class NormFunc = decltype(_norm<StateType>)
-            >
-    std::vector< std::pair<StateType, double> > solve(const StateType & y0,
-                                                      double T,
-                                                      const NormFunc & norm =
-                                                            _norm<StateType>);
+    template<class NormFunc = decltype(_norm<StateType>)>
+    std::vector< std::pair<StateType, double> >
+    solve(const StateType & y0,double T,const NormFunc & norm = _norm<StateType>);
 
     //! \brief Print statistics and options of this class instance.
     void print();
@@ -181,9 +179,9 @@ public:
         unsigned int funcalls          = 0;
     } statistics;
 private:
-    //! A copy of rhs stored during initialization
+    // A copy of rhs stored during initialization
     RhsType  f;
-    //! Current time
+    // Current time
     double   t;
 
     // RK45 coefficients and data, cf. https://github.com/rngantner/
@@ -193,44 +191,67 @@ private:
     // Coefficients proved on 20060827
     // See p.91 in Ascher & Petzold
     ////////////////////////////////////////
-    //! Power factor for error control
+    // Power factor \Blue{$\frac{1}{p+1}$}for error control, \Blue{$p$} = order of lower order methpd
     static constexpr double         _pow = 1. / 5;
-    //! Number of stages
+    // Number of stages
+#ifdef MATLABCOEFF
+    static const unsigned int       _s   = 7;
+#else
     static const unsigned int       _s   = 6;
-    //! Matrix A from the Butcher scheme
+#endif
+    // Matrix \Blue{$\FA$} from the Butcher scheme
     static Eigen::MatrixXd          _mA;
-    //! Quadrature weight vectors, non autonomous ODEs c coefficients
+    // Quadrature weight vectors, non autonomous ODEs c coefficients
     static Eigen::VectorXd          _vb4, _vb5, _vc;
 };
 
-// Matrix A from the Butcher scheme
+// Matrix \Blue{$\FA$} in Butcher scheme \eqref{eq:BSexpl}
 template <class StateType, class RhsType>
 Eigen::MatrixXd ode45<StateType, RhsType>::_mA = (
     Eigen::MatrixXd(ode45<StateType, RhsType>::_s,
                     ode45<StateType, RhsType>::_s-1) <<
+#ifdef MATLABCOEFF
+    0,0,0,0,0,0,
+    1./5.,0,0,0,0,0,
+    3./40.,9./40., 0,0,0,0,
+    44./45.,-56./15., 32./9.,0,0,0,
+    19372./6561.,-25360./2187.,64448./6561., -212./729.,0,0,
+    9017./3168.,-355/33,46732./5247., 49./176.,-5103./18656.,0,
+    35./384., 0, 500./1113.,125./192.,-2187./6784.,11./84.
+#else
         0,          0,           0,           0,            0,
         1./4.,      0,           0,           0,            0,
         3./32.,     9./32.,      0,           0,            0,
         1932./2197, -7200./2197, 7296./2197,  0,            0,
         439./216,   -8,          3680./513,   -845./4104,   0,
         -8./27.,    2,           -3544./2565, 1859./4104,   -11./40.
+#endif
 ).finished();
 
-//The 4th order b-coefficients for same matrix A
+// Quadrature weights \Blue{$b_i$} for the 4th-order method
 template <class StateType, class RhsType>
 Eigen::VectorXd ode45<StateType, RhsType>::_vb4 = (
     Eigen::VectorXd(ode45<StateType, RhsType>::_s) <<
-        25./216,    0,           1408./2565,  2197./4104,   -1./5,     0
+#ifdef MATLABCOEFF
+    5179./57600.,0,7571./16695.,393./640.,-92097./339200.,187./2100.,1./40.
+#else
+    25./216,    0,           1408./2565,  2197./4104,   -1./5,     0
+#endif
 ).finished();
 
-// The 5th order b-coefficients for same matrix A
+// Quadrature weights \Blue{$b_i$} for the 5th-order method
 template <class StateType, class RhsType>
 Eigen::VectorXd ode45<StateType, RhsType>::_vb5 = (
     Eigen::VectorXd(ode45<StateType, RhsType>::_s) <<
-        16./135,    0,           6656./12825, 28561./56430, -9./50,    2./55
+#ifdef MATLABCOEFF
+    35./384., 0, 500./1113.,125./192.,-2187./6784.,11./84.,0
+#else
+    16./135,    0,           6656./12825, 28561./56430, -9./50,    2./55
+#endif
 ).finished();
 
-// Non autonomous ODEs c coefficients
+// The coefficients \Blue{$c_i$}, relevant for non-autonomous ODEs.
+// Can be computed via rown sums of \Blue{$FA$}
 template <class StateType, class RhsType>
 Eigen::VectorXd ode45<StateType, RhsType>::_vc =
     ode45<StateType, RhsType>::_mA.rowwise().sum();
@@ -240,15 +261,12 @@ template <class StateType, class RhsType>
 const unsigned int ode45<StateType, RhsType>::_s;
 
 // solve()
-template <class StateType,
-          class RhsType
-          >
+template <class StateType,class RhsType>
 template <class NormFunc>
 std::vector< std::pair<StateType, double> >
-  ode45<StateType, RhsType>::solve(const StateType & y0,
-                                   double T,
+  ode45<StateType, RhsType>::solve(const StateType & y0,double T,
                                    const NormFunc & norm) {
-//     TODO: non-autonomous ODE
+  //     TODO: non-autonomous ODE
     const double epsilon = std::numeric_limits<double>::epsilon();
 
     // Setup step size default values if not provided by user
@@ -265,7 +283,7 @@ std::vector< std::pair<StateType, double> >
         options.min_dt = (T - t) * epsilon;
     }
 
-    // Solution container (returned)
+    // Vector for returning solution \Blue{$(t_k,\Vy_k)$}
     std::vector< std::pair<StateType, double> > snapshots;
 
     // Read options from odeconf
@@ -278,9 +296,7 @@ std::vector< std::pair<StateType, double> >
     // TODO: allow negative time direction
 
     // Push initial data
-    if( options.save_init ) {
-        snapshots.push_back( std::make_pair(y0, t) );
-    }
+    if( options.save_init ) snapshots.push_back( std::make_pair(y0, t) );
 
     // Configuration if fixed timestepping was requested
     if( options.fixed_stepsize ) {
@@ -288,16 +304,12 @@ std::vector< std::pair<StateType, double> >
     }
 
     // Temporary containers
-    StateType ytemp0 = y0;
-    StateType ytemp1 = y0;
-    StateType ytemp2 = y0;
+    StateType ytemp0 = y0, ytemp1 = y0, ytemp2 = y0;
     // Pointers forswapping of temporary containers
-    StateType *yprev = &ytemp0;
-    StateType *y4 = &ytemp1, *y5 = &ytemp2;
+    StateType *yprev = &ytemp0, *y4 = &ytemp1, *y5 = &ytemp2;
 
-    // Increment matrix (reserve space)
-    std::vector<StateType> mK;
-    mK.resize(_s);
+    // Increments \Blue{$\Vk_i$}
+    std::vector<StateType> mK; mK.resize(_s);
 
     // Usage statistics
     unsigned int iterations = 0; // Iterations for current step
@@ -305,10 +317,8 @@ std::vector< std::pair<StateType, double> >
     // Main loop, exit if dt too small or final time reached
     while (t < T && dt >= options.min_dt) {
         // Force hitting the endpoint of the time slot exactly
-        if(t + dt > T) {
-            dt = T - t;
-        }
-        // Compute the matrix increments using the
+        if(t + dt > T) dt = T - t;
+        // Compute the Runge-Kutta increments using the
         // coefficients provided in _mA, _vb, _vc
         mK.front() = f(*yprev);
         for(unsigned int j = 1; j < _s; ++j) {
@@ -319,16 +329,10 @@ std::vector< std::pair<StateType, double> >
             mK.at(j) = f( mK.at(j) );
         }
 
-
-        if( iterations >= options.max_iterations ) {
-            std::cerr << "";
-            abort();
-        }
         statistics.funcalls += _s;
 
-        // Compute the 4th and the 5th order estimations
-        *y4 = *yprev;
-        *y5 = *yprev;
+        // Compute the 4th and the 5th order approximations
+        *y4 = *yprev; *y5 = *yprev;
         for(unsigned int i = 0; i < _s; ++i) {
             *y4 += (dt * _vb4(i)) * mK.at(i);
             *y5 += (dt * _vb5(i)) * mK.at(i);
@@ -338,11 +342,11 @@ std::vector< std::pair<StateType, double> >
         double tau = 2., delta = 1.;
         // Calculate the absolute local truncation error and the acceptable  error
         if( !options.fixed_stepsize) { // if (!fixed_stepsize)
-            delta = norm(*y5 - *y4);
-            tau = std::max(options.rtol * std::max(norm(*yprev), 1.), options.atol);
+	  delta = norm(*y5 - *y4); // estimated 1-step error \Blue{$\mathtt{EST}_k$}
+	  tau = std::max(options.rtol*norm(*yprev),options.atol);
         }
 
-        // Check if step is accepted, if so, advance
+        // Check if step is \com{accepted}, if so, advance
         if( delta <= tau ) {
             t += dt;
             snapshots.push_back( std::make_pair(*y5, t) );
@@ -405,8 +409,12 @@ template <class StateType, class RhsType>
 void ode45<StateType, RhsType>::print(void) {
     std::cout << "----------------------------------" << std::endl;
     std::cout << "--- Report of ODE solve ode45. ---" << std::endl;
+#ifdef MATLABCOEFF
+    std::cout << "--- MATLAB's Runge-Kutta-Fehlberg method used ---" << std::endl;
+#else
+    std::cout << "--- BOOST Runge-Kutta-Fehlberg method used ----" << std::endl;
+#endif
     std::cout << "----------------------------------" << std::endl;
-
     std::cout << " + Data:" << std::endl;
     std::cout << "    - current time of simulation:         " << t                          << std::endl;
     std::cout << " + Options:" << std::endl;
