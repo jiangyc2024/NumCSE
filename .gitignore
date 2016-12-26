@@ -54,5 +54,7 @@ main
 *.swp
 *.swo
 
-# QtCreatory temporary files
+# IDE temporary files
 /CMakeLists.txt.user
+/.kdev4/
+/NumCSE.kdev4
