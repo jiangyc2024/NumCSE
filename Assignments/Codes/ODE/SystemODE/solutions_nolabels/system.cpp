@@ -19,9 +19,9 @@ void rk4step(const Function &odefun, double h,
              const State & y0, State & y1)
 {
     auto k1 = odefun(y0);
-    auto k2 = odefun(y0 + h/2*odefun(k1));
-    auto k3 = odefun(y0 + h/2*odefun(k2));
-    auto k4 = odefun(y0 + h*odefun(k3));
+    auto k2 = odefun(y0 + h/2*k1);
+    auto k3 = odefun(y0 + h/2*k2);
+    auto k4 = odefun(y0 + h*k3);
 
     y1 = y0 + h/6*k1 + h/3*k2 + h/3*k3 + h/6*k4;
 }
