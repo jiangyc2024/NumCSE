@@ -20,9 +20,6 @@ using namespace Eigen;
 template <typename T, int N>
 using Vector = Eigen::Matrix<T, N, 1>;
 
-template <typename Scalar>
-using broyd_history_t = std::vector<std::tuple<unsigned, Scalar, Scalar>>;
-
 /**
  * \brief Good Broyden rank-1-update quasi-Newton method
  * Straightforward implementation for small problems
@@ -31,9 +28,9 @@ using broyd_history_t = std::vector<std::tuple<unsigned, Scalar, Scalar>>;
  * \param J initial guess for Jacobi matrix at x0
  * \param tol tolerance for termination
  */
-template <typename FuncType, typename JacType, typename Scalar=double, int N=Dynamic>
-std::pair<Vector<Scalar, N>, broyd_history_t<Scalar>> broyd(const FuncType &F, Vector<Scalar, N> x, JacType J, 
-                                                            const Scalar tol, const unsigned maxit=20)
+template <typename FuncType, typename JacType, typename Scalar=double, int N=Dynamic, typename CB=void(*)()>
+Vector<Scalar, N>broyd(const FuncType &F, Vector<Scalar, N> x, JacType J, 
+                       const Scalar tol, const unsigned maxit=20, CB callback=nullptr)
 {
     // calculate LU factorization
     auto fac = J.lu();
@@ -44,21 +41,18 @@ std::pair<Vector<Scalar, N>, broyd_history_t<Scalar>> broyd(const FuncType &F, V
     auto sn = s.squaredNorm();
     auto f = F(x);
 
-    // keeping a record of the convergence history
-    std::vector<std::tuple<unsigned, Scalar, Scalar>> history;
-    history.emplace_back(k, s.norm(), f.norm());
-
     while ((sn > tol*tol) && (k < 10)) {
         J = J - f*s.transpose()/sn;
         fac = J.lu();
         s = fac.solve(f);
         x -= s;
         f = F(x); sn=s.squaredNorm();
-        std::cout << "Iteration " << k << ": |s| " << s.norm() << " " << f.norm() << std::endl;
-        history.emplace_back(k, std::sqrt(sn), f.norm());
+
+        if (callback != nullptr)
+            callback(k, x, f, s);
         k+=1; 
     }
-    return std::make_pair(x, history);
+    return x;
 }
 
 

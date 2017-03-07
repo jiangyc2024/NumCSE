@@ -33,11 +33,33 @@ int main() {
 
     Vector2d x0(0.7, 0.7);
 
-    Vector2d x;
-    broyd_history_t<double> broyd_history;
-    upbroyd_history_t<double> upbroyd_history;
-    std::tie(x, upbroyd_history) = upbroyd(F, x0, DF(x0), 0.000001, 20);
-    std::tie(x, broyd_history) = broyd(F, x0, DF(x0), 0.000001, 20);
+    /*
+     * Broyden
+     */
+    {
+        // this function is called in every iteration and prints the progress
+        auto print_progress_cb = [] (unsigned k, Vector2d x, Vector2d f, Vector2d s) {
+            std::cout << "Iteration " << k << ": |s| " << s.norm() << " " << f.norm() << std::endl;
+        };
+        // run the algorithm (we ignore the result)
+        broyd(F, x0, DF(x0), 0.000001, 20, print_progress_cb);
+    }
+
+    /*
+     * Upbroyd
+     */
+    {
+        // this function is called in every iteration and prints the progress
+        auto print_progress_cb = [] (unsigned k, Vector2d x, Vector2d f, Vector2d s, Vector2d w, std::vector<double>& dxn) {
+            std::cout << "Iteration(UPD) " << std::scientific << k << ": |s| = " << s.norm()
+                  << ", |F(x)| = " << f.norm();
+            if (dxn.size() > 1)
+                std::cout << ", theta = " << std::fixed << w.norm()/std::sqrt(dxn[k-1]);
+            std::cout << std::endl;
+        };
+        // run the algorithm (we ignore the result)
+        upbroyd(F, x0, DF(x0), 0.000001, 20, print_progress_cb);
+    }
 
     return 0;
 }
