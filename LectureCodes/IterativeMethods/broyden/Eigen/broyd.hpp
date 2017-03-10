@@ -20,6 +20,10 @@ using namespace Eigen;
 template <typename T, int N>
 using Vector = Eigen::Matrix<T, N, 1>;
 
+template <typename Scalar, int N>
+using broyd_void_cb_t = void(*)(unsigned, Vector<Scalar, N>, 
+    Vector<Scalar, N>, Vector<Scalar, N>);
+
 /**
  * \brief Good Broyden rank-1-update quasi-Newton method
  * Straightforward implementation for small problems
@@ -27,10 +31,13 @@ using Vector = Eigen::Matrix<T, N, 1>;
  * \param x initial guess
  * \param J initial guess for Jacobi matrix at x0
  * \param tol tolerance for termination
+ * \param callback to be run in every iteration step
  */
-template <typename FuncType, typename JacType, typename Scalar=double, int N=Dynamic, typename CB=void(*)()>
+template <typename FuncType, typename JacType, typename Scalar=double,
+          int N=Dynamic, typename CB=broyd_void_cb_t<Scalar, N>>
 Vector<Scalar, N>broyd(const FuncType &F, Vector<Scalar, N> x, JacType J, 
-                       const Scalar tol, const unsigned maxit=20, CB callback=nullptr)
+                       const Scalar tol, const unsigned maxit=20,
+                       CB callback=nullptr)
 {
     // calculate LU factorization
     auto fac = J.lu();

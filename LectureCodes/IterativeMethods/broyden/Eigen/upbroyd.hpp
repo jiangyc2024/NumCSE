@@ -20,8 +20,10 @@ using namespace Eigen;
 template <typename T, int N>
 using Vector = Eigen::Matrix<T, N, 1>;
 
-template <typename Scalar>
-using upbroyd_history_t = std::vector<std::tuple<unsigned, Scalar, Scalar, Scalar>>;
+template <typename Scalar, int N>
+using upbroyd_void_cb_t = void(*)(unsigned, Vector<Scalar, N>, 
+    Vector<Scalar, N>, Scalar, Vector<Scalar, N>, std::vector<Scalar>);
+
 
 /**
  * \brief Good Broyden rank-1-update quasi-Newton method
@@ -31,7 +33,8 @@ using upbroyd_history_t = std::vector<std::tuple<unsigned, Scalar, Scalar, Scala
  * \param J initial guess for Jacobi matrix at x0
  * \param tol tolerance for termination
  */
-template <typename FuncType, typename JacType, typename Scalar=double, int N=Dynamic, typename CB=void(*)()>
+template <typename FuncType, typename JacType, typename Scalar=double,
+         int N=Dynamic, typename CB=upbroyd_void_cb_t<Scalar, N>>
 Vector<Scalar, N> upbroyd(const FuncType &F, Vector<Scalar, N> x, JacType J, 
                           const Scalar tol, const unsigned maxit=20, CB callback=nullptr)
 {
