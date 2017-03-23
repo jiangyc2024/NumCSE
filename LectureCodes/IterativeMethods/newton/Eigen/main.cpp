@@ -20,8 +20,11 @@ void newton2Ddriver(void)
 		Eigen::Vector2d s = J.lu().solve(f);
 		return(s);
 	};
-	Eigen::Vector2d x; x << 2,3; // initial guess
-	newton(F,DF,x,1E-6,1E-8);
+    // initial guess
+	Vector2d x0(2., 3.);
+
+    // evaluate Newtons method
+	Vector2d x = newton(F,DF,x0,1E-6,1E-8);
 	std::cout << "||F(x)|| = " << F(x).norm() << std::endl;
 }
 
