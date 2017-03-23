@@ -26,9 +26,10 @@ using Vector = Eigen::Matrix<T, N, 1>;
  * \param tol tolerance for termination
  * \param callback to be run in every iteration step
  */
-template <typename FuncType, typename JacType, typename Scalar=double,
+template <typename FuncType, typename JacType, typename Scalar,
           int N=Dynamic, typename CB=void_cb>
-Vector<Scalar, N> broyd(const FuncType F, Vector<Scalar, N> x, JacType J, const Scalar tol, 
+Vector<Scalar, N> broyd(FuncType&& F, Vector<Scalar, N> x, 
+                        const JacType& J, const Scalar tol, 
                         const unsigned maxit=20, CB callback=nullptr)
 {
     // calculate LU factorization

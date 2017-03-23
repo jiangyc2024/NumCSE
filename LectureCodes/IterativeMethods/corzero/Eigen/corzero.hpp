@@ -12,20 +12,18 @@
 using Eigen::VectorXd;
 
 /* SAM_LISTING_BEGIN_0 */
-void fpit(double x0,VectorXd &rates,
-	            VectorXd &err)
+void fpit(double x0, VectorXd &rates, VectorXd &err)
 {
   const unsigned int N = 15;
   double x = x0; // \com{initial guess}
   VectorXd y(N);
-  
+
   for (int i=0; i<N; ++i) {
     x = x + (cos(x)+1)/sin(x);
     y(i) = x;
   }
-  err.resize(N); rates.resize(N);	
+  err.resize(N); rates.resize(N);
   err = y-VectorXd::Constant(N,x);
-  rates = err.bottomRows(N-1).
-    cwiseQuotient(err.topRows(N-1));
+  rates = err.bottomRows(N-1).cwiseQuotient(err.topRows(N-1));
 }
 /* SAM_LISTING_END_0 */
