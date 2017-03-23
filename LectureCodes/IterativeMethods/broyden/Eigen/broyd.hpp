@@ -29,7 +29,7 @@ using Vector = Eigen::Matrix<T, N, 1>;
 template <typename FuncType, typename JacType, typename Scalar,
           int N=Dynamic, typename CB=void_cb>
 Vector<Scalar, N> broyd(FuncType&& F, Vector<Scalar, N> x, 
-                        const JacType& J, const Scalar tol, 
+                        JacType J, const Scalar tol, 
                         const unsigned maxit=20, CB callback=nullptr)
 {
     // calculate LU factorization
