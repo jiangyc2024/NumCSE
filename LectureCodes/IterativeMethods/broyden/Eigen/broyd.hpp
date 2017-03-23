@@ -9,20 +9,13 @@
 #define BROYD_HPP
 
 #include <Eigen/Dense>
-#include <vector>
-#include <iostream>
-#include <tuple>
-#include <utility>
+#include "void_cb.hpp"
 
 using namespace Eigen;
 
 // convenience typedef
 template <typename T, int N>
 using Vector = Eigen::Matrix<T, N, 1>;
-
-template <typename Scalar, int N>
-using broyd_void_cb_t = void(*)(unsigned, Vector<Scalar, N>, 
-    Vector<Scalar, N>, Vector<Scalar, N>);
 
 /**
  * \brief Good Broyden rank-1-update quasi-Newton method
@@ -34,10 +27,9 @@ using broyd_void_cb_t = void(*)(unsigned, Vector<Scalar, N>,
  * \param callback to be run in every iteration step
  */
 template <typename FuncType, typename JacType, typename Scalar=double,
-          int N=Dynamic, typename CB=broyd_void_cb_t<Scalar, N>>
-Vector<Scalar, N>broyd(const FuncType &F, Vector<Scalar, N> x, JacType J, 
-                       const Scalar tol, const unsigned maxit=20,
-                       CB callback=nullptr)
+          int N=Dynamic, typename CB=void_cb>
+Vector<Scalar, N> broyd(const FuncType F, Vector<Scalar, N> x, JacType J, const Scalar tol, 
+                        const unsigned maxit=20, CB callback=nullptr)
 {
     // calculate LU factorization
     auto fac = J.lu();
