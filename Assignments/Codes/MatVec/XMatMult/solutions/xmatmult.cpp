@@ -22,10 +22,10 @@ using namespace Eigen;
 template<class Vector>
 void xmatmult(const Vector& a, const Vector& y, Vector& x) {
     assert(a.size() == y.size() && a.size() == x.size()
-            &&"Input vector dimensions must match");
+            && "Input vector dimensions must match");
     unsigned n = a.size();
     
-    // want to loop over half of a,
+    // looping over half of a,
     // if n is odd we treat the middle element differently
     for (unsigned i = 0; i < n / 2; ++i) {   //integer division
         x(i) = a(i) * y(i) + a(n-i-1) * y(n-i-1);
@@ -52,14 +52,15 @@ void compare_times() {
         //bitshift operator '<<': 1<<3 == pow(2,3)
         unsigned n = 1<<k;
         VectorXd a,y,x(n);
-        a = y = MatrixXd::Random(n,1);
+        a = y = VectorXd::Random(n);
+        
         MatrixXd A = a.asDiagonal();
         for (unsigned i = 0; i < n; ++i) {
             A(n-i-1,i) = A(i,i);
         }
         
         //measure multiple times
-        for (int i = 0; i < repeats; i++) {
+        for (unsigned i = 0; i < repeats; i++) {
             t_fast.start();
             xmatmult(a,y,x);
             t_fast.stop();
@@ -90,8 +91,8 @@ void compare_times() {
 void test() {
     // testing for even n
     unsigned n = 10;
-    VectorXd a,y,x();
-    a = y = MatrixXd::Random(n,1);
+    VectorXd a,y,x(n);
+    a = y = VectorXd::Random(n,1);
     //building A for normal Matrix-Vector multiplication O(n*n)
     MatrixXd A = a.asDiagonal();
     for (unsigned i = 0; i < n; ++i) {
@@ -107,7 +108,7 @@ void test() {
     
     // testing for odd n
     n = 11;
-    a = y = MatrixXd::Random(n,1);
+    a = y = x= VectorXd::Random(n,1);
     A = a.asDiagonal();
     for (unsigned i = 0; i < n; ++i) {
         A(n-i-1,i) = A(i,i);
