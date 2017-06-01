@@ -1,3 +1,10 @@
+///////////////////////////////////////////////////////////////////////////
+/// Demonstration code for lecture "Numerical Methods for CSE" @ ETH Zurich
+/// (C) 2016 SAM, D-MATH
+/// Author(s): Till Ehrengruber <tille@student.ethz.ch>
+/// Repository: https://gitlab.math.ethz.ch/NumCSE/NumCSE/
+/// Do not remove this header.
+//////////////////////////////////////////////////////////////////////////
 #ifndef UPBROYD_HPP
 #define UPBROYD_HPP
 
@@ -13,8 +20,10 @@ using namespace Eigen;
 template <typename T, int N>
 using Vector = Eigen::Matrix<T, N, 1>;
 
-template <typename Scalar>
-using upbroyd_history_t = std::vector<std::tuple<unsigned, Scalar, Scalar, Scalar>>;
+template <typename Scalar, int N>
+using upbroyd_void_cb_t = void(*)(unsigned, Vector<Scalar, N>, 
+    Vector<Scalar, N>, Scalar, Vector<Scalar, N>, std::vector<Scalar>);
+
 
 /**
  * \brief Good Broyden rank-1-update quasi-Newton method
@@ -24,9 +33,10 @@ using upbroyd_history_t = std::vector<std::tuple<unsigned, Scalar, Scalar, Scala
  * \param J initial guess for Jacobi matrix at x0
  * \param tol tolerance for termination
  */
-template <typename FuncType, typename JacType, typename Scalar=double, int N=Dynamic>
-std::pair<Vector<Scalar, N>, upbroyd_history_t<Scalar>> upbroyd(const FuncType &F, Vector<Scalar, N> x, JacType J, 
-                                                                const Scalar tol, const unsigned maxit=20)
+template <typename FuncType, typename JacType, typename Scalar=double,
+         int N=Dynamic, typename CB=upbroyd_void_cb_t<Scalar, N>>
+Vector<Scalar, N> upbroyd(const FuncType &F, Vector<Scalar, N> x, JacType J, 
+                          const Scalar tol, const unsigned maxit=20, CB callback=nullptr)
 {
     // calculate LU factorization
     auto fac = J.lu();
@@ -35,17 +45,13 @@ std::pair<Vector<Scalar, N>, upbroyd_history_t<Scalar>> upbroyd(const FuncType &
     Vector2d s = fac.solve(F(x));
     x -= s;
     auto sn = s.squaredNorm();
-    std::cout << "Iteration(UPD) " << std::scientific << k << ": |s| = " << s.norm()
-              << ", |F(x)| = " << F(x).norm() << std::endl;
-
-
-    // keeping a record of the convergence history
-    std::vector<std::tuple<unsigned, Scalar, Scalar, Scalar>> history;
-    history.emplace_back(k, s.norm(), F(x).norm(), 1);
 
     // update vector
     std::vector<VectorXd> dx = {s};
     std::vector<Scalar> dxn = {sn};
+
+    // callback once before we start the algorithm
+    callback(k, x, F(x), s, Vector<Scalar, N>::Zero(), dxn);
 
     while ((sn > tol*tol) && (k < maxit)) {
         Vector<Scalar, N> w = fac.solve(F(x));
@@ -58,13 +64,11 @@ std::pair<Vector<Scalar, N>, upbroyd_history_t<Scalar>> upbroyd(const FuncType &
         dx.push_back(s);
         dxn.push_back(sn);
         x -= s;
-        history.emplace_back(k, std::sqrt(sn), F(x).norm(), w.norm()/sqrt(dxn[k-1]));
-        std::cout << "Iteration(UPD) " << std::scientific << k << ": |s| = " << s.norm()
-                  << ", |F(x)| = " << F(x).norm()
-                  << ", theta = " << std::fixed << w.norm()/sqrt(dxn[k-1]) << std::endl;
+        if (callback != nullptr)
+            callback(k, x, F(x), s, w, dxn);
         ++k;
     }
-    return std::make_pair(x, history);
+    return x;
 }
 
 #endif

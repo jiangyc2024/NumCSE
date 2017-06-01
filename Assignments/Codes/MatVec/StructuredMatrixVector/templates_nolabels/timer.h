@@ -17,7 +17,7 @@
  *        Timer t;                                           *
  *        t.start();                                         *
  *        ...  stuff happening ...                           *
- *        t.stop();                                          *  
+ *        t.stop();                                          *
  *                                                           *
  *        NOTE: stop() and lap() are equivalent!             *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -65,7 +65,7 @@ void Timer::lap(){
   // get laptime
   duration_t laptime;
   laptime = tmp - t_end;
-  
+
   // check if this lap was faster
   if (t_min > laptime || t_laps.size() == 0) {
     t_min = laptime;
@@ -74,12 +74,20 @@ void Timer::lap(){
   // save time of this lap
   t_laps.push_back(laptime);
 
-  // save total time 
+  // save total time
   t_end = tmp;
 }
 
 // idle constructor
-Timer::Timer() {}
+Timer::Timer() {
+  #ifndef NDEBUG
+  static bool runonce = true;
+  if (runonce) {
+    std::cerr << "Warning: Timer was build as DEBUG." << std::endl;
+    runonce = false;
+  }
+  #endif
+}
 
 // resets all values
 void Timer::reset(){
