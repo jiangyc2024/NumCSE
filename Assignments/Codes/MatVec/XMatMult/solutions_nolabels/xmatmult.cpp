@@ -26,48 +26,43 @@ using namespace Eigen;
  */
 template<class Vector>
 void xmatmult(const Vector& a, const Vector& y, Vector& x) {
-    // Initialization
-    assert(a.size() == y.size() && "Input vector dimensions must match");
+    assert(a.size() == y.size() && a.size() == x.size()
+            &&"Input vector dimensions must match");
     unsigned n = a.size();
-    x.resize(n);
     
     // want to loop over half of a,
     // if n is odd we treat the middle element differently
-    for (unsigned i = 0; i < n / 2; ++i)    //integer division!
-    {
+    for (unsigned i = 0; i < n / 2; ++i) {   //integer division
         x(i) = a(i) * y(i) + a(n-i-1) * y(n-i-1);
         x(n-i-1) = x(i);
     }
     
-    if (n%2) //n is odd
-    {
+    if (n%2) { //n is odd
         x(n/2) = a(n/2) * y(n/2);
     }
 }
 
-/*@brief Compare the runtimes of your efficient
- * multipication to the naive Matrix-Vector product
+/*@brief Compares the runtimes of the efficient
+ * multipication to the normal Matrix-Vector product
  */
 void compare_times() {
     std::cout << "Measuring runtimes for comparison" << std::endl;
-    unsigned repeats = 1;
+    unsigned repeats = 3;
     Timer t_fast, t_slow;
     MatrixXd results(10,3);
-    for (unsigned k = 14; k > 4; k--)
-    {
+    
+    for (unsigned k = 14; k > 4; k--) {
         //bitshift operator '<<': 1<<3 == pow(2,3)
         unsigned n = 1<<k;
-        VectorXd a,y,x;
+        VectorXd a,y,x(n);
         a = y = MatrixXd::Random(n,1);
         MatrixXd A = a.asDiagonal();
-        for (unsigned i = 0; i < n; ++i)
-        {
+        for (unsigned i = 0; i < n; ++i) {
             A(n-i-1,i) = A(i,i);
         }
         
         //measure multiple times
-        for (int i = 0; i < repeats; i++)
-        {
+        for (int i = 0; i < repeats; i++) {
             t_fast.start();
             xmatmult(a,y,x);
             t_fast.stop();
@@ -86,8 +81,7 @@ void compare_times() {
               << std::setw(15) << "original"
               << std::setw(15) << "efficient"
               << std::setprecision(5) << std::endl;
-    for (int i = 0; i < results.rows(); i++)
-    {
+    for (int i = 0; i < results.rows(); i++) {
         std::cout << std::setw(8)<< results(i,0)
                   << std::setw(15) << results(i,1) << " s"
                   << std::setw(15) << results(i,2) << " s"
@@ -95,23 +89,20 @@ void compare_times() {
     }
 }
 
-
 void test() {
     // testing for even n
     unsigned n = 10;
-    VectorXd a,y,x;
+    VectorXd a,y,x();
     a = y = MatrixXd::Random(n,1);
     //building A for normal Matrix-Vector multiplication O(n*n)
     MatrixXd A = a.asDiagonal();
-    for (unsigned i = 0; i < n; ++i)
-    {
+    for (unsigned i = 0; i < n; ++i) {
         A(n-i-1,i) = A(i,i);
     }
     xmatmult(a,y,x);
     
     double error = (x - A*y).norm();
-    if (std::abs(error) > 1e-10)    //don't do == on floating point numbers!
-    {
+    if (std::abs(error) > 1e-10) {    //== on floating point numbers is meaninless
         std::cout << "Wrong result for even n" << std::endl;
         return;
     }
@@ -120,16 +111,14 @@ void test() {
     n = 11;
     a = y = MatrixXd::Random(n,1);
     A = a.asDiagonal();
-    for (unsigned i = 0; i < n; ++i)
-    {
+    for (unsigned i = 0; i < n; ++i) {
         A(n-i-1,i) = A(i,i);
     }
     
     xmatmult(a,y,x);
     
     error = (x - A*y).norm();
-    if (std::abs(error) > 1e-10)
-    {
+    if (std::abs(error) > 1e-10) {
         std::cout << "Wrong result for odd n" << std::endl;
         return;
     }
@@ -140,6 +129,4 @@ void test() {
 int main() {
     test();
     compare_times();
-
-    
 }
