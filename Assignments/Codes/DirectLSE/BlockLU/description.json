@@ -1,0 +1,8 @@
+{
+    "author" : "ochsnerd",
+    "email" : "",
+    "contributors" : "",
+
+    "name": "BlockLU",
+    "all" : ["blockLU.cpp"]
+}
