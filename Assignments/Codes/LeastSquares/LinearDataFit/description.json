@@ -1,0 +1,8 @@
+{
+    "author" : "",
+    "email" : "",
+    "contributors" : "",
+
+    "name": "LinearDataFit",
+    "all" : ["linear_data_fit.cpp"]
+}
