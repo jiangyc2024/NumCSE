@@ -47,18 +47,22 @@ int main() {
 	VectorXd f(10);
 	f << 100. , 34. , 17. , 12. , 9. , 6. , 5. , 4. , 4. , 2.;
 
+	// approximate function coefficients using both methods
 	auto gamma1 = data_fit_normal(A, f);
 	auto gamma2 = data_fit_qr(A, f);
 
+	// and evaluate the resulting function at the data points
 	auto y1 = A*gamma1;
 	auto y2 = A*gamma2;
 
+	// evaluate the function at a high-resolution space for plotting
 	auto tl = VectorXd::LinSpaced(91, 0.1, 1.0);
 	auto Al = make_A(tl);
 	auto yl1 =  Al*gamma1;
 	auto yl2 =  Al*gamma2;
 
 
+	// plot data points and fitted function
 	mgl::Figure fig1;
 	fig1.setlog(false, true);
 	fig1.plot(tl, yl1, "r").label("normal equation");
@@ -70,11 +74,13 @@ int main() {
 	fig1.save("fitted.eps");
 
 
+	// compute squared errors at each data point
 	VectorXd err1 = (y1-f);
 	err1 = err1.cwiseProduct(err1);
 	VectorXd err2 = (y2-f);
 	err2 = err2.cwiseProduct(err2);
 
+	// plot fitting errors
 	mgl::Figure fig2;
 	fig2.setlog(false, true);
 	fig2.plot(t, err1, "r*").label("normal equation");
@@ -84,11 +90,13 @@ int main() {
 	fig2.legend(1, 1);
 	fig2.save("errors.eps");
 
+	// show that the different methods don't result in the same result
 	std::cout << (gamma1 - gamma2) << std::endl;
 	std::cout << "L2-Norms: " << std::sqrt(err1.sum()) << " " << std::sqrt(err2.sum()) << std::endl;
 	std::cout << "Difference in L2-Norms: " << (std::sqrt(err1.sum()) - std::sqrt(err2.sum())) << std::endl;
 
-	auto cond = [](MatrixXd A){
+	// computes the condition number of a matrix
+	auto cond = [](MatrixXd &A){
 		JacobiSVD<MatrixXd> svd(A);
 		auto sigma = svd.singularValues();
 		return sigma[0]/sigma[sigma.size()-1];
