@@ -109,7 +109,7 @@ int main() {
 	std::cout << "Difference in L2-Norms: " << (std::sqrt(err1.sum()) - std::sqrt(err2.sum())) << std::endl;
 
 	// computes the condition number of a matrix
-	auto cond = [](MatrixXd &A){
+	auto cond = [](const MatrixXd &A){
 		JacobiSVD<MatrixXd> svd(A);
 		auto sigma = svd.singularValues();
 		return sigma[0]/sigma[sigma.size()-1];
