@@ -9,3 +9,4 @@ endif()
 
 set(SRCS cpptutorial.cpp)
 add_executable(tutorial ${SRCS})
+add_executable(myvector myvector.cpp)
