@@ -1,0 +1,9 @@
+{
+    "author" : "",
+    "contributors" : "",
+    "email" : "ochsnerd@student.ethz.ch",
+    
+    "name": "XMatMult",
+    "all" : ["xmatmult.cpp"],
+    "lib" : ["timer.h"]
+}
