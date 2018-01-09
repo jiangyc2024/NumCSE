@@ -40,7 +40,7 @@ VectorXd chebexp(const VectorXd& y) {
   for (unsigned j = 0; j < c.size(); ++j) 
     beta(j) = ( std::exp(sc*double(-n+j))*c[j] ).real();
   // recover \Blue{$\alpha_j$}, see \eqref{eq:tpdft}
-  VectorXd alpha = 2*beta.tail(n); alpha(0) = beta(n);
+  VectorXd alpha = 2*beta.segment(n,n); alpha(0) = beta(n);
   return alpha;
 }
 /* SAM_LISTING_END_0 */
