@@ -1,6 +1,6 @@
 # Numerical Methods for CSE
 
-This repository will host all the codes used in the lecture notes, and assignments.
+This repository will host all the codes used in the lecture notes and assignments.
 
 **Additional links**
 
