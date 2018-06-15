@@ -10,3 +10,7 @@ endif()
 set(SRCS cpptutorial.cpp)
 add_executable(tutorial ${SRCS})
 add_executable(myvector myvector.cpp)
+add_executable(lambdatransform lambdatransform.cpp)
+add_executable(fnvec fnvec.cpp)
+add_executable(tietuple tietuple.cpp)
+
