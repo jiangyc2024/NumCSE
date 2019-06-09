@@ -367,7 +367,7 @@ template <typename Numeric> PyObject *get_array(const std::vector<Numeric> &v) {
 template <typename Vector> PyObject *get_array(const Vector &v) {
   detail::_interpreter::get(); // interpreter needs to be initialized for the
                                // numpy commands to work
-  NPY_TYPES type = select_npy_type<Vector::Scalar>::type;
+  NPY_TYPES type = select_npy_type<typename Vector::Scalar>::type;
   if (type == NPY_NOTYPE) {
     std::vector<double> vd(v.size());
     npy_intp vsize = v.size();
@@ -431,40 +431,6 @@ template <typename Vector> PyObject *get_array(const Vector &v) {
 }
 
 #endif // WITHOUT_NUMPY
-
-// TODO to Vector templates
-template <typename Numeric>
-bool plot(const std::vector<Numeric> &x, const std::vector<Numeric> &y,
-          const std::map<std::string, std::string> &keywords) {
-  assert(x.size() == y.size());
-
-  // using numpy arrays
-  PyObject *xarray = get_array(x);
-  PyObject *yarray = get_array(y);
-
-  // construct positional args
-  PyObject *args = PyTuple_New(2);
-  PyTuple_SetItem(args, 0, xarray);
-  PyTuple_SetItem(args, 1, yarray);
-
-  // construct keyword args
-  PyObject *kwargs = PyDict_New();
-  for (std::map<std::string, std::string>::const_iterator it = keywords.begin();
-       it != keywords.end(); ++it) {
-    PyDict_SetItemString(kwargs, it->first.c_str(),
-                         PyString_FromString(it->second.c_str()));
-  }
-
-  PyObject *res = PyObject_Call(
-      detail::_interpreter::get().s_python_function_plot, args, kwargs);
-
-  Py_DECREF(args);
-  Py_DECREF(kwargs);
-  if (res)
-    Py_DECREF(res);
-
-  return res;
-}
 
 template <typename VectorX, typename VectorY>
 bool plot(const VectorX &x, const VectorY &y,
@@ -1867,6 +1833,7 @@ template <typename... Args> bool plot() { return true; }
 
 template <typename A, typename B, typename... Args>
 bool plot(const A &a, const B &b, const std::string &format, Args... args) {
+  std::cout << "Called recursion bottom\n";
   return detail::plot_impl<typename detail::is_callable<B>::type>()(a, b,
                                                                     format) &&
          plot(args...);
@@ -1878,7 +1845,7 @@ bool plot(const A &a, const B &b, const std::string &format, Args... args) {
  */
 inline bool plot(const std::vector<double> &x, const std::vector<double> &y,
                  const std::string &format = "") {
-  return plot<double, double>(x, y, format);
+  return plot<std::vector<double>, std::vector<double>>(x, y, format);
 }
 
 inline bool plot(const std::vector<double> &y, const std::string &format = "") {
@@ -1887,7 +1854,7 @@ inline bool plot(const std::vector<double> &y, const std::string &format = "") {
 
 inline bool plot(const std::vector<double> &x, const std::vector<double> &y,
                  const std::map<std::string, std::string> &keywords) {
-  return plot<double>(x, y, keywords);
+  return plot<std::vector<double>, std::vector<double>>(x, y, keywords);
 }
 
 /*
