@@ -944,9 +944,8 @@ bool semilogy(const std::vector<NumericX> &x, const std::vector<NumericY> &y,
   return res;
 }
 
-template <typename NumericX, typename NumericY>
-bool loglog(const std::vector<NumericX> &x, const std::vector<NumericY> &y,
-            const std::string &s = "") {
+template <typename VectorX, typename VectorY>
+bool loglog(const VectorX &x, const VectorY &y, const std::string &s = "") {
   assert(x.size() == y.size());
 
   PyObject *xarray = get_array(x);
