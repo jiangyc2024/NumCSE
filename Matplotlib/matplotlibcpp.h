@@ -367,7 +367,8 @@ template <typename Numeric> PyObject *get_array(const std::vector<Numeric> &v) {
 template <typename Vector> PyObject *get_array(const Vector &v) {
   detail::_interpreter::get(); // interpreter needs to be initialized for the
                                // numpy commands to work
-  NPY_TYPES type = select_npy_type<typename Vector::Scalar>::type;
+  // both Eigen::Matrix<..> and std::vector<..> have the member value_type
+  NPY_TYPES type = select_npy_type<typename Vector::value_type>::type;
   if (type == NPY_NOTYPE) {
     std::vector<double> vd(v.size());
     npy_intp vsize = v.size();
@@ -807,9 +808,8 @@ bool named_hist(std::string label, const std::vector<Numeric> &y,
   return res;
 }
 
-template <typename NumericX, typename NumericY>
-bool plot(const std::vector<NumericX> &x, const std::vector<NumericY> &y,
-          const std::string &s = "") {
+template <typename VectorX, typename VectorY>
+bool plot(const VectorX &x, const VectorY &y, const std::string &s = "") {
   assert(x.size() == y.size());
 
   PyObject *xarray = get_array(x);
@@ -1147,9 +1147,12 @@ bool named_loglog(const std::string &name, const std::vector<Numeric> &x,
   return res;
 }
 
-template <typename Numeric>
-bool plot(const std::vector<Numeric> &y, const std::string &format = "") {
-  std::vector<Numeric> x(y.size());
+template <typename Vector>
+bool plot(const Vector &y, const std::string &format = "") {
+  // TODO can this be <size_t> or do we need <typename Vector::value_type>?
+  // before the conversion of this function from vector<Numeric> to Vector
+  // the created vector x was of the same type as y
+  std::vector<size_t> x(y.size());
   for (size_t i = 0; i < x.size(); ++i)
     x.at(i) = i;
   return plot(x, y, format);
@@ -1833,7 +1836,6 @@ template <typename... Args> bool plot() { return true; }
 
 template <typename A, typename B, typename... Args>
 bool plot(const A &a, const B &b, const std::string &format, Args... args) {
-  std::cout << "Called recursion bottom\n";
   return detail::plot_impl<typename detail::is_callable<B>::type>()(a, b,
                                                                     format) &&
          plot(args...);
@@ -1849,7 +1851,7 @@ inline bool plot(const std::vector<double> &x, const std::vector<double> &y,
 }
 
 inline bool plot(const std::vector<double> &y, const std::string &format = "") {
-  return plot<double>(y, format);
+  return plot<std::vector<double>>(y, format);
 }
 
 inline bool plot(const std::vector<double> &x, const std::vector<double> &y,
