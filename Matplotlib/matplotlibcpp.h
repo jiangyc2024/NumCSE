@@ -66,6 +66,8 @@ struct _interpreter {
   PyObject *s_python_function_ylabel;
   PyObject *s_python_function_xticks;
   PyObject *s_python_function_yticks;
+  PyObject *s_python_function_xscale;
+  PyObject *s_python_function_yscale;
   PyObject *s_python_function_grid;
   PyObject *s_python_function_clf;
   PyObject *s_python_function_errorbar;
@@ -190,6 +192,8 @@ private:
     s_python_function_ylabel = PyObject_GetAttrString(pymod, "ylabel");
     s_python_function_xticks = PyObject_GetAttrString(pymod, "xticks");
     s_python_function_yticks = PyObject_GetAttrString(pymod, "yticks");
+    s_python_function_xscale = PyObject_GetAttrString(pymod, "xscale");
+    s_python_function_yscale = PyObject_GetAttrString(pymod, "yscale");
     s_python_function_grid = PyObject_GetAttrString(pymod, "grid");
     s_python_function_xlim = PyObject_GetAttrString(pymod, "xlim");
     s_python_function_ion = PyObject_GetAttrString(pymod, "ion");
@@ -218,6 +222,8 @@ private:
         !s_python_function_legend || !s_python_function_ylim ||
         !s_python_function_title || !s_python_function_axis ||
         !s_python_function_xlabel || !s_python_function_ylabel ||
+        !s_python_function_xticks || !s_python_function_yticks ||
+        !s_python_function_xscale || !s_python_function_yscale ||
         !s_python_function_grid || !s_python_function_xlim ||
         !s_python_function_ion || !s_python_function_ginput ||
         !s_python_function_save || !s_python_function_clf ||
@@ -250,6 +256,10 @@ private:
         !PyFunction_Check(s_python_function_axis) ||
         !PyFunction_Check(s_python_function_xlabel) ||
         !PyFunction_Check(s_python_function_ylabel) ||
+        !PyFunction_Check(s_python_function_xticks) ||
+        !PyFunction_Check(s_python_function_yticks) ||
+        !PyFunction_Check(s_python_function_xscale) ||
+        !PyFunction_Check(s_python_function_yscale) ||
         !PyFunction_Check(s_python_function_grid) ||
         !PyFunction_Check(s_python_function_xlim) ||
         !PyFunction_Check(s_python_function_ion) ||
@@ -944,28 +954,54 @@ bool semilogy(const std::vector<NumericX> &x, const std::vector<NumericY> &y,
   return res;
 }
 
+template <typename... Args> bool loglog_call(Args... args) {
+  // argument for xscale/yscale is only the string "log"
+  PyObject *log_arg = PyTuple_New(1);
+  PyObject *pystring = PyString_FromString("log");
+  PyTuple_SetItem(log_arg, 0, pystring);
+
+  // call xscale("log") and yscale("log"), no kwargs needed hence pass NULL,
+  // as explained in https://docs.python.org/3/c-api/object.html
+  PyObject *res_x = PyObject_Call(
+      detail::_interpreter::get().s_python_function_xscale, log_arg, NULL);
+  PyObject *res_y = PyObject_Call(
+      detail::_interpreter::get().s_python_function_yscale, log_arg, NULL);
+
+  // clean up
+  Py_DECREF(log_arg);
+
+  if (!res_x)
+    throw std::runtime_error("Call to xscale() failed");
+  Py_DECREF(res_x);
+
+  if (!res_y)
+    throw std::runtime_error("Call to yscale() failed");
+  Py_DECREF(res_y);
+
+  // call plot, which gets now plotted in doubly logarithmic scale
+  return plot(args...);
+}
+
+template <typename VectorY>
+bool loglog(const VectorY &y, const std::string &s = "") {
+  return loglog_call(y, s);
+}
+
 template <typename VectorX, typename VectorY>
 bool loglog(const VectorX &x, const VectorY &y, const std::string &s = "") {
-  assert(x.size() == y.size());
+  return loglog_call(x, y, s);
+}
 
-  PyObject *xarray = get_array(x);
-  PyObject *yarray = get_array(y);
+template <typename VectorY>
+bool loglog(const VectorY &y,
+            const std::map<std::string, std::string> &kwargs) {
+  return loglog_call(y, kwargs);
+}
 
-  PyObject *pystring = PyString_FromString(s.c_str());
-
-  PyObject *plot_args = PyTuple_New(3);
-  PyTuple_SetItem(plot_args, 0, xarray);
-  PyTuple_SetItem(plot_args, 1, yarray);
-  PyTuple_SetItem(plot_args, 2, pystring);
-
-  PyObject *res = PyObject_CallObject(
-      detail::_interpreter::get().s_python_function_loglog, plot_args);
-
-  Py_DECREF(plot_args);
-  if (res)
-    Py_DECREF(res);
-
-  return res;
+template <typename VectorX, typename VectorY>
+bool loglog(const VectorX &x, const VectorY &y,
+            const std::map<std::string, std::string> &kwargs) {
+  return loglog_call(x, y, kwargs);
 }
 
 template <typename NumericX, typename NumericY>
