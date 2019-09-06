@@ -30,13 +30,13 @@ void scaletiming() {
     int n = std::pow(2, minExp + i);
     VectorXd d = VectorXd::Random(n,1), x = VectorXd::Random(n,1), y(n);
     for(int j = 0; j < nruns; ++j) {
-      MatrixXd D = d.asDiagonal(); // \Label[Line]{scti:1}
+      MatrixXd D = d.asDiagonal(); // \Label[line]{scti:1}
       // matrix vector multiplication 
-      tbad.start();  y = D*x; tbad.stop(); // \Label[Line]{scti:2}
+      tbad.start();  y = D*x; tbad.stop(); // \Label[line]{scti:2}
       // componentwise multiplication
-      tgood.start(); y= d.cwiseProduct(x); tgood.stop(); // \Label[Line]{scti:3}
+      tgood.start(); y= d.cwiseProduct(x); tgood.stop(); // \Label[line]{scti:3}
       // matrix multiplication optimized by Eigen
-      topt.start();  y = d.asDiagonal()*x; topt.stop(); // \Label[Line]{scti:4}
+      topt.start();  y = d.asDiagonal()*x; topt.stop(); // \Label[line]{scti:4}
     }
     tms(i,0)=n;
     tms(i,1)=tgood.min(); tms(i,2)=tbad.min(); tms(i,3)= topt.min(); 
