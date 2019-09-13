@@ -20,14 +20,15 @@ using namespace Eigen;
 //! formula $\xi_{1,2} = \frac{1}{2}(-\alpha\pm\sqrt{\alpha^2-4\beta})$. However
 //! this implementation is \emph{vulnerable to round-off}! The zeros are
 //! returned in a column vector
-Vector2d zerosquadpol(double alpha, double beta){
+Vector2d zerosquadpol(double alpha, double beta) {
   Vector2d z;
-  double D = std::pow(alpha,2) -4*beta; // discriminant
-  if(D < 0) throw "no real zeros";
-  else{
+  double D = std::pow(alpha, 2) - 4 * beta; // discriminant
+  if (D < 0)
+    throw "no real zeros";
+  else {
     // The famous discriminant formula
     double wD = std::sqrt(D);
-    z << (-alpha-wD)/2, (-alpha+wD)/2; // \Label[line]{zsq:1}
+    z << (-alpha - wD) / 2, (-alpha + wD) / 2; // \Label[line]{zsq:1}
   }
   return z;
 }

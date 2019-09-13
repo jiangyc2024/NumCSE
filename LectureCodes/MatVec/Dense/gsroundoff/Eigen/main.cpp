@@ -12,7 +12,7 @@
 
 #include "gsroundoff.hpp"
 int main () {
-  unsigned int n = 10;
+  const int n = 10;
   Eigen::MatrixXd H(n,n);
   // Initialize Hilbert matrix
   for(int i = 1; i <=n; ++i){
