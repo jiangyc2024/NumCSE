@@ -1,0 +1,5 @@
+// "testname", "input", "expected output", "points", "execution time limit (ms)"
+"smallTriangular", "(any input)", "1 2\n0 3",  "1", "5000",
+"constantTriangular", "(any input)", "20 20 20\n 0 20 20\n 0  0 20",  "1", "5000",
+"arithmetics", "(any input)", "-18.983\n19.4972",  "1", "5000",
+"casting", "(any input)", "6",  "1", "5000",
