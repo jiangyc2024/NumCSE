@@ -15,8 +15,9 @@
 using namespace Eigen;
 // END
 
-M/* SAM_LISTING_BEGIN_0 */
-atrixXd zero_row_col(MatrixXd A, int p, int q) {
+M /* SAM_LISTING_BEGIN_0 */
+    atrixXd
+    zero_row_col(MatrixXd A, int p, int q) {
   /*
    * This function takes a matrix A, and returns a matrix that is exactly the
    * same, except that row p and column q are set to zero.
@@ -85,6 +86,7 @@ MatrixXd swap_left_right_blocks(MatrixXd A, int p) {
 }
 /* SAM_LISTING_END_1 */
 
+/* SAM_LISTING_BEGIN_3 */
 MatrixXd tridiagonal(int n, double a, double b, double c) {
   /*
    * This function creates an n by n tridiagonal matrix with the values
@@ -110,8 +112,8 @@ MatrixXd tridiagonal(int n, double a, double b, double c) {
   A.diagonal() = VectorXd::Constant(n, b);
   A.diagonal(1) = VectorXd::Constant(n - 1, c);
   // END
-
   return A;
 }
+/* SAM_LISTING_END_3 */
 
 #endif
