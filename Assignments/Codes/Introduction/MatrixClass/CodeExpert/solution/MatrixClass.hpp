@@ -11,7 +11,7 @@
 // END
 
 /* SAM_LISTING_BEGIN_0 */
-Eigen::Matrix2d smallTriangular(double a, double b, double c) {
+Eigen::Matrix<double, 2, 2> smallTriangular(double a, double b, double c) {
   /*
    * This functions returns a 2 by 2 triangular matrix of doubles a, b, c.
    */
@@ -142,7 +142,6 @@ Eigen::VectorXcd arithmetics(int n) {
       B(k,l) = tmp/std::conj(tmp);
     }
   }
-  std::cout<<B<<std::endl;
   // END
 
   // We can perform arithmetics on matrices: +, -, *
@@ -163,8 +162,6 @@ Eigen::VectorXcd arithmetics(int n) {
   u = Eigen::VectorXcd::LinSpaced(n, 1, n); // Or use a for-loop.
   v = C * u;
   // END
-
-  // std::cout<<v<<std::endl;
 
   return v;
 }

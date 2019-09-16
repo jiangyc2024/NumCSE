@@ -10,7 +10,7 @@ int main(){
     std::cout<< "\nTest of casting():\n";
     std::cout<< casting() << std::endl;    
     std::cout<< "\nTest of arithmetics():\n";
-    std::cout<< arithmetics(5) << std::endl;
+    std::cout<< arithmetics(4) << std::endl;
 
     return 0;
     }
