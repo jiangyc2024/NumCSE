@@ -19,15 +19,17 @@ The test prints `constantTriangular(3,20)`, and the correct result is:
    0  0 20
 ```
 ***
-> `arithmetics(int m, int n)`: This function performs some arbitrary arithmetics on a random m by n matrix (the random seed is fixed).
-The test prints `arithmetics(2,5)`, and the correct result is:
-```
-  -18.983
-  19.4972
-```
-***
 > `casting()`: This function calculates the inner product of the integer vector `[2 1]` and the complex vector `[1-i, 5+i]` and returns the real part as a double.
 The test prints `casting()`, and the correct result is:
 ```
   6
+```
+***
+> `arithmetics(int m, int n)`: This function performs some arbitrary arithmetics on complex n by n matrices.
+The test prints `arithmetics(4)`, and the correct result is:
+```
+(-41.4706,27.1176)
+(-23.7692,42.8462)
+(-6.47692,48.4154)
+        (7.2,48.4)
 ```
