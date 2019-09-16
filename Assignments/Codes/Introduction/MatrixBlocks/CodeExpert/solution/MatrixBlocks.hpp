@@ -15,9 +15,8 @@
 using namespace Eigen;
 // END
 
-M /* SAM_LISTING_BEGIN_0 */
-    atrixXd
-    zero_row_col(MatrixXd A, int p, int q) {
+/* SAM_LISTING_BEGIN_0 */
+MatrixXd zero_row_col(MatrixXd A, int p, int q) {
   /*
    * This function takes a matrix A, and returns a matrix that is exactly the
    * same, except that row p and column q are set to zero.
