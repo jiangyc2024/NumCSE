@@ -1,0 +1,5 @@
+// "testname", "input", "expected output", "points", "execution time limit (ms)"
+
+"Identity test", "(any input)", "Works for identity matrix: 1 1", "1", "10000",
+"Test Strassen", "(any input)", "Works for two random matrices: 1", "1", "10000",
+
