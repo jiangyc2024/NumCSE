@@ -23,7 +23,7 @@ MatrixXd zero_row_col(const MatrixXd &A, int p, int q) {
    */
   // Make a copy of A.
   MatrixXd Anew(A);
-  
+
   // TO DO: Set the entries of row number p and column number q to zero.
   // Hint: We can access rows and columns of A by A.row() and A.col().
   // The setZero() is useful here. START
@@ -42,9 +42,9 @@ MatrixXd swap_left_right_blocks(const MatrixXd &A, int p) {
    * A, and C denotes the q=(A.cols() - p) last columns, this functions returns
    * D = [C B].
    */
-  
+
   MatrixXd B, C;
-  
+
   // We can use .rows() and .cols() to get the number of rows and columns in A.
   int q = A.cols() - p;
 
@@ -57,7 +57,7 @@ MatrixXd swap_left_right_blocks(const MatrixXd &A, int p) {
   // columns of A. START
   C = A.block(0, p, A.rows(), q);
   // END
-  
+
   // Make a copy of A.
   MatrixXd Anew(A);
   // The block() method can access arbitrary blocks within a matrix.
