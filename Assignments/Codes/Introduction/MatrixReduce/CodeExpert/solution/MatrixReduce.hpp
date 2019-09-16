@@ -23,7 +23,7 @@ using namespace Eigen;
 // and returns a "double". m = average(A) should calculate the average of the
 // entries of A. START
 /* SAM_LISTING_BEGIN_0 */
-double average(MatrixXd A) {
+double average(const MatrixXd &A) {
   /*
    * Calculates the average of the entries of A
    */
@@ -31,14 +31,13 @@ double average(MatrixXd A) {
   m = A.sum() / A.size();
   return m;
 }
-// END
-
 /* SAM_LISTING_END_0 */
+// END
 
 // Question: is there a reduction method that returns the average of A directly?
 
-/* SAM_LISTING_BEGIN_2 */
-double percent_zero(MatrixXd A) {
+/* SAM_LISTING_BEGIN_1 */
+double percent_zero(const MatrixXd &A) {
   /*
    * Calculates how many entries of A are exactly equal to zero,
    * as a percentage of the total number of entries.
@@ -48,29 +47,29 @@ double percent_zero(MatrixXd A) {
   // but has operations that are entry-wise rather than linear algebra
   // operations. For example, multiplying two Arrays is entry-wise
   // multiplication, and not matrix multiplication.
-  ArrayXXd Arr(A);
-  // START
   // The benefit of using an Array here is that we can do entry-wise boolean
   // comparison, which is not available for matrices.
-  int zeros = (Arr == 0).count();
-  double ratio;
+  ArrayXXd Arr = A.array();
 
-  // TO DO: Calculate the ratio of zero entries.
+  double ratio;
+  // TO DO: Calculate the ratio of zero entries in A.
+  // START
+  int zeros = (Arr == 0).count();
   ratio = ((double)zeros) / A.size();
   // END
 
   return ratio * 100;
 }
-/* SAM_LISTING_END_2 */
+/* SAM_LISTING_END_1 */
 
-/* SAM_LISTING_BEGIN_3 */
-bool has_zero_column(MatrixXd A) {
+/* SAM_LISTING_BEGIN_2 */
+bool has_zero_column(const MatrixXd &A) {
   /*
    * Returns 1 if A has a column that is exactly equal to zero.
    * Returns 0 otherwise.
    */
 
-  int result;
+  bool result;
 
   // A vector is the zero vector if and only if it has norm 0.
   // The following vector contains the squared norms of the columns of A.
@@ -81,17 +80,16 @@ bool has_zero_column(MatrixXd A) {
   // purposes.
 
   // TO DO: Check if any one of the norms is equal to zero.
-  // Hint: Use an ArrayXd and entry-wise comparison.
+  // Hint: Use an array to perform entry-wise comparison.
   // START
-  ArrayXd Arr(norms);
-  result = (Arr == 0).any();
+  result = (norms.array() == 0).any();
   // END
 
   return result;
 }
-/* SAM_LISTING_END_3 */
+/* SAM_LISTING_END_2 */
 
-/* SAM_LISTING_BEGIN_4 */
+/* SAM_LISTING_BEGIN_3 */
 MatrixXd columns_sum_to_zero(const MatrixXd &A) {
   /*
    * Returns a matrix that is like A, but the entries on the diagonal
@@ -110,6 +108,6 @@ MatrixXd columns_sum_to_zero(const MatrixXd &A) {
   return B;
 }
 
-/* SAM_LISTING_END_4 */
+/* SAM_LISTING_END_3 */
 
 #endif
