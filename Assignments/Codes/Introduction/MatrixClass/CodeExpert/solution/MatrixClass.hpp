@@ -67,61 +67,22 @@ Eigen::MatrixXd constantTriangular(int n, double val) {
 }
 /* SAM_LISTING_END_1 */
 
-Eigen::VectorXd arithmetics(int m, int n) {
-  /*
-   * This function does not do anything meaningful.
-   * It is only meant to show some simple Eigen arithmetics and matrix
-   * initializations.
-   */
-
-  // Because the syntax Eigen::Matrix< type, n_rows, n_cols > is very
-  // cumbersome, Eigen provides convenience classes that work as shorthands. For
-  // example, Eigen::Matrix2d is shorthand for Eigen::Matrix< double, 2, 2 >.
-
-  // This declares dynamic size (signified by the letter 'X') matrices of
-  // doubles (signified by the letter 'd').
-  Eigen::MatrixXd A, B, C, I;
-
-  // We initialize the matrices arbitrarily.
-  A = constantTriangular(n, 5.0)
-          .transpose(); // an n by n lower triangular matrix
-  B = Eigen::MatrixXd::Random(
-      m, n); // a random m by n matrix with values between -1 and 1.
-  I = Eigen::MatrixXd::Identity(n, n); // The n by n identity matrix.
-
-  // We can perform arithmetics on matrices: +, -, *
-  // Note that for + and -, the left hand matrix and the right hand matrix have
-  // to be the same size, and that matrix multiplication * is only defined if
-  // the number of columns in the left hand matrix is the same as the number of
-  // rows in the right hand matrix.
-  C = B * (A - 5.0 * I);
-
-  // Eigen::VectorXd is shorthand for Eigen::Matrix< double, Eigen::Dynamic, 1
-  // >. Hence, all the same arithmetics work for vectors.
-  Eigen::VectorXd u, v;
-
-  // TO DO: Initialize the entries of u as the integers from 1 to n, multiply u
-  // by the matrix C, and store the result in v. START
-  u = Eigen::VectorXd::LinSpaced(n, 1, n); // Or use a for-loop.
-  v = C * u;
-  // END
-
-  // std::cout<<v<<std::endl;
-
-  return v;
-}
-
-/* SAM_LISTING_BEGIN_7 */
+/* SAM_LISTING_BEGIN_2 */
 double casting() {
   /*
    * This function does not do anything meaningful.
-   * It is only meant to introduce a few more typedefs and how to cast them.
+   * It is only meant to introduce vectors and how to typecast.
    */
 
-  // RowVectorXi is a shorthand for Eigen::Matrix< int, 1, Eigen::Dynamic >
+  // Because the syntax Eigen::Matrix< type, n_rows, n_cols > is very
+  // cumbersome, Eigen provides convenience classes that work as shorthands.
+  // For example, Eigen::Matrix2d is shorthand for Eigen::Matrix< double, 2, 2 >.
+  
+  // Vectors are just a special type of matrices that have only one column.
+  // Thus, VectorXi is a shorthand for Eigen::Matrix< int, Eigen::Dynamic, 1 >.  
   // Constant(2,1) creates a vector of size 2 and initializes the entries with
   // the value 1.
-  Eigen::RowVectorXi u = Eigen::RowVectorXi::Constant(2, 1);
+  Eigen::VectorXi u = Eigen::VectorXi::Constant(2, 1);
 
   // std::complex is a template class for complex numbers.
   // Here we declare two complex numbers, with real and imaginary parts
@@ -134,18 +95,80 @@ double casting() {
   v(1) = z1;
 
   double x;
-  // TO DO: Calculate u*v and store the result in x.
-  // Hint: First use u.cast< NEW TYPE >() to cast the "int" vector u to a
-  // "std::complex<double>" vector. The result will be u*v = 1*(1-i) + 1*(5+i) =
-  // 6 + 0i, a real number. You can get the real part of a std::complex<double>
-  // by .real().
+  // TO DO: Calculate the inner product of u and v, and store the result in x.
+  // Hint: The inner product of two vectors is given by u.dot(v), but
+  // first we need to cast the "int" vector u to a "std::complex<double>" vector.
+  // Use u.cast< NEW TYPE >() to achieve this.
+  // The result of the inner product will be 1*(1-i) + 1*(5+i) = 6 + 0i,
+  // a real number. You can get the real part of an std::complex<double>
+  // using the method "real()".
   // START
-  std::complex<double> z = u.cast<std::complex<double>>() * v;
+  std::complex<double> z = u.cast<std::complex<double>>().dot( v );
   x = z.real();
   // END
   return x;
 }
+/* SAM_LISTING_END_2 */
 
-/* SAM_LISTING_END_7 */
+
+/* SAM_LISTING_BEGIN_3 */
+Eigen::VectorXcd arithmetics(int n) {
+  /*
+   * This function does not do anything meaningful.
+   * It is only meant to show some simple Eigen arithmetics and matrix
+   * initializations.
+   */
+
+  // This declares dynamic size (signified by the letter 'X') matrices of
+  // complex numbers (signified by the letter c) with real and imaginary
+  // parts represented by doubles (signified by 'd').
+  Eigen::MatrixXcd A, C, I;
+
+  // We initialize the matrices arbitrarily:
+  // an n by n lower triangular matrix,
+  A = constantTriangular(n, 5.0).transpose().cast<std::complex<double>>();
+  // The n by n identity matrix,
+  I = Eigen::MatrixXcd::Identity(n, n);
+  
+  // Declare the n by n matrix B.
+  Eigen::MatrixXcd B(n,n);
+  
+  // TO DO: Fill in the matrix B such that B(k,l) = (k+l*i)/(k-l*i),
+  // where i is the imaginary unity, i^2 = -1.
+  // START
+  for(int k=0; k<n; k++) {
+    for(int l=0; l<n; l++) {
+      std::complex<double> tmp(k+1,l+1);
+      B(k,l) = tmp/std::conj(tmp);
+    }
+  }
+  std::cout<<B<<std::endl;
+  // END
+
+  // We can perform arithmetics on matrices: +, -, *
+  // Note that for + and -, the left hand matrix and the right hand matrix have
+  // to be the same size, and that matrix multiplication * is only defined if
+  // the number of columns in the left hand matrix is the same as the number of
+  // rows in the right hand matrix.
+  C = B * (A - 5.0 * I);
+
+  // Eigen::VectorXcd is shorthand for
+  // Eigen::Matrix< std::complex<double>, Eigen::Dynamic, 1>.
+  // Hence, all the same arithmetics work for vectors.
+  Eigen::VectorXcd u, v;
+
+  // TO DO: Initialize the entries of u as the integers from 1 to n,
+  // multiply u by the matrix C, and store the result in v.
+  // START
+  u = Eigen::VectorXcd::LinSpaced(n, 1, n); // Or use a for-loop.
+  v = C * u;
+  // END
+
+  // std::cout<<v<<std::endl;
+
+  return v;
+}
+/* SAM_LISTING_END_3 */
+
 
 #endif
