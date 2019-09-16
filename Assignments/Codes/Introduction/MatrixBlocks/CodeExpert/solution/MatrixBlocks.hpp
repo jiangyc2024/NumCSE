@@ -16,46 +16,36 @@ using namespace Eigen;
 // END
 
 /* SAM_LISTING_BEGIN_0 */
-MatrixXd zero_row_col(MatrixXd A, int p, int q) {
+MatrixXd zero_row_col(const MatrixXd &A, int p, int q) {
   /*
    * This function takes a matrix A, and returns a matrix that is exactly the
    * same, except that row p and column q are set to zero.
    */
-
-  // We can use .rows() and .cols() to get the number of rows and columns in A.
-  int rows = A.rows();
-  int cols = A.cols();
-
-  VectorXd v;
-  VectorXd u;
-
-  // TO DO: Initialize u and v with zeros, and make sure they are of the
-  // appropriate sizes. START
-  u = VectorXd::Zero(cols);
-  v = VectorXd::Zero(rows);
+  // Make a copy of A.
+  MatrixXd Anew(A);
+  
+  // TO DO: Set the entries of row number p and column number q to zero.
+  // Hint: We can access rows and columns of A by A.row() and A.col().
+  // The setZero() is useful here. START
+  Anew.row(p).setZero();
+  Anew.col(q).setZero();
   // END
 
-  // We can access rows and columns of A by A.row() and A.col().
-  A.row(p) = u;
-  A.col(q) = v;
-
-  // Question: Have we now changed the matrix that was passed as an argument to
-  // this function, or is A a copy of that matrix?
-
-  return A;
+  return Anew;
 }
-
 /* SAM_LISTING_END_0 */
 
 /* SAM_LISTING_BEGIN_1 */
-MatrixXd swap_left_right_blocks(MatrixXd A, int p) {
+MatrixXd swap_left_right_blocks(const MatrixXd &A, int p) {
   /*
    * Writing as a block matrix A = [B C], where B denotes the first p columns of
    * A, and C denotes the q=(A.cols() - p) last columns, this functions returns
    * D = [C B].
    */
-
+  
   MatrixXd B, C;
+  
+  // We can use .rows() and .cols() to get the number of rows and columns in A.
   int q = A.cols() - p;
 
   // A.block( i, j, m, n ) returns the m by n block that has its top-left corner
@@ -67,31 +57,33 @@ MatrixXd swap_left_right_blocks(MatrixXd A, int p) {
   // columns of A. START
   C = A.block(0, p, A.rows(), q);
   // END
-
+  
+  // Make a copy of A.
+  MatrixXd Anew(A);
   // The block() method can access arbitrary blocks within a matrix.
   // For our purposes, it is actually simpler to use leftCols() and rightCols().
-  A.leftCols(q) = C;
+  Anew.leftCols(q) = C;
 
   // TO DO: Use A.rightCols() to fill in the remaining columns of the new matrix
   // A. START
-  A.rightCols(p) = B;
+  Anew.rightCols(p) = B;
   // END
 
   // Tip: Many more methods exist that are special cases of block(),
   // e.g. topRows(), bottomRows(), topLeftCorner(), bottomLeftCorner(), ...
   // For vectors we have head(), tail(), and segment().
 
-  return A;
+  return Anew;
 }
 /* SAM_LISTING_END_1 */
 
-/* SAM_LISTING_BEGIN_3 */
+/* SAM_LISTING_BEGIN_2 */
 MatrixXd tridiagonal(int n, double a, double b, double c) {
   /*
    * This function creates an n by n tridiagonal matrix with the values
-   *      a on the subdiagonal,
+   *      a on the first subdiagonal,
    *      b on the diagonal, and
-   *      c on the superdiagonal.
+   *      c on the first superdiagonal.
    * Example for n=5:
    *     [ b c 0 0 0 ]
    *     [ a b c 0 0 ]
@@ -113,6 +105,6 @@ MatrixXd tridiagonal(int n, double a, double b, double c) {
   // END
   return A;
 }
-/* SAM_LISTING_END_3 */
+/* SAM_LISTING_END_2 */
 
 #endif
