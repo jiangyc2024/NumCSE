@@ -1,0 +1,4 @@
+// "testname", "input", "expected output", "points", "execution time limit (ms)"
+
+// Task 1-11c)
+"ComplexRoot", "(any input)", "(1e+10,2.5e-10) \n (7.07107e+09,7.07107e+09) \n (0.0001,0)",  "1", "5000",
