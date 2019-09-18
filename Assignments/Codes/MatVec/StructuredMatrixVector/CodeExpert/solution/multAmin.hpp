@@ -109,6 +109,7 @@ int multAmin_runtime() {
 Eigen::MatrixXd multABunitv() {
     unsigned int n = 10;
     
+    /* SAM_LISTING_BEGIN_5 */
     MatrixXd B = MatrixXd::Zero(n,n);
     for(unsigned int i = 0; i < n; ++i) {
         B(i,i) = 2;
@@ -116,6 +117,7 @@ Eigen::MatrixXd multABunitv() {
         if(i > 0) B(i-1,i) = -1;
     }
     B(n-1,n-1) = 1;
+    /* SAM_LISTING_END_5 */
     
     MatrixXd C(n,n);
     
