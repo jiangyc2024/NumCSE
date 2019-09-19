@@ -25,7 +25,7 @@ int main() {
     VectorXd b(6);
     b << 11.10, 17.00, 6.10, 5.25, 12.50, 7.00;
     
-    // Initialize the solver
+    // Initialize the solver; other decompositions also possible
     ColPivHouseholderQR<MatrixXd> solver;
     // Decompose A
     solver.compute(A);
