@@ -59,7 +59,7 @@ int main(void) {
                       << y << std::endl;
             break;
     case 4: kron_runtime();
-            break;            
+            break;
   }
 
 }
