@@ -26,9 +26,7 @@ void sinederv() {
     // Hint: You can use Eigen's sin() and cos(), which calculate
     // coefficient-wise results for Array inputs.
     // START
-    g1 = (sin(x+h) - sin(x)) / h; // naive
-    g2 = 2 * cos(x+0.5*h) * sin(0.5 * h) / h; // better
-    ex = cos(x); // exact
+    
     // END
     
     // Print error
@@ -47,12 +45,7 @@ void sinederv() {
         // Use std::setw(15) as in the table header.
         // You can use std::abs() to calculate absolute values.
         // START
-        std::cout << std::setw(15) << h(i)
-                  << std::setw(15) << ex(i)
-                  << std::setw(15) << g1(i)
-                  << std::setw(15) << std::abs(g1(i) - ex(i))
-                  << std::setw(15) << g2(i)
-                  << std::setw(15) << std::abs(g2(i) - ex(i)) << std::endl;
+        
         // END
     }
     
