@@ -18,7 +18,7 @@ std::complex<double> myroot( std::complex<double> w ) {
     double u = w.real();
     double v = w.imag();
     
-    // TODO: (2-11.c) Compute the square root of w avoiding cancellation,
+    // TO DO: (2-11.c) Compute the square root of w avoiding cancellation,
     // use only real arithmetic.
     // START
     // w is actually a real number, we are done
