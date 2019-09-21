@@ -18,7 +18,7 @@ This repository will host all the codes used in the lecture notes and assignment
     - for templates: `Assignments/Codes/<Chapter>/<ProblemName>/templates_nolabels`
     - for solutions: `Assignments/Codes/<Chapter>/<ProblemName>/solutions_nolabels`
     - each one of these folder has an independent `CMake` file. Either within the cloned repository
-      or using the `Download zip` button, you shoud be able to compile and execute the 
+      or using the `Download zip` button, you shoud be able to compile and execute the
       codes for the problem using:
 
 ```
@@ -63,7 +63,7 @@ Targets will be in the format `<code-type>_<chapter>_<problem-name>_<executable-
 - `<chapter>`: is a short name for the chapter
 - `<problem-name>`: is a short name for the problem
 - `<executable-name>`: is a short name for the executable
-    
+
 The corresponding executable will be located in:
 - For assignments:
 
@@ -72,15 +72,15 @@ The corresponding executable will be located in:
 - For lecture codes (most of them):
 
         $ ./bin/LectureCodes/<chapter>/<problem-name>/
-        
+
     or
-    	
+
         $ ./bin/LectureCodes/<chapter>/<sub-chapter>/<problem-name>/
 
 TIP: Using:
 
     $ make -j<number_ob_processes>
-    
+
 may (or may not) speed up the compilation time.
 
 __Alternative download__ [zip](https://gitlab.math.ethz.ch/NumCSE/NumCSE/repository/archive.zip?ref=master)
@@ -103,6 +103,12 @@ Optional:
 - MKL
 - FFTW
 
+Visualization using `matplotlibcpp.h`
+
+MatplotlibC++ provides a C++ interface to Python's matplotlib
+plotting library. It is header-only and simple to use.
+A documentation is available [here](https://matplotlib-cpp.readthedocs.io/en/latest/)
+
 ### F.A.Q.
 
 #### `Unable to find the required Boost libraries`
@@ -113,7 +119,7 @@ Some package may be missing on your machine.
 - On a fresh install of *Ubuntu*:
 
         sudo apt-get install git cmake libpng++-dev freeglut3-dev libboost-all-dev
-    
+
 - On *Mac OS X*:
 
 If you are missing `CMake` or `boost` on Mac OS X, the easiest way to obtain those packages is via [Homebrew](http://brew.sh/).
@@ -121,7 +127,7 @@ After Homebrew has been installed, you can install CMake and boost:
 
     brew install boost
     brew install cmake
-    
+
 If you are missing `zlib` (not tested):
 
     xcode-select --install
@@ -129,7 +135,7 @@ If you are missing `zlib` (not tested):
 of (if above doesn't work):
 
     brew install zlib-devel
-    
+
 If `libpng`is missing:
 
     brew install libpng
