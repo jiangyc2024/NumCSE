@@ -23,7 +23,7 @@ using namespace Eigen;
 void kron(const MatrixXd &A, const MatrixXd &B, MatrixXd &C) {
   // Allocate enough space for the matrix
   C = MatrixXd(A.rows() * B.rows(), A.cols() * B.cols());
-  // TO DO: Fill in the entries of C.
+  // TO DO: (2-3.b) Fill in the entries of C.
   // Hint: Use a nested for-loop and C.block().
   // START
   for (unsigned int i = 0; i < A.rows(); ++i) {
@@ -57,7 +57,7 @@ void kron_mult(const MatrixXd &A, const MatrixXd &B, const VectorXd &x,
   // Allocate space for output
   y = VectorXd::Zero(n * n);
   
-  // TO DO: Fill in the entires of y.
+  // TO DO: (2-3.d) Fill in the entires of y.
   // Hint: Use a nested for-loop, x.segment(), and y.segment().
   // In the outer loop, you can perform a computation based on
   // B and x, and save the result in a variable that is reused in
@@ -97,7 +97,7 @@ void kron_reshape(const MatrixXd &A, const MatrixXd &B, const VectorXd &x,
          "Matrices A and B must be square matrices with same size!");
   unsigned int n = A.rows();
   
-  // TO DO: Fill in the entires of y.
+  // TO DO: (2-3.e) Fill in the entires of y.
   // Hint: Use MatrixXd::Map() to reshape x into a n by n matrix.
   // Then y is obtained by simple matrix multiplications and
   // another reshape.
@@ -141,7 +141,8 @@ void kron_runtime() {
         tm_kron.stop();
       }
       
-      // TO DO: Measure the runtime of kron_mult() and kron_reshape().
+      // TO DO: (2-3.f) Measure the runtime of kron_mult()
+      // and kron_reshape().
       // START
 
       // Kron matrix-vector multiplication

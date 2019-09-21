@@ -41,20 +41,7 @@ void multAmin(const VectorXd & x, VectorXd & y) {
     // Hint: Find an expression y(j) = w(j) + j*u(j) such that
     // the entries of w and u can be calculated recursively.
     // START
-    VectorXd v = VectorXd::Zero(n);
-    VectorXd w = VectorXd::Zero(n);
-
-    v(0) = x(n-1);
-    w(0) = x(0);
-
-    for(unsigned int j = 1; j < n; ++j) {
-        v(j) = v(j-1) + x(n-j-1);
-        w(j) = w(j-1) + (j+1)*x(j);
-    }
-    for(unsigned int j = 0; j < n-1; ++j) {
-        y(j) = w(j) + v(n-j-2)*(j+1);
-    }
-    y(n-1) = w(n-1);
+    
     // END
 }
 /* SAM_LISTING_END_2 */
@@ -79,20 +66,7 @@ int multAmin_runtime() {
         // TO DO: (2-7.d) Compute runtimes of multAminSlow(x,y) and
         // multAmin(x,y) with x = VectorXd::Random(N). Repeat nruns times.
         // START
-        for(unsigned int r = 0; r < nruns; ++r) {
-            VectorXd x = VectorXd::Random(N);
-            VectorXd y;
-
-            // Runtime of slow method
-            tm_slow.start();
-            multAminSlow(x, y);
-            tm_slow.stop();
-
-            // Runtime of fast method
-            tm_fast.start();
-            multAmin(x, y);
-            tm_fast.stop();
-        }
+        
         // END
 
         std::cout << std::setw(15)
@@ -109,6 +83,7 @@ int multAmin_runtime() {
 Eigen::MatrixXd multABunitv() {
     unsigned int n = 10;
     
+    /* SAM_LISTING_BEGIN_5 */
     MatrixXd B = MatrixXd::Zero(n,n);
     for(unsigned int i = 0; i < n; ++i) {
         B(i,i) = 2;
@@ -116,20 +91,14 @@ Eigen::MatrixXd multABunitv() {
         if(i > 0) B(i-1,i) = -1;
     }
     B(n-1,n-1) = 1;
+    /* SAM_LISTING_END_5 */
     
     MatrixXd C(n,n);
     
     // TO DO: (2-7.f) Set the columns of C to A*B*e_j for
     // j=0,...,n-1, and print C.
     // START
-    VectorXd y;
-    // B*e_j is the j-th column of B*Id = B, so we need only
-    // calculate A*B.col(j) for j=0,...,n-1.
-    for( unsigned int i = 0; i < n; ++i ) {
-        multAmin( B.col(i), y );
-        C.col(i) = y;
-    }
-    std::cout << "C = \n" << C << std::endl;
+    
     // END
     
     return C;

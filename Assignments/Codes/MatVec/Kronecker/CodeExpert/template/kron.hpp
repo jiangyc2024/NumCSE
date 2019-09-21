@@ -23,17 +23,11 @@ using namespace Eigen;
 void kron(const MatrixXd &A, const MatrixXd &B, MatrixXd &C) {
   // Allocate enough space for the matrix
   C = MatrixXd(A.rows() * B.rows(), A.cols() * B.cols());
-  // TO DO: Fill in the entries of C.
+  // TO DO: (2-3.b) Fill in the entries of C.
   // Hint: Use a nested for-loop and C.block().
   // START
-  for (unsigned int i = 0; i < A.rows(); ++i) {
-    for (unsigned int j = 0; j < A.cols(); ++j) {
-      // We use eigen block operations to set the values of
-      // each $n \times n$ block.
-      C.block(i * B.rows(), j * B.cols(), B.rows(), B.cols()) =
-          A(i, j) * B; // $\in \mathbb{R}^{(n \times n)}$
-    }
-  }
+
+
   // END
 }
 /* SAM_LISTING_END_1 */
@@ -57,26 +51,13 @@ void kron_mult(const MatrixXd &A, const MatrixXd &B, const VectorXd &x,
   // Allocate space for output
   y = VectorXd::Zero(n * n);
   
-  // TO DO: Fill in the entires of y.
+  // TO DO: (2-3.d) Fill in the entires of y.
   // Hint: Use a nested for-loop, x.segment(), and y.segment().
   // In the outer loop, you can perform a computation based on
   // B and x, and save the result in a variable that is reused in
   // each iteration of the inner loop.
   // START
-  
-  // Note: this is like doing a matrix-vector multiplication
-  // where the entries of the matrix are smaller matrices
-  // and entries of the vector are smaller vectors
 
-  // Loop over all segments of x ($\tilde{x}$)
-  for (unsigned int j = 0; j < n; ++j) {
-    // Reuse computation of z
-    VectorXd z = B * x.segment(j * n, n);
-    // Loop over all segments of y
-    for (unsigned int i = 0; i < n; ++i) {
-      y.segment(i * n, n) += A(i, j) * z;
-    }
-  }
   // END
 }
 /* SAM_LISTING_END_2 */
@@ -97,13 +78,12 @@ void kron_reshape(const MatrixXd &A, const MatrixXd &B, const VectorXd &x,
          "Matrices A and B must be square matrices with same size!");
   unsigned int n = A.rows();
   
-  // TO DO: Fill in the entires of y.
+  // TO DO: (2-3.e) Fill in the entires of y.
   // Hint: Use MatrixXd::Map() to reshape x into a n by n matrix.
   // Then y is obtained by simple matrix multiplications and
   // another reshape.
   // START
-  MatrixXd t = B * MatrixXd::Map(x.data(), n, n) * A.transpose();
-  y = MatrixXd::Map(t.data(), n * n, 1);
+  
   // END
 }
 /* SAM_LISTING_END_3 */
@@ -141,18 +121,11 @@ void kron_runtime() {
         tm_kron.stop();
       }
       
-      // TO DO: Measure the runtime of kron_mult() and kron_reshape().
+      // TO DO: (2-3.f) Measure the runtime of kron_mult()
+      // and kron_reshape().
       // START
 
-      // Kron matrix-vector multiplication
-      tm_kron_mult.start();
-      kron_mult(A, B, x, y);
-      tm_kron_mult.stop();
 
-      // Kron using reshape
-      tm_kron_map.start();
-      kron_reshape(A, B, x, y);
-      tm_kron_map.stop();
       
       // END
     }
