@@ -18,8 +18,13 @@ VectorXd arrowsys_fast(const VectorXd &d, const VectorXd &c, const VectorXd &b,
   int n = d.size();
   VectorXd z = c.array() / d.array();         // \Blue{$\Vz = \VD^{-1}\Vc$}
   VectorXd w = y.head(n).array() / d.array(); // \Blue{$\Vw = \VD^{-1}\Vy_1$}
-  double xi = (y(n) - b.dot(w)) / (alpha - b.dot(z));
+  const double den = alpha - b.dot(z);        // denominator in \eqref{eqmv:am3}
+  // Check for (relatively!) small denominator
+  if (std::abs(den) <
+      std::numeric_limits<double>::epsilon() * (b.norm() + std::abs(alpha))) {
+    throw std::runtime_error("Nearly singular system");
+  }
+  const double xi = (y(n) - b.dot(w)) / den;
   return (VectorXd(n + 1) << w - xi * z, xi).finished();
 }
 /* SAM_LISTING_END_0 */
- 

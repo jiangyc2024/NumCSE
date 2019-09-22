@@ -188,6 +188,35 @@ include_directories(${FIGURE_INCLUDE_DIR}/../)
 include_directories(${CMAKE_SOURCE_DIR}/Utils) # oh dear
 
 #
+# Get all requirements for matplotlibcpp
+#
+# TODO Once all plots use matplotlibcpp, remove all MathGL and Figure
+# parts of this CMakeLists.txt. 
+#
+
+# include the header-only library matplotlibcpp
+include_directories("${CMAKE_SOURCE_DIR}/MatplotlibC++")
+
+# find Python3
+find_package(Python3 COMPONENTS Interpreter Development)
+if (${Python3_FOUND})
+  include_directories(${Python3_INCLUDE_DIRS})
+else()
+  message(WARNING "Python3 not found."
+  "\nPlease install it to use any function of `matplotlibcpp.h`.")
+endif()
+
+# find NumPy
+find_package(NumPy)
+if (${PYTHON_NUMPY_FOUND})
+  include_directories(${PYTHON_NUMPY_INCLUDE_DIR})
+else()
+  message(WARNING "Python3 NumPy not found, proceeding with -DWITHOUT_NUMPY."
+  " Some functions of `matplotlibcpp.h` might not work as expected.")
+  add_definitions(-DWITHOUT_NUMPY)
+endif()
+
+#
 # include subdirectories
 #
 add_subdirectory(LectureCodes)
