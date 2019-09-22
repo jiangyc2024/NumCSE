@@ -7,32 +7,36 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 /* SAM_LISTING_BEGIN_0 */
-#include <string>
+#include "matplotlibcpp.h" // Tools for plotting, see https://github.com/lava/matplotlib-cpp
 #include <Eigen/Dense>
-#include "matplotlibcpp.h"
-
+#include <string>
 namespace plt = matplotlibcpp;
 using namespace Eigen;
 
-void spy(const Eigen::MatrixXd& M, const std::string& fname) {
+// Produce spy-plot of a dense Eigen matrix.
+void spy(const Eigen::MatrixXd &M, const std::string &fname) {
   plt::figure();
   plt::spy(M, {{"marker", "o"}, {"markersize", "2"}, {"color", "b"}});
   plt::title("nnz = " + std::to_string(M.nonZeros()));
   plt::savefig(fname);
 }
 
-int main () {
-	int n = 100;
-	MatrixXd A(n,n), B(n,n); A.setZero(); B.setZero();
-	A.diagonal() = VectorXd::LinSpaced(n,1,n);
-	A.col(n-1) = VectorXd::LinSpaced(n,1,n);
-	A.row(n-1) = RowVectorXd::LinSpaced(n,1,n);
-	B = A.colwise().reverse();
-	MatrixXd C = A*A, D = A*B;
-  spy(A, "Aspy_cpp.eps");
-  spy(B, "Bspy_cpp.eps");
-  spy(C, "Cspy_cpp.eps");
-  spy(D, "Dspy_cpp.eps");
-	return 0;
+int main() {
+  int n = 100;
+  MatrixXd A(n, n), B(n, n);
+  A.setZero();
+  B.setZero();
+  // Initialize matrices, see \cref{mmstrruc3} 
+  A.diagonal() = VectorXd::LinSpaced(n, 1, n);
+  A.col(n - 1) = VectorXd::LinSpaced(n, 1, n);
+  A.row(n - 1) = RowVectorXd::LinSpaced(n, 1, n);
+  B = A.colwise().reverse();
+  // Matrix products
+  MatrixXd C = A * A, D = A * B;
+  spy(A, "Aspy_cpp.eps"); // Sparse arrow matrix
+  spy(B, "Bspy_cpp.eps"); // Sparse arrow matrix
+  spy(C, "Cspy_cpp.eps"); // Fully populated matrix
+  spy(D, "Dspy_cpp.eps"); // Sparse "framed" matrix
+  return 0;
 }
 /* SAM_LISTING_END_0 */
