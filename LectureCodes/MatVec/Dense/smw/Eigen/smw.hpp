@@ -22,13 +22,14 @@ using namespace Eigen;
 template <class LUDec>
 VectorXd smw(const LUDec &lu, const VectorXd &u, const VectorXd &v,
              const VectorXd &b) {
-  VectorXd z = lu.solve(b); // $\cob{\Vz=\VA^{-1}\Vb}$ \Label[line]{smw:1}
-  VectorXd w = lu.solve(u); // $\cob{\Vw=\VA^{-1}\Vu}$ \Label[line]{smw:2}
-  double alpha = 1.0 + v.dot(w); // Compute denominator of \eqref{eq:smwx}
-  if (std::abs(alpha) < std::numeric_limits<double>::epsilon())
+  const VectorXd z = lu.solve(b); // $\cob{\Vz=\VA^{-1}\Vb}$ \Label[line]{smw:1}
+  const VectorXd w = lu.solve(u); // $\cob{\Vw=\VA^{-1}\Vu}$ \Label[line]{smw:2}
+  double alpha = 1.0 + v.dot(w);  // Compute denominator of \eqref{eq:smwx}
+  double vdz = v.dot(z);          // Factor for numerator of \eqref{eq:smwx}
+  if (std::abs(alpha) < std::numeric_limits<double>::epsilon() * std::abs(vdz))
     throw std::runtime_error("A nearly singular");
   else
-    return (z - w * v.dot(z) / alpha); // see \eqref{eq:smwx}
+    return (z - w * vdz / alpha); // see \eqref{eq:smwx}
 }
 /* SAM_LISTING_END_0 */
 

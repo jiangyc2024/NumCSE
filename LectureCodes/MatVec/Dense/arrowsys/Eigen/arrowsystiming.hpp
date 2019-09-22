@@ -26,7 +26,7 @@ MatrixXd arrowsystiming() {
   std::vector<int> n = {8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096};
   int nruns = 3;
   MatrixXd times(n.size(), 6);
-  for (int i = 0; i < n.size(); ++i) {
+  for (std::size_t i = 0; i < n.size(); ++i) {
     Timer t1, t2, t3, t4; // timer class
     double alpha = 2;
     VectorXd b = VectorXd::Ones(n[i], 1);
