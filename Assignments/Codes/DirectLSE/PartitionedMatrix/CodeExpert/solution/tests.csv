@@ -1,0 +1,3 @@
+// "testname", "input", "expected output", "points", "execution time limit (ms)"
+"solvelse()", "(any input)", "-15.5807 -41.5599 -40.5345 -25.0211  4.18201  -8.0062 -1.49806  9.27245 -8.95513 -2.55923",  "1", "5000",
+"testSolveLSE", "(any input)", "Error compared to LU: 0.0",  "1", "5000",
