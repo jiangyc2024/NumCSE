@@ -20,3 +20,14 @@ In other words, the first test is passed if `rankoneinvit` returns the correct a
 
 ***
 > There is no test for `rankoneinvit_runtime()`.
+The table printed by the student should look similar to the following table. Note that we do not include a line for $n=2^9$ because we exceed the time limits of Code Expert.
+```
+              n           Slow           Fast
+              4      5.190e-04      6.390e-05
+              8      1.769e-03      9.975e-05
+             16      4.552e-03      1.081e-04
+             32      1.233e-02      1.576e-04
+             64      5.138e-02      2.541e-04
+            128      2.738e-01      4.427e-04
+            256      1.587e+00      8.242e-04
+```
