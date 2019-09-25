@@ -16,23 +16,24 @@ using namespace Eigen;
 
 
 int main() {
-    // Initialization
-    unsigned int n = 6;
-    MatrixXd A(n,n);
+  // Initialization
+  unsigned int n = 6;
+  MatrixXd A(n,n);
   // Poisson matrix
-    A <<  4, -1,  0, -1,  0,  0,
-         -1,  4, -1,  0, -1,  0,
-          0, -1,  4,  0,  0, -1,
-         -1,  0,  0,  4, -1,  0,
-          0, -1,  0, -1,  4, -1,
-          0,  0, -1,  0, -1,  4;
+  A <<  4, -1,  0, -1,  0,  0,
+       -1,  4, -1,  0, -1,  0,
+        0, -1,  4,  0,  0, -1,
+       -1,  0,  0,  4, -1,  0,
+        0, -1,  0, -1,  4, -1,
+        0,  0, -1,  0, -1,  4;
 
-    // Test 'CCS'
+  // Test 'CCS'
   VectorXd val_1, row_ind_1, col_ptr_1;
       CCS(A, val_1, row_ind_1, col_ptr_1);
 
-/* @brief Compute the CCS format of matrix $A$ using Eigen methods
- */
+  /* @brief Compute the CCS format of matrix $A$ using Eigen methods
+  */
+  /* SAM_LISTING_BEGIN_1 */
   double *  val_2;
   int * row_ind_2;
   int * col_ptr_2;
@@ -44,7 +45,8 @@ int main() {
   val_2 = As.valuePtr(); // Pointer to values
   row_ind_2 = As.innerIndexPtr(); // Pointer to indices
   col_ptr_2 = As.outerIndexPtr(); // Pointer to first indices of each inner vector
-
+  /* SAM_LISTING_END_1 */
+  
   // Verify that the solutions are the same
   // Compute l2-norm of the differences between the CCS vectors
   double diff_val = 0, diff_row_ind = 0, diff_col_ptr = 0;
