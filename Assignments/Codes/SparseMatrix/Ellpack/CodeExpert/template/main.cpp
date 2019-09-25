@@ -13,6 +13,7 @@
 using namespace Eigen;
 
 
+ /* SAM_LISTING_BEGIN_5 */
 int main(int, char**) {
     // Vector of triplets
     Triplets triplets;
@@ -65,4 +66,4 @@ int main(int, char**) {
     E.mtvmult(x, Etx);
     std::cout << "Ellpack E^t*x =" << std::endl << Etx << std::endl;
 }
-
+/* SAM_LISTING_END_5 */
