@@ -91,7 +91,7 @@ bool testSolveLSE(const MatrixXd & R,
     
     // We choose an acceptable tolerance.
     double tolerance = 1e-8;
-    areTheSame = ( (x-y).norm() < tolerance );
+    areTheSame = ( (x-y).norm() < tolerance*b.norm() );
     
     // END
     return areTheSame;
