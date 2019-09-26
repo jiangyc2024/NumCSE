@@ -10,11 +10,10 @@
 #ifndef RANKONEINVIT_HPP
 #define RANKONEINVIT_HPP
 
-
-#include <Eigen/Dense>
-#include <iostream>
-#include <iomanip>
 #include "timer.h"
+#include <Eigen/Dense>
+#include <iomanip>
+#include <iostream>
 
 using namespace Eigen;
 
@@ -30,7 +29,7 @@ double rankoneinvit(const VectorXd &d, const double &tol) {
   double lmin = 0;
   VectorXd ev = d;
   double lnew = d.cwiseAbs().minCoeff();
-  
+
   while (std::abs(lnew - lmin) > tol * lmin) {
     lmin = lnew;
     MatrixXd M = d.asDiagonal();
@@ -43,7 +42,7 @@ double rankoneinvit(const VectorXd &d, const double &tol) {
     ev.normalize();
     lnew = ev.transpose() * M * ev;
   }
-  
+
   return lnew;
 }
 /* SAM_LISTING_END_0 */
@@ -78,34 +77,31 @@ double rankoneinvit_fast(const VectorXd &d, const double &tol) {
     // This holds from $M = diag(d) + ev*ev^t$, too
     lnew = ev.transpose() * d.cwiseProduct(ev) + pow(ev.transpose() * ev0, 2);
   }
-  
+
   return lnew;
 }
 /* SAM_LISTING_END_1 */
 
-/* SAM_LISTING_BEGIN_2*/
-void rankoneinvit_runtime(){
+/* SAM_LISTING_BEGIN_2 */
+void rankoneinvit_runtime() {
   unsigned int repeats = 3;
   double tol = 1e-3;
   double lmin;
   VectorXd d;
   Timer tm_slow, tm_fast;
-  
+
   std::cout << std::endl
-            << std::setw(15)
-            << "n"
-            << std::setw(15) << "Slow"
-            << std::setw(15) << "Fast"
-            << std::endl;
-  
+            << std::setw(15) << "n" << std::setw(15) << "Slow" << std::setw(15)
+            << "Fast" << std::endl;
+
   for (unsigned int p = 2; p <= 8; p++) {
     tm_slow.reset();
     tm_fast.reset();
     unsigned int n = pow(2, p);
-    
+
     for (unsigned int r = 0; r < repeats; ++r) {
       d = VectorXd::LinSpaced(n, 1, 2);
-      
+
       tm_slow.start();
       lmin = rankoneinvit(d, tol);
       tm_slow.stop();
@@ -114,13 +110,9 @@ void rankoneinvit_runtime(){
       lmin = rankoneinvit_fast(d, tol);
       tm_fast.stop();
     }
-    
-    std::cout << std::setw(15)
-              << n
-              << std::scientific << std::setprecision(3)
-              << std::setw(15) << tm_slow.min()
-              << std::setw(15) << tm_fast.min()
-              << std::endl;
+    std::cout << std::setw(15) << n << std::scientific << std::setprecision(3)
+              << std::setw(15) << tm_slow.min() << std::setw(15)
+              << tm_fast.min() << std::endl;
   }
 }
 /* SAM_LISTING_END_2 */
