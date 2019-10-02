@@ -3,6 +3,7 @@
 
 using namespace Eigen;
 
+// Kronecker product from kron.hpp.
 void kron(const MatrixXd &A, const MatrixXd &B, MatrixXd &C) {
   // Allocate enough space for the matrix
   C = MatrixXd(A.rows() * B.rows(), A.cols() * B.cols());
@@ -16,47 +17,49 @@ void kron(const MatrixXd &A, const MatrixXd &B, MatrixXd &C) {
   }
 }
 
-int main() {
-    // Initialization
-    unsigned int n = 6;
-    MatrixXd A(n,n);
-    A <<  4, -1,  0,  0,  0,  0,
-         -1,  4,  2,  0,  2,  0,
-          0,  2,  4,  0,  0, -1,
-          0,  0,  0,  4, -1,  0,
-          0,  2,  0, -1,  4, -1,
-		  0,  0, -1,  0, -1,  4;
+MatrixXd sparseSPD(int n) {
+    double rate = 1.0 / n;
+    // R is a random sparse matrix.
+    ArrayXXd R = ArrayXXd::Random(n,n);    
+    R = R * (R.abs() < rate).cast<double>();
+    // B is diagonally dominant.
+    MatrixXd B = R.matrix();
+    B.diagonal() = R.abs().matrix().rowwise().sum();
+    // A is symmetric and strictly diagonally dominant.
+    MatrixXd A = B + B.transpose() + MatrixXd::Identity(n,n);
+    return A;
+}
+
+int main() {    
+    int n = 8;
+        
+    // Solve Sylvester equation for a simple diagonal matrix A.
+    ArrayXd diagA = ArrayXd::LinSpaced(n,1,n);    
+    SparseMatrix<double> Xdiag = solveDiagSylvesterEq( diagA );
+    std::cout << "With A = diagonal( " << diagA.transpose() << " ),\n"
+              << "the solution is X = \n"
+              << std::setprecision(2) << MatrixXd(Xdiag) << std::endl;
     
-	// Caste $A$ to 'SparseMatrix' and compress it to store the matrix in CCS format
+    // Create a more complicated s.p.d. sparse matrix A,
+    std::srand(31);
+    MatrixXd A = sparseSPD(n);
+    std::cout << "With A = \n" << A << std::endl;
 	SparseMatrix<double> As = A.sparseView();
 	As.makeCompressed();
     
-    std::cout<< A << std::endl;
-    
-    
-    std::vector<double> stdDiagA(n,3.21);
-    VectorXd eigDiagA = VectorXd::Constant(n,1.23);
-    //~ std::cout << "solveDiagSylvesterEq(std):\n";
-    //~ std::cout<< solveDiagSylvesterEq( stdDiagA ) <<std::endl;
-    //~ std::cout << "solveDiagSylvesterEq(eig):\n";
-    //~ std::cout<< solveDiagSylvesterEq( eigDiagA ) <<std::endl;
-    
-    SparseMatrix<double> Bs = sparseKron( As );
-    std::cout << "sparseKron():\n";
-    //~ std::cout << Bs << std::endl;
-    
+    // Test sparseKron()
     MatrixXd C;
     kron(A,A,C);
+    std::cout << "the difference between sparseKron() and kron(): "
+              << (C - sparseKron(As)).norm() << std::endl;
     
-    double err = (C.sparseView() - Bs).norm();
-    std::cout << err << std::endl;    
-    
-    
-    std::cout << "solveSpecialSylvesterEq():\n";
+    // Solve Sylvester equation for a s.p.d. matrix A.
     MatrixXd X = solveSpecialSylvesterEq( As );
-    std::cout<< X <<std::endl;
-    std::cout << "\nError:\n";
-    std::cout<< (X + A*X*A - A).norm() <<std::endl;
+    std::cout << "the solution is X = \n"
+              << X << std::endl;
+    
+    std::cout << "the error is |X + A*X*A - A| = "
+              << (X + A*X*A - A).norm() << std::endl;
     
     return 0;
 }
