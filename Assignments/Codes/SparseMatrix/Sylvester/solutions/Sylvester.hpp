@@ -118,7 +118,7 @@ SparseMatrix<double> sparseKron(const SparseMatrix<double> &M) {
  */
 /* SAM_LISTING_BEGIN_2 */
 MatrixXd solveSpecialSylvesterEq(const SparseMatrix<double> &A) {
-  int n = A.rows();
+  const int n = A.rows();
   assert(n == A.cols() && "Matrix A must be square.");
   MatrixXd X(n, n);
 
@@ -129,12 +129,13 @@ MatrixXd solveSpecialSylvesterEq(const SparseMatrix<double> &A) {
   // Define left hand side of C*Vec(X) = b.
   SparseMatrix<double> C(n * n, n * n);
   C.setIdentity();
-  // May involve expensive copying of data? 
+  // May involve expensive copying of data?
   C += sparseKron(A);
 
   // Define right hand side.
-  SparseMatrix<double> b(n * n, 1);
-  b.reserve(A.nonZeros());
+  // Do not use a "sparse vector"!
+  VectorXd b(n * n);
+  b.setZero();
   const int *JA = A.outerIndexPtr();
   const int *IA = A.innerIndexPtr();
   const double *valA = A.valuePtr();
@@ -143,11 +144,11 @@ MatrixXd solveSpecialSylvesterEq(const SparseMatrix<double> &A) {
   for (int j = 0; j < n; j++) {
     // Loop over the non-zero entries in column j:
     for (int s = JA[j]; s < JA[j + 1]; s++) {
-      int i = IA[s];                    // Row index of non-zero entry #s.
-      b.insert(j * n + i, 0) = valA[s]; // b(j*n+i) = Aij
+      const int i = IA[s];    // Row index of non-zero entry #s.
+      b[j * n + i] = valA[s]; // b(j*n+i) = Aij
     }
   }
-  // Call sparse direct solver.  
+  // Call sparse direct solver.
   SparseLU<SparseMatrix<double>> solver;
   // Since C is s.p.d., we could also use
   // SimplicialLLT<SparseMatrix<double>> solver;
