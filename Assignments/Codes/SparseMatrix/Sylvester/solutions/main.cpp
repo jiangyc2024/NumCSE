@@ -44,8 +44,8 @@ int main() {
     std::srand(31);
     MatrixXd A = sparseSPD(n);
     std::cout << "With A = \n" << A << std::endl;
-	SparseMatrix<double> As = A.sparseView();
-	As.makeCompressed();
+    SparseMatrix<double> As = A.sparseView();
+    As.makeCompressed();
     
     // Test sparseKron()
     MatrixXd C;
