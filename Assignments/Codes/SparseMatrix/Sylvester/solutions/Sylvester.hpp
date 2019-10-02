@@ -40,10 +40,6 @@ SparseMatrix<double> sparseKron(const SparseMatrix<double> &M) {
   int n = M.rows();
   assert(n == M.cols() && "Matrix M must be square.");
 
-  // M has at most maxColNNZ non-zero entries per column.
-  // !Do not assume here
-  int maxColNNZ = 5;
-
   // JM is an array of size n+1, with
   // JM[j] = number of non-zero entries in all columns 0,..., (j-1) of M.
   const int *JM = M.outerIndexPtr();
@@ -67,11 +63,6 @@ SparseMatrix<double> sparseKron(const SparseMatrix<double> &M) {
   // We have that nnz(B.col(j*n+l)) = nnz(M.col(j)) * nnz(M.col(l)).
   MatrixXd tmp = nnzColwiseM * nnzColwiseM.transpose(); // O(n^2)
   nnzColwiseB = MatrixXd::Map(tmp.data(), n * n, 1);
-
-  // Alternatively (assuming the columns of M have bounded nnz),
-  // we can use the (less accurate) shortcut:
-  // int maxCol = nnzColwiseM.maxCoeff();
-  // nnzColwiseB = VectorXd::Constant(n*n,maxCol*maxCol); // O(n)
 
   // Reserve sufficient space.
   B.reserve(nnzColwiseB);
