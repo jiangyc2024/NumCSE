@@ -42,14 +42,15 @@ MatrixXd make_A(const VectorXd &b) {
 
 
 /* @param[in] b $n$ size vector 
- * @param[in] A $n \times 4$ matrix
+ * @param[in] t $n$ size vector
  * @param[out] gamma $4$ size vector
  */
 /* SAM_LISTING_BEGIN_2 */
-VectorXd data_fit_normal(const MatrixXd &A, const VectorXd &b) {
+VectorXd data_fit_normal(const VectorXd &t, const VectorXd &b) {
   //TO DO (4-3.a) Solve normal equations to find the coefficients of the 
   // linear fitting
   //START
+  MatrixXd A = make_A(t);
   MatrixXd At = A.transpose();
   MatrixXd AtA = At * A;
   VectorXd Atb = At * b;
@@ -61,14 +62,15 @@ VectorXd data_fit_normal(const MatrixXd &A, const VectorXd &b) {
 
 
 /* @param[in] b $n$ size vector 
- * @param[in] A $n \times 4$ matrix
+ * @param[in] t $n $ size vector
  * @param[out] gamma $4$ size vector
  */
 /* SAM_LISTING_BEGIN_3 */
-VectorXd data_fit_qr(const MatrixXd &A, const VectorXd &b) {
+VectorXd data_fit_qr(const VectorXd &t, const VectorXd &b) {
   //TO DO (4-3.b) Find the coefficients for the linear
   // fitting by means of the QR decomposition of A
   //START
+  MatrixXd A = make_A(t);
   return A.colPivHouseholderQr().solve(b);
   //END
 }

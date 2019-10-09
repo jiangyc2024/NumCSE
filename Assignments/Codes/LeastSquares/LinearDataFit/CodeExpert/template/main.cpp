@@ -27,8 +27,8 @@ int main() {
   VectorXd f(10);
   f << 100. , 34. , 17. , 12. , 9. , 6. , 5. , 4. , 4. , 2.;
   
-  VectorXd gamma1 = data_fit_normal(A, f);
-  VectorXd gamma2 = data_fit_qr(A, f);
+  VectorXd gamma1 = data_fit_normal(t, f);
+  VectorXd gamma2 = data_fit_qr(t, f);
   
   VectorXd tl = VectorXd::LinSpaced(91, 0.1, 1.0);
   VectorXd yl1, yl2;

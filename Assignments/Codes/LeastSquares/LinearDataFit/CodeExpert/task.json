@@ -178,40 +178,13 @@
       "originVersion": 2
     },
     {
-      "_id": "84pJydc2Aw9EoGeLk",
-      "fileId": "84pJydc2Aw9EoGeLk",
-      "size": 2977,
-      "key": "cTforXCAS4bn3xEBr",
-      "version": 26,
-      "current": true,
-      "name": "linfit.hpp",
-      "type": "text/plain",
-      "userId": "psziEDxKr9Fu5Druz",
-      "projectId": "DrbDk3gwqAM5XJJTy",
-      "permissions": {
-        "phase": [
-          "interactive",
-          "submission"
-        ],
-        "read": [
-          "admin",
-          "assistant"
-        ],
-        "write": [
-          "admin"
-        ]
-      },
-      "createdAt": "2019-10-09T14:42:33.344Z",
-      "makeSymlink": true
-    },
-    {
-      "_id": "ExF5LkhW7JZeygfYF",
-      "fileId": "ExF5LkhW7JZeygfYF",
+      "_id": "M4DqtyojZhGQErCPu",
+      "fileId": "M4DqtyojZhGQErCPu",
       "size": 3408,
       "key": "6yE5vcgxByejHjeTj",
       "originKey": "jw5d5ZMQLc7uMr7Dp",
       "originVersion": 4,
-      "version": 76,
+      "version": 79,
       "current": true,
       "name": "main.cpp",
       "type": "text/x-c",
@@ -230,7 +203,7 @@
           "admin"
         ]
       },
-      "createdAt": "2019-10-09T15:02:55.354Z",
+      "createdAt": "2019-10-09T15:35:39.573Z",
       "makeSymlink": true
     },
     {
@@ -392,6 +365,33 @@
       "createdAt": "2019-10-08T13:27:28.426Z",
       "originKey": "eSpPtrYwzec99nhmf",
       "originVersion": 7
+    },
+    {
+      "_id": "Qvkwveq6keGLNXy4M",
+      "fileId": "Qvkwveq6keGLNXy4M",
+      "size": 3022,
+      "key": "cTforXCAS4bn3xEBr",
+      "version": 31,
+      "current": true,
+      "name": "linfit.hpp",
+      "type": "text/plain",
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "DrbDk3gwqAM5XJJTy",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant"
+        ],
+        "write": [
+          "admin"
+        ]
+      },
+      "createdAt": "2019-10-09T15:38:20.018Z",
+      "makeSymlink": true
     },
     {
       "_id": "sWnQEQZdE36TS5WeW",
