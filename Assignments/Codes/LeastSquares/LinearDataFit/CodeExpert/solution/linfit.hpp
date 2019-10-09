@@ -42,7 +42,8 @@ MatrixXd make_A(const VectorXd &b) {
 
 
 /* @param[in] b $n$ size vector 
- * @param[out] A $n \times 4$ matrix
+ * @param[in] A $n \times 4$ matrix
+ * @param[out] gamma $4$ size vector
  */
 /* SAM_LISTING_BEGIN_2 */
 VectorXd data_fit_normal(const MatrixXd &A, const VectorXd &b) {
@@ -60,7 +61,8 @@ VectorXd data_fit_normal(const MatrixXd &A, const VectorXd &b) {
 
 
 /* @param[in] b $n$ size vector 
- * @param[out] A $n \times 4$ matrix
+ * @param[in] A $n \times 4$ matrix
+ * @param[out] gamma $4$ size vector
  */
 /* SAM_LISTING_BEGIN_3 */
 VectorXd data_fit_qr(const MatrixXd &A, const VectorXd &b) {
