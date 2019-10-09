@@ -69,6 +69,7 @@ void eval(MatrixXd &X, std::function<double(index_t, index_t)> f) {
  * \param[in] size The size of the "grid" matrix (tuple $(n,m)$)
  * \return Index $I$ of entry $(i,j)$ on the vectorized matrix
  */
+ /* SAM_LISTING_BEGIN_5 */
 inline index_t to_vector_index(index_t i, index_t j, const shape_t &size) {
   // TO DO, hint in (3-16.d) : for a given pair of indices (i,j)
   // return the index of vec(X) corresponding to (X)_{i,j}
@@ -76,6 +77,7 @@ inline index_t to_vector_index(index_t i, index_t j, const shape_t &size) {
   return size[1] * i + j;
   // END
 }
+/* SAM_LISTING_END_5 */
 
 /* \brief Build sparse matrix constructed from stencil matrix $\mathbf{S}$.
  * The matrix is constructed from triplets, then compressed and returned.
