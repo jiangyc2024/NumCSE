@@ -99,7 +99,7 @@ bool testLyapunov() {
   // i) Print the full system matrix C (with zeroes),
   // ii) print the solution X, and
   // iii) return true if and only if the error defined
-  // by || A*X - X*A^T - I || is less than tol.
+  // by || A*X + X*A^T - I || is less than tol.
   // START
   // Test 'buildC'
   SparseMatrix<double> C = buildC(A);
