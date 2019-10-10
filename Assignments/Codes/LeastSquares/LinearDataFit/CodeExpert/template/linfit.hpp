@@ -27,13 +27,7 @@ MatrixXd make_A(const VectorXd &b) {
   //TO DO (4-3.a) Build the matrix A 
   // Hint: evaluate the functions \phi_j at the time points defined in b
   //START
-  for (size_t i = 0; i < n; i++) {
-    double t = b(i);
-    A(i, 0) = 1.0 / t;
-    A(i, 1) = 1.0 / (t*t);
-    A(i, 2) = std::exp(-(t-1));
-    A(i, 3) = std::exp(-2*(t-1));
-  }
+  
   //END 
   return A;
 }
@@ -50,11 +44,8 @@ VectorXd data_fit_normal(const VectorXd &t, const VectorXd &b) {
   //TO DO (4-3.a) Solve normal equations to find the coefficients of the 
   // linear fitting
   //START
-  MatrixXd A = make_A(t);
-  MatrixXd At = A.transpose();
-  MatrixXd AtA = At * A;
-  VectorXd Atb = At * b;
-  return AtA.ldlt().solve(Atb);
+  
+  return VectorXd::Zero(4);
   //END
 }
 /* SAM_LISTING_END_2 */
@@ -70,8 +61,8 @@ VectorXd data_fit_qr(const VectorXd &t, const VectorXd &b) {
   //TO DO (4-3.b) Find the coefficients for the linear
   // fitting by means of the QR decomposition of A
   //START
-  MatrixXd A = make_A(t);
-  return A.colPivHouseholderQr().solve(b);
+  
+  return VectorXd::Zero(4);
   //END
 }
 /* SAM_LISTING_END_3 */
@@ -89,8 +80,7 @@ void fit_plot(const VectorXd &gamma, const VectorXd &tl,
   //TO DO (4-3.c): Define the data for the first plot:
   // evaluate the function f at the high-resolution grid defined by tl
   //START
-  MatrixXd Al = make_A(tl);
-  yl =  Al*gamma;
+  
   //END
 }
 /* SAM_LISTING_END_4 */
@@ -109,10 +99,7 @@ void error_plot( const VectorXd &gamma, const MatrixXd &A,
   // evaluate the function at the data points and compute the
   // l^2 error squared. Here, the vector f contains the measured samples. 
   //START
-  VectorXd y = A*gamma;
-  // compute squared errors at each data point
-  err = y-f;
-  err = err.cwiseProduct(err);
+  
   //END
 }
 /* SAM_LISTING_END_5 */

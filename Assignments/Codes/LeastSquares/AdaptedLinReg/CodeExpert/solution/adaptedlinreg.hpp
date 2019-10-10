@@ -1,9 +1,8 @@
 // TO DO: Implement linReg() and expFit().
 // Note: Your code will not compile until after you have defined both functions.
+// Note: The tests anticipate the outputs in the order (alpha, beta), and not (beta, alpha).
 // START
-
 #include <Eigen/Dense>
-
 using namespace Eigen;
 
 /* @brief Solve the linear regression problem (fitting a line to data)

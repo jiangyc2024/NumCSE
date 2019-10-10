@@ -9,7 +9,7 @@ using namespace Eigen;
 
 int main() {
   std::cout << "Enter problem dimension (n>=4): ";
-  int n = 4;
+  int n;
   std::cin >> n;
   // Define tridiagonal matrix.
   double alpha = -4.0;
