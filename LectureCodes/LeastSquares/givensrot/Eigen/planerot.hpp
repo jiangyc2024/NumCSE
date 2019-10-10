@@ -18,15 +18,14 @@ using namespace Eigen;
 // Rotation matrix returned in G, rotated vector in x
 void planerot(const Vector2d& a, Matrix2d& G, Vector2d& x) {
   if (a(1) != 0.0) {
-    double t,s,c;
-    if (std::abs(a(1)) > std::abs(a(0))) {
+    double t, s, c; // s $\leftrightarrow$ $\cob{\sigma}$, c $\leftrightarrow$ $\cob{\gamma}$
+    if (std::abs(a(1)) > std::abs(a(0))) { // Avoid cancellation/overflow
       t = -a(0)/a(1); s = 1.0/std::sqrt(1.0+t*t); c = s*t;
     }
     else {
       t = -a(1)/a(0); c = 1.0/std::sqrt(1+t*t); s = c*t;
     }
-    // Form $2\times 2$ Givens rotation matreix
-    G << c,s,-s,c;
+    G << c,s,-s,c; // Form $2\times 2$ Givens rotation matreix
   }
   else G.setIdentity();
   x << a.norm(),0.0;
