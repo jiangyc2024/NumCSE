@@ -20,8 +20,6 @@ int main() {
   VectorXd t = VectorXd::LinSpaced(10, 0.1, 1.0);
   MatrixXd A = make_A(t);
   
-  
-  
   std::cout << "\nThe matrix A is defined by \n" << A << std::endl;
   
   VectorXd f(10);
@@ -32,10 +30,9 @@ int main() {
   
   VectorXd tl = VectorXd::LinSpaced(91, 0.1, 1.0);
   VectorXd yl1, yl2;
-  VectorXd err1, err2;
   
-  error_plot( gamma1, A, f, err1 );
-  error_plot( gamma2, A, f, err2 );
+  VectorXd err1 = error_plot( gamma1 );
+  VectorXd err2 = error_plot( gamma2 );
   // approximate function coefficients using both methods
   std::cout << "Enter \"1\" to plot data_fit_normal().\n"
               << "Enter \"2\" to plot data_fit_qr().\n"
@@ -47,7 +44,7 @@ int main() {
     case 1: 
             std::cout<< "Using data_fit_normal: gamma =\n"
                         << gamma1 << std::endl;
-            fit_plot( gamma1, tl, yl1 );
+            yl1 = fit_plot(gamma1, tl);
             
             // plot data points and fitted function
             plt::figure();
@@ -61,7 +58,7 @@ int main() {
             // plot fitting errors
             plt::figure();
             plt::semilogy(t, err1, "o" , {{"label", "normal equation"}} );
-            plt::title("Fit error");
+            plt::title("Fit error squared");
             plt::xlabel("t");
             plt::ylabel("|y-f(t)|^2");
             plt::legend("best");
@@ -70,7 +67,7 @@ int main() {
     case 2: 
             std::cout<< "Using data_fit_qr: gamma =\n"
                         << gamma2 << std::endl;
-            fit_plot( gamma2, tl, yl2 );
+            yl2 = fit_plot( gamma2, tl);
             
             // plot data points and fitted function
             plt::figure();
@@ -84,7 +81,7 @@ int main() {
             // plot fitting errors
             plt::figure();
             plt::semilogy(t, err2, "o" , {{"label", "qr fitting"}} );
-            plt::title("Fit error");
+            plt::title("Fit error squared");
             plt::xlabel("t");
             plt::ylabel("|y-f(t)|^2");
             plt::legend("best");
