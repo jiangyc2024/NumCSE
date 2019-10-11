@@ -14,7 +14,7 @@ using namespace Eigen;
 VectorXd lsqEst(const VectorXd &z, const VectorXd &c) {
   assert( z.size() == c.size() && "z and c must have same size" );
   
-  // Reformulating $Tz=c$ as $Ax=b$ with $x=(\alpha,\beta)^T$,
+  // Reformulating $T_{\alpha,\beta}z=c$ as $Ax=b$ with $x=(\alpha,\beta)^T$,
   // we have $b=c$, and $A$ defined as follows.
   int n = z.size();
   MatrixXd A(n,2);
@@ -29,7 +29,7 @@ VectorXd lsqEst(const VectorXd &z, const VectorXd &c) {
   MatrixXd lhs = A.transpose() * A; // Left-hand side
   VectorXd rhs = A.transpose() * c; // Right-hand side
 
-  // Intercept and slope.
+  // Least squares estimate of $(alpha,\beta)$.
   VectorXd x = lhs.lu().solve(rhs);
   return x;
 }
