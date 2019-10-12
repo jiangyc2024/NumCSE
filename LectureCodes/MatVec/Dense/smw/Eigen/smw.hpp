@@ -20,16 +20,16 @@ using namespace Eigen;
 /* SAM_LISTING_BEGIN_0 */
 // Solving rank-1 updated LSE based on \eqref{eq:smwx}
 template <class LUDec>
-VectorXd smw(const LUDec &lu, const VectorXd &u, const VectorXd &v,
-             const VectorXd &b) {
-  const VectorXd z = lu.solve(b); // $\cob{\Vz=\VA^{-1}\Vb}$ \Label[line]{smw:1}
-  const VectorXd w = lu.solve(u); // $\cob{\Vw=\VA^{-1}\Vu}$ \Label[line]{smw:2}
-  double alpha = 1.0 + v.dot(w);  // Compute denominator of \eqref{eq:smwx}
-  double vdz = v.dot(z);          // Factor for numerator of \eqref{eq:smwx}
-  if (std::abs(alpha) < std::numeric_limits<double>::epsilon() * std::abs(vdz))
+Eigen::VectorXd smw(const LUDec &lu, const Eigen::VectorXd &u,
+                    const Eigen::VectorXd &v, const Eigen::VectorXd &b) {
+  const Eigen::VectorXd z = lu.solve(b); // $\cob{\Vz=\VA^{-1}\Vb}$ \Label[line]{smw:1}
+  const Eigen::VectorXd w = lu.solve(u); // $\cob{\Vw=\VA^{-1}\Vu}$ \Label[line]{smw:2}
+  double alpha = 1.0 + v.dot(w); // Compute denominator of \eqref{eq:smwx}
+  double beta = v.dot(z);        // Factor for numerator of \eqref{eq:smwx}
+  if (std::abs(alpha) < std::numeric_limits<double>::epsilon() * std::abs(beta))
     throw std::runtime_error("A nearly singular");
   else
-    return (z - w * vdz / alpha); // see \eqref{eq:smwx}
+    return (z - w * beta / alpha); // see \eqref{eq:smwx}
 }
 /* SAM_LISTING_END_0 */
 
