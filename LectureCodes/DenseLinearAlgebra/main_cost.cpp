@@ -30,8 +30,8 @@ Eigen::VectorXd diagmodsolve2(const Eigen::MatrixXd &A,
                               const Eigen::VectorXd &b) {
   const int n = A.cols();
   assert((A.rows() == n) && (b.size() == n));
-  const auto Alu = A.lu();
-  const auto z = Alu.solve(b);
+  const auto Alu = A.lu(); // \Label[line]{dmslv:1}
+  const auto z = Alu.solve(b); // \Label[line]{dmslv:2}
   const auto W = Alu.solve(Eigen::MatrixXd::Identity(n, n));
   const Eigen::VectorXd alpha = Eigen::VectorXd::Constant(n, 1.0) +
                                 A.diagonal().cwiseProduct(W.diagonal());

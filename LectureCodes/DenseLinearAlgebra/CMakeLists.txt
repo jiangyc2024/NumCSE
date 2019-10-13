@@ -18,3 +18,4 @@ else()
 endif(MKL_FOUND)
 
 add_executable_numcse(ncse_cost main_cost.cpp)
+add_executable_numcse(ncse_cancel main_cancel.cpp)
