@@ -44,6 +44,10 @@ int main() {
     y = Adense.lu().solve(b);
     std::cout << "|dense - tridiag|:\n" << (x-y).norm() << std::endl;
     
+    int N = invit<TriDiagonalQR>(Aqr, x, 1E-6, 100);
+    std::cout << "N = " << N << std::endl;
+    int Ndense = invit<MatrixXd>(Adense, x, 1E-6, 100);
+    std::cout << "Ndense = " << N << std::endl;
     
     if(false) {
         std::cout << "\n Givens params\n";
