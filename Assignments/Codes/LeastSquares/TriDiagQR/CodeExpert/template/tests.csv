@@ -1,3 +1,7 @@
 // "testname", "input", "expected output", "points", "execution time limit (ms)"
-"test matrix", "(any input)", "Is correct for test matrix: 1",  "1", "5000",
-"orthogonal", "(any input)", "Is orthogonal: 1",  "1", "5000",
+"Givens rotation for (-1.22 -2.85)^T", "1", "(-5.08, -0.394, 0.919)",  "1", "5000",
+"Constructor", "2", "|QR-B|= 0.0",  "1", "5000",
+"applyQT()", "3", "Difference from dense multiplication: 0.0",  "1", "5000",
+"solve()", "4", "Difference from dense solver:  0.0",  "1", "5000",
+"solve(): runtime_error?", "4", "Non-invertible matrix correctly handled!",  "1", "5000",
+"invit()", "5", "19",  "1", "5000",
