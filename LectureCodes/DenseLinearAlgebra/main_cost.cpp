@@ -31,10 +31,10 @@ Eigen::VectorXd diagmodsolve2(const Eigen::MatrixXd &A,
   const int n = A.cols();
   assert((A.rows() == n) && (b.size() == n));
   const auto Alu = A.lu(); // \Label[line]{dmslv:1}
-  const auto z = Alu.solve(b); // \Label[line]{dmslv:2}
-  const auto W = Alu.solve(Eigen::MatrixXd::Identity(n, n));
+  const auto z = Alu.solve(b); 
+  const auto W = Alu.solve(Eigen::MatrixXd::Identity(n, n)); // \Label[line]{dmslv:2}
   const Eigen::VectorXd alpha = Eigen::VectorXd::Constant(n, 1.0) +
-                                A.diagonal().cwiseProduct(W.diagonal());
+                                A.diagonal().cwiseProduct(W.diagonal()); 
   if ((alpha.cwiseAbs().array() < 1E-12).any())
     throw std::runtime_error("Tiny pivot!");
   return n * z - W * z.cwiseProduct(A.diagonal().cwiseQuotient(alpha));
