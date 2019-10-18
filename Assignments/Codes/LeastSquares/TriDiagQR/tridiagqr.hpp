@@ -48,7 +48,6 @@ inline Eigen::Matrix2d Givens(double rho) {
   G << gamma, sigma, -sigma, gamma;
   return G;
 }
-
 /* SAM_LISTING_END_9 */
 
 /* @brief Calculates the parameters of a Givens rotation for a.
@@ -58,8 +57,8 @@ std::tuple<double, double, double> compGivensRotation(Eigen::Vector2d a) {
   double rho, gamma, sigma;
   // TO DO (4-4.b): Compute the parameters of a rotation that when
   // applied to $a$ results in the vector $(\|a\|, 0)^T$ or $(-\|a\|, 0)^T$.
-  // Hint: You can use the function sign() above when determining rho from gamma
-  // and sigma.
+  // Hint: You can use the function sign() above when determining rho
+  // from gamma and sigma.
   // START
   if (a(1) != 0.0) {
     double t;
@@ -203,8 +202,8 @@ Eigen::VectorXd TriDiagonalQR::solve(const VecType &b) const {
 /* @brief Computes Q and R as dense matrices.
  */
 void TriDiagonalQR::getDense(Eigen::MatrixXd &Q, Eigen::MatrixXd &R) {
-  // This function is only for demonstration purposes, and is not in any way
-  // optimal.
+  // This function is only for demonstration purposes,
+  // and is not in any way optimal.
   Q = Eigen::MatrixXd::Identity(n, n);
   R = Eigen::MatrixXd::Zero(n, n);
   R.diagonal() = B.col(0);
@@ -236,17 +235,22 @@ unsigned int invit(const MatrixType &A, Eigen::VectorXd &x, double TOL = 1E-6,
 
 /* SAM_LISTING_BEGIN_7 */
 template <>
-unsigned int invit<TriDiagonalQR>(const TriDiagonalMartrix &A,
+unsigned int invit<TriDiagonalMatrix>(const TriDiagonalMatrix &A,
                                   Eigen::VectorXd &x, double TOL,
                                   unsigned int maxit) {
+  int it = 0;
+  // TO DO (4-4.g): Specialize (efficiently) the template function invit()
+  // for the TriDiagonalMatrix class.
+  // START
   x.normalize();
   Eigen::VectorXd x_old(x.size());
-  int it = 0;
+  TriDiagonalQR Aqr(A);
   do {
     x_old = x;
-    x = A.solve(x_old);
+    x = Aqr.solve(x_old);
     x.normalize();
   } while (((x - x_old).norm() > TOL) && (it++ < maxit));
+  // END
   return it;
 }
 /* SAM_LISTING_END_7 */
