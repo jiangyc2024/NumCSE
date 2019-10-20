@@ -8,14 +8,13 @@
 #include <iostream>
 
 /* SAM_LISTING_BEGIN_0 */
-double f1(double x) {
-  return std::log(std::sqrt(x * x + 1) - x);
-}
+double f1(double x) { return std::log(std::sqrt(x * x + 1) - x); }
 /* SAM_LISTING_END_0 */
 
 /* SAM_LISTING_BEGIN_A */
 double f1c(double x) {
-  return std::log(1.0 / (std::sqrt(x * x + 1) + x));
+  return (x > 0.0) ? -std::log((std::sqrt(x * x + 1) + x))
+                   : std::log(std::sqrt(x * x + 1) - x);
 }
 /* SAM_LISTING_END_A */
 
@@ -57,9 +56,7 @@ double f4(double x) {
 /* SAM_LISTING_END_3 */
 
 /* SAM_LISTING_BEGIN_D */
-double f4c(double x) {
-  return std::abs(std::sin(x));
-}
+double f4c(double x) { return std::abs(std::sin(x)); }
 /* SAM_LISTING_END_D */
 
 int main(int argc, char **argv) {
