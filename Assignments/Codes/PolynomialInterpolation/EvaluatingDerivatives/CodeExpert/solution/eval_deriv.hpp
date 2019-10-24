@@ -15,8 +15,9 @@ namespace plt = matplotlibcpp;
  * @param[out] pair containing p(x),p'(x)
  */
 // TO DO (6-1.a): Implement the function evaldp().
-// START
+
 /* SAM_LISTING_BEGIN_0 */
+// START
 template <typename CoeffVec>
 std::pair<double, double> evaldp(const CoeffVec &c, const double x) {
   double px, dpx;
@@ -29,8 +30,9 @@ std::pair<double, double> evaldp(const CoeffVec &c, const double x) {
 
   return { px, dpx }; 
 }
-/* SAM_LISTING_END_0 */
 // END
+/* SAM_LISTING_END_0 */
+
 
 
 /*
@@ -40,8 +42,8 @@ std::pair<double, double> evaldp(const CoeffVec &c, const double x) {
  * @param[out] pair containing p(x),p'(x)
  */
 // TO DO (6-1.b): Implement the function evaldp_naive().
-// START
 /* SAM_LISTING_BEGIN_1 */
+// START
 template <typename CoeffVec>
 std::pair<double, double> evaldp_naive(const CoeffVec &c, const double x) {
   std::pair<double, double> p;
@@ -63,8 +65,9 @@ std::pair<double, double> evaldp_naive(const CoeffVec &c, const double x) {
   
   return p;
 }
-/* SAM_LISTING_END_1 */
 // END
+/* SAM_LISTING_END_1 */
+
 
 /* SAM_LISTING_BEGIN_2 */
 bool polyTestTime(unsigned int d) {
@@ -87,20 +90,17 @@ bool polyTestTime(unsigned int d) {
     Timer tm_slow, tm_fast;
     
     for(int r=0; r<repeats; r++) {
-      tm_slow.start();
-      p_naive = evaldp_naive(c.head(n),x);
-      tm_slow.stop();
-        
       tm_fast.start();
       p = evaldp(c.head(n),x);
       tm_fast.stop();
+      
+      tm_slow.start();
+      p_naive = evaldp_naive(c.head(n),x);
+      tm_slow.stop();
     }
     
-    double duration_slow = tm_slow.duration()/repeats;
-    double duration_fast = tm_fast.duration()/repeats;
-    
-    std::cout << std::setw(10) << n << std::setw(25) << duration_fast 
-              << std::setw(25) << duration_slow << "\n";
+    std::cout << std::setw(10) << n << std::setw(25) << tm_fast.mean() 
+              << std::setw(25) << tm_slow.mean() << "\n";
     
     // Check correctness
     double err_p = std::abs(p.first - p_naive.first);
