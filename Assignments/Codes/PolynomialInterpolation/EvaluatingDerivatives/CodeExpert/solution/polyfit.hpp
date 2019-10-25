@@ -16,6 +16,7 @@
 // Solver for polynomial linear least squares data fitting problem
 // data points passed in t and y, 'order' = degree + 1 
 Eigen::VectorXd polyfit(const Eigen::VectorXd& t, const Eigen::VectorXd& y, const unsigned& order) {
+  // Initialize Vandermonde matrix:
   // A = [1 t_1 t_1^2 ... ]
   //     [ ...        ... ]
   //     [1 t_n t_n^2 ... ]
@@ -24,7 +25,6 @@ Eigen::VectorXd polyfit(const Eigen::VectorXd& t, const Eigen::VectorXd& y, cons
     A.col(j) = A.col(j - 1).cwiseProduct(t);
   }
   Eigen::VectorXd coeffs = A.householderQr().solve(y);
-
   return coeffs.reverse();
 }
 /* SAM_LISTING_END_0 */
