@@ -49,8 +49,8 @@ bool polyTestTime(unsigned int d) {
   std::cout << std::setw(10) << "n" << std::setw(25) << "Horner scheme:" 
             << std::setw(25) << "Monomial approach:" << "\n"
             << " ================================================================\n";
-  // TO DO (6-1.d): Compare the output of evaldp() and evaldp_naive() and
-  // tabulate their runtimes for n=1,2,4,...,2^d.
+  // TO DO (6-1.d): Compare the output of evaldp() and evaldp_naive() for 
+  // x = .123 and tabulate their runtimes for n=2,4,...,2^d.
   // START
   
   // END

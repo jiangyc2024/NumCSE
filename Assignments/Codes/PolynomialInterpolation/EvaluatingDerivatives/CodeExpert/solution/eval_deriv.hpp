@@ -80,22 +80,22 @@ bool polyTestTime(unsigned int d) {
   std::cout << std::setw(10) << "n" << std::setw(25) << "Horner scheme:" 
             << std::setw(25) << "Monomial approach:" << "\n"
             << " ================================================================\n";
-  // TO DO (6-1.d): Compare the output of evaldp() and evaldp_naive() and
-  // tabulate their runtimes for n=1,2,4,...,2^d.
+  // TO DO (6-1.d): Compare the output of evaldp() and evaldp_naive() for 
+  // x = .123 and tabulate their runtimes for n=2,4,...,2^d.
   // START
   double TOL = 1E-8;
   int max_n = std::pow(2,d);
-  VectorXd c = VectorXd::LinSpaced(max_n,1,max_n);
-  for(int n = 1; n <= max_n; n*=2) {
+  VectorXd c = VectorXd::LinSpaced(max_n+1,1,max_n+1);
+  for(int n = 2; n <= max_n; n*=2) {
     Timer tm_slow, tm_fast;
     
     for(int r=0; r<repeats; r++) {
       tm_fast.start();
-      p = evaldp(c.head(n),x);
+      p = evaldp(c.head(n+1),x);
       tm_fast.stop();
       
       tm_slow.start();
-      p_naive = evaldp_naive(c.head(n),x);
+      p_naive = evaldp_naive(c.head(n+1),x);
       tm_slow.stop();
     }
     
