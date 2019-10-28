@@ -109,7 +109,7 @@ double Timer::mean() const {
     }
     // convert time to double
     auto total_dur = std::chrono::duration_cast<prec>(total_time);
-    double avg = double(total_dur.count())/divisor;
+    double avg = double(total_dur.count())/divisor/t_laps.size();
     return avg;
   }
   else {
