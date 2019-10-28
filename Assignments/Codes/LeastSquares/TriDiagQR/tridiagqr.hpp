@@ -112,8 +112,8 @@ TriDiagonalQR::TriDiagonalQR(const TriDiagonalMatrix &A) : n(A.n) {
   rho = Eigen::VectorXd::Zero(n - 1);
   B = Eigen::MatrixXd::Zero(n, 3);
   B.col(0) = A.d;
-  B.col(1).tail(n - 1) = A.l;
-  B.col(2).head(n - 1) = A.u;
+  B.col(2).tail(n - 1) = A.l;
+  B.col(1).head(n - 1) = A.u;
   // Currently we have for k=0,...,n-1:
   // B(k,0) = A(k,k), B(k,1) = A(k,k-1), B(k,2) = A(k,k+1).
 
@@ -122,7 +122,7 @@ TriDiagonalQR::TriDiagonalQR(const TriDiagonalMatrix &A) : n(A.n) {
   double gamma, sigma;
   for (int k = 0; k < (n - 1); k++) {
     // The block of the current A that will be affected by the next rotation.
-    Ablock << B(k, 0), B(k, 2), 0, B(k + 1, 1), B(k + 1, 0), B(k + 1, 2);
+    Ablock << B(k, 0), B(k, 1), 0, B(k + 1, 2), B(k + 1, 0), B(k + 1, 1);
     // TO DO (4-4.c): Find the k-th Givens rotation and update rho and B.
     // START
     std::tuple<double, double, double> params =
@@ -137,7 +137,7 @@ TriDiagonalQR::TriDiagonalQR(const TriDiagonalMatrix &A) : n(A.n) {
     Ablock = G * Ablock; // Rotate to eliminate Ablock(1,0)
     B.row(k) = Ablock.row(0);
     B(k + 1, 0) = Ablock(1, 1);
-    B(k + 1, 2) = Ablock(1, 2);
+    B(k + 1, 1) = Ablock(1, 2);
     // END
   }
 }
