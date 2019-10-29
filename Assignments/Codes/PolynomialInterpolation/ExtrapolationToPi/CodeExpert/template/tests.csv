@@ -1,0 +1,3 @@
+// "testname", "input", "expected output", "points", "execution time limit (ms)"
+"k=5", "(any input)", "3.12532",  "1", "5000",
+"k=15", "(any input)", "3.14159",  "1", "5000",
