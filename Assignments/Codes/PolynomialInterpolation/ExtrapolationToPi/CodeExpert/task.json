@@ -208,6 +208,33 @@
       "originVersion": 2
     },
     {
+      "_id": "pH3uzj52nZYCqqHyF",
+      "fileId": "pH3uzj52nZYCqqHyF",
+      "size": 191,
+      "key": "rt35gjYGTqoe27dEc",
+      "version": 5,
+      "current": true,
+      "name": "test_doc.md",
+      "type": "text/markdown",
+      "userId": "CzLQinp3YdqzcKT4h",
+      "projectId": "TBwZpHxK52wcDgrj8",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant"
+        ],
+        "write": [
+          "admin"
+        ]
+      },
+      "createdAt": "2019-10-29T18:20:29.175Z",
+      "makeSymlink": true
+    },
+    {
       "_id": "5uP9eTNsWnXuiKctZ",
       "key": "FCGb6shijB8WHQ7jg",
       "type": "inode/directory",
@@ -336,33 +363,6 @@
       "createdAt": "2019-10-29T17:13:38.878Z",
       "originKey": "kSjrmadCy9Me3x2jw",
       "originVersion": 2
-    },
-    {
-      "_id": "GCseHa4QhQgbNTJTM",
-      "fileId": "GCseHa4QhQgbNTJTM",
-      "size": 616,
-      "key": "rt35gjYGTqoe27dEc",
-      "version": 4,
-      "current": true,
-      "name": "test_doc.md",
-      "type": "text/markdown",
-      "userId": "CzLQinp3YdqzcKT4h",
-      "projectId": "TBwZpHxK52wcDgrj8",
-      "permissions": {
-        "phase": [
-          "interactive",
-          "submission"
-        ],
-        "read": [
-          "admin",
-          "assistant"
-        ],
-        "write": [
-          "admin"
-        ]
-      },
-      "createdAt": "2019-10-29T18:02:49.575Z",
-      "makeSymlink": true
     },
     {
       "_id": "Z8L3HtZiddD7fNvcb",
