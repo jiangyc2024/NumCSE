@@ -1,12 +1,6 @@
 #ifndef QSPLINES_HPP
 #define QSPLINES_HPP
 
-//// 
-//// Copyright (C) 2016 SAM (D-MATH) @ ETH Zurich
-//// Author(s): lfilippo <filippo.leonardi@sam.math.ethz.ch> 
-//// Contributors: tille, jgacon, dcasati
-//// This file is part of the NumCSE repository.
-////
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 #include <Eigen/SparseLU>
@@ -22,7 +16,6 @@ namespace plt = matplotlibcpp;
 /* [input] t  Vector of size n-1
    [output] pair of vectors of size n+2 and n+1, respectively
 */
-//The template will not compile until this fuction is implemented 
 /* SAM_LISTING_BEGIN_0 */
 std::pair<VectorXd, VectorXd> increments(const VectorXd &t) {
   // TO DO (6-6.g) : compute the increments t_j - t_{j-1} 
@@ -38,9 +31,9 @@ std::pair<VectorXd, VectorXd> increments(const VectorXd &t) {
   //Increments in t
   VectorXd dt = ext_t.tail(n+2).array() - ext_t.head(n+2).array();
   VectorXd ddt = ext_t.tail(n+1).array() - ext_t.head(n+1).array();
+  //END
   
   return std::make_pair(dt,ddt);
-  //END
 }
 /* SAM_LISTING_END_0 */
 
@@ -71,26 +64,20 @@ VectorXd compute_c( const VectorXd &t, const VectorXd &y) {
   VectorXd A = dt.tail(n).cwiseQuotient(2 * ddt.tail(n));
   VectorXd C = dt.head(n).cwiseQuotient(2 * ddt.head(n));
   
-  // std::vector< Triplet<double> > triplets(3*n);
-  SparseMatrix<double> M(n,n);
-  M.reserve( RowVectorXi::Constant(n, 3) );
+  std::vector< Triplet<double> > triplets(3*n);
+  
   //Build matrix as triplets
   for (unsigned int j = 0; j < n - 1 ; ++j ) {
-    //triplets.push_back(Triplet<double>(j, j, A(j) + C(j) + 1 ));
-    //triplets.push_back(Triplet<double>(j , j + 1, C(j+1) ));
-    //triplets.push_back(Triplet<double>(j + 1, j, A(j)  ));
-    M.insert( j , j ) = A(j) + C(j) + 1 ;
-    M.insert( j, j + 1) = C(j + 1);
-    M.insert( j + 1, j ) = A(j);
+    triplets.push_back(Triplet<double>(j, j, A(j) + C(j) + 1 ));
+    triplets.push_back(Triplet<double>(j , j + 1, C(j+1) ));
+    triplets.push_back(Triplet<double>(j + 1, j, A(j)  ));
   }
-  // triplets.push_back(Triplet<double>(n - 1, n - 1, A(n - 1) + C(n - 1) + 1 ));
-  // triplets.push_back(Triplet<double>(n - 1, 0, C(0) ));
-  // triplets.push_back(Triplet<double>(0, n - 1, A(n - 1)));
-  M.insert( n - 1 , n - 1 ) = A(n - 1) + C(n - 1) + 1 ;
-  M.coeffRef( n - 1, 0) += C(0); // for n = 2 we edit M(1,0) and M(0,1)
-  M.coeffRef( 0, n - 1 ) += A(n - 1);
+  triplets.push_back(Triplet<double>(n - 1, n - 1, A(n - 1) + C(n - 1) + 1 ));
+  triplets.push_back(Triplet<double>(n - 1, 0, C(0) ));
+  triplets.push_back(Triplet<double>(0, n - 1, A(n - 1)));
   
-  //M.setFromTriplets(triplets.begin(), triplets.end());
+  SparseMatrix<double> M(n,n);
+  M.setFromTriplets(triplets.begin(), triplets.end());
   M.makeCompressed();
   //solve linear system
   SparseLU<SparseMatrix<double>> solver;
