@@ -32,9 +32,10 @@ int main(void) {
   
   
   std::vector<double> Err = qsp_error(8);
-  std::cout << "Error values: ";
+  std::cout << "n \t" << "Error values: \n";
+  std::cout << "------------------------ \n";
   for (unsigned int i = 0; i < Err.size(); ++i) {
-    std::cout << Err[i] << "    " ;
+    std::cout << std::pow(2,i+1) << "\t" << Err[i] << std::endl ;
   }
   
   return 0;

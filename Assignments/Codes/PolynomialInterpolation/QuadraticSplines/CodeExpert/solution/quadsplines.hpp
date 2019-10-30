@@ -64,7 +64,6 @@ VectorXd compute_c( const VectorXd &t, const VectorXd &y) {
                 && "mesh nodes out of range");
   
   std::pair<VectorXd, VectorXd> p = increments(t);
-  //Increments in t
   VectorXd dt = p.first;
   VectorXd ddt = p.second;
   
@@ -72,19 +71,26 @@ VectorXd compute_c( const VectorXd &t, const VectorXd &y) {
   VectorXd A = dt.tail(n).cwiseQuotient(2 * ddt.tail(n));
   VectorXd C = dt.head(n).cwiseQuotient(2 * ddt.head(n));
   
-  std::vector< Triplet<double> > triplets(3*n);
+  // std::vector< Triplet<double> > triplets(3*n);
+  SparseMatrix<double> M(n,n);
+  M.reserve( RowVectorXi::Constant(n, 3) );
   //Build matrix as triplets
   for (unsigned int j = 0; j < n - 1 ; ++j ) {
-    triplets.push_back(Triplet<double>(j, j, A(j) + C(j) + 1 ));
-    triplets.push_back(Triplet<double>(j , j + 1, C(j+1) ));
-    triplets.push_back(Triplet<double>(j + 1, j, A(j)  ));
+    //triplets.push_back(Triplet<double>(j, j, A(j) + C(j) + 1 ));
+    //triplets.push_back(Triplet<double>(j , j + 1, C(j+1) ));
+    //triplets.push_back(Triplet<double>(j + 1, j, A(j)  ));
+    M.insert( j , j ) = A(j) + C(j) + 1 ;
+    M.insert( j, j + 1) = C(j + 1);
+    M.insert( j + 1, j ) = A(j);
   }
-  triplets.push_back(Triplet<double>(n - 1, n - 1, A(n - 1) + C(n - 1) + 1 ));
-  triplets.push_back(Triplet<double>(n - 1, 0, C(0) ));
-  triplets.push_back(Triplet<double>(0, n - 1, A(n - 1)));
+  // triplets.push_back(Triplet<double>(n - 1, n - 1, A(n - 1) + C(n - 1) + 1 ));
+  // triplets.push_back(Triplet<double>(n - 1, 0, C(0) ));
+  // triplets.push_back(Triplet<double>(0, n - 1, A(n - 1)));
+  M.insert( n - 1 , n - 1 ) = A(n - 1) + C(n - 1) + 1 ;
+  M.coeffRef( n - 1, 0) += C(0); // for n = 2 we edit M(1,0) and M(0,1)
+  M.coeffRef( 0, n - 1 ) += A(n - 1);
   
-  SparseMatrix<double> M(n,n);
-  M.setFromTriplets(triplets.begin(), triplets.end());
+  //M.setFromTriplets(triplets.begin(), triplets.end());
   M.makeCompressed();
   //solve linear system
   SparseLU<SparseMatrix<double>> solver;
@@ -100,18 +106,20 @@ VectorXd compute_c( const VectorXd &t, const VectorXd &y) {
   
   
 /* [input] c  Vector of size n
-   [input] dt Vector of size n+2
-   [input] ddt Vector of size n+1
+   [input] t Vector of size n-1
    [output] d_ext Vector of size n+1
 */
 /* SAM_LISTING_BEGIN_9*/   
-VectorXd compute_d ( const VectorXd &c, const VectorXd &dt, 
-                            const VectorXd &ddt) {
+VectorXd compute_d ( const VectorXd &c, const VectorXd &t ) {
   const unsigned int n = c.size(); //number of intervals
   VectorXd d_ext(n + 1);
   //TO DO (): compute coefficients d_j for j = 0...n 
   //Hint: periodic conditions give d_0 = d_n
   //START
+  std::pair<VectorXd, VectorXd> p = increments(t);
+  VectorXd dt = p.first;
+  VectorXd ddt = p.second;
+  
   //extend c periodically for vectorization
   VectorXd c_ext(c.size() + 1);
   c_ext << c , c(0);
@@ -137,7 +145,8 @@ VectorXd compute_d ( const VectorXd &c, const VectorXd &dt,
 VectorXd quadspline(const VectorXd &t, const VectorXd &y, const VectorXd &x) {
   VectorXd fval(x.size());
   
-  //TO DO (6-6.h): evaluate the spline at the points defined in x
+  //TO DO (6-6.h): evaluate the spline at the points defined in x.
+  // Assume that x is sorted.
   assert(x.minCoeff() >= 0 && x.maxCoeff() <= 1 
                 && "evaluation samples out of range");
   
@@ -145,12 +154,11 @@ VectorXd quadspline(const VectorXd &t, const VectorXd &y, const VectorXd &x) {
   VectorXd c = compute_c(t, y);
   const unsigned int n = y.size(); //number of intervals
   
-  
   std::pair<VectorXd,VectorXd> p = increments(t);
   VectorXd dt = p.first;
   VectorXd ddt = p.second;
   
-  VectorXd d_ext = compute_d(c, dt, ddt);
+  VectorXd d_ext = compute_d(c, t);
   //extend t for vectorization
   VectorXd t_ext(n + 1);
   t_ext << 0, t, 1;
@@ -203,7 +211,6 @@ void plotquadspline( const std::string &filename ) {
   // std::cout << spline_val <<std::endl;
   
   plt::plot(x, spline_val, {{"label","spline"}} );
-  // plt::plot(x, f(x), ":", {{"label","function f"}});
   plt::title("Quadratic spline");
   plt::xlabel("t");
   plt::ylabel("s(t)");

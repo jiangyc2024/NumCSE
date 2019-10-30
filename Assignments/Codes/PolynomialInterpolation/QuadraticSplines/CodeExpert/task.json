@@ -180,16 +180,14 @@
       "originVersion": 4
     },
     {
-      "_id": "4ReEmiNe6aujBy5DP",
-      "fileId": "4ReEmiNe6aujBy5DP",
-      "size": 505,
-      "key": "KQS8DDkhTdFBHtqTD",
-      "originKey": "j2DGvhXKAXTRFPTa5",
-      "originVersion": 2,
-      "version": 6,
+      "_id": "vgrvnrEyAyc6LcdBN",
+      "fileId": "vgrvnrEyAyc6LcdBN",
+      "size": 7520,
+      "key": "QKhtAYQxETfpq9wQc",
+      "version": 146,
       "current": true,
-      "name": "tests.csv",
-      "type": "text/csv",
+      "name": "quadsplines.hpp",
+      "type": "text/plain",
       "userId": "psziEDxKr9Fu5Druz",
       "projectId": "yAnbtgqahj59k8xZq",
       "permissions": {
@@ -205,8 +203,78 @@
           "admin"
         ]
       },
-      "createdAt": "2019-10-29T17:11:44.646Z",
+      "createdAt": "2019-10-30T12:02:48.145Z",
       "makeSymlink": true
+    },
+    {
+      "_id": "7wfqfzTizMAWLWTpM",
+      "fileId": "7wfqfzTizMAWLWTpM",
+      "size": 501,
+      "key": "o7gaACtY9rGJXzMtK",
+      "version": 2,
+      "current": true,
+      "name": "test_doc.md",
+      "type": "text/markdown",
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "yAnbtgqahj59k8xZq",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant"
+        ],
+        "write": [
+          "admin"
+        ]
+      },
+      "createdAt": "2019-10-29T16:08:52.670Z",
+      "makeSymlink": true
+    },
+    {
+      "_id": "gFmzmoZwH4rcetJ5i",
+      "type": "inode/directory",
+      "name": ".",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant",
+          "student",
+          "everyone"
+        ],
+        "write": [
+          "admin",
+          "assistant",
+          "student",
+          "everyone"
+        ]
+      },
+      "children": [
+        "ZipS7A5zesu3Mo5pr",
+        "cP5hc8WvXeJqfP87K",
+        "KQS8DDkhTdFBHtqTD",
+        "pEs3ayH74PHmqk9fR",
+        "uLhfEGftR3zQp2R4a",
+        "iPpLxFdsv2W4ALqzR",
+        "QKhtAYQxETfpq9wQc",
+        "b377CnoGH4LdAbBGp",
+        "DWQSnf4pxdFcqGvDp",
+        "W6LLZfBBnEZQZg2vL"
+      ],
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "yAnbtgqahj59k8xZq",
+      "version": 1,
+      "key": "gFmzmoZwH4rcetJ5i",
+      "current": true,
+      "createdAt": "2019-10-28T10:31:12.865Z",
+      "originKey": "nC39pk3ChFp68oomi",
+      "originVersion": 9
     },
     {
       "_id": "hCZLsGrmNTmL2eZ6o",
@@ -322,14 +390,16 @@
       "createdAt": "2019-10-28T10:31:12.865Z"
     },
     {
-      "_id": "XPPhcy7WSHG289sCr",
-      "fileId": "XPPhcy7WSHG289sCr",
-      "size": 7212,
-      "key": "QKhtAYQxETfpq9wQc",
-      "version": 140,
+      "_id": "FAjsXaB289Lvk8svr",
+      "fileId": "FAjsXaB289Lvk8svr",
+      "size": 511,
+      "key": "KQS8DDkhTdFBHtqTD",
+      "originKey": "j2DGvhXKAXTRFPTa5",
+      "originVersion": 2,
+      "version": 7,
       "current": true,
-      "name": "quadsplines.hpp",
-      "type": "text/plain",
+      "name": "tests.csv",
+      "type": "text/csv",
       "userId": "psziEDxKr9Fu5Druz",
       "projectId": "yAnbtgqahj59k8xZq",
       "permissions": {
@@ -345,105 +415,8 @@
           "admin"
         ]
       },
-      "createdAt": "2019-10-29T17:09:24.084Z",
+      "createdAt": "2019-10-30T11:26:41.267Z",
       "makeSymlink": true
-    },
-    {
-      "_id": "7wfqfzTizMAWLWTpM",
-      "fileId": "7wfqfzTizMAWLWTpM",
-      "size": 501,
-      "key": "o7gaACtY9rGJXzMtK",
-      "version": 2,
-      "current": true,
-      "name": "test_doc.md",
-      "type": "text/markdown",
-      "userId": "psziEDxKr9Fu5Druz",
-      "projectId": "yAnbtgqahj59k8xZq",
-      "permissions": {
-        "phase": [
-          "interactive",
-          "submission"
-        ],
-        "read": [
-          "admin",
-          "assistant"
-        ],
-        "write": [
-          "admin"
-        ]
-      },
-      "createdAt": "2019-10-29T16:08:52.670Z",
-      "makeSymlink": true
-    },
-    {
-      "_id": "gFmzmoZwH4rcetJ5i",
-      "type": "inode/directory",
-      "name": ".",
-      "permissions": {
-        "phase": [
-          "interactive",
-          "submission"
-        ],
-        "read": [
-          "admin",
-          "assistant",
-          "student",
-          "everyone"
-        ],
-        "write": [
-          "admin",
-          "assistant",
-          "student",
-          "everyone"
-        ]
-      },
-      "children": [
-        "ZipS7A5zesu3Mo5pr",
-        "cP5hc8WvXeJqfP87K",
-        "KQS8DDkhTdFBHtqTD",
-        "pEs3ayH74PHmqk9fR",
-        "uLhfEGftR3zQp2R4a",
-        "iPpLxFdsv2W4ALqzR",
-        "QKhtAYQxETfpq9wQc",
-        "b377CnoGH4LdAbBGp",
-        "DWQSnf4pxdFcqGvDp",
-        "W6LLZfBBnEZQZg2vL"
-      ],
-      "userId": "psziEDxKr9Fu5Druz",
-      "projectId": "yAnbtgqahj59k8xZq",
-      "version": 1,
-      "key": "gFmzmoZwH4rcetJ5i",
-      "current": true,
-      "createdAt": "2019-10-28T10:31:12.865Z",
-      "originKey": "nC39pk3ChFp68oomi",
-      "originVersion": 9
-    },
-    {
-      "_id": "b377CnoGH4LdAbBGp",
-      "fileId": "EEdp5yaqmFbvMBCDn",
-      "size": 3556,
-      "name": "timer.h",
-      "type": "text/x-c",
-      "permissions": {
-        "phase": [
-          "interactive",
-          "submission"
-        ],
-        "read": [
-          "admin",
-          "assistant"
-        ],
-        "write": [
-          "admin"
-        ]
-      },
-      "makeSymlink": true,
-      "userId": "psziEDxKr9Fu5Druz",
-      "projectId": "yAnbtgqahj59k8xZq",
-      "version": 1,
-      "key": "b377CnoGH4LdAbBGp",
-      "current": true,
-      "createdAt": "2019-10-28T10:31:12.865Z"
     },
     {
       "_id": "ZipS7A5zesu3Mo5pr",
@@ -474,13 +447,40 @@
       "originVersion": 20
     },
     {
-      "_id": "XDrJB7o4Qx72uPugH",
-      "fileId": "XDrJB7o4Qx72uPugH",
-      "size": 954,
+      "_id": "b377CnoGH4LdAbBGp",
+      "fileId": "EEdp5yaqmFbvMBCDn",
+      "size": 3556,
+      "name": "timer.h",
+      "type": "text/x-c",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant"
+        ],
+        "write": [
+          "admin"
+        ]
+      },
+      "makeSymlink": true,
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "yAnbtgqahj59k8xZq",
+      "version": 1,
+      "key": "b377CnoGH4LdAbBGp",
+      "current": true,
+      "createdAt": "2019-10-28T10:31:12.865Z"
+    },
+    {
+      "_id": "vy4P94iWkXjAbW9LM",
+      "fileId": "vy4P94iWkXjAbW9LM",
+      "size": 1042,
       "key": "cP5hc8WvXeJqfP87K",
       "originKey": "jw5d5ZMQLc7uMr7Dp",
       "originVersion": 4,
-      "version": 46,
+      "version": 51,
       "current": true,
       "name": "main.cpp",
       "type": "text/x-c",
@@ -499,7 +499,7 @@
           "admin"
         ]
       },
-      "createdAt": "2019-10-29T17:10:46.306Z",
+      "createdAt": "2019-10-30T11:27:32.988Z",
       "makeSymlink": true
     },
     {
