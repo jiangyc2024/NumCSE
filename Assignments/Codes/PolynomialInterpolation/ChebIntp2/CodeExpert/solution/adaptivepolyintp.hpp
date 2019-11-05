@@ -29,11 +29,10 @@ VectorXd adaptivepolyintp( Function&& f, double a, double b,
                       /* Ignore the following line for part a) */
                       std::vector<double> *errortab = nullptr ) {
   // TO DO (7-3.a) : implement the greedy algorithm for adaptive interpolation
-  
   // Generate sampling points and evaluate $f$ there
   VectorXd sampling_points = VectorXd::LinSpaced(N, a, b),
                   fvals_at_sampling_points = sampling_points.unaryExpr(f);
-
+  // START
   // Approximate $\max |f(x)|$
   double maxf = fvals_at_sampling_points.cwiseAbs().maxCoeff();
 
@@ -75,8 +74,9 @@ VectorXd adaptivepolyintp( Function&& f, double a, double b,
   }
   std::cerr << "Desired accuracy could not be reached."
             << std::endl;
+  //END
   return sampling_points; // return all sampling points
-
+	
 }
 /* SAM_LISTING_END_1 */
 
