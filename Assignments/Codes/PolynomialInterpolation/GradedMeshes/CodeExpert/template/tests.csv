@@ -1,0 +1,4 @@
+// "testname", "input", "expected output", "points", "execution time limit (ms)"
+"pwlintpMaxError() ", "1", "0.31225",  "1", "5000",
+"cvgrateEquidistantMesh()", "2", "0.25 0.75 1.25 1.75    2    2",  "1", "5000",
+"cvgrateGradedMesh()", "4", "0.125 0.375 0.625 0.875  1.13\n 0.25  0.75  1.25  1.75     2\n 1.04  1.47   1.9     2     2\n 1.84  1.84     2     2  1.99",  "1", "50000",
