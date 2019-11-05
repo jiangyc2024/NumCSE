@@ -96,7 +96,7 @@ VectorXd compute_c( const VectorXd &t, const VectorXd &y) {
    [input] t Vector of size n-1
    [output] d_ext Vector of size n+1
 */
-/* SAM_LISTING_BEGIN_9*/   
+/* SAM_LISTING_BEGIN_9 */   
 VectorXd compute_d ( const VectorXd &c, const VectorXd &t ) {
   const unsigned int n = c.size(); //number of intervals
   VectorXd d_ext(n + 1);

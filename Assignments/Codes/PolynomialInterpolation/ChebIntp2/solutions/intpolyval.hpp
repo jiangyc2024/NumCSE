@@ -13,9 +13,10 @@ using Eigen::VectorXd;
 //      \texttt{y}: vector of data \Blue{$y_0, \ldots, y_n$}
 //      \texttt{x}: vector of evaluation points \Blue{$x_1, \ldots, x_N$}
 // OUT: \texttt{p}: interpolant evaluated at x 
+/* SAM_LISTING_BEGIN_0 */
 void intpolyval(const VectorXd& t, const VectorXd& y, const VectorXd& x, VectorXd& p) {
   const unsigned n = t.size(), // no. of interpolation nodes = deg. of polynomial $-1$
-                 N = x.size(); // no. of evaluation points
+    N = x.size(); // no. of evaluation points
 
   p = VectorXd(N); // resizing 
 
@@ -42,3 +43,4 @@ void intpolyval(const VectorXd& t, const VectorXd& y, const VectorXd& x, VectorX
     }
   }
 }
+/* SAM_LISTING_END_0 */
