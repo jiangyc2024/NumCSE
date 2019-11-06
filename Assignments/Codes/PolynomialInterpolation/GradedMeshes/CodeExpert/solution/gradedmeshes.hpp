@@ -4,6 +4,7 @@
 
 #include "matplotlibcpp.h"
 
+
 using namespace Eigen;
 namespace plt = matplotlibcpp;
 
@@ -85,6 +86,61 @@ double pwlintpMaxError(FUNCTION &&f, const Eigen::VectorXd &t) {
 }
 /* SAM_LISTING_END_0 */
 
+
+/* @brief Plots error norms of piecewise linear interpolation of
+ * $f(t)=t^\alpha$ using equidistant meshes on [0,1].
+ * @param[in] alpha, a vector of positive values not equal to 0 or 1.
+ */
+/* SAM_LISTING_BEGIN_5 */
+void cvgplotEquidistantMesh(const Eigen::VectorXd &alpha) {
+  int n_alphas = alpha.size();
+  plt::figure();
+  // TO DO (7-1.d): Create log-log plots of the maximum norm
+  // errors (obtained by pwlintMaxError()) with
+  // number of mesh intervals 32, 64, ..., 4096.
+  // START
+  int kmin = 5, kmax = 12;
+  int n_meshes = kmax - kmin + 1;
+  // n=2^kmin, 2^(kmin+1), ..., 2^kmax.
+  ArrayXd N = Eigen::pow(2, ArrayXd::LinSpaced(n_meshes, kmin, kmax));
+
+  // Errors(i,j) = L-infinity error of interpolation of t^alpha(j)
+  // using a mesh M with #M = N(i)+1.
+  MatrixXd Errors(n_meshes, n_alphas);
+  for (int i = 0; i < n_meshes; i++) {
+    int n = N(i); // The mesh has #M = (n+1) = (N(i)+1) nodes.
+    VectorXd mesh = VectorXd::LinSpaced(n + 1, 0.0, 1.0);
+    for (int j = 0; j < n_alphas; j++) {
+      // Compute L-infinity error for f_j(t) = t^alpha(j).
+      double alphaj = alpha(j);
+      auto fj = [alphaj](double t) { return std::pow(t, alphaj); };
+      Errors(i, j) = pwlintpMaxError<std::function<double(double)>>(fj, mesh);
+    }
+  }
+  
+  // Define a few line-styles to distinguish plots.
+  // Colours change automatically.
+  int n_styles = 4;
+  std::vector<std::string> style;
+  style.push_back("o--");
+  style.push_back("v-.");
+  style.push_back("s:");
+  style.push_back("D-");
+  // Plot errors
+  for (int j = 0; j < n_alphas; j++) {
+    char lab [20];
+    sprintf(lab,"alpha = %.2f",alpha(j));
+    plt::loglog(N, Errors.col(j), style[j%n_styles], {{"label", lab}});
+  }
+  plt::title("Error of pw. lin. intp. of f(t)=t^alpha on uniform meshes");
+  plt::ylabel("Error");
+  plt::xlabel("Number of mesh intervals");
+  plt::legend("lower left", std::vector<double>());
+  // END
+  plt::savefig("./cx_out/cvgplotEquidistant.png");
+}
+/* SAM_LISTING_END_5 */
+
 /* @brief Estimates convergence rates of piecewise linear interpolation of
  * $f(t)=t^\alpha$ using equidistant meshes on [0,1].
  * @param[in] alpha, a vector of positive values not equal to 0 or 1.
@@ -96,7 +152,7 @@ Eigen::VectorXd cvgrateEquidistantMesh(const Eigen::VectorXd &alpha) {
   int n_alphas = alpha.size();
   VectorXd Rates(n_alphas);
 
-  // TO DO (7-1.d): Fill in the entries of Rates.
+  // TO DO (7-1.e): Fill in the entries of Rates.
   // Hint: For each alpha(j), use polyfit() to estimate convergence
   // rates of the maximum norm (obtained by pwlintMaxError()) with
   // number of mesh intervals 32, 64, ..., 4096.
@@ -136,13 +192,12 @@ Eigen::VectorXd cvgrateEquidistantMesh(const Eigen::VectorXd &alpha) {
  */
 /* SAM_LISTING_BEGIN_2 */
 void testcvgEquidistantMesh(void) {
-  plt::figure();
-  // TO DO (7-1.e): Plot and tabulate the convergence rates of pw.
+  // TO DO (7-1.f): Plot and tabulate the convergence rates of pw.
   // lin. intp. of $t^\alpha$ using equidistant meshes on [0,1],
-  // for alpha = 0.1, 0.3, 0.5 ..., 2.9.
+  // for alpha = 0.05, 0.15, 0.25 ..., 2.95.
   // START
-  int n_alphas = 15;
-  VectorXd alpha = VectorXd::LinSpaced(n_alphas, 0.1, 2.9);
+  int n_alphas = 30;
+  VectorXd alpha = VectorXd::LinSpaced(n_alphas, 0.05, 2.95);
 
   VectorXd ConvRates = cvgrateEquidistantMesh(alpha);
   std::cout << std::setw(10) << "alpha" << std::setw(20) << "Convergence rate"
@@ -152,12 +207,13 @@ void testcvgEquidistantMesh(void) {
               << std::endl;
   }
 
+  plt::figure();
   plt::plot(alpha, ConvRates);
   plt::xlabel("alpha");
   plt::ylabel("conv. rate");
-  plt::title("Pw. lin. intp. of f(t)=t^alpha on uniform meshes");
-  // END
+  plt::title("Cvg. rates of pw. lin. intp. of f(t)=t^alpha on uniform meshes");
   plt::savefig("./cx_out/cvgrateEquidistant.png");
+  // END
 }
 /* SAM_LISTING_END_2 */
 
@@ -175,7 +231,7 @@ Eigen::MatrixXd cvgrateGradedMesh(const Eigen::VectorXd &alpha,
   int n_betas = beta.size();
   MatrixXd Rates(n_betas, n_alphas);
 
-  // TO DO (7-1.h): Fill in the entries of Rates.
+  // TO DO (7-1.i): Fill in the entries of Rates.
   // START
   int kmin = 5, kmax = 12;
   int n_meshes = kmax - kmin + 1;
@@ -222,30 +278,35 @@ Eigen::MatrixXd cvgrateGradedMesh(const Eigen::VectorXd &alpha,
  */
 /* SAM_LISTING_BEGIN_4 */
 void testcvgGradedMesh(void) {
-  // TO DO (7-1.i): Print the table of convergence rates from
-  // cvgrateGradedMesh() using alpha = 0.5, 0.15, ..., 1.95
+  // TO DO (7-1.j): Plot the convergence rates from
+  // cvgrateGradedMesh() using alpha = 0.05, 0.15, ..., 2.95
   // and beta = 0.1, 0.2, ..., 2.0.
+  // Note: Running this code may take a while, so start by
+  // using fewer values for alpha and beta.
+  // Hint: You can use plt::plot_surface(X,Y,Z) where X, Y, Z
+  // are matrices that all have the same dimensions.
+  // You can use x.replicate() to create X and Y
+  // for an appropriate vector x.
   // START
-  int n_alphas = 20;
-  VectorXd alpha = VectorXd::LinSpaced(n_alphas, 0.05, 1.95);
+  int n_alphas = 30;
+  VectorXd alpha = VectorXd::LinSpaced(n_alphas, 0.05, 2.95);
   int n_betas = 20;
   VectorXd beta = VectorXd::LinSpaced(n_betas, 0.1, 2.0);
-  std::cout << "alpha = " << alpha.transpose()
-            << "\nbeta = " << beta.transpose() << "\n\n";
-
+  
+  // ConvRates(i,j) = convergence rate using beta(i) and alpha(j).
   MatrixXd ConvRates = cvgrateGradedMesh(alpha, beta);
-  std::cout << ConvRates << std::endl;
-
+  // Create meshgrid of alpha and beta values for plotting,
+  // such that alphaGrid(i,j) = alpha(j)
+  // and betaGrid(i,j) = beta(i).
+  MatrixXd alphaGrid = alpha.replicate(1,n_betas).transpose();
+  MatrixXd betaGrid = beta.replicate(1,n_alphas);
+  
   plt::figure();
-  // plt::contour(ConvRates); // Not implemented
-  VectorXd Y = ConvRates.row(4);
-  plt::plot(alpha, Y);
-  Y = ConvRates.row(9);
-  plt::plot(alpha, Y);
-  Y = ConvRates.row(14);
-  plt::plot(alpha, Y);
-  Y = ConvRates.row(19);
-  plt::plot(alpha, Y);
+  // plt::contour(alphaGrid,betaGrid,ConvRates); // Not implemented
+  plt::plot_surface(alphaGrid,betaGrid,ConvRates);
+  plt::xlabel("alpha");
+  plt::ylabel("beta");
+  plt::title("Cvg. rates of pw. lin. intp. of f(t)=t^alpha on graded meshes");
   plt::savefig("./cx_out/alphabeta.png");
   // END
 }
