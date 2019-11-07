@@ -18,7 +18,8 @@
     "useCase": "masterSolution",
     "rootDirKey": "LKLdQPBx29iqDRFkT",
     "taskId": "eGB6gY3ci8qSHeSAs",
-    "lastUpdate": "2019-11-05T11:49:17.810Z",
+    "lastUpdate": "2019-11-07T15:56:27.062Z",
+    "defaultSelectionKey": "8buCpizCGjKubCjhe",
     "env": {
       "slug": "generic"
     }
@@ -65,13 +66,15 @@
       "originVersion": 5
     },
     {
-      "_id": "2u8KM8vri6sqQRbAJ",
-      "fileId": "2u8KM8vri6sqQRbAJ",
-      "size": 1306,
-      "key": "Ctf4cRYXpGdKKqfTe",
-      "version": 2,
+      "_id": "AwKEXNh5Lcp6FGcAh",
+      "fileId": "AwKEXNh5Lcp6FGcAh",
+      "size": 740,
+      "key": "mgRe3AFvjhDEx7QFH",
+      "originKey": "Aw3iM4girCrvNJ9RT",
+      "originVersion": 2,
+      "version": 4,
       "current": true,
-      "name": "test_doc.md",
+      "name": "default.md",
       "type": "text/markdown",
       "userId": "psziEDxKr9Fu5Druz",
       "projectId": "7DuHwh5mBBet9xuw9",
@@ -90,34 +93,6 @@
       },
       "createdAt": "2019-11-05T11:49:13.322Z",
       "makeSymlink": true
-    },
-    {
-      "_id": "26K6Q4NSAGG3q9tQ9",
-      "type": "text/yaml",
-      "makeSymlink": true,
-      "name": "conf.yml",
-      "permissions": {
-        "phase": [
-          "interactive",
-          "submission"
-        ],
-        "read": [
-          "admin",
-          "assistant"
-        ],
-        "write": [
-          "admin"
-        ]
-      },
-      "fileId": "Czwo8LZaL9CSDswXG",
-      "userId": "psziEDxKr9Fu5Druz",
-      "projectId": "7DuHwh5mBBet9xuw9",
-      "version": 1,
-      "key": "26K6Q4NSAGG3q9tQ9",
-      "current": true,
-      "createdAt": "2019-11-04T09:39:08.327Z",
-      "originKey": "4wHvR8dDRNcp6tKcz",
-      "originVersion": 2
     },
     {
       "_id": "pfE3snaTP9roREicF",
@@ -177,14 +152,14 @@
       "originVersion": 21
     },
     {
-      "_id": "PXzoQDxcrfEHzsi83",
-      "fileId": "PXzoQDxcrfEHzsi83",
-      "size": 3715,
-      "key": "8buCpizCGjKubCjhe",
-      "version": 72,
+      "_id": "2u8KM8vri6sqQRbAJ",
+      "fileId": "2u8KM8vri6sqQRbAJ",
+      "size": 1306,
+      "key": "Ctf4cRYXpGdKKqfTe",
+      "version": 2,
       "current": true,
-      "name": "adaptivepolyintp.hpp",
-      "type": "text/plain",
+      "name": "test_doc.md",
+      "type": "text/markdown",
       "userId": "psziEDxKr9Fu5Druz",
       "projectId": "7DuHwh5mBBet9xuw9",
       "permissions": {
@@ -200,8 +175,120 @@
           "admin"
         ]
       },
-      "createdAt": "2019-11-05T11:34:13.140Z",
+      "createdAt": "2019-11-05T11:49:13.322Z",
       "makeSymlink": true
+    },
+    {
+      "_id": "26K6Q4NSAGG3q9tQ9",
+      "type": "text/yaml",
+      "makeSymlink": true,
+      "name": "conf.yml",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant"
+        ],
+        "write": [
+          "admin"
+        ]
+      },
+      "fileId": "Czwo8LZaL9CSDswXG",
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "7DuHwh5mBBet9xuw9",
+      "version": 1,
+      "key": "26K6Q4NSAGG3q9tQ9",
+      "current": true,
+      "createdAt": "2019-11-04T09:39:08.327Z",
+      "originKey": "4wHvR8dDRNcp6tKcz",
+      "originVersion": 2
+    },
+    {
+      "_id": "xGBPc3kw2LCFXfnGG",
+      "fileId": "xGBPc3kw2LCFXfnGG",
+      "size": 2015,
+      "key": "DPKuwhyK8WGsTjRSG",
+      "version": 6,
+      "current": true,
+      "name": "intpolyval.hpp",
+      "type": "text/plain",
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "7DuHwh5mBBet9xuw9",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant",
+          "student",
+          "everyone"
+        ],
+        "write": [
+          "admin"
+        ]
+      },
+      "createdAt": "2019-11-07T16:02:22.554Z",
+      "makeSymlink": true
+    },
+    {
+      "_id": "XWX5eGNmPQnvCovzi",
+      "fileId": "W8zEuzqEXAvJjXqwQ",
+      "size": 57733,
+      "name": "matplotlibcpp.h",
+      "type": "text/x-c",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant"
+        ],
+        "write": [
+          "admin"
+        ]
+      },
+      "makeSymlink": true,
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "7DuHwh5mBBet9xuw9",
+      "version": 1,
+      "key": "XWX5eGNmPQnvCovzi",
+      "current": true,
+      "createdAt": "2019-11-04T09:39:08.327Z"
+    },
+    {
+      "_id": "oYah9JHqbTzQS8E44",
+      "key": "2jcBRHcEJr38DMBHC",
+      "type": "text/markdown",
+      "makeSymlink": true,
+      "version": 2,
+      "current": true,
+      "name": "written_solution.md",
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "7DuHwh5mBBet9xuw9",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant",
+          "student",
+          "everyone"
+        ],
+        "write": [
+          "admin"
+        ]
+      },
+      "createdAt": "2019-11-07T15:56:24.067Z",
+      "fileId": "67FqMx5oY4nf35joQ"
     },
     {
       "_id": "6Yv3owyjeKG9toyQ8",
@@ -235,6 +322,37 @@
       "createdAt": "2019-11-04T09:39:08.327Z",
       "originKey": "eSpPtrYwzec99nhmf",
       "originVersion": 7
+    },
+    {
+      "_id": "xM6LBEEQhNF8JbQYF",
+      "fileId": "xM6LBEEQhNF8JbQYF",
+      "size": 3744,
+      "key": "8buCpizCGjKubCjhe",
+      "version": 81,
+      "current": true,
+      "name": "adaptivepolyintp.hpp",
+      "type": "text/plain",
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "7DuHwh5mBBet9xuw9",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant",
+          "student",
+          "everyone"
+        ],
+        "write": [
+          "admin",
+          "assistant",
+          "student",
+          "everyone"
+        ]
+      },
+      "createdAt": "2019-11-07T16:02:22.554Z"
     },
     {
       "_id": "sb8KfrQyr72T26Xpx",
@@ -278,62 +396,6 @@
         "XWX5eGNmPQnvCovzi",
         "DPKuwhyK8WGsTjRSG"
       ]
-    },
-    {
-      "_id": "AwKEXNh5Lcp6FGcAh",
-      "fileId": "AwKEXNh5Lcp6FGcAh",
-      "size": 740,
-      "key": "mgRe3AFvjhDEx7QFH",
-      "originKey": "Aw3iM4girCrvNJ9RT",
-      "originVersion": 2,
-      "version": 4,
-      "current": true,
-      "name": "default.md",
-      "type": "text/markdown",
-      "userId": "psziEDxKr9Fu5Druz",
-      "projectId": "7DuHwh5mBBet9xuw9",
-      "permissions": {
-        "phase": [
-          "interactive",
-          "submission"
-        ],
-        "read": [
-          "admin",
-          "assistant"
-        ],
-        "write": [
-          "admin"
-        ]
-      },
-      "createdAt": "2019-11-05T11:49:13.322Z",
-      "makeSymlink": true
-    },
-    {
-      "_id": "PPfecMS2Nc6e5z6TM",
-      "fileId": "PPfecMS2Nc6e5z6TM",
-      "size": 1960,
-      "key": "DPKuwhyK8WGsTjRSG",
-      "version": 4,
-      "current": true,
-      "name": "intpolyval.hpp",
-      "type": "text/plain",
-      "userId": "psziEDxKr9Fu5Druz",
-      "projectId": "7DuHwh5mBBet9xuw9",
-      "permissions": {
-        "phase": [
-          "interactive",
-          "submission"
-        ],
-        "read": [
-          "admin",
-          "assistant"
-        ],
-        "write": [
-          "admin"
-        ]
-      },
-      "createdAt": "2019-11-04T11:06:10.959Z",
-      "makeSymlink": true
     },
     {
       "_id": "zbPk2cirzLJ8u6quQ",
@@ -422,43 +484,15 @@
       "originVersion": 20
     },
     {
-      "_id": "XWX5eGNmPQnvCovzi",
-      "fileId": "W8zEuzqEXAvJjXqwQ",
-      "size": 57733,
-      "name": "matplotlibcpp.h",
-      "type": "text/x-c",
-      "permissions": {
-        "phase": [
-          "interactive",
-          "submission"
-        ],
-        "read": [
-          "admin",
-          "assistant"
-        ],
-        "write": [
-          "admin"
-        ]
-      },
-      "makeSymlink": true,
-      "userId": "psziEDxKr9Fu5Druz",
-      "projectId": "7DuHwh5mBBet9xuw9",
-      "version": 1,
-      "key": "XWX5eGNmPQnvCovzi",
-      "current": true,
-      "createdAt": "2019-11-04T09:39:08.327Z"
-    },
-    {
-      "_id": "FrnMYjEX2epJFHCdm",
-      "fileId": "FrnMYjEX2epJFHCdm",
-      "size": 856,
+      "_id": "QzZBGRpKepbajFQku",
       "key": "EW8P7siw9z7xNm93a",
+      "type": "text/x-c",
       "originKey": "jw5d5ZMQLc7uMr7Dp",
+      "makeSymlink": true,
       "originVersion": 4,
-      "version": 46,
+      "version": 47,
       "current": true,
       "name": "main.cpp",
-      "type": "text/x-c",
       "userId": "psziEDxKr9Fu5Druz",
       "projectId": "7DuHwh5mBBet9xuw9",
       "permissions": {
@@ -468,14 +502,16 @@
         ],
         "read": [
           "admin",
-          "assistant"
+          "assistant",
+          "student",
+          "everyone"
         ],
         "write": [
           "admin"
         ]
       },
-      "createdAt": "2019-11-05T11:50:58.144Z",
-      "makeSymlink": true
+      "createdAt": "2019-11-07T15:56:27.062Z",
+      "fileId": "FrnMYjEX2epJFHCdm"
     },
     {
       "_id": "MzppyP2TibGrXyfAE",
@@ -508,32 +544,6 @@
       "createdAt": "2019-11-04T09:39:08.327Z",
       "originKey": "kSjrmadCy9Me3x2jw",
       "originVersion": 2
-    },
-    {
-      "_id": "2jcBRHcEJr38DMBHC",
-      "type": "text/markdown",
-      "makeSymlink": true,
-      "name": "written_solution.md",
-      "permissions": {
-        "phase": [
-          "interactive",
-          "submission"
-        ],
-        "read": [
-          "admin",
-          "assistant"
-        ],
-        "write": [
-          "admin"
-        ]
-      },
-      "fileId": "67FqMx5oY4nf35joQ",
-      "userId": "psziEDxKr9Fu5Druz",
-      "projectId": "7DuHwh5mBBet9xuw9",
-      "version": 1,
-      "key": "2jcBRHcEJr38DMBHC",
-      "current": true,
-      "createdAt": "2019-11-04T09:39:08.327Z"
     },
     {
       "_id": "PywpfSXwABdQpp5hf",
@@ -645,6 +655,39 @@
       ]
     },
     {
+      "_id": "PxZtWtG4sodGjiHRn",
+      "fileId": "PxZtWtG4sodGjiHRn",
+      "size": 1411,
+      "key": "xij3dYm9GqRT2tnSj",
+      "originKey": "8buCpizCGjKubCjhe",
+      "originVersion": 81,
+      "version": 5,
+      "current": true,
+      "name": "adaptivepolyintp.hpp",
+      "type": "text/plain",
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "54fzX4Kxne7eyEWGM",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant",
+          "student",
+          "everyone"
+        ],
+        "write": [
+          "admin",
+          "assistant",
+          "student",
+          "everyone"
+        ]
+      },
+      "createdAt": "2019-11-07T16:02:52.096Z"
+    },
+    {
       "_id": "RWqMfJmofExKMtpk8",
       "userId": "psziEDxKr9Fu5Druz",
       "projectId": "54fzX4Kxne7eyEWGM",
@@ -678,18 +721,6 @@
       "createdAt": "2019-11-04T09:39:08.327Z",
       "makeSymlink": true,
       "symlinkKey": "XWX5eGNmPQnvCovzi",
-      "type": "inode/symlink"
-    },
-    {
-      "_id": "xij3dYm9GqRT2tnSj",
-      "userId": "psziEDxKr9Fu5Druz",
-      "projectId": "54fzX4Kxne7eyEWGM",
-      "version": 1,
-      "key": "xij3dYm9GqRT2tnSj",
-      "current": true,
-      "createdAt": "2019-11-04T09:39:08.327Z",
-      "makeSymlink": true,
-      "symlinkKey": "8buCpizCGjKubCjhe",
       "type": "inode/symlink"
     },
     {

@@ -13,6 +13,7 @@ using namespace Eigen;
 //      \texttt{y}: vector of data \Blue{$y_0, \ldots, y_n$}
 //      \texttt{x}: vector of evaluation points \Blue{$x_1, \ldots, x_N$}
 // OUT: \texttt{p}: interpolant evaluated at x 
+/* SAM_LISTING_BEGIN_0 */
 VectorXd intpolyval(const VectorXd& t, const VectorXd& y, 
                                   const VectorXd& x) {
   const unsigned n = t.size(), // no. of interpolation nodes = deg. of polynomial $-1$
@@ -25,10 +26,12 @@ VectorXd intpolyval(const VectorXd& t, const VectorXd& y,
   for (unsigned k = 0; k < n; ++k) {
     // little workaround: cannot subtract a vector from a scalar 
     // -> multiply scalar by vector of ones
-    lambda(k) = 1./( (t(k)*VectorXd::Ones(k) - t.head(k)).prod() * 
-                     (t(k)*VectorXd::Ones(n - k - 1) - t.tail(n - k - 1)).prod() );
+    lambda(k) = 
+        1./( (t(k)*VectorXd::Ones(k) - t.head(k)).prod() * 
+            (t(k)*VectorXd::Ones(n - k - 1) - t.tail(n - k - 1)).prod() );
   }
-  // Compute quotient of weighted sums  of \Blue{$\frac{\lambda_i}{t - t_i}$}, effort \Blue{$O(n)$}
+  // Compute quotient of weighted sums  of \Blue{$\frac{\lambda_i}{t - t_i}$}, 
+  // effort \Blue{$O(n)$}
   for (unsigned i = 0; i < N; ++i) {
     VectorXd z = (x(i)*VectorXd::Ones(n) - t);
 
@@ -44,3 +47,4 @@ VectorXd intpolyval(const VectorXd& t, const VectorXd& y,
   }
   return p;
 }
+/* SAM_LISTING_END_0 */
