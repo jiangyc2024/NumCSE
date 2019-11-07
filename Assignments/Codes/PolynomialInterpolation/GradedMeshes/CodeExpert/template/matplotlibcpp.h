@@ -53,6 +53,8 @@ struct _interpreter {
   PyObject *s_python_function_fignum_exists;
   PyObject *s_python_function_plot;
   PyObject *s_python_function_quiver;
+  PyObject *s_python_function_contour;
+  PyObject *s_python_function_colormap;
   PyObject *s_python_function_axhline;
   PyObject *s_python_function_axvline;
   PyObject *s_python_function_semilogx;
@@ -184,6 +186,7 @@ private:
         PyObject_GetAttrString(pymod, "fignum_exists");
     s_python_function_plot = PyObject_GetAttrString(pymod, "plot");
     s_python_function_quiver = PyObject_GetAttrString(pymod, "quiver");
+    s_python_function_contour = PyObject_GetAttrString(pymod, "contour");
     s_python_function_axhline = PyObject_GetAttrString(pymod, "axhline");
     s_python_function_axvline = PyObject_GetAttrString(pymod, "axvline");
     s_python_function_semilogx = PyObject_GetAttrString(pymod, "semilogx");
@@ -228,6 +231,7 @@ private:
         !s_python_function_draw || !s_python_function_pause ||
         !s_python_function_figure || !s_python_function_fignum_exists ||
         !s_python_function_plot || !s_python_function_quiver ||
+        !s_python_function_contour ||
         !s_python_function_semilogx || !s_python_function_semilogy ||
         !s_python_function_loglog || !s_python_function_fill ||
         !s_python_function_fill_between || !s_python_function_subplot ||
@@ -256,6 +260,7 @@ private:
         !PyFunction_Check(s_python_function_fignum_exists) ||
         !PyFunction_Check(s_python_function_plot) ||
         !PyFunction_Check(s_python_function_quiver) ||
+        !PyFunction_Check(s_python_function_contour) ||
         !PyFunction_Check(s_python_function_semilogx) ||
         !PyFunction_Check(s_python_function_semilogy) ||
         !PyFunction_Check(s_python_function_loglog) ||
@@ -760,6 +765,53 @@ void plot_surface(const Matrix &x, const Matrix& y, const Matrix& z,
     Py_DECREF(res);
 }
 
+
+// @brief plot_surface for datapoints (x_ij, y_ij, z_ij) with i,j = 0..n
+// @param x The x values of the datapoints in a matrix
+// @param y The y values of the datapoints in a matrix
+// @param z The function value of the datapoints in a matrix
+// @param keywords Additional keywords
+template <typename Matrix>
+void contour(const Matrix &x, const Matrix& y, const Matrix& z,
+             const std::map<std::string, std::string> &keywords = {}) {
+  detail::_interpreter::get();
+
+  // using numpy arrays
+  PyObject *xarray = get_2darray(x);
+  PyObject *yarray = get_2darray(y);
+  PyObject *zarray = get_2darray(z);
+
+  // construct positional args
+  PyObject *args = PyTuple_New(3);
+  PyTuple_SetItem(args, 0, xarray);
+  PyTuple_SetItem(args, 1, yarray);
+  PyTuple_SetItem(args, 2, zarray);
+
+  // Build up the kw args.
+  PyObject *kwargs = PyDict_New();
+
+  PyObject *python_colormap_coolwarm = PyObject_GetAttrString(
+      detail::_interpreter::get().s_python_colormap, "coolwarm");
+
+  PyDict_SetItemString(kwargs, "cmap", python_colormap_coolwarm);
+
+  for (std::map<std::string, std::string>::const_iterator it = keywords.begin();
+       it != keywords.end(); ++it) {
+    PyDict_SetItemString(kwargs, it->first.c_str(),
+                         PyString_FromString(it->second.c_str()));
+  }
+
+  PyObject *res = PyObject_Call(detail::_interpreter::get().s_python_function_contour,
+  args, kwargs);
+  if (!res)
+    throw std::runtime_error("failed surface");
+
+  Py_DECREF(args);
+  Py_DECREF(kwargs);
+  if (res)
+    Py_DECREF(res);
+}
+
 template <typename Numeric>
 bool stem(const std::vector<Numeric> &x, const std::vector<Numeric> &y,
           const std::map<std::string, std::string> &keywords) {
@@ -893,16 +945,23 @@ bool hist(const VectorY &y, long bins = 10, std::string color = "b",
 // @brief Scatter plot
 // @param x x-coordinates of the 2d points
 // @param y y-coordinates of the 2d points
-// @param s the marker size  in points**2
+// @param s the marker size in points**2
+// @param keywords Additional keywords
 template <typename VectorX, typename VectorY>
-bool scatter(const VectorX &x, const VectorY &y, const double s = 1.0) {
+bool scatter(const VectorX &x, const VectorY &y, const double s = 1.0,
+             const std::map<std::string, std::string> keywords = {}) {
   assert(x.size() == y.size());
 
   PyObject *xarray = get_array(x);
   PyObject *yarray = get_array(y);
 
   PyObject *kwargs = PyDict_New();
-  PyDict_SetItemString(kwargs, "s", PyLong_FromLong(s));
+  PyDict_SetItemString(kwargs, "s", PyFloat_FromDouble(s));
+  for (std::map<std::string, std::string>::const_iterator it = keywords.begin();
+       it != keywords.end(); ++it) {
+    PyDict_SetItemString(kwargs, it->first.c_str(),
+                         PyUnicode_FromString(it->second.c_str()));
+  }
 
   PyObject *plot_args = PyTuple_New(2);
   PyTuple_SetItem(plot_args, 0, xarray);
@@ -918,6 +977,13 @@ bool scatter(const VectorX &x, const VectorY &y, const double s = 1.0) {
 
   return res;
 }
+
+template <typename VectorX, typename VectorY>
+bool scatter(const VectorX &x, const VectorY &y,
+             const std::map<std::string, std::string>& keywords) {
+  return scatter(x, y, 1.0, keywords);
+}
+
 
 // @brief Spy plot
 // @param A the matrix

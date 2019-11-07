@@ -273,7 +273,7 @@ Eigen::MatrixXd cvgrateGradedMesh(const Eigen::VectorXd &alpha,
 }
 /* SAM_LISTING_END_3 */
 
-/* @brief Prints convergence rates of piecewise linear interpolation of t^alpha
+/* @brief Plots convergence rates of piecewise linear interpolation of t^alpha
  * on graded meshes.
  */
 /* SAM_LISTING_BEGIN_4 */
@@ -302,7 +302,6 @@ void testcvgGradedMesh(void) {
   MatrixXd betaGrid = beta.replicate(1,n_alphas);
   
   plt::figure();
-  // plt::contour(alphaGrid,betaGrid,ConvRates); // Not implemented
   plt::plot_surface(alphaGrid,betaGrid,ConvRates);
   plt::xlabel("alpha");
   plt::ylabel("beta");
