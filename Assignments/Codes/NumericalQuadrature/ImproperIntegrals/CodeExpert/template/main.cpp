@@ -4,8 +4,8 @@ int main() {
     
     int n = 10;
     double I = quadinf(n, [] (double t) { return 1 / (1 + std::pow(t,2)); });
-    
-    std::cout << I << std::endl; //Note: exact integral = pi
+    //Note: exact integral = pi
+    std::cout << "Approximated integral =" I << std::endl; 
     
     //plot error
     cvgQuadInf();

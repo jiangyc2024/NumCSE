@@ -11,6 +11,20 @@
 
 namespace plt = matplotlibcpp;
 
+//TO DO (8-3.e): define the function quadinf that integrates the input 
+// lambda f over the real axis. First trasform the integrand with a change
+// of variables and then use a n point Gauss quadrature.
+//Use the signature
+//template <class Function> 
+//double quadinf(const int n, const Function& f);
+
+
+// Hint: lambda functions can take parameters inside the [] brackets
+// Hint 2: you may write an auxiliary function to compute the quadrature over 
+//          a bounded interval.
+
+//Warning: the template will not compile until this function is defined.
+//START
 
 //! @brief Compute $\int_a^b f(x) dx \approx \sum w_i f(x_i)$ (with scaling of $w$ and $x$)
 //! @tparam Function template type for function handle f (e.g.\ lambda function)
@@ -59,7 +73,7 @@ double quadinf(const int n, const Function& f) {
 }
 /* SAM_LISTING_END_2 */
 
-
+//END
 
 
 
@@ -70,7 +84,7 @@ void cvgQuadInf(void) {
     // Number of max Gauss pts.
     const int N = 100;
     plt::figure();
-    //TO DO: plot convergence errors against number of integration nodes
+    //TO DO (8-3.f): plot convergence errors against number of integration nodes
     //START
     //variables for the plots 
     std::vector<int> num_nots;
