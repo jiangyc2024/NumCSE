@@ -1,43 +1,42 @@
-//// 
+////
 //// Copyright (C) 2016 SAM (D-MATH) @ ETH Zurich
-//// Author(s): lfilippo <filippo.leonardi@sam.math.ethz.ch> 
+//// Author(s): lfilippo <filippo.leonardi@sam.math.ethz.ch>
 //// Contributors: tille, jgacon, dcasati
 //// This file is part of the NumCSE repository.
 ////
+#include <cmath>
 #include <iomanip>
 #include <iostream>
-#include <cmath>
 
 #include "gaussquad.hpp"
 #include "matplotlibcpp.h"
 namespace plt = matplotlibcpp;
 
-//! @brief Compute $\int_a^b f(x) dx \approx \sum w_i f(x_i)$ (with scaling of w and x)
+//! @brief Compute $\int_a^b f(x) dx \approx \sum w_i f(x_i)$ (with scaling of w
+//! and x)
 //! @tparam func template type for function handle f (e.g.\ lambda function)
 //! @param[in] a left boundary in [a,b]
 //! @param[in] b right boundary in [a,b]
 //! @param[in] f integrand
-//! @param[in] N number of quadrature points
+//! @param[in] Q quadrature rule
 //! @return Approximation of integral $\int_a^b f(x) dx$
 /* SAM_LISTING_BEGIN_1 */
 template <class Function>
-double evalquad(const double a, const double b,
-                     const Function& f,
-                     const QuadRule& Q) {
-    double I;
-    // TO DO: (8-4.b) Use Q to approximate the integral of f over [a,b]
-    // START
-    I = 0;
-    // Loop over all nodes/weights pairs
-    for(int i = 0; i < Q.weights.size(); ++i) {
-        I += f( (Q.nodes(i) + 1) * (b - a) / 2 + a ) * Q.weights(i);
-    }
-    I = I * (b - a) / 2.;
-    // END
-    return I;
+double evalquad(const double a, const double b, const Function &f,
+                const QuadRule &Q) {
+  double I;
+  // TO DO: (8-4.b) Use Q to approximate the integral of f over [a,b]
+  // START
+  I = 0;
+  // Loop over all nodes/weights pairs
+  for (int i = 0; i < Q.weights.size(); ++i) {
+    I += f((Q.nodes(i) + 1) * (b - a) / 2 + a) * Q.weights(i);
+  }
+  I = I * (b - a) / 2.;
+  // END
+  return I;
 }
 /* SAM_LISTING_END_1 */
-
 
 //! @brief Compute double integral $\int_\Delta f(x,b) dx dy$.
 //! Use nested Gauss quadrature.
@@ -48,26 +47,27 @@ double evalquad(const double a, const double b,
 //! @return Approximation of integral $\int_\Delta f(x,b) dx dy$
 /* SAM_LISTING_BEGIN_2 */
 template <class Function>
-double gaussquadtriangle(const Function& f, const unsigned N) {
-    double I;
-    // TO DO: (8-4.c) Use N-node gaussquad() to integrate f over
-    // the triangle 0<=x,y, x+y<=1.
-    // START
-    // Get nodes/weights for integral over dx and dy
-    QuadRule Q;
-    gaussquad(N, Q);
-    
-    // We define an auxiliary function of x defined
-    // as f\_y := [\&y] (double x) \{ return f(x,y) \}, where we fix y.
-    // We define the function $g$ as the function of $y$
-    // $g(y) := \int_0^{1-y} f_y(x) dx$, which is $= \int_0^{1-y} I(x,y) dx$.
-    auto g = [&f, &Q] (double y) { 
-        return evalquad(0, 1-y, [&f, &y] (double x) { return f(x,y); }, Q); 
-    };
-    // We integrate the function g over y from 0 to 1
-    I = evalquad(0, 1, g, Q);
-    // END
-    return I;
+double gaussquadtriangle(const Function &f, const unsigned N) {
+  double I;
+  // TO DO: (8-4.c) Use N-node gaussquad() to integrate f over
+  // the triangle 0<=x,y, x+y<=1.
+  // START
+  // Get nodes/weights for integral over dx and dy
+  QuadRule Q;
+  gaussquad(N, Q);
+
+  // We define an auxiliary function of x defined
+  // as f\_y := [\&y] (double x) \{ return f(x,y) \}, where we fix y.
+  // We define the function $g$ as the function of $y$
+  // $g(y) := \int_0^{1-y} f_y(x) dx$, which is $= \int_0^{1-y} I(x,y) dx$.
+  auto g = [&f, &Q](double y) {
+    return evalquad(
+        0, 1 - y, [&f, &y](double x) { return f(x, y); }, Q);
+  };
+  // We integrate the function g over y from 0 to 1
+  I = evalquad(0, 1, g, Q);
+  // END
+  return I;
 }
 /* SAM_LISTING_END_2 */
 
@@ -95,46 +95,42 @@ double gaussquadtriangle(const Function& f, const unsigned N) {
 
 /* SAM_LISTING_BEGIN_3 */
 void convtest2DQuad(unsigned int nmax = 20) {
-    // "Exact" integral
-    const double I_ex = 0.366046550000405;
-    
-    // TO DO: (8-4.d) Tabulate the error of gaussquadtriangle() for
-    // a laser beam intensity, using n=1,2,3,...,nmax nodes.
-    // START
-    // Parameters
-    const double alpha = 1, p = 0, q = 0;
-    // Laser beam intensity
-    auto I = [alpha, p, q] (double x, double y) { 
-      return std::exp(- alpha * ( (x-p)*(x-p) + (y-q)*(y-q) ) ); 
-    };
-    
-    //memory allocation for plot
-    std::vector<double> err(nmax);
-    std::vector<int> num_pts(nmax);
-    
-    std::cout << std::setw(3) << "N"
-              << std::setw(15) << "I_approx"
-              << std::setw(15) << "error"
-              << std::endl;
-    for(unsigned n = 1; n < nmax; n++) {
-        double I_approx = gaussquadtriangle(I, n);
-        
-        err[n] = std::abs(I_ex - I_approx);
-        num_pts[n] = n; 
+  // "Exact" integral
+  const double I_ex = 0.366046550000405;
 
-        std::cout << std::setw(3) << n
-                  << std::setw(15) << I_approx
-                  << std::setw(15) << err[n]
-                  << std::endl;
-    }
-  
-    plt::figure();
-    plt::semilogy(num_pts, err, "*" ,{{"label", "error"}});
-    plt::xlabel("No. of quadrature nodes");
-    plt::ylabel("|Error|");
-    plt::title("Convergence of laserquad");
-    plt::grid("True");
-    plt::savefig("./cx_out/convergence.png");
-    // END
+  // TO DO: (8-4.d) Tabulate the error of gaussquadtriangle() for
+  // a laser beam intensity, using n=1,2,3,...,nmax nodes.
+  // START
+  // Parameters
+  const double alpha = 1, p = 0, q = 0;
+  // Laser beam intensity
+  auto I = [alpha, p, q](double x, double y) {
+    return std::exp(-alpha * ((x - p) * (x - p) + (y - q) * (y - q)));
+  };
+
+  // memory allocation for plot
+  std::vector<double> err(nmax);
+  std::vector<int> num_pts(nmax);
+
+  std::cout << std::setw(3) << "N" << std::setw(15) << "I_approx"
+            << std::setw(15) << "error" << std::endl;
+  for (unsigned n = 1; n < nmax; n++) {
+    double I_approx = gaussquadtriangle(I, n);
+
+    err[n] = std::abs(I_ex - I_approx);
+    num_pts[n] = n;
+
+    std::cout << std::setw(3) << n << std::setw(15) << I_approx << std::setw(15)
+              << err[n] << std::endl;
+  }
+  // Error plot rendered by matplotlibcpp 
+  plt::figure();
+  plt::semilogy(num_pts, err, "*", {{"label", "error"}});
+  plt::xlabel("No. of quadrature nodes");
+  plt::ylabel("|Error|");
+  plt::title("Convergence of laserquad");
+  plt::grid("True");
+  plt::savefig("./cx_out/convergence.png");
+  // END
 }
 /* SAM_LISTING_END_3 */
