@@ -12,11 +12,11 @@
 namespace plt = matplotlibcpp;
 
 // TO DO (8-3.e): define the function quadinf that integrates the input
-// lambda f over the real axis. First trasform the integrand with a change
+// lambda f over the real axis. First, trasform the integrand with a change
 // of variables and then use a n point Gauss quadrature.
 // Use the signature
 // template <class Function>
-// double quadinf(const int n, const Function& f);
+// double quadinf(const int n, Function &&f);
 
 // Hint: lambda functions can take parameters inside the [] brackets
 // Hint 2: you may write an auxiliary function to compute the quadrature over
@@ -37,7 +37,7 @@ namespace plt = matplotlibcpp;
 
 /* SAM_LISTING_BEGIN_1 */
 template <class Function>
-double quad(const Function &f, const Eigen::VectorXd &w,
+double quad(Function &&f, const Eigen::VectorXd &w,
             const Eigen::VectorXd &x, double a, double b) {
   double I = 0;
   for (int i = 0; i < w.size(); ++i) {
@@ -55,15 +55,15 @@ double quad(const Function &f, const Eigen::VectorXd &w,
 //! @return Approximation of integral $\int_{-\infty}^\infty f(x) dx$
 
 /* SAM_LISTING_BEGIN_2 */
-template <class Function> double quadinf(const int n, const Function &f) {
+template <class Function> double quadinf(const int n, Function &&f) {
   Eigen::VectorXd w, x;
   // Compute nodes and weights of Gauss quadrature rule
   // using Golub-Welsh algorithm
 
   golubwelsh(n, w, x);
   //! NOTE: no function cot available in c++, need to resort to trigonometric
-  //! identities Both lines below are valid, the first computes three
-  //! trigonometric functions
+  //! identities. Both lines below are valid, the first computes three
+  //! trigonometric functions, but the second is prone to cancellation
   auto ftilde = [&f](double x) {
     return f(std::cos(x) / std::sin(x)) / pow(std::sin(x), 2);
   };
