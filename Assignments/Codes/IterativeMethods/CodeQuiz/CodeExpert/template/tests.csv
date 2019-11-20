@@ -1,0 +1,2 @@
+// "testname", "input", "expected output", "points", "execution time limit (ms)"
+"Modified function", "(any input)", "myfunction_modified(10) = 0.331029",  "1", "5000",
