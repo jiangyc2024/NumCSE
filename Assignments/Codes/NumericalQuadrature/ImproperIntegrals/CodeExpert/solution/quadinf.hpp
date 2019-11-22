@@ -112,6 +112,6 @@ void cvgQuadInf(void) {
   // END
   plt::savefig("./cx_out/convergence.png");
 }
-/* SAM_LISTING_BEGIN_3 */
+/* SAM_LISTING_END_3 */
 
 #endif

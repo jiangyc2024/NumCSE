@@ -1,5 +1,5 @@
 #ifndef NEWTARCTAN_HPP
-#define NEWTARCTAN_HPP 
+#define NEWTARCTAN_HPP
 
 #include <cmath>
 #include <iostream>
@@ -7,9 +7,10 @@
 
 /* @brief Newton's method to approximate $x^{(0)}$
  * @param[in] x0_ Initial guess
- * @param[out] x0 Final estimation of $x^{(0)}$, given convergence of Newton's method
+ * @param[out] x0 Final estimation of $x^{(0)}$, given convergence of Newton's
+ * method
  */
- 
+
 /* SAM_LISTING_BEGIN_0 */
 double newton_arctan(double x0_ = 2) {
   // TO DO (9-3.c): define a suitable Newton iteration to find the
@@ -19,9 +20,10 @@ double newton_arctan(double x0_ = 2) {
   double upd = 1;
   double eps = std::numeric_limits<double>::epsilon();
 
-  while(upd > eps) {
+  while (upd > eps) {
     // Newton iteration for g(x)
-    double x1 = (-x0+(1-x0*x0)*std::atan(x0)) / (1-2*x0*std::atan(x0));
+    double x1 =
+        (-x0 + (1 - x0 * x0) * std::atan(x0)) / (1 - 2 * x0 * std::atan(x0));
     // Relative size of the Newton update
     upd = std::abs((x1 - x0) / x1);
     x0 = x1;
