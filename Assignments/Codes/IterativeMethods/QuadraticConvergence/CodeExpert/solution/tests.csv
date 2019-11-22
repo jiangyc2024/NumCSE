@@ -1,0 +1,4 @@
+// "testname", "input", "expected output", "points", "execution time limit (ms)"
+"steffensen", "(any_input)", "0.567143",  "1", "5000",
+"logger", "1", "2.7 \n 2 \n 2.5",  "1", "5000",
+"steffenrate", "1", "1.542345498 \n  1.650553642 \n  1.770024324 \n 1.883754996 \n 1.964598249 \n 1.995899954 \n 1.999927866 \n 0.741551601", "1", "5000" ,
