@@ -31,6 +31,7 @@ int main(void)
   
   // Invoke explicit Runge-Kutta method with stepsize control
   ode45<StateType,RhsType> integrator(f);
+  // Do the timestepping with adaptive strategy of \cref{sec:ssctrl}
   std::vector<std::pair<StateType, double>> states = integrator.solve(y0,1.0,normFunc);
   // Output information accumulation during numerical integration
   integrator.options.do_statistics = true; integrator.print();

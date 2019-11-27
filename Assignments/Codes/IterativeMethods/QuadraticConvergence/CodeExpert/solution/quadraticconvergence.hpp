@@ -1,44 +1,42 @@
 #ifndef QUADRCONVERGENCE_HPP
 #define QUADRCONVERGENCE_HPP
 
+#include <Eigen/Dense>
 #include <cmath>
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 #include <limits>
 #include <vector>
-#include <Eigen/Dense>
-
 
 using namespace Eigen;
 
-
 /* SAM_LISTING_BEGIN_2 */
-template <class T>
-class Logger {
+template <class T> class Logger {
   std::vector<T> info;
-  public:
+
+public:
   // Hint: there is no need to implement a constructor
   // since info is initialized as empty vector by default.
-  
-  // TO DO: overload the operator ( ) so that it adds its argument to 
+
+  // TO DO: overload the operator ( ) so that it adds its argument to
   // the member "info".
-  void operator () (T val) { 
+  void operator()(T val) {
     // START
-    info.push_back(val);  
+    info.push_back(val);
     // END
   }
-  // TO DO: Define a member function that fetches the data contained in "info". 
-  //START
+  // TO DO: Define a member function that fetches the data contained in "info".
+  // START
   std::vector<T> getInfo(void) { return info; }
-  //END
-  
+  // END
+
   void print_log() {
-    for (auto v : info) { std::cout << v << std::endl; }
+    for (auto v : info) {
+      std::cout << v << std::endl;
+    }
   }
-  
 };
 /* SAM_LISTING_END_2 */
-
 
 /*! @brief Steffensen's method
  *! @param[in] f Function handler
@@ -46,22 +44,20 @@ class Logger {
  *! @param[out] x Final estimation returned by the Steffensen's method
  */
 /* SAM_LISTING_BEGIN_0 */
-template <class Function>
-double steffensen(Function &&f, double x0) {
-  
+template <class Function> double steffensen(Function &&f, double x0) {
   double x = x0;
   // TO DO (9-4.a): implement the Steffensen's method for a function f
   // START
   double upd = 1;
   double eps = std::numeric_limits<double>::epsilon();
-
-  while(std::abs(upd) > eps) {
+  // Iterate until machine precision is reached
+  while (std::abs(upd) > eps * std::abs(x)) {
     double fx = f(x); // Only 2 evaluations of $f$ at each step
-    if(fx != 0) {
-        upd =  fx*fx / (f(x+fx)-fx);
-        x -= upd;
+    if (fx != 0) {
+      upd = fx * fx / (f(x + fx) - fx);
+      x -= upd;
     } else {
-        upd = 0;
+      upd = 0;
     }
   }
   // END
@@ -69,18 +65,16 @@ double steffensen(Function &&f, double x0) {
 }
 /* SAM_LISTING_END_0 */
 
-
 /* SAM_LISTING_BEGIN_1 */
 void testSteffensen(void) {
-  // TO DO (9-4.b): write a test of your implementation, that prints 
-  // an estimate of the zero of f(x) = xe^x - 1
+  // TO DO (9-4.b): write a test of your implementation, that prints
+  // an estimate of the zero of $f(x) = xe^x - 1$
   // START
-  double x = steffensen([] (double x) { return x * std::exp(x) - 1; }, 1.0);
-  std::cout << "The iterative method converges to " << x << std::endl; 
+  double x = steffensen([](double x) { return x * std::exp(x) - 1; }, 1.0);
+  std::cout << "The iterative method converges to " << x << std::endl;
   // END
 }
 /* SAM_LISTING_END_1 */
-
 
 /*! @brief Steffensen's method
  *! @param[in] f Function handler
@@ -90,9 +84,9 @@ void testSteffensen(void) {
 
 /* SAM_LISTING_BEGIN_3 */
 template <class Function>
-double steffensen_log(Function &&f, double x0, 
-                          Logger<double> *logger_p = nullptr) {
-  
+double steffensen_log(Function &&f, double x0,
+                      Logger<double> *logger_p = nullptr) {
+
   double x = x0;
   // TO DO (9-4.c): Modify the function steffensen: use the class Logger to
   // save all the iterations x of the Steffensen's method.
@@ -105,57 +99,56 @@ double steffensen_log(Function &&f, double x0,
   double upd = 1;
   double eps = std::numeric_limits<double>::epsilon();
 
-  while(std::abs(upd) > eps) {
+  while (std::abs(upd) > eps) {
     double fx = f(x); // Only 2 evaluations of $f$ at each step
-    if(fx != 0) {
-        upd =  fx*fx / (f(x+fx)-fx);
-        x -= upd;
-        
-        if (log_enabled) {(*logger_p)(x); }
-        
-    } else {
-        upd = 0;
+    if (fx != 0) {
+      upd = fx * fx / (f(x + fx) - fx);
+      x -= upd;
+      if (log_enabled) { (*logger_p)(x); }
     }
   }
-  // END
-  return x;
+  else {
+    upd = 0;
+  }
+}
+// END
+return x;
 }
 /* SAM_LISTING_END_3 */
 
-
 /* SAM_LISTING_BEGIN_4 */
-void orderSteffensen (void) {
-  auto f = [] (double x) { return x * std::exp(x) - 1; };
-  double x_star = 0.567143290409784; //use as exact value
-  // TO DO (9-4.c): tabulate values of 
-  // Hint: to approximate the convergence rate, use the formula 
-  // (log(e_i) - log(e_{i-1}))/ (log(e_{i-1}) - log(e_{i-2}))
+void orderSteffensen(void) {
+  auto f = [](double x) { return x * std::exp(x) - 1; };
+  double x_star = 0.567143290409784; // use as exact value
+  // TO DO (9-4.c): tabulate values of
+  // Hint: to approximate the convergence rate, use the formula
+  // $(\log(e_i) - \log(e_{i-1}))/ (\log(e_{i-1}) - \log(e_{i-2}))$
   // START
   Logger<double> logger;
-  
-  steffensen_log( f, 1.0, &logger );
+
+  steffensen_log(f, 1.0, &logger);
   std::vector<double> myData = logger.getInfo();
   unsigned n = myData.size();
-  
-  
+
   VectorXd errs(n), log_errs(n);
-  for(unsigned i=0; i<n; ++i) {
-      errs(i) = std::abs(myData[i] -x_star);
-      log_errs(i) = std::log(errs(i));
+  for (unsigned i = 0; i < n; ++i) {
+    errs(i) = std::abs(myData[i] - x_star);
+    log_errs(i) = std::log(errs(i));
   }
   VectorXd ratios = VectorXd::Zero(n);
-  for(unsigned i=2; i<n; ++i) {
-      ratios(i) = (log_errs(i)   - log_errs(i-1)) /
-                  (log_errs(i-1) - log_errs(i-2));
+  for (unsigned i = 2; i < n; ++i) {
+    ratios(i) =
+        (log_errs(i) - log_errs(i - 1)) / (log_errs(i - 1) - log_errs(i - 2));
   }
-  
   // Print output
   std::cout.precision(10);
-  
-  std::cout << std::setw(20) << "x" << std::setw(20) << "errors" << std::setw(20) << "ratios" << std::endl;
-  std::cout << "       -----------------------------------------------------" << std::endl;
-  for(unsigned i=0; i<n; ++i) {
-      std::cout<< std::setw(20) << myData[i] << std::setw(20)<<  errs(i) << std::setw(20)<< ratios(i) << std::endl;
+  std::cout << std::setw(20) << "x" << std::setw(20) << "errors"
+            << std::setw(20) << "ratios" << std::endl;
+  std::cout << "       -----------------------------------------------------"
+            << std::endl;
+  for (unsigned i = 0; i < n; ++i) {
+    std::cout << std::setw(20) << myData[i] << std::setw(20) << errs(i)
+              << std::setw(20) << ratios(i) << std::endl;
   }
   // END
 }
