@@ -44,8 +44,8 @@ void julia(void) {
   int N_it = 20;
   
   // The image will have a resolution of res*res.
-  int res = 100;
-  // Imagine we have a res*res grid Z on the square [-2,2] such that
+  int res = 780;
+  // We imagine that we have a res*res grid Z on the square [-2,2] with
   // Z(0,0)=(-2,-2),    Z(0,res-1)=(-2,2),
   // Z(res-1,0)=(2,-2), Z(res-1,res-1)=(2,2), etc.
   // C(i,j) is the color assigned to the (i,j)-th point on the grid.
@@ -53,22 +53,19 @@ void julia(void) {
   
   // TO DO: Fill C with real numbers, such that each entry C(i,j) corresponds to
   // which of the roots (z1, z2, or z3) Newton's method converges
-  // (if it converges), when using z=(X(i,j),Y(i,j)) as a starting point.
+  // (if it converges), when using Z(i,j) as a starting point.
   // The values in C will be interpreted as colors below.
   // Additional: You may choose different shades of each color to indicate
   // how many iterations were needed to reach the tolerance.
   // Hint: To speed up runtimes, start with a low value for the parameter res.
   // START
   C.setZero();
-  // X,Y are matrices such that the (i,j)-th point on the grid is
-  // Z(i,j) := ( X(i,j), Y(i,j) ).
-  VectorXd x = VectorXd::LinSpaced(res,-2,2);
-  MatrixXd X = x.replicate(1,res);
-  MatrixXd Y = X.transpose();  
   for(int i=0; i<res; i++) {
     for(int j=0; j<res; j++) {
-      // Newton iteration starting at (X(i,j),Y(i,j)):
-      Vector2d z( X(i,j), Y(i,j) );
+      // Newton iteration starting at Z(i,j)=z=(x,y).
+      double x = -2 + 4.0*i/(res-1);
+      double y = -2 + 4.0*j/(res-1);
+      Vector2d z( x, y );
       for(int k=0; k<N_it; k++) {
         z -= DF(z).lu().solve(F(z));
         // Check if we are sufficiently close to any of the three roots:

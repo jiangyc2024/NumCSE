@@ -37,6 +37,35 @@
   },
   "solutionFiles": [
     {
+      "_id": "gJh99BTRPZeTeRRad",
+      "fileId": "8mT2fLFnsYurLAgFo",
+      "size": 369,
+      "name": "compile.sh",
+      "type": "application/x-sh",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant"
+        ],
+        "write": [
+          "admin"
+        ]
+      },
+      "makeSymlink": true,
+      "userId": "CzLQinp3YdqzcKT4h",
+      "projectId": "3StbY8myYaSr3FcXL",
+      "version": 1,
+      "key": "gJh99BTRPZeTeRRad",
+      "current": true,
+      "createdAt": "2019-11-27T07:37:56.240Z",
+      "originKey": "zJ9LkDdr2b9pbwEMg",
+      "originVersion": 8
+    },
+    {
       "_id": "SrKjceGWMr8KMa33Q",
       "type": "application/x-sh",
       "makeSymlink": true,
@@ -452,11 +481,11 @@
       "makeSymlink": true
     },
     {
-      "_id": "PABuGbnHpWfgMHqs4",
-      "fileId": "PABuGbnHpWfgMHqs4",
-      "size": 772,
+      "_id": "46zGRNErYzAwp8Sfr",
+      "fileId": "46zGRNErYzAwp8Sfr",
+      "size": 261,
       "key": "tBaAnpv5gW9nxqTsD",
-      "version": 3,
+      "version": 4,
       "current": true,
       "name": "test_doc.md",
       "type": "text/markdown",
@@ -475,44 +504,15 @@
           "admin"
         ]
       },
-      "createdAt": "2019-11-27T15:51:01.462Z",
+      "createdAt": "2019-11-27T15:57:20.276Z",
       "makeSymlink": true
     },
     {
-      "_id": "gJh99BTRPZeTeRRad",
-      "fileId": "8mT2fLFnsYurLAgFo",
-      "size": 369,
-      "name": "compile.sh",
-      "type": "application/x-sh",
-      "permissions": {
-        "phase": [
-          "interactive",
-          "submission"
-        ],
-        "read": [
-          "admin",
-          "assistant"
-        ],
-        "write": [
-          "admin"
-        ]
-      },
-      "makeSymlink": true,
-      "userId": "CzLQinp3YdqzcKT4h",
-      "projectId": "3StbY8myYaSr3FcXL",
-      "version": 1,
-      "key": "gJh99BTRPZeTeRRad",
-      "current": true,
-      "createdAt": "2019-11-27T07:37:56.240Z",
-      "originKey": "zJ9LkDdr2b9pbwEMg",
-      "originVersion": 8
-    },
-    {
-      "_id": "dG5CLQMREvDeqbdXy",
-      "fileId": "dG5CLQMREvDeqbdXy",
-      "size": 3478,
+      "_id": "xL2JoWBJAGStbjBDR",
+      "fileId": "xL2JoWBJAGStbjBDR",
+      "size": 3319,
       "key": "qBJvYWevFcNGGWF5W",
-      "version": 73,
+      "version": 79,
       "current": true,
       "name": "julia.hpp",
       "type": "text/plain",
@@ -531,7 +531,7 @@
           "admin"
         ]
       },
-      "createdAt": "2019-11-27T15:50:09.824Z",
+      "createdAt": "2019-11-27T16:05:14.699Z",
       "makeSymlink": true
     }
   ],
