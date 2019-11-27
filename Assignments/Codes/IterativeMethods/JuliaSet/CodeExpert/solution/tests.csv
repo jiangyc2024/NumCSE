@@ -1,0 +1,3 @@
+// "testname", "input", "expected output", "points", "execution time limit (ms)"
+"Test: F(-0.888,1.333)", "(any input)", "3.03341 0.784794",  "1", "9999999",
+"Test: DF(-0.888,1.333)", "(any input)", "-2.96503  7.10222\n-7.10222 -2.96503",  "1", "9999999",
