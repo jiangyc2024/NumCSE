@@ -10,8 +10,7 @@ Vector2d F(const Vector2d& z) {
   // TO DO: Implement the function $F:R^2\to R^2$ such that F(z)=0 is
   // equivalent to z^3 = 1 (interpreting z as a complex number).
   // START
-  Fz << z(0)*z(0)*z(0) - 3.0*z(0)*z(1)*z(1) - 1.0,
-        3.0*z(0)*z(0)*z(1) - z(1)*z(1)*z(1);
+  
   // END
   return Fz;
 }
@@ -22,9 +21,7 @@ Matrix2d DF(const Vector2d& z) {
   Matrix2d DFz;
   // TO DO: Implement the Jacobian of F at z.
   // START
-  double a = 3.0*(z(0)*z(0) - z(1)*z(1));
-  double b = 6.0*z(0)*z(1);
-  DFz << a,-b,b,a;
+  
   // END
   return DFz;
 }
@@ -59,32 +56,7 @@ void julia(void) {
   // how many iterations were needed to reach the tolerance.
   // Hint: To speed up runtimes, start with a low value for the parameter res.
   // START
-  C.setZero();
-  for(int i=0; i<res; i++) {
-    for(int j=0; j<res; j++) {
-      // Newton iteration starting at Z(i,j)=z=(x,y).
-      double x = -2 + 4.0*i/(res-1);
-      double y = -2 + 4.0*j/(res-1);
-      Vector2d z( x, y );
-      for(int k=0; k<N_it; k++) {
-        z -= DF(z).lu().solve(F(z));
-        // Check if we are sufficiently close to any of the three roots:
-        if( (z-z1).norm() < tol ) {
-          C(i,j) = 1.0 - 1.0*k/N_it;
-          break;
-        }
-        if( (z-z2).norm() < tol ) {
-          C(i,j) = 2.0 - 1.0*k/N_it;
-          break;
-        }
-        if( (z-z3).norm() < tol ) {
-          C(i,j) = 3.0 - 1.0*k/N_it;
-          break;
-        }
-        
-      }
-    }
-  }
+  
   // END
   
   // Axis labels
