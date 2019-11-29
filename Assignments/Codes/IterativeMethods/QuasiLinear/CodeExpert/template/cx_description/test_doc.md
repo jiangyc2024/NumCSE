@@ -6,7 +6,6 @@
 and 
 
 > `Eigen::VectorXd newton_step(const Eigen::VectorXd &x, const Eigen::VectorXd &b)`
-
 We test these functions on the rhs defined by $b = [1,1,1,1,1]^T$ and current step $x = [\frac{1}{\sqrt{5}},\frac{1}{\sqrt{5}},\frac{1}{\sqrt{5}},\frac{1}{\sqrt{5}},\frac{1}{\sqrt{5}}]^T$. the output for the two methods is
 ```
 0.211538
