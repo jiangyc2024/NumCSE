@@ -97,7 +97,7 @@ Eigen::VectorXd newton_step(const Eigen::VectorXd &x,
   Eigen::VectorXd Axinv_b = Ax_lu.solve(b);
   Eigen::VectorXd Axinv_x = Ax_lu.solve(x);
   // Next step
-  x_new = Axinv_b + Ax_lu.solve(x * x.transpose() * (x - Axinv_b)) /
+  x_new = Axinv_b + Axinv_x * ( x.transpose() * (x - Axinv_b)) /
                         (x.norm() + x.dot(Axinv_x));
   // END
   return x_new;
