@@ -1,0 +1,8 @@
+// "testname", "input", "expected output", "points", "execution time limit (ms)"
+"explicit eul", "(any input)", "1  0.1  0 \n 0.1  1  0.1 \n 0.1  0.1  1",  "1", "5000",
+
+"implicit eul", "(any input)", "1.01124  0.102145  0.0102145 \n  0.11236  1.02145  0.102145 \n 0.11236  0.11236  1.01124",  "1", "5000",
+
+"implicit midpoint", "(any input)", "1.00528   0.100515 0.00502576 \n  0.105541  1.0103  0.100515 \n  0.105541  0.105541  1.00528",  "1", "5000",
+
+"orthogonal", "(any input)", "0.00850951  0.00845861  0.0",  "1", "5000",
