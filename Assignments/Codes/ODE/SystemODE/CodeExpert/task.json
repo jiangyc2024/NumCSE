@@ -122,11 +122,11 @@
       "originVersion": 5
     },
     {
-      "_id": "HycJnkayGESMMHymr",
-      "fileId": "HycJnkayGESMMHymr",
-      "size": 269,
+      "_id": "Rf8mdio6rvcn2pwPv",
+      "fileId": "Rf8mdio6rvcn2pwPv",
+      "size": 344,
       "key": "ShTE4HWQtYmAc3xfJ",
-      "version": 4,
+      "version": 6,
       "current": true,
       "name": "test_doc.md",
       "type": "text/markdown",
@@ -145,7 +145,7 @@
           "admin"
         ]
       },
-      "createdAt": "2019-12-04T16:11:22.697Z",
+      "createdAt": "2019-12-05T09:52:00.548Z",
       "makeSymlink": true
     },
     {
@@ -178,13 +178,13 @@
       "originVersion": 21
     },
     {
-      "_id": "sEzfiafCThxnStPhM",
-      "fileId": "sEzfiafCThxnStPhM",
-      "size": 645,
+      "_id": "FZhT2rsqY9af7iRv3",
+      "fileId": "FZhT2rsqY9af7iRv3",
+      "size": 640,
       "key": "4erBHCrdSAduZebNT",
       "originKey": "Aw3iM4girCrvNJ9RT",
       "originVersion": 2,
-      "version": 2,
+      "version": 3,
       "current": true,
       "name": "default.md",
       "type": "text/markdown",
@@ -203,7 +203,7 @@
           "admin"
         ]
       },
-      "createdAt": "2019-12-04T08:47:44.521Z",
+      "createdAt": "2019-12-04T16:13:54.398Z",
       "makeSymlink": true
     },
     {
