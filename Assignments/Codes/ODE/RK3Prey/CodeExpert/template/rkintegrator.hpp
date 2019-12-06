@@ -35,14 +35,13 @@ public:
     // TO DO: Use an initializer list to Initialize the private
     // variables A, b, s.
     // START
-    : A(A), b(b), s(b.size())
+    
     // END
   {
     // TO DO: Use assert() to make sure A is a square matrix of
     // shape s*s with s=b.size().
     // START
-    assert( A.cols() == A.rows() && "Matrix must be square.");
-    assert( A.cols() == b.size() && "Incompatible matrix/vector size.");
+    
     // END
   }
   
@@ -67,33 +66,13 @@ public:
   std::vector<State> solve(Function &&f, double T,
                            const State &y0, unsigned int N) const {
     std::vector<State> res;
+    // Will contain all steps, reserve memory for efficiency
+    res.reserve(N+1);
     // TO DO: Compute the solution of y'=f(y), y(0)=y0 up to time T using
     // N Runge-Kutta steps, and store the solution at step n in res[n].
     // Use the private method step() for the Runge-Kutta step.
     // START
-    // Step size
-    double h = T / N;
     
-    // Will contain all steps, reserve memory for efficiency
-    res.reserve(N+1);
-    
-    // Store initial data
-    res.push_back(y0);
-    
-    // Initialize some memory to store temporary values
-    State ytemp1 = y0;
-    State ytemp2 = y0;
-    // Pointers to swap previous value
-    State * yold = &ytemp1;
-    State * ynew = &ytemp2;
-    
-    // Loop over all fixed steps
-    for(unsigned int k = 0; k < N; ++k) {
-      // Compute, save and swap next step
-      step(f, h, *yold, *ynew);
-      res.push_back(*ynew);
-      std::swap(yold, ynew);
-    }
     // END
     return res;
   }
@@ -117,22 +96,7 @@ private:
     // (defined by A, b, s) for y'=f(y) starting at State y0 and using
     // step size h. Store the result in the State y1.
     // START
-    // create vector holding next value
-    y1 = y0;
-    // Reserve space for increments
-    std::vector<State> k;
-    k.reserve(s);
     
-    // Loop over the size of RK
-    for(unsigned int i = 0; i < s; ++i) {
-      // Compute increments and save them to $k$
-      State incr = y0;
-      for(unsigned int j = 0; j < i; ++j) {
-        incr += h*A(i,j)*k.at(j);
-      }
-      k.push_back( f( incr ) );
-      y1 += h * b(i) * k.back();
-    }
     // END
   }
   

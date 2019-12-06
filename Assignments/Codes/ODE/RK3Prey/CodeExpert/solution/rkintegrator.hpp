@@ -67,15 +67,14 @@ public:
   std::vector<State> solve(Function &&f, double T,
                            const State &y0, unsigned int N) const {
     std::vector<State> res;
+    // Will contain all steps, reserve memory for efficiency
+    res.reserve(N+1);
     // TO DO: Compute the solution of y'=f(y), y(0)=y0 up to time T using
     // N Runge-Kutta steps, and store the solution at step n in res[n].
     // Use the private method step() for the Runge-Kutta step.
     // START
     // Step size
     double h = T / N;
-    
-    // Will contain all steps, reserve memory for efficiency
-    res.reserve(N+1);
     
     // Store initial data
     res.push_back(y0);
