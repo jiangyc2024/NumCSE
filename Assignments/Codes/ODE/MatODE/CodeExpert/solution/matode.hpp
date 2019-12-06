@@ -1,3 +1,6 @@
+#ifndef MATODE_HPP
+#define MATODE_HPP
+
 #include <iostream>
 #include <iomanip>
 #include <vector>
@@ -109,3 +112,5 @@ std::tuple<double,double,double> checkOrthogonality(void) {
   // END
 }
 /* SAM_LISTING_END_6 */
+
+#endif
