@@ -1,8 +1,11 @@
+#ifndef MATODE_HPP
+#define MATODE_HPP
+
+#include <iostream>
+#include <iomanip>
+#include <vector>
 #include <Eigen/Dense>
 #include <Eigen/QR>
-#include <iomanip>
-#include <iostream>
-#include <vector>
 
 using namespace Eigen;
 
@@ -99,3 +102,5 @@ std::tuple<double, double, double> checkOrthogonality(void) {
   // END
 }
 /* SAM_LISTING_END_6 */
+
+#endif
