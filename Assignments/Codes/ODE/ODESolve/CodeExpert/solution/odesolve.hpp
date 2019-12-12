@@ -169,7 +169,7 @@ odeintssctrl(DiscEvlOp&& Psi, double T, const Vector &y0, double h0,
 /* SAM_LISTING_END_3 */
 
 
-/* SAM_LISTING_BEGIN_3 */
+/* SAM_LISTING_BEGIN_4 */
 void solveTangentIVP(void)
 {
   auto f = [] (const Vector &y) -> Vector { return Vector::Ones(1) + y*y; };
@@ -213,5 +213,5 @@ void solveTangentIVP(void)
   plt::savefig("./cx_out/tangent.png");
   // END
 }
-/* SAM_LISTING_END_3 */
+/* SAM_LISTING_END_4 */
 #endif
