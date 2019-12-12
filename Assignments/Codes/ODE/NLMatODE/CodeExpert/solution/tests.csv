@@ -1,3 +1,4 @@
 // "testname", "input", "expected output", "points", "execution time limit (ms)"
 "matode", "(any input)", "1.11717  1.06478 -0.317651 \n 0.85854 5.24544 2.58701 \n 0.121829 2.52023  1.09839",  "1", "5000",
 "invariants", "(any input)", "Invariant for Y0 NOT preserved.\nInvariant for M0 preserved.", "1", "5000",
+"dgm", "(any input)", "1.98098", "1", "5000",

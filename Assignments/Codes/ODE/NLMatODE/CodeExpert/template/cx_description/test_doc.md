@@ -25,3 +25,26 @@ and $T=1$. The result $Y(1)$ should be
 ```
 $M_0$ is symmetric, so the equation is stationary and the invariant is preserved. 
 The invariant is not preserved for $Y_0$.  
+
+***
+> `double cvgDiscreteGradientMethod(void)`: runs the method with $Y_0 =$
+```
+0 1 0 0 0
+0 0 1 0 0
+0 0 0 1 0
+0 0 0 0 1
+1 0 0 0 0
+```
+and the resulting rate is 1.98098. It also prints the table
+```
+M       Error
+10      0.00260457
+20      0.000645272
+40      0.000160726
+80      4.00747e-05
+160     9.9619e-06
+320     2.44364e-06
+640     5.84909e-07
+1280    1.98872e-07
+```
+which is not tested.

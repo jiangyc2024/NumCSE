@@ -33,5 +33,9 @@ int main() {
         std::cout << "Invariant for M0 NOT preserved."
                   << std::endl;
     }
+    
+    double rate = cvgDiscreteGradientMethod();
+    std::cout << "\nThe fitted rate for the discrete gradient method is:\n" 
+              << rate <<std::endl;
     return 0;
 }
