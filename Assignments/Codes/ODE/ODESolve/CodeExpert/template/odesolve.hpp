@@ -27,8 +27,9 @@ Vector psitilde(DiscEvlOp &&Psi, unsigned int p, double h, const Vector &y0) {
   // TO DO (12-3.b): apply the evolution operator \tilde{\Psi}
   // with step-size h to the value y0
   // START
-  return ( Psi(h,y0) - (2<<(p-1))*Psi(h/2., Psi(h/2.,y0)) ) / (1. - (2<<(p-1)));
+  
   // END
+  return y0;
 }
 /* SAM_LISTING_END_0 */
 
@@ -45,19 +46,7 @@ std::vector<Vector> odeintequi(DiscEvlOp &&Psi, double T, const Vector &y0, unsi
   // TO DO (12-3.c): Compute y from time 0 to T using N equidistant time steps
   // return a std::vector containing all steps y_0,...,y_N
   // START
-  double h = T / N;
-  double t = 0.;
-  Y.reserve(N+1);
-  Y.push_back(y0);
-  Vector y = y0;
   
-  while( t < T ) {
-    // append new value
-    y = Psi(h,Y.back());
-    Y.push_back(y);
-    // time stepping
-    t += std::min(T-t,h);
-  }
   // END
   return Y;
 }
@@ -79,33 +68,7 @@ double testcvpExtrapolatedEuler(void) {
   // suitable input for odeintequi.
   
   // START
-  auto Psi = [&f] (double h, const Vector & y0) -> Vector { 
-    return y0 + h*f(y0); 
-  };
-  unsigned p = 1;
-  // lambda corresponding to \tilde{\psi}
-  auto PsiTilde = [&Psi, &f, &p] (double h, const Vector & y0) -> Vector {  
-    return psitilde(Psi, p, h, y0); 
-  };
   
-  // exact value
-  Vector y_ex1(1);
-  y_ex1(0) = std::tan(T);
-  // values for convergence study
-  Eigen::ArrayXd err(11); 
-  Eigen::ArrayXd N(11);
-  
-  std::cout << "Error table for equidistant steps:" << std::endl;
-  std::cout << "N" << "\t" << "Error" << std::endl;
-  for(int i = 0; i < 11; ++i ) {
-    N(i) = std::pow(2, i + 2);
-    Vector yT = odeintequi(PsiTilde, T, y0, N(i)).back();
-    err(i) = (yT - y_ex1).norm();
-    std::cout << N(i) << "\t" << err(i) << std::endl;
-  }
-  // compute fitted rate
-  Vector coeffs = polyfit(N.log(),err.log(),1);
-  conv_rate = -coeffs(0);
   // END
   return conv_rate;
 }
@@ -135,34 +98,7 @@ odeintssctrl(DiscEvlOp&& Psi, double T, const Vector &y0, double h0,
   // step size hmin. return a pair of vectors containing the times and
   // the computed values.
   // START
-  t.push_back(0.);
-  Y.push_back(y0);
-  Vector y = y0;
   
-  double h = h0;
-  while( t.back() < T && h > hmin ) {
-    // psitilde as higher order step
-    Vector y_high = psitilde(Psi, p, std::min(T-t.back(),h), y);
-    Vector y_low = Psi(std::min(T-t.back(),h),y);
-    // estimated error of current step
-    double est = (y_high - y_low).norm();
-    // effective tolerance
-    double tol = std::max(reltol*y.norm(), abstol);
-    
-    h = h*std::max(0.5, std::min(2., std::pow(tol/est,1./(p + 1))));
-
-    if( est < tol ) {
-      // accept time step
-      y = y_high;
-      Y.push_back(y_high);
-      t.push_back(t.back() + std::min(T-t.back(), h));
-    }
-  }
-  if (h < hmin) {
-    std::cerr << "Warning: Failure at t="
-      << t.back()
-      << ". Unable to meet integration tolerances without reducing the step size below the smallest value allowed ("<< hmin <<") at time t." << std::endl;
-  }
   // END
   return std::make_pair(t,Y);
 }
@@ -180,37 +116,7 @@ void solveTangentIVP(void)
   // std::vector<double>, since each Vector has size 1 
   
   // START
-  double T = 1.55;
-  unsigned p = 1;
-  double h0 = 1./100.;
   
-  auto Psi = [&f] (double h, const Vector & y0) -> Vector { return y0 + h*f(y0); };
-  //run adaptive algoritm
-  std::pair<std::vector<double>, std::vector<Vector>>  vec_pair 
-                = odeintssctrl(Psi, T, y0, h0, p, 10e-4, 10e-6, 10e-5);
-  std::vector<double> t = vec_pair.first;
-  std::vector<Vector> Y = vec_pair.second;
-  // convert type for plot
-  std::vector<double> y(Y.size());
-  for (unsigned i = 0; i < Y.size(); ++i) {
-    y[i] = Y[i](0);
-  }
-  
-  // plotting results
-  plt::figure();
-  plt::plot(t, y, "+", {{"label", "approx IVP"}});
-  // exact solution 
-  Vector x = Vector::LinSpaced(100,0.0,T);
-  Vector exact = x.array().tan();
-  plt::plot(x, exact, {{"label", "tangent"}}  );
-  plt::legend();
-
-  plt::title("Approximate vs exact solution");
-  plt::xlabel("t");
-  plt::ylabel("y");
-  plt::grid("True");
-  
-  plt::savefig("./cx_out/tangent.eps");
   // END
 }
 /* SAM_LISTING_END_4 */
