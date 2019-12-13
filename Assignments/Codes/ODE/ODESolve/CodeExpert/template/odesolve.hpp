@@ -180,7 +180,7 @@ void solveTangentIVP(void)
   // std::vector<double>, since each Vector has size 1 
   
   // START
-  double T = 1.;
+  double T = 1.55;
   unsigned p = 1;
   double h0 = 1./100.;
   
@@ -205,12 +205,12 @@ void solveTangentIVP(void)
   plt::plot(x, exact, {{"label", "tangent"}}  );
   plt::legend();
 
-  plt::title("Approximate solution");
+  plt::title("Approximate vs exact solution");
   plt::xlabel("t");
   plt::ylabel("y");
   plt::grid("True");
   
-  plt::savefig("./cx_out/tangent.png");
+  plt::savefig("./cx_out/tangent.eps");
   // END
 }
 /* SAM_LISTING_END_4 */
