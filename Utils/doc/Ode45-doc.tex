@@ -1,59 +1,77 @@
-\textbf{Instructions on the usage of \texttt{ode45}.}
+\textbf{Instructions on the use of \cppclass{ode45}, see \lref{cpp:ode45}.}
 
-The class \texttt{ode45} is header-only, meaning you just include the file and use it right away (no linking required). 
-The file \texttt{ode45.hpp} defines class \texttt{ode45} 
-implementing an emulation of Matlab's Rosenbrock method of order 4(3): \texttt{ode45}.
+The class \cppclass{ode45} is header-only, meaning you just include the file and use it
+right away (no linking required). The file \cppfile{ode45.hpp} defines the class
+cppclass{ode45} implementing an embedded Runge-Kutta-Fehlberg method of order 4(5), see
+\lref{par:embrk} and \lref{ex:embrk}, with an adaptive stepsize control as presented in
+\lref{rem:refssctrl}. 
 
 \begin{enumerate}
-\item Construct an object of \texttt{ode45} type:
-    create an instance of the class, passing the r.h.s. function $f$ to constructor:
-    \begin{lstlisting}
-ode45<StateType> = O(f);
-    \end{lstlisting}
-    Template parameters:
-    \begin{itemize}
-        \item StateType:  type of initial data and solution (state space), the only
-        requirement is that the tpye possesses a normed vector-space structure;
-        \item RhsType:    type of rhs function (automatically deduced).
-    \end{itemize}
-    The function \texttt{f} must be a function handle with 
-    \begin{lstlisting}
-operator()(const StateType & vec) -> StateType
-    \end{lstlisting}
-    
-\item (optional) Set the integration options: set members of struct \texttt{ode45.options} to configure the solver:
-    \begin{lstlisting}
-O.options.<option_you_want_to_set> = <value>
-    \end{lstlisting}
-    Examples:
-    \begin{itemize}
-        \item \texttt{rtol}:       relative tolerance for error control (default is \texttt{10e-6})
-        \item \texttt{atol}:       absolute tolerance for error control (default is \texttt{10e-8})
-    \end{itemize}
-    e.g.:
-    \begin{lstlisting}
-O.options.rtol = 10e-5;
-    \end{lstlisting}
+\item Construct an object of \cppclass{ode45} type:
+  create an instance of the class, passing the right-hand-side function $\Vf$ as a
+  functor object to the constructor
+  \begin{lstlisting}[style=cppsimple,emph={ode45},emph={[2]StateType,RhsType}]
+    template <class StateType,
+    class RhsType = std::function<StateType(const StateType &)>>
+    class ode45 {
+      public:
+      ode45(const RhsType &rhs);
+      // ......
+    }
+  \end{lstlisting}
 
-\item Solve stage: call the solver:
-    \begin{lstlisting}
-std::vectro<std::pair<StateType> sol = O.solve(y0, T, norm)
-    \end{lstlisting}
+  Template parameters are
+  \begin{itemize}
+  \item \cppclass{StateType}: type of initial data and solution (state space), the only requirement
+    is that the type possesses a normed vector-space structure, that is, it must
+    implement the operations \verb|*|, \verb|*|, \verb|*=|, \verb|+=| and
+    assignment/copy operators. Moreover a \cppfn{norm()} method must be available.
+    \eigen's vector and matrix types, as well as fundamental types are eligible as
+    \cppclass{StateType}.
+  \item \cppclass{RhsType}:    type of rhs function (automatically deduced).
+  \end{itemize}
+  The argument \cppcode{f} must be of a functor type that provides an evaluation operator
+  \begin{lstlisting}[style=cppsimple,emph={[2]StateType}]
+    StateType operator()(const StateType & vec);
+  \end{lstlisting}
+  It can also be a lambda function. 
+\item (optional) Set the integration options: set data members of the data structure
+  \cppclass{ode45.options} to configure the solver:
+  \begin{lstlisting}[style=cppsimple]
+    O.options.<option_you_want_to_set> = <value>;
+  \end{lstlisting}
+  Examples:
+  \begin{itemize}
+  \item \texttt{rtol}:       relative tolerance for error control (default is \texttt{10e-6})
+  \item \texttt{atol}:       absolute tolerance for error control (default is \texttt{10e-8})
+  \end{itemize}
+  e.g.:
+  \begin{lstlisting}[style=cppsimple]
+    O.options.rtol = 10e-5;
+  \end{lstlisting}, for the computation of the error
 
-    Template parameters:
-    \begin{itemize}
-        \item \texttt{NormType}: type of norm function, automatically deduced
-    \end{itemize}
+\item Solve stage: invoke the single-step method through calling the method
+  \begin{lstlisting}[emph={solve},style=cppsimple]
+    template <class NormFunc = decltype(_norm<StateType>)>
+    std::vector<std::pair<StateType, double>>
+    solve(const StateType &y0, double T,
+    const NormFunc &norm = _norm<StateType>);
+  \end{lstlisting}
+  The type \cppclass{NormType} should provide a norm for vectors of type \cppclass{StateType}.
+  However, this type can be deduced automatically and the argument \cppcode{norm} is optional.
+  The other arguments are 
+  \begin{itemize}
+  \item \texttt{y0}: initial value of type \cppclass{StateType} (\cob{$\Vy_{0}=$}
+    \texttt{y0})
+  \item \texttt{T}:
+    final time of integration
+  \item \texttt{norm}: (optional) norm function to call for objects of
+    \cppclass{StateType}, for the computation of the error
+  \end{itemize}
 
-    Arguments:
-    \begin{itemize}
-        \item \texttt{y0}:         initial value in StateType ($y(0) =$ \texttt{y0})
-        \item \texttt{T}:          final time of integration
-        \item \texttt{norm}:       (optional) norm function to call on member of StateType, for the computation of the error
-    \end{itemize}
-
-    The function returns the solution of the IVP, as a \texttt{std::vector} 
-    of \texttt{std::pair} $(y(t), t)$ for every snapshot.
+  The function returns the solution of the IVP, as a \texttt{std::vector} 
+  of \texttt{std::pair} $(y(t), t)$ for every snapshot.
 \end{enumerate}
 
-For more documentation, consult the in-class documentation or the file \texttt{NumCSE/Utils/README.md}.
+For more explanations and details, please consult the in-class documentation provided in
+the comments.
