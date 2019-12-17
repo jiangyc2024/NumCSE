@@ -1,5 +1,8 @@
 
 #include "rosenbrock.hpp"
+#include <Eigen/Dense>
+#include <iostream>
+using namespace Eigen;
 
 int main() {
   auto f =  [] (const Vector3d y) { 
@@ -16,5 +19,6 @@ int main() {
   y0 << 1,2,3;
   std::cout << "Test of solveRosenbrock():" << solveRosenbrock(f,df,y0,10,2.).at(10).transpose() << std::endl;
   
-  std::cout << "Convergence rate: " << std::round(cvgRosenbrock()) << std::endl;
+  double cvgRate = cvgRosenbrock();
+  std::cout << "Convergence rate: " << std::round(cvgRate) << std::endl;
 }
