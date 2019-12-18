@@ -24,7 +24,7 @@ std::vector<VectorXd> solve_imp_mid(Function &&f,
                                     double T,
                                     const VectorXd &y0,
                                     unsigned int N) {
-  std::vector<VectorXd> res;
+  std::vector<VectorXd> res(N + 1);
   // TO DO (13-1.e): Construct the implicit mid-point method with the class
   // implicit_RKIntegrator and execute the .solve() method. 
   // Return the vector containing all steps including initial and final value.
@@ -62,7 +62,7 @@ std::vector<VectorXd> solve_lin_mid(Function &&f,
                                     double T,
                                     const VectorXd &y0,
                                     unsigned int N)  {
-  std::vector<VectorXd> res;
+  std::vector<VectorXd> res(N + 1);
   // TO DO (13-1.g): Implement the linear implicit mid-point method for
   // an autonomous ODE y' = f(y), y(0) = y0. Return the vector containing 
   // all steps including initial and final value.
@@ -70,8 +70,6 @@ std::vector<VectorXd> solve_lin_mid(Function &&f,
   // Initial step size
   double h = T / N;
   int d = y0.size();
-  // reserve memory for efficiency
-  res.reserve(N + 1);
   // Store initial data
   res.push_back(y0);
 
