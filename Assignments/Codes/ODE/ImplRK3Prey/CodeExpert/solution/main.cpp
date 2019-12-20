@@ -1,8 +1,5 @@
 #include "implicit_rkintegrator.hpp"
 
-//! \file implicit_rk3prey.cpp Solution for ImplRK3Prey,
-//! solving prey/predator model with implicit RK method.
-
 using namespace Eigen;
 
 int main(void) {
