@@ -101,5 +101,5 @@ private:
   const VectorXd b;
   //<! Size of Butcher matrix and vector A and b
   unsigned int s;
-};
+y};
 /* SAM_LISTING_END_1 */

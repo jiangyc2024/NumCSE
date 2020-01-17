@@ -2,7 +2,7 @@
 
 The class \cppclass{ode45} is header-only, meaning you just include the file and use it
 right away (no linking required). The file \cppfile{ode45.hpp} defines the class
-cppclass{ode45} implementing an embedded Runge-Kutta-Fehlberg method of order 4(5), see
+\cppclass{ode45} implementing an embedded Runge-Kutta-Fehlberg method of order 4(5), see
 \lref{par:embrk} and \lref{ex:embrk}, with an adaptive stepsize control as presented in
 \lref{rem:refssctrl}. 
 
@@ -24,13 +24,13 @@ cppclass{ode45} implementing an embedded Runge-Kutta-Fehlberg method of order 4(
   \begin{itemize}
   \item \cppclass{StateType}: type of initial data and solution (state space), the only requirement
     is that the type possesses a normed vector-space structure, that is, it must
-    implement the operations \verb|*|, \verb|*|, \verb|*=|, \verb|+=| and
+    implement the operations \verb|+|, \verb|*|, \verb|*=|, \verb|+=| and
     assignment/copy operators. Moreover a \cppfn{norm()} method must be available.
     \eigen's vector and matrix types, as well as fundamental types are eligible as
     \cppclass{StateType}.
   \item \cppclass{RhsType}:    type of rhs function (automatically deduced).
   \end{itemize}
-  The argument \cppcode{f} must be of a functor type that provides an evaluation operator
+  The argument \cppcode{rhs} must be of a functor type that provides an evaluation operator
   \begin{lstlisting}[style=cppsimple,emph={[2]StateType}]
     StateType operator()(const StateType & vec);
   \end{lstlisting}
@@ -48,7 +48,7 @@ cppclass{ode45} implementing an embedded Runge-Kutta-Fehlberg method of order 4(
   e.g.:
   \begin{lstlisting}[style=cppsimple]
     O.options.rtol = 10e-5;
-  \end{lstlisting}, for the computation of the error
+  \end{lstlisting}
 
 \item Solve stage: invoke the single-step method through calling the method
   \begin{lstlisting}[emph={solve},style=cppsimple]
@@ -68,10 +68,11 @@ cppclass{ode45} implementing an embedded Runge-Kutta-Fehlberg method of order 4(
   \item \texttt{norm}: (optional) norm function to call for objects of
     \cppclass{StateType}, for the computation of the error
   \end{itemize}
-
-  The function returns the solution of the IVP, as a \texttt{std::vector} 
-  of \texttt{std::pair} $(y(t), t)$ for every snapshot.
+  \textbf{Return value} The function returns the solution of the IVP, as a
+  \texttt{std::vector} of \texttt{std::pair} \cob{$(y(t), t)$} for every snapshot.
 \end{enumerate}
+
+
 
 For more explanations and details, please consult the in-class documentation provided in
 the comments.
