@@ -10,3 +10,5 @@ target_compile_definitions(${TEMPLATE} PRIVATE SOLUTION=0 INTERNAL=1)
 
 add_custom_target(${SOLUTION}-extra_files SOURCES "description.json"
     implicit_rkintegrator.hpp)
+
+add_subdirectory(CodeExpert)
