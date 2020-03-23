@@ -98,19 +98,17 @@ double steffensen_log(Function &&f, double x0,
   }
   double upd = 1;
   double eps = std::numeric_limits<double>::epsilon();
-
+  // Iterate until machine precision is reached
   while (std::abs(upd) > eps) {
     double fx = f(x); // Only 2 evaluations of $f$ at each step
     if (fx != 0) {
       upd = fx * fx / (f(x + fx) - fx);
       x -= upd;
       if (log_enabled) { (*logger_p)(x); }
+    } else {
+      upd = 0;
     }
   }
-  else {
-    upd = 0;
-  }
-}
 // END
 return x;
 }
