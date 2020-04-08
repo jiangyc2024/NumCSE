@@ -18,7 +18,7 @@ if __name__ == "__main__":
 	if len(diff) == 1:
 		file = diff.pop()
 	else:
-		raise SystemExit("Problem finding the student's solution.")
+		raise SystemExit("Problem finding the student's solution. You may want to remove copy.hpp from ../")
 	
 	student_sol = open(file, "r")
 	
