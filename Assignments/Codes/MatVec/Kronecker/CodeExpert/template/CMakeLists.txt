@@ -4,6 +4,10 @@ cmake_minimum_required(VERSION 3.13)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 set(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -fdiagnostics-color=always -std=c++11")
 
+# added:
+enable_testing()
+# find_package(doctest REQUIRED)
+
 find_package(Python3 COMPONENTS Interpreter Development NumPy)
 find_package(Eigen3)
 
@@ -31,3 +35,14 @@ set_target_properties(Kronecker PROPERTIES OUTPUT_NAME "a.out")
 target_link_libraries (Kronecker Eigen3::Eigen)
 target_link_libraries (Kronecker Python3::Python)
 target_link_libraries (Kronecker Python3::NumPy)
+
+# added:
+add_custom_target(copy ALL
+		  COMMAND python3 ${PROJECT_SOURCE_DIR}/copy_and_tweak.py cmake)
+add_executable(tests tests.cpp)
+add_dependencies(tests copy)
+add_custom_command(TARGET tests
+		   POST_BUILD
+		   COMMAND rm ../copy.hpp)
+# target_link_libraries(tests PRIVATE doctest::doctest)
+add_test(NAME tests COMMAND tests)

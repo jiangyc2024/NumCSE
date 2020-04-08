@@ -1,5 +1,7 @@
 #!/bin/bash
 
-# run (call run script)
+export PYTHONIOENCODING="UTF-8"
 
-bash "${WORKDIR}/scripts/run.sh"
+python3 copy_and_tweak.py
+
+
