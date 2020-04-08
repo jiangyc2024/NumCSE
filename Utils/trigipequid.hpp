@@ -1,1 +1,1 @@
-../LectureCodes/FuncApproximation/trigipequid/Eigen/trigipequid.hpp
+#include "../LectureCodes/FuncApproximation/trigipequid/Eigen/trigipequid.hpp"
