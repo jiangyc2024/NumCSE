@@ -27,6 +27,12 @@ namespace plt = matplotlibcpp;
 
 //START
 
+/* SAM_LISTING_BEGIN_2 */
+template <class Function> double quadinf(const int n, Function &&f) {
+  return NAN;
+}
+/* SAM_LISTING_END_2 */
+
 //END
 
 
