@@ -22,3 +22,5 @@ echo "Compilation successful"
 echo "Running tests ..."
 
 bin/tests.out
+
+rm ./cx_out/copy.hpp

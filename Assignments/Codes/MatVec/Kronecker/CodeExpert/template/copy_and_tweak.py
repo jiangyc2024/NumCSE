@@ -24,7 +24,13 @@ if __name__ == "__main__":
 	
 	student_sol = open(file, "r")
 	
-	copy = open(cmake_helper + "copy.hpp", "w")
+	#copy = open(cmake_helper + "copy.hpp", "w")
+	# workaround for codeexpert (under construction)
+	copy = student_sol
+	if arg == "cmake":
+	    copy = open(cmake_helper + "copy.hpp", "w")
+	else:
+	    copy = open("./cx_out/copy.hpp", "w")
 	
 	# expect include guards, change them
 	if(student_sol.readline().startswith("#ifndef")):
@@ -40,7 +46,9 @@ if __name__ == "__main__":
 	if arg == "cmake":
 	    copy.write('#include "../solution/{}"\n'.format(file[3:]))
 	else:
-	    copy.write('#include "../solution/{}"\n'.format(file))
+	    #copy.write('#include "../solution/{}"\n'.format(file))
+	    # workaround for codeexpert:
+	    copy.write('#include "./solution.hpp"')
 	
 	prefix = "test_"
 	
