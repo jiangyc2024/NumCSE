@@ -8,8 +8,7 @@ echo "Compiling ..."
 
 mkdir -p bin
 
-find . -iname 'tests.cpp' | sort | xargs \
-  g++ -fdiagnostics-color=always -std=c++11 \
+g++ tests.cpp -fdiagnostics-color=always -std=c++11 \
   -I/usr/local/include/python3.7m \
   -I/usr/local/lib/python3.7/site-packages/numpy/core/include \
   -I/usr/include/eigen3/ \
