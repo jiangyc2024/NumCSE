@@ -11,7 +11,7 @@ if __name__ == "__main__":
 		if arg == "cmake":
 			cmake_helper = "../"
 	
-	expected_hpps_wout_student_sol = set([cmake_helper + "polyfit.hpp"]# cmake_helper + "copy.hpp"])
+	expected_hpps_wout_student_sol = set([cmake_helper + "polyfit.hpp"])# cmake_helper + "copy.hpp"])
 	
 	all_hpps = set(glob.glob(cmake_helper + "*.hpp"))
 	diff = all_hpps.difference(expected_hpps_wout_student_sol)
