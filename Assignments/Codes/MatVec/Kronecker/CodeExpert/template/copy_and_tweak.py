@@ -4,12 +4,14 @@ import sys
 
 if __name__ == "__main__":
 	
-	arg = str(sys.argv[1])
+	arg = ""
 	cmake_helper = ""
-	if arg == "cmake":
-	    cmake_helper = "../"
+	if len(sys.argv) == 2:
+		arg = str(sys.argv[1])
+		if arg == "cmake":
+			cmake_helper = "../"
 	
-	expected_hpps_wout_student_sol = set([cmake_helper + "polyfit.hpp"])
+	expected_hpps_wout_student_sol = set([cmake_helper + "polyfit.hpp", cmake_helper + "copy.hpp"])
 	
 	all_hpps = set(glob.glob(cmake_helper + "*.hpp"))
 	diff = all_hpps.difference(expected_hpps_wout_student_sol)
@@ -18,7 +20,7 @@ if __name__ == "__main__":
 	if len(diff) == 1:
 		file = diff.pop()
 	else:
-		raise SystemExit("Problem finding the student's solution. You may want to remove copy.hpp from ../")
+		raise SystemExit("Problem finding the student's solution.")
 	
 	student_sol = open(file, "r")
 	

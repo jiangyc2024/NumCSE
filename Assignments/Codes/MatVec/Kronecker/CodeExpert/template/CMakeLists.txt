@@ -2,6 +2,7 @@
 project(Kronecker_proj)
 cmake_minimum_required(VERSION 3.13)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
+#set(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -fdiagnostics-color=always -std=c++11 -lpthread -lutil -ldl -Xlinker -export-dynamic")
 set(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -fdiagnostics-color=always -std=c++11")
 
 # added:
