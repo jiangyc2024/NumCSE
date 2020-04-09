@@ -42,8 +42,5 @@ add_custom_target(copy ALL
 		  COMMAND python3 ${PROJECT_SOURCE_DIR}/copy_and_tweak.py cmake)
 add_executable(tests tests.cpp)
 add_dependencies(tests copy)
-add_custom_command(TARGET tests
-		   POST_BUILD
-		   COMMAND rm ../copy.hpp)
 # target_link_libraries(tests PRIVATE doctest::doctest)
 add_test(NAME tests COMMAND tests)
