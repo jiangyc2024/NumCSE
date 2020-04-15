@@ -21,6 +21,6 @@ echo "Compilation successful"
 
 echo "Running tests ..."
 
-bin/tests.out
+bin/tests.out -npf
 
 rm ./cx_out/copy.hpp

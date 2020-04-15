@@ -2,54 +2,18 @@ import glob
 import re
 import sys
 
-if __name__ == "__main__":
-	
-	arg = ""
-	cmake_helper = ""
-	if len(sys.argv) == 2:
-		arg = str(sys.argv[1])
-		if arg == "cmake":
-			cmake_helper = "../"
-	
-	expected_hpps_wout_student_sol = set([cmake_helper + "polyfit.hpp"])# cmake_helper + "copy.hpp"])
-	
-	all_hpps = set(glob.glob(cmake_helper + "*.hpp"))
-	diff = all_hpps.difference(expected_hpps_wout_student_sol)
-	
-	# get the student header
-	if len(diff) == 1:
-		file = diff.pop()
-	else:
-		raise SystemExit("Problem finding the student's solution.")
-	
-	student_sol = open(file, "r")
-	
-	#copy = open(cmake_helper + "copy.hpp", "w")
-	# workaround for codeexpert (under construction)
-	copy = student_sol
-	if arg == "cmake":
-	    copy = open(cmake_helper + "copy.hpp", "w")
-	else:
-	    copy = open("./cx_out/copy.hpp", "w")
-	
-	# expect include guards, change them
-	if(student_sol.readline().startswith("#ifndef")):
-		next(student_sol)
-		next(student_sol)
-		no_include_guards = False
-	else:
-		no_include_guards = True
-	copy.write("#ifndef COPY_HPP\n")
-	copy.write("#define COPY_HPP\n")
-	
-	# include the solution
-	if arg == "cmake":
-	    copy.write('#include "../solution/{}"\n'.format(file[3:]))
-	else:
-	    #copy.write('#include "../solution/{}"\n'.format(file))
-	    # workaround for codeexpert:
-	    copy.write('#include "./solution.hpp"')
-	
+#
+# CURRENT ISSUES:
+#   - Does not spot student's helper functions.
+#   - The cmake version can only be called from the folder's local cmake file and its build folder.
+#   - Can only handle one file that is written by the student.
+#   - probably more issues
+#
+
+def parseWriteChange(student_sol, copy):
+"""
+Checks the c++ file student_sol for function definitions and changes the name of those to test_*.
+"""
 	prefix = "test_"
 	
 	for line in student_sol:
@@ -63,9 +27,95 @@ if __name__ == "__main__":
 			copy.write(prefix + parse2.group(1) + parse2.group(2) + parse2.group(3))
 		else:
 			copy.write(line)
+			
+def compareHeadersWithExpected(expected, all):
+"""
+Compares the set expected with all and returns the file student_sol.
+"""
+	diff = all.difference(expected)
+	# get the student header
+	if len(diff) == 1:
+		return diff.pop()
+	else:
+		raise SystemExit("Problem finding the student's solution.")
+
+def cmake():
+"""
+Will perform the copy and tweak operation if called from a cmake build system inside a build folder.
+The tweaked copy is named 'copy.hpp'.
+Will also put header guards into the file.
+"""
+	expected_hpps_wout_student_sol = set(["../polyfit.hpp", "../copy.hpp"])
+	all_hpps = set(glob.glob("../*.hpp"))
+	
+	file = compareHeadersWithExpected(expected_hpps_wout_student_sol, all_hpps)
+	
+	student_sol = open(file, "r")
+	copy = open("../copy.hpp", "w")
+	
+	# expect include guards, change them
+	if(student_sol.readline().startswith("#ifndef")):
+		next(student_sol)
+		next(student_sol)
+		no_include_guards = False
+	else:
+		no_include_guards = True
+	copy.write("#ifndef COPY_HPP\n")
+	copy.write("#define COPY_HPP\n")
+	
+	copy.write('#include "../solution/{}"\n'.format(file[3:]))
+	
+	parseWriteChange(student_sol, copy)
 	
 	if no_include_guards:
 		copy.write("#endif")
-
+	
 	copy.close()
 	student_sol.close()
+
+def codeexpert():
+"""
+Will perform the copy and tweak operation if called from a script that is used by codeexpert.
+The tweaked copy is named 'copy.hpp'.
+Will also put header guards into the file.
+Puts copy.hpp in a writable folder on the server – MUST BE REMOVED AFTER COMPILING!
+"""
+	expected_hpps_wout_student_sol = set(["polyfit.hpp"])
+	all_hpps = set(glob.glob("*.hpp"))
+	
+	file = compareHeadersWithExpected(expected_hpps_wout_student_sol, all_hpps)
+	
+	student_sol = open(file, "r")
+	copy = open("./cx_out/copy.hpp", "w")
+	
+	copy.write('#include "./solution.hpp"')
+	
+	# expect include guards, change them
+	if(student_sol.readline().startswith("#ifndef")):
+		next(student_sol)
+		next(student_sol)
+		no_include_guards = False
+	else:
+		no_include_guards = True
+	copy.write("#ifndef COPY_HPP\n")
+	copy.write("#define COPY_HPP\n")
+	
+	parseWriteChange(student_sol, copy)
+	
+	if no_include_guards:
+		copy.write("#endif")
+	
+	copy.close()
+	student_sol.close()
+
+
+
+if __name__ == "__main__":
+	if len(sys.argv) == 2:
+		if str(sys.argv[1]) == "cmake":
+			cmake()
+		else:
+			raise SystemExit("Wrong usage: either 'cmake' as argument to run cmake version or \
+			nothing implying the CodeExpert version.")
+	else:
+		codeexpert()
