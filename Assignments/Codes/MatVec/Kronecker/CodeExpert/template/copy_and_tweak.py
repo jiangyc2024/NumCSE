@@ -11,9 +11,9 @@ import sys
 #
 
 def parseWriteChange(student_sol, copy):
-"""
-Checks the c++ file student_sol for function definitions and changes the name of those to test_*.
-"""
+	"""
+	Checks the c++ file student_sol for function definitions and changes the name of those to test_*.
+	"""
 	prefix = "test_"
 	
 	for line in student_sol:
@@ -29,9 +29,9 @@ Checks the c++ file student_sol for function definitions and changes the name of
 			copy.write(line)
 			
 def compareHeadersWithExpected(expected, all):
-"""
-Compares the set expected with all and returns the file student_sol.
-"""
+	"""
+	Compares the set expected with all and returns the file student_sol.
+	"""
 	diff = all.difference(expected)
 	# get the student header
 	if len(diff) == 1:
@@ -40,11 +40,11 @@ Compares the set expected with all and returns the file student_sol.
 		raise SystemExit("Problem finding the student's solution.")
 
 def cmake():
-"""
-Will perform the copy and tweak operation if called from a cmake build system inside a build folder.
-The tweaked copy is named 'copy.hpp'.
-Will also put header guards into the file.
-"""
+	"""
+	Will perform the copy and tweak operation if called from a cmake build system inside a build folder.
+	The tweaked copy is named 'copy.hpp'.
+	Will also put header guards into the file.
+	"""
 	expected_hpps_wout_student_sol = set(["../polyfit.hpp", "../copy.hpp"])
 	all_hpps = set(glob.glob("../*.hpp"))
 	
@@ -74,21 +74,19 @@ Will also put header guards into the file.
 	student_sol.close()
 
 def codeexpert():
-"""
-Will perform the copy and tweak operation if called from a script that is used by codeexpert.
-The tweaked copy is named 'copy.hpp'.
-Will also put header guards into the file.
-Puts copy.hpp in a writable folder on the server – MUST BE REMOVED AFTER COMPILING!
-"""
-	expected_hpps_wout_student_sol = set(["polyfit.hpp"])
+	"""
+	Will perform the copy and tweak operation if called from a script that is used by codeexpert.
+	The tweaked copy is named 'copy.hpp'.
+	Will also put header guards into the file.
+	Puts copy.hpp in a writable folder on the server – MUST BE REMOVED AFTER COMPILING!
+	"""
+	expected_hpps_wout_student_sol = set(["polyfit.hpp", "solution.hpp"])
 	all_hpps = set(glob.glob("*.hpp"))
 	
 	file = compareHeadersWithExpected(expected_hpps_wout_student_sol, all_hpps)
 	
 	student_sol = open(file, "r")
-	copy = open("./cx_out/copy.hpp", "w")
-	
-	copy.write('#include "./solution.hpp"')
+	copy = open("copy.hpp", "w")
 	
 	# expect include guards, change them
 	if(student_sol.readline().startswith("#ifndef")):
@@ -99,6 +97,8 @@ Puts copy.hpp in a writable folder on the server – MUST BE REMOVED AFTER COMP
 		no_include_guards = True
 	copy.write("#ifndef COPY_HPP\n")
 	copy.write("#define COPY_HPP\n")
+	
+	copy.write('#include "solution.hpp"\n')
 	
 	parseWriteChange(student_sol, copy)
 	
