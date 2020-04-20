@@ -35,9 +35,9 @@ std::function<double (index_t,index_t)> define_f(int n, int m) {
     // TO DO (3-16.c): Define a lambda function f that takes as input n,m
     // and outputs a double 
     //START
-    
-    //END  
-    return f;
+
+    return [](index_t x,index_t y){ return NAN; };
+    //END
 }
 /* SAM_LISTING_END_0 */
 

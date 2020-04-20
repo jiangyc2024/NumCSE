@@ -1,1 +1,1 @@
-../LectureCodes/FuncApproximation/trigpolvalequid/Eigen/trigpolyvalequid.hpp
+#include "../LectureCodes/FuncApproximation/trigpolvalequid/Eigen/trigpolyvalequid.hpp"

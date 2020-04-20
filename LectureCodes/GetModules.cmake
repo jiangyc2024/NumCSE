@@ -103,7 +103,7 @@ function(get_modules includes)
 	message("-- Download Eigen3 to ${LIBS_PATH}/Eigen")
 	ExternalProject_Add(
 	    Eigen
-	    URL http://bitbucket.org/eigen/eigen/get/3.2.7.zip
+	    URL https://gitlab.com/libeigen/eigen/-/archive/3.3.7/eigen-3.3.7.zip
  	    URL_MD5 724e02b1b80c4b1c3b455384e8a96e90 #prevents re-downloading
 	    SOURCE_DIR ${LIBS_PATH}/Eigen
 	    DOWNLOAD_DIR ${LIBS_PATH}/temp

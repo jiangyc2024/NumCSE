@@ -17,9 +17,13 @@ namespace plt = matplotlibcpp;
 // TO DO (6-1.a): Implement the function evaldp().
 
 /* SAM_LISTING_BEGIN_0 */
+template <typename CoeffVec>
+std::pair<double, double> evaldp(const CoeffVec &c, const double x) {
 // START
-
+  return { NAN, NAN };
 // END
+}
+
 /* SAM_LISTING_END_0 */
 
 
@@ -32,9 +36,12 @@ namespace plt = matplotlibcpp;
  */
 // TO DO (6-1.b): Implement the function evaldp_naive().
 /* SAM_LISTING_BEGIN_1 */
+template <typename CoeffVec>
+std::pair<double, double> evaldp_naive(const CoeffVec &c, const double x) {
 // START
-
+  return { NAN, NAN };
 // END
+}
 /* SAM_LISTING_END_1 */
 
 
