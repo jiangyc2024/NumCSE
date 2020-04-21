@@ -8,7 +8,7 @@ echo "Compiling ..."
 
 mkdir -p bin
 
-g++ tests.cpp -fdiagnostics-color=always -std=c++11 \
+if g++ tests.cpp -fdiagnostics-color=always -std=c++11 \
   -I/usr/local/include/python3.7m \
   -I/usr/local/lib/python3.7/site-packages/numpy/core/include \
   -I/usr/include/eigen3/ \
@@ -16,11 +16,9 @@ g++ tests.cpp -fdiagnostics-color=always -std=c++11 \
   -lpthread -lutil -ldl \
   -Xlinker -export-dynamic \
   -o bin/tests.out
-  
-echo "Compilation successful"
-
-echo "Running tests ..."
-
-bin/tests.out -npf
-
-rm ./cx_out/copy.hpp
+then
+	echo "Compilation successful"
+	echo "Running tests ..."
+	timeout 5 bin/tests.out -npf -s
+	rm copy.hpp
+fi

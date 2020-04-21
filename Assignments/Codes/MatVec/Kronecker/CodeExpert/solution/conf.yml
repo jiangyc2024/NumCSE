@@ -7,7 +7,7 @@
 cmd:
 #  compile: echo "COMPILE"
 #  run: echo "RUN"
-   test: echo "Testing not supported in solution."
+   test: echo Testing not supported in solution.
 #  submit: echo "SUBMIT"
 
 # All scripts are set by default to "/scripts/${ACTION}.sh"
