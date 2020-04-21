@@ -18,14 +18,14 @@ def parseWriteChange(student_sol, copy, tests):
 	# get all function signatures to be tested from the test file
 	function_signatures = []
 	for line in tests:
-		parse = re.match('[\s\t]TEST_CASE\("(\S*)([\s]*)(\S*)"\s\*\sdoctest::description.*', line)
+		parse = re.match('\s*TEST_CASE\("(\S*)(\s*)(\S*)"\s\*\sdoctest::description.*', line)
 		if parse:
 			function_signatures.append(parse)
 	
 	for line in student_sol:
 		write = True
 		for el in function_signatures:
-			parse = re.match("([\s]*)" + el.group(1) + el.group(2) + el.group(3) + "([\s]*\(.*)", line)
+			parse = re.match("(\s*)" + el.group(1) + el.group(2) + el.group(3) + "(\s*\(.*)", line)
 			if parse:
 				copy.write(parse.group(1) + el.group(1) + el.group(2) + prefix + el.group(3) + parse.group(2) + "\n")
 				write = False
