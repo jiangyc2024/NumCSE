@@ -42,4 +42,6 @@ TEST_SUITE("Kronecker") {
 		test_kron_reshape(data.A, data.B, data.x, y_stud);
 		CHECK((y_sol - y_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
+	
+	TEST_CASE("void kron_runtime" * doctest::description("Test runtime") * doctest::skip()) {}
 }
