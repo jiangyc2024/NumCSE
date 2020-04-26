@@ -4,6 +4,7 @@ import sys
 #
 # CURRENT ISSUES:
 #   - The cmake version can only be called from the folder's local cmake file and its build folder.
+#	- cannot detect functions of two or more word return type e.g. unsigned int
 #   - probably more issues
 #
 
@@ -22,12 +23,11 @@ def parseWriteChange(student_sol, copy, tests):
 	
 	for file in student_sol:
 		# expect include guards, change them
-		if(file.readline().startswith("#ifndef")):
+		if file.readline().startswith("#ifndef"):
 			next(file)
 			next(file)
-			no_include_guards = False
-		else:
-			no_include_guards = True
+		elif file.readline().startswith("#pragma once"):
+			next(file)
 		for line in file:
 			write = True
 			for el in function_signatures:
@@ -35,10 +35,9 @@ def parseWriteChange(student_sol, copy, tests):
 				if parse:
 					copy.write(parse.group(1) + el.group(1) + el.group(2) + prefix + el.group(3) + parse.group(2) + "\n")
 					write = False
-			if write:
+			if write and not line.startswith("#endif"):
 				copy.write(line)
-		if no_include_guards:
-			copy.write("#endif")
+		copy.write("\n")
 				
 def searchStudentSolution(main):
 	"""
@@ -68,13 +67,15 @@ def cmake():
 	
 	copy = open("../copy.hpp", "w")
 	tests = open("../tests.cpp", "r")
-
+	
 	copy.write("#ifndef COPY_HPP\n")
 	copy.write("#define COPY_HPP\n")
 	
 	copy.write('#include "../solution/{}"\n'.format(file[3:]))
 	
 	parseWriteChange(student_sol, copy, tests)
+	
+	copy.write("#endif")
 	
 	copy.close()
 	for item in student_sol:
@@ -104,6 +105,8 @@ def codeexpert():
 	copy.write('#include "solution.hpp"\n')
 	
 	parseWriteChange(student_sol, copy, tests)
+	
+	copy.write("#endif")
 	
 	copy.close()
 	for item in student_sol:
