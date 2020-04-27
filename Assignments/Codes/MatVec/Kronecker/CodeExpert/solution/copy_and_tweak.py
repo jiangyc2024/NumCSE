@@ -4,7 +4,6 @@ import sys
 #
 # CURRENT ISSUES:
 #   - The cmake version can only be called from the folder's local cmake file and its build folder.
-#	- cannot detect functions of two or more word return type e.g. unsigned int
 #   - probably more issues
 #
 
@@ -12,12 +11,12 @@ def parseWriteChange(student_sol, copy, tests):
 	"""
 	Checks the c++ file student_sol for function definitions and changes the name of those to test_*.
 	"""
-	prefix = "test_"
+	suffix = "_TEST"
 	
 	# get all function signatures to be tested from the test file
 	function_signatures = []
 	for line in tests:
-		parse = re.match('\s*TEST_CASE\("(\S*)(\s*)(\S*)"\s\*\sdoctest::description.*', line)
+		parse = re.match('\s*TEST_CASE\("([\S\s]*)(\s*)(\S*)"\s\*\sdoctest::description.*', line)
 		if parse:
 			function_signatures.append(parse)
 	
@@ -33,7 +32,7 @@ def parseWriteChange(student_sol, copy, tests):
 			for el in function_signatures:
 				parse = re.match("(\s*)" + el.group(1) + el.group(2) + el.group(3) + "(\s*\(.*)", line)
 				if parse:
-					copy.write(parse.group(1) + el.group(1) + el.group(2) + prefix + el.group(3) + parse.group(2) + "\n")
+					copy.write(parse.group(1) + el.group(1) + el.group(2) + suffix + el.group(3) + parse.group(2) + "\n")
 					write = False
 			if write and not line.startswith("#endif"):
 				copy.write(line)
