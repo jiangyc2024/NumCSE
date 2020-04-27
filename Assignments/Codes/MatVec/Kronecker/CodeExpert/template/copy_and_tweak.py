@@ -4,6 +4,7 @@ import sys
 #
 # CURRENT ISSUES:
 #   - The cmake version can only be called from the folder's local cmake file and its build folder.
+#   - does not recognize inheriting classes
 #   - probably more issues
 #
 
@@ -34,6 +35,10 @@ def parseWriteChange(student_sol, copy, tests):
 				if parse:
 					copy.write(parse.group(1) + el.group(1) + el.group(2) + suffix + el.group(3) + parse.group(2) + "\n")
 					write = False
+			parse_class = re.match("\s*(class|struct)(\s*)(\S*)(\s*)({|\s*)", line)
+			if parse_class:
+				copy.write(parse_class.group(1) + parse_class.group(2) + parse_class.group(3) + suffix + parse_class.group(4) + parse_class.group(5) + "\n")
+				write = False
 			if write and not line.startswith("#endif"):
 				copy.write(line)
 		copy.write("\n")
