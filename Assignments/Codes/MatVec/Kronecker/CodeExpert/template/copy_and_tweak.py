@@ -10,7 +10,7 @@ import sys
 
 def parseWriteChange(student_sol, copy, tests):
 	"""
-	Checks the c++ file student_sol for function definitions and changes the name of those to test_*.
+	Checks the c++ file student_sol for function definitions and changes the name of those to *_TEST.
 	"""
 	suffix = "_TEST"
 	
@@ -33,7 +33,7 @@ def parseWriteChange(student_sol, copy, tests):
 			for el in function_signatures:
 				parse = re.match("(\s*)" + el.group(1) + el.group(2) + el.group(3) + "(\s*\(.*)", line)
 				if parse:
-					copy.write(parse.group(1) + el.group(1) + el.group(2) + suffix + el.group(3) + parse.group(2) + "\n")
+					copy.write(parse.group(1) + el.group(1) + el.group(2) + el.group(3) + suffix + parse.group(2) + "\n")
 					write = False
 			parse_class = re.match("\s*(class|struct)(\s*)(\S*)(\s*)({|\s*)", line)
 			if parse_class:
