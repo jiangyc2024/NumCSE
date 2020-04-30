@@ -2,11 +2,10 @@
 
 This folder contains additional files for setting up a CodeExpert homework project.
 
-
 ## Instructions for setup in online environment
 - Start from an empty project.
 - Copy `scripts` and `conf.yml` from this directory to the solution tab.
-- Copy all files from the `NumCSE/Testing` directory to the solution tab.
+- Copy all files excluding `tests.cpp` from the `NumCSE/Testing` directory to the solution tab.
 - Copy all files from the `CodeExpert/solution` directory that corresponds to the exercise to the solution tab.
 - Copy all files from `CodeExpert/solution` of the exercise to the solution tab.
 - Go to the template tab, change `conf.yml` by commenting the line `test: echo Testing not supported in solution.` and uncommenting the line `# test: /scripts/test.sh`. Then change the files that are to be written by the student to the ones in `CodeExpert/template` by removing code.
