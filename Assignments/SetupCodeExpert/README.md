@@ -2,8 +2,6 @@
 
 This folder contains additional files for setting up a CodeExpert homework project.
 
-## Instructions for setup in repository
-- 
 
 ## Instructions for setup in online environment
 - Start from an empty project.
