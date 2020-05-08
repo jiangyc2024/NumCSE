@@ -1,4 +1,0 @@
-// "testname", "input", "expected output", "points", "execution time limit (ms)"
-"test val", "(any input)", "l2-norm of the difference between val = 0",  "1", "5000",
-"test row_ind", "(any input)", "l2-norm of the difference between row_ind = 0",  "1", "5000",
-"test col_ptr", "(any input)", "l2-norm of the difference between col_ptr = 0",  "1", "5000",
