@@ -7,7 +7,7 @@
 
 // TO DO: Include the "Eigen/Dense" header file with #include <Eigen/Dense>
 // START
-
+#include <Eigen/Dense>
 // END
 
 /* SAM_LISTING_BEGIN_0 */
