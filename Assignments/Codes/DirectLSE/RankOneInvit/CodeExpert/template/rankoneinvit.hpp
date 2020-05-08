@@ -1,11 +1,12 @@
+#ifndef RANKONEINVIT_HPP
+#define RANKONEINVIT_HPP
+
 // TO DO: (3-10.a) Write the function rankoneinvit().
 // (3-10.c) Write the function rankoneinvit_fast().
 // (3-10.e) Write a function "void rankoneinvit_runtime()" that tabulates
 // the runtimes of both implementations according to the problem description.
 // This subtask can be solved in many ways, and is not a part of the tests.
 // In particular, the choice of the "tol" argument affects the runtime.
-#ifndef RANKONEINVIT_HPP
-#define RANKONEINVIT_HPP
 
 #include "timer.h"
 #include <Eigen/Dense>
