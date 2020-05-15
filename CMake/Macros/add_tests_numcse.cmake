@@ -18,4 +18,7 @@ macro (add_tests_numcse _name)
   set_target_properties(${target_name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${TARGET_RUNTIME_OUTPUT_DIRECTORY}" OUTPUT_NAME "${_name}")
   add_test(NAME ${target_name} COMMAND ${target_name})
 
+  # link with python3
+  target_link_libraries(${target_name} ${Python3_LIBRARIES})
+
 endmacro()
