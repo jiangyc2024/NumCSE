@@ -22,8 +22,7 @@ using namespace Eigen;
  * @param[out] B The $n \times k$ matrix from the decomposition of $X$
  */
 /* SAM_LISTING_BEGIN_0 */
-std::pair<MatrixXd,MatrixXd>
-          factorize_X_AB(const MatrixXd& X,const unsigned int k) {
+std::pair<MatrixXd,MatrixXd> factorize_X_AB(const MatrixXd& X,const unsigned int k) {
   size_t m = X.rows(), n = X.cols();
   
   double tol = 1e-6; // Tolerance for numerical rank: \lref{ex:svdrank}
@@ -46,8 +45,7 @@ std::pair<MatrixXd,MatrixXd>
  * @param[out] V The $n \times k$ matrix from the SVD of $AB'$
  */
 /* SAM_LISTING_BEGIN_1 */
-std::tuple<MatrixXd, MatrixXd, MatrixXd>
-                  svd_AB(const MatrixXd& A, const MatrixXd& B) {
+std::tuple<MatrixXd, MatrixXd, MatrixXd> svd_AB(const MatrixXd& A, const MatrixXd& B) {
   
   assert(A.cols() == B.cols()
            && "Matrices A and B should have the same column number");
@@ -75,8 +73,7 @@ std::tuple<MatrixXd, MatrixXd, MatrixXd>
  * @param[out] Bz The $n \times k$ matrix to form $Az*Bz'$
  */
 /* SAM_LISTING_BEGIN_2 */
-std::pair<MatrixXd,MatrixXd>
-      rank_k_approx(const MatrixXd & Ax,const MatrixXd & Ay, 
+std::pair<MatrixXd,MatrixXd> rank_k_approx(const MatrixXd & Ax,const MatrixXd & Ay, 
                     const MatrixXd & Bx,const MatrixXd & By) {
   
   assert(Ax.rows() == Ay.rows() && Ax.cols() == Ay.cols()
