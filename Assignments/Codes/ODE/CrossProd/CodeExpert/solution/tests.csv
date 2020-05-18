@@ -1,3 +1,0 @@
-// "testname", "input", "expected output", "points", "execution time limit (ms)"
-"impl", "(any input)", "0.135782 \n 0.407031 \n 0.964218",  "1", "10000",
-"linear impl", "(any input)", "0.131724 \n 0.371034 \n 0.968276",  "1", "10000",
