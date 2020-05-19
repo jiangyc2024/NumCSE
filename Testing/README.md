@@ -40,7 +40,7 @@ from `tests.csv` in the doctest descriptions.
 	Make note of this though so we know about it.
 	
 TestData example: 
-	```cpp
+	``` c++
 	struct TestData {
 		TestData() {
 			T = 1.;
