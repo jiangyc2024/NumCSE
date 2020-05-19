@@ -40,7 +40,7 @@ from `tests.csv` in the doctest descriptions.
 	Make note of this though so we know about it.
 	
 TestData example: 
-	``` c++
+``` cpp
 	struct TestData {
 		TestData() {
 			T = 1.;
@@ -64,7 +64,7 @@ TestData example:
 		std::function<Vector3d(const Vector3d&)> f;
 		std::function<Matrix3d(const Vector3d&)> Jf;
 	};
-	```
+```
 	
 ## Compiling, testing: 
 (first 2 steps skippable if you've already done them)
