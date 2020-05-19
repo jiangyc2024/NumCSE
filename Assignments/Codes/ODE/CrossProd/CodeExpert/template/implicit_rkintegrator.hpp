@@ -1,4 +1,7 @@
-#pragma once
+#ifndef IMPLICIT_RKINTEGRATOR_HPP
+#define IMPLICIT_RKINTEGRATOR_HPP
+
+//#pragma once
 
 #include <vector>
 #include <cassert>
@@ -167,3 +170,5 @@ private:
     unsigned int s;
 };
 /* SAM_LISTING_END_1 */
+
+#endif
