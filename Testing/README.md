@@ -69,7 +69,7 @@ TestData example:
 ## Compiling, testing: 
 (first 2 steps skippable if you've already done them)
 1. `cd` to `NumCSE/`
-2. run: `mkdir buld && cd build && cmake ..`
+2. run: `mkdir build && cd build && cmake ..`
 	(a) This creates the CMake hierarchy
 3. `cd` to your exercise but inside `NumCSE/build/`
 	(a) Basically instead of `NumCSE/Assignments/...` it will be
