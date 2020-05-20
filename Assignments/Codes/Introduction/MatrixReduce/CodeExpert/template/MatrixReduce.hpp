@@ -5,7 +5,9 @@
 
 // TO DO: Include the appropriate header files and namespaces
 // START
+#include <Eigen/Dense>
 
+using namespace Eigen;
 // END
 
 // Eigen matrices have a range of methods that reduce them to a single number.
@@ -21,7 +23,10 @@
 // and returns a "double". m = average(A) should calculate the average of the
 // entries of A. START
 /* SAM_LISTING_BEGIN_0 */
-
+double average(const MatrixXd &A) {
+	// placeholder
+	return 0.;
+}
 /* SAM_LISTING_END_0 */
 // END
 

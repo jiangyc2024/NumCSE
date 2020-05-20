@@ -1,4 +1,6 @@
-#pragma once
+#ifndef IMPLICIT_RKINTEGRATOR_HPP
+#define IMPLICIT_RKINTEGRATOR_HPP
+//#pragma once
 
 #include <cassert>
 #include <iomanip>
@@ -165,3 +167,5 @@ private:
   unsigned int s;
 };
 /* SAM_LISTING_END_1 */
+
+#endif

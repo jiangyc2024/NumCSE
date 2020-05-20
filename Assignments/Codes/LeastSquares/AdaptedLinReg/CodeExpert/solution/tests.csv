@@ -1,3 +1,0 @@
-// "testname", "input", "expected output", "points", "execution time limit (ms)"
-"linReg()", "(any input)", "-153.796  11.6682",  "1", "5000",
-"expFit()", "(any input)", "17.8476 -3.14235",  "1", "5000",

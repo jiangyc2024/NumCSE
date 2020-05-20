@@ -1,3 +1,6 @@
+#ifndef RANKONEINVIT_HPP
+#define RANKONEINVIT_HPP
+
 // TO DO: (3-10.a) Write the function rankoneinvit().
 // (3-10.c) Write the function rankoneinvit_fast().
 // (3-10.e) Write a function "void rankoneinvit_runtime()" that tabulates
@@ -7,8 +10,6 @@
 // Tip: To get your code to compile, start by defining all functions and
 // include the appropriate header files. Then implement the functions.
 // START
-#ifndef RANKONEINVIT_HPP
-#define RANKONEINVIT_HPP
 
 #include "timer.h"
 #include <Eigen/Dense>

@@ -32,6 +32,11 @@ include(CMake/Macros/add_executable_numcse.cmake)
 include(CMake/Macros/add_resources.cmake)
 include(CMake/Macros/set_eigen_fft_backend.cmake)
 
+# for Testing
+enable_testing()
+include(CMake/Macros/add_tests_numcse.cmake)
+include_directories(Testing)
+
 #
 # setup compiler
 #
@@ -191,7 +196,7 @@ include_directories(${CMAKE_SOURCE_DIR}/Utils) # oh dear
 # Get all requirements for matplotlibcpp
 #
 # TODO Once all plots use matplotlibcpp, remove all MathGL and Figure
-# parts of this CMakeLists.txt. 
+# parts of this CMakeLists.txt.
 #
 
 # include the header-only library matplotlibcpp

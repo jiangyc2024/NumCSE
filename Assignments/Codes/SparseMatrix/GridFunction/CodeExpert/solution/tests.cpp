@@ -1,0 +1,79 @@
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include "doctest.h"
+
+#include "copy.hpp"
+
+// includes for test data
+#include <Eigen/Dense>
+#include <Eigen/Sparse>
+
+struct TestData {
+	TestData() {
+		n = 16;
+		m = 16;
+		S << 0, 1, 0, 1, -4, 1, 0, 1, 0;
+		f = define_f(n, m);
+	}
+	
+	std::size_t n, m;
+	Eigen::Matrix3d S;
+	std::function<double(std::size_t,std::size_t)> f;
+};
+
+TestData data;
+
+TEST_SUITE("GridFunction") {
+	
+	TEST_CASE("std::function<double (index_t,index_t)> define_f" * doctest::description("skipped") * doctest::skip()) {}
+	
+	TEST_CASE("void eval" * doctest::description("test matrix")) {
+		Eigen::MatrixXd X_sol(data.n, data.m);
+		Eigen::MatrixXd X_stud(data.n, data.m);
+		eval(X_sol, data.f);
+		eval_TEST(X_stud, data.f);
+		
+		CHECK((X_sol - X_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+	}
+	
+	TEST_CASE("inline index_t to_vector_index" * doctest::description("skipped") * doctest::skip()) {}
+	
+	TEST_CASE("SparseMatrix<double> build_matrix" * doctest::description("build_matrix")) {
+		Eigen::SparseMatrix<double> A_small_sol = build_matrix(data.S, std::array<std::size_t, 2>{3, 3});
+		Eigen::SparseMatrix<double> A_small_stud = build_matrix_TEST(data.S, std::array<std::size_t, 2>{3, 3});
+		
+		CHECK((A_small_stud - A_small_sol).norm() == doctest::Approx(0.).epsilon(1e-6));
+		
+		Eigen::SparseMatrix<double> A_sol = build_matrix(data.S, std::array<std::size_t, 2>{data.n, data.m});
+		Eigen::SparseMatrix<double> A_stud = build_matrix_TEST(data.S, std::array<std::size_t, 2>{data.n, data.m});
+		
+		CHECK((A_stud - A_sol).norm() == doctest::Approx(0.).epsilon(1e-6));
+	}
+	
+	TEST_CASE("void mult" * doctest::description("mult")) {
+		Eigen::SparseMatrix<double> A = build_matrix(data.S, std::array<std::size_t, 2>{data.n, data.m});
+		Eigen::MatrixXd X(data.n, data.m);
+		eval(X, data.f);
+		Eigen::MatrixXd Y_sol, Y_stud;
+		
+		mult(A, X, Y_sol);
+		mult_TEST(A, X, Y_stud);
+		
+		CHECK((Y_sol - Y_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+	}
+	
+	TEST_CASE("void solve" * doctest::description("solve")) {
+		Eigen::SparseMatrix<double> A = build_matrix(data.S, std::array<std::size_t, 2>{data.n, data.m});
+		Eigen::MatrixXd X(data.n, data.m);
+		eval(X, data.f);
+		Eigen::MatrixXd Y;
+		mult(A, X, Y);
+		Eigen::MatrixXd X_sol, X_stud;
+		
+		solve(A, Y, X_sol);
+		solve_TEST(A, Y, X_stud);
+		
+		CHECK((X_sol - X_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+	}
+	
+}
+

@@ -1,3 +1,6 @@
+#ifndef DAMPNEWTON_HPP
+#define DAMPNEWTON_HPP
+
 #include <iostream>
 #include <vector>
 
@@ -35,3 +38,5 @@ void dampnewton(FuncType &&F, JacType &&DF,
     // Termination based on simplified Newton correction
     while ((stn > rtol*x.norm()) && (stn > atol));
 }
+
+#endif

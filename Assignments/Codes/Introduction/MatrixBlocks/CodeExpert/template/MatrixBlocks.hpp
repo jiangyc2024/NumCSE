@@ -5,14 +5,14 @@
 
 // TO DO: Include the appropriate header files.
 // START
-
+#include <Eigen/Dense>
 // END
 
 // We can use the Eigen namespace to improve the readability of our code.
 // This allows us to skip the "Eigen::" in "Eigen::MatrixXd" for example.
 // TO DO: Add the following line below: using namespace Eigen;
 // START
-
+using namespace Eigen;
 // END
 
 /* SAM_LISTING_BEGIN_0 */
