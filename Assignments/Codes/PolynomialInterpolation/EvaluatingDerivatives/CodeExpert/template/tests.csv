@@ -1,7 +1,0 @@
-// "testname", "input", "expected output", "points", "execution time limit (ms)"
-"evaldp()", "1", "13.0464, -15.288",  "1", "5000",
-"evaldp_naive()", "2", "13.0464, -15.288",  "1", "5000",
-"polyTestTime() returns true", "3", "test passed: 1",  "1", "5000",
-"dipoleval()", "4", "-7.37389  -2.99816 0.0951584   1.90606   2.43454",  "1", "5000",
-"dipoleval_alt()", "5", "-7.37389  -2.99816 0.0951584   1.90606   2.43454",  "1", "5000",
-"testDipolEval() returns true", "6", "test passed: 1",  "1", "5000",
