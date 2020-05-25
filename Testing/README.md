@@ -16,8 +16,9 @@ line `add_tests_numcse(tests template/tests.cpp)` to the bottom.
 `EX/CodeExpert/solution`
 5. Remove the following from `template`, `solution` folders:
 `conf.yml`, `zzzzz_test_runner.cpp`, `tests.csv`, `scripts` (a folder)
-6. Add `#ifndef` / `#define` guards to every header file, where
+6. Add `#ifndef` / `#define` guards to every header file where
 classes and functions are defined.
+	(a) If unsure, just compile and look for "redefined" errors
 7. Compile and test (see below)
 
 ## Modifying tests.cpp: 
