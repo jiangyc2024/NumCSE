@@ -1,4 +1,7 @@
-#pragma once
+#ifndef IMPLICIT_RKINTEGRATOR_HPP
+#define IMPLICIT_RKINTEGRATOR_HPP
+
+//#pragma once
 
 #include <cassert>
 #include <iomanip>
@@ -16,6 +19,8 @@ using namespace Eigen;
  *! implicit runge kutta integrator.
  */
 
+#ifndef KRON
+#define KRON
 /*!
  *! \brief Compute the Kronecker product $C = A \otimes B$.
  *! \param[in] A Matrix $m \times n$.
@@ -31,6 +36,7 @@ MatrixXd kron(const MatrixXd &A, const MatrixXd &B) {
   }
   return C;
 }
+#endif
 
 /* SAM_LISTING_BEGIN_1 */
 /*!
@@ -103,3 +109,5 @@ private:
   unsigned int s;
 };
 /* SAM_LISTING_END_1 */
+
+#endif
