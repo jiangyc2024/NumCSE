@@ -85,5 +85,9 @@ TEST_SUITE("ImplRK Prey") {
 			}
 		}
 	}
+	
+	TEST_CASE("MatrixXd kron" * doctest::description("skipped") * doctest::skip()) {}
+	
+	TEST_CASE("implicit_RKIntegrator" * doctest::description("skipped") * doctest::skip()) {}
 }
 
