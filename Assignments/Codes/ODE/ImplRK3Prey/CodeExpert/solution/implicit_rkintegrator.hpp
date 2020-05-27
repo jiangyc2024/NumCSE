@@ -89,14 +89,78 @@ public:
     // Store initial data
     res.push_back(y0);
     // START
-    // Your solution here
+    // Initialize some memory to store temporary values
+    VectorXd ytemp1 = y0;
+    VectorXd ytemp2 = y0;
+    // Pointers to swap previous value
+    VectorXd *yold = &ytemp1;
+    VectorXd *ynew = &ytemp2;
+
+    // Loop over all fixed steps
+    for (unsigned int k = 0; k < N; ++k) {
+      // Compute, save and swap next step
+      step(f, Jf, h, *yold, *ynew);
+      res.push_back(*ynew);
+      std::swap(yold, ynew);
+    }
     // END
     return res;
   }
 
 private:
   // START
-  // Any auxiliary functions or data here
+  /*!
+   *! \brief Perform a single step of the RK method for the
+   *! solution of the autonomous ODE
+   *! Compute a single explicit RK step y^{n+1} = y_n + \sum ...
+   *! starting from value y0 and storing next value in y1
+   *! \tparam Function type for function implementing the rhs.
+   *! Must have VectorXd operator()(VectorXd x)
+   *! \tparam Jacobian type for function implementing the Jacobian of f.
+   *! Must have MatrixXd operator()(VectorXd x)
+   *! \param[in] f function handle for ths f, s.t. y' = f(y)
+   *! \param[in] Jf function handle for Jf, e.g. implemented using lambda
+   *funciton ! \param[in] h step size ! \param[in] y0 initial VectorXd !
+   *\param[out] y1 next step y^{n+1} = y^n + ...
+   */
+  template <class Function, class Jacobian>
+  void step(Function &&f, Jacobian &&Jf, double h, const VectorXd &y0,
+            VectorXd &y1) const {
+
+    int d = y0.size();
+    MatrixXd eye = MatrixXd::Identity(d, d);
+
+    // Handle for the function F describing the
+    // equation satisfied by the stages g
+    auto F = [&y0, h, d, this, &f, &eye](VectorXd gv) {
+      VectorXd Fv = gv;
+      for (int j = 0; j < s; j++) {
+        Fv = Fv - h * kron(A.col(j), eye) * f(y0 + gv.segment(j * d, d));
+      }
+      return Fv;
+    };
+
+    // Handle for the Jacobian of F.
+    auto JF = [&y0, h, d, &Jf, this, &eye](VectorXd gv) {
+      MatrixXd DF(s * d, s * d);
+      for (int j = 0; j < s; j++) {
+        DF.block(0, j * d, s * d, d) =
+            kron(A.col(j), eye) * Jf(y0 + gv.segment(j * d, d));
+      }
+      DF = MatrixXd::Identity(s * d, s * d) - h * DF;
+      return DF;
+    };
+
+    // Obtain stages with damped Newton method
+    VectorXd gv = VectorXd::Zero(s * d);
+    dampnewton(F, JF, gv);
+
+    // Calculate y1
+    MatrixXd K(d, s);
+    for (int j = 0; j < s; j++)
+      K.col(j) = f(y0 + gv.segment(j * d, d));
+    y1 = y0 + h * K * b;
+  }
   // END
   //<! Matrix A in Butcher scheme
   const MatrixXd A;
