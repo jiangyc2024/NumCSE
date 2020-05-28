@@ -44,8 +44,8 @@ struct TestData {
  		y0 << 100, 5;
  		
  		// Variables for testing (iterations, final times)
- 		N = {128,  256,  512,   1024,  2048};
-        T = {2.0, 5.0, 10.0, 20.0};  
+ 		N = {128, 256, 512, 1024, 2048};
+        T = {2.0, 5.0, 10.0, 20.0, 50.0};  
 	}
 	
 	unsigned int s;
@@ -73,15 +73,41 @@ TEST_SUITE("ImplRK Prey") {
 		// Test with various values
 		for (int i = 0; i < data.T.size(); i++) {
 			for (int j = 0; j < data.N.size(); j++) {
-				
-				
 				std::vector<VectorXd> sol_vec = RK_sol.solve(data.f, data.Jf, data.T[i], data.y0, data.N[j]);
 				std::vector<VectorXd> stud_vec = RK_stud.solve_TEST(data.f, data.Jf, data.T[i], data.y0, data.N[j]);				
 				
-				auto sol = sol_vec.back();
-				auto stud = stud_vec.back();
+				VectorXd sol = sol_vec.back();
+				VectorXd stud = stud_vec.back();
 				
-				CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));			
+				
+				CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+				
+				
+				/*
+				// DEBUGGING
+				// TODO: copy this tests.cpp to the solution one too
+				// TODO: figure out why the tests trivially pass.
+				// It looks like it's only looking at the first elem of the 
+				// eigen vector
+				// It's returning exactly the value of y0 each time
+				// This is the default behaviour of the template file
+				// It looks like the solution is identical to the
+				// template.
+				
+				printf("\n\nSOL VECTOR OF TEST #%d: \n\n", (i + j));
+
+				printf("{");
+				for (int k = 0; k < sol_vec.size(); k++) {
+					
+					printf("(");
+					for (int l = 0; l < sol_vec[k].size(); l++) {
+						double elem = (sol_vec[k])[l];
+						printf("%d, ", elem);
+					}
+					printf(")\n");
+				}
+				printf("\n}\n\n");
+				*/
 			}
 		}
 	}
