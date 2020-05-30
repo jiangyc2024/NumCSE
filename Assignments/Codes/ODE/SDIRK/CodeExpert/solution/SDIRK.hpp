@@ -1,3 +1,6 @@
+#ifndef SDIRK_HPP
+#define SDIRK_HPP
+
 #include <Eigen/Dense>
 #include <cmath>
 #include <iomanip>
@@ -115,3 +118,5 @@ double cvgSDIRK(void) {
   return conv_rate;
   /* SAM_LISTING_END_9 */
 }
+
+#endif
