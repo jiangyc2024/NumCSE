@@ -16,6 +16,8 @@ line `add_tests_numcse(tests template/tests.cpp)` to the bottom.
 `EX/CodeExpert/solution`
 5. Remove the following from `template`, `solution` folders:
 `conf.yml`, `zzzzz_test_runner.cpp`, `tests.csv`, `scripts` (a folder)
+	(a) You can do this by running this from `EX/CodeExpert`: 
+	`rm -r template/scripts template/zzzzz_test_runner.cpp template/conf.yml template/tests.csv solution/scripts solution/zzzzz_test_runner.cpp solution/conf.yml solution/tests.csv`
 6. Add `#ifndef` / `#define` guards to every header file where
 classes and functions are defined.
 	(a) If unsure, just compile and look for "redefined" errors
