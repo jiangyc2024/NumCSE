@@ -120,8 +120,9 @@ private:
    *! Must have MatrixXd operator()(VectorXd x)
    *! \param[in] f function handle for ths f, s.t. y' = f(y)
    *! \param[in] Jf function handle for Jf, e.g. implemented using lambda
-   *funciton ! \param[in] h step size ! \param[in] y0 initial VectorXd !
-   *\param[out] y1 next step y^{n+1} = y^n + ...
+   *function 
+   *! \param[in] h step size ! \param[in] y0 initial VectorXd 
+   *! \param[out] y1 next step y^{n+1} = y^n + ...
    */
   template <class Function, class Jacobian>
   void step(Function &&f, Jacobian &&Jf, double h, const VectorXd &y0,
