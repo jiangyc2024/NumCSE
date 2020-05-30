@@ -5,6 +5,8 @@
 
 #include <Eigen/Dense>
 
+using namespace Eigen;
+
 struct TestData {
 	TestData() {
 		T = 1;
@@ -15,15 +17,15 @@ struct TestData {
 	
 	double T;
 	unsigned int n;
-	Eigen::MatrixXd Y0;
+	MatrixXd Y0;
 };
 
 TestData data;
 
 TEST_SUITE("NLMatODE") {
 	TEST_CASE("MatrixXd matode" * doctest:description("Check matode matrix at T")) {
-		Eigen::MatrixXd sol = matode(data.Y0, data.T);
-		Eigen::MatrixXd stud = matode_TEST(data.Y0, data.T);
+		MatrixXd sol = matode(data.Y0, data.T);
+		MatrixXd stud = matode_TEST(data.Y0, data.T);
 		
 		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
@@ -43,8 +45,8 @@ TEST_SUITE("NLMatODE") {
 	}
 	
 	TEST_CASE("double cvgDiscreteGradientMethod" * doctest::description("Test fitted convergance rate")) {
-		double sol = cvgDiscreteGradientMethod;
-		double stud = cvgDiscreteGradientMethod_TEST;
+		double sol = cvgDiscreteGradientMethod();
+		double stud = cvgDiscreteGradientMethod_TEST();
 		
 		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
