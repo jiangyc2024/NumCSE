@@ -50,13 +50,6 @@ TEST_SUITE("SDIRK") {
 			}
 		}
 	}
-	
-	// TODO: this might not work since the definition has a newline
-	/*
-	TEST_CASE("std::vector<Eigen::Vector2d> sdirkSolve" * doctest::description("sdirkSolve")) {
-		CHECK(1 == 1);
-	}
-	*/
 
 	TEST_CASE("std::vector<Eigen::Vector2d> sdirkSolve" * doctest::description("sdirkSolve") * doctest::skip()) {}
 	

@@ -32,8 +32,7 @@ Eigen::Vector2d sdirkStep(const Eigen::Vector2d &z0, double h, double gamma) {
 //! data z0 = [y(0), y'(0)] \param[in] z0 initial data z(0) \param[in] N number
 //! of equidistant steps \param[in] T final time of simulation \param[in] gamma
 //! parameter \return vector containing each step of z_k (y and y')
-std::vector<Eigen::Vector2d>
-sdirkSolve(const Eigen::Vector2d &z0, unsigned int N, double T, double gamma) {
+std::vector<Eigen::Vector2d> sdirkSolve(const Eigen::Vector2d &z0, unsigned int N, double T, double gamma) {
   // Solution vector
   std::vector<Eigen::Vector2d> res(N + 1);
   // TO DO (13-3.g): solve the ODE with uniform timesteps using the SDIRK method
