@@ -42,7 +42,7 @@ def parseWriteChange(student_sol, copy, tests):
 			if parse_class:
 				copy.write(parse_class.group(1) + parse_class.group(2) + parse_class.group(3) + suffix + parse_class.group(4) + parse_class.group(5) + "\n")
 				write = False
-			if write and not line.startswith("#endif"):
+			if write and not line.startswith("#endif") and not line.startswith("#include"):
 				copy.write(line)
 		copy.write("\n")
 				
