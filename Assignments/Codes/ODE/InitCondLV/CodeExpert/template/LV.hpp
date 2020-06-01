@@ -1,5 +1,5 @@
 #ifndef LV_HPP
-#define LV_hpp
+#define LV_HPP
 //// 
 //// Copyright (C) 2016 SAM (D-MATH) @ ETH Zurich
 //// Author(s): lfilippo <filippo.leonardi@sam.math.ethz.ch> 
