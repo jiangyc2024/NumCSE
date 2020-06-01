@@ -23,7 +23,7 @@ struct TestData {
 TestData data;
 
 TEST_SUITE("NLMatODE") {
-	TEST_CASE("MatrixXd matode" * doctest:description("Check matode matrix at T")) {
+	TEST_CASE("MatrixXd matode" * doctest::description("Check matode matrix at T")) {
 		MatrixXd sol = matode(data.Y0, data.T);
 		MatrixXd stud = matode_TEST(data.Y0, data.T);
 		
@@ -37,18 +37,11 @@ TEST_SUITE("NLMatODE") {
 		CHECK(sol == stud);
 	}
 	
-	TEST_CASE("bool checkinvariant" * doctest::description("Test whether invariant for M0 was preserved or not")) {
-		bool sol = checkinvariant(data.M0, data.T);
-		bool stud = checkinvariant_TEST(data.M0, data.T);
-		
-		CHECK(sol == stud);
-	}
-	
 	TEST_CASE("double cvgDiscreteGradientMethod" * doctest::description("Test fitted convergance rate")) {
 		double sol = cvgDiscreteGradientMethod();
 		double stud = cvgDiscreteGradientMethod_TEST();
 		
-		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+		CHECK(std::abs(sol - stud) == doctest::Approx(0.).epsilon(1e-6));
 	}
 }
 
