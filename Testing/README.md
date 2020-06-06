@@ -11,17 +11,18 @@ project you want to modify. For example:
 1. In `CMakeLists.txt` in `EX/CodeExpert`, add the 
 line `add_tests_numcse(tests template/tests.cpp)` to the bottom.
 2. Copy the `tests.cpp` from `NumCSE/Testing` to `EX/CodeExpert/template`
-3. Modify it according to the next section
-4. Copy `tests.cpp` from `EX/CodeExpert/template` to
+3. If the exercise file contains multiline function names, change 
+them to singleline.
+4. Modify it according to the next section
+5. Copy `tests.cpp` from `EX/CodeExpert/template` to
 `EX/CodeExpert/solution`
-5. Remove the following from `template`, `solution` folders:
+6. Remove the following from `template`, `solution` folders:
 `conf.yml`, `zzzzz_test_runner.cpp`, `tests.csv`, `scripts` (a folder)
 	(a) You can do this by running this from `EX/CodeExpert`: 
 	`rm -r template/scripts template/zzzzz_test_runner.cpp template/conf.yml template/tests.csv solution/scripts solution/zzzzz_test_runner.cpp solution/conf.yml solution/tests.csv`
-6. Add `#ifndef` / `#define` guards to every header file where
-classes and functions are defined.
-	(a) If unsure, just compile and look for "redefined" errors
-7. Compile and test (see below)
+7. Add `#pragma once` to exercise/supporting files if needed.
+Look for "redefined" errors.
+8. Compile and test (see below)
 
 ## Modifying tests.cpp: 
 1. Remove the top comment
