@@ -26,7 +26,7 @@ TEST_SUITE("NLMatODE") {
 	TEST_CASE("MatrixXd matode" * doctest::description("Check matode matrix at T")) {
 		MatrixXd sol = matode(data.Y0, data.T);
 		MatrixXd stud = matode_TEST(data.Y0, data.T);
-		
+
 		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
 
