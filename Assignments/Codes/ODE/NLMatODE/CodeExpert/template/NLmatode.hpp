@@ -15,6 +15,15 @@ MatrixXd matode(const MatrixXd &Y0, double T) {
   MatrixXd YT;
   // START
   
+  // Temporary solution necessary for testing
+  return MatrixXd::Zero(3, 3);
+  /*
+  YT.resize(3, 3);
+  YT << 0, 0, 0,
+        0, 0, 0,
+        0, 0, 0;
+  */
+        
   // END
   return YT;
 }
@@ -27,7 +36,7 @@ MatrixXd matode(const MatrixXd &Y0, double T) {
 bool checkinvariant(const MatrixXd &M, double T) {
   // TO DO (12-5.c): check if $Y'*Y$ is preserved at the time $T$ by matode.
   // START
-  return false;
+  return true;
   // END
 }
 /* SAM_LISTING_END_2 */
