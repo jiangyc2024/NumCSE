@@ -25,9 +25,8 @@ struct TestData {
 
 TestData data;
 
-// TODO: redefinition compilation issues with sdirkSolve and cvgSDIRK
+// TODO: trivially passing. 0 is getting returned all the time.
 TEST_SUITE("SDIRK") {
-	// TODO: values returned are 0 for both sol and stud.
 	TEST_CASE("Eigen::Vector2d sdirkStep" * doctest::description("sdirkStep")) {
 		for (int i = 0; i < data.gamma.size(); i++) {
 			for (int j = 0; j < data.T.size(); j++) {
@@ -49,15 +48,25 @@ TEST_SUITE("SDIRK") {
 			}
 		}
 	}
-	
-	// TODO: this might not work since the definition has a newline
-	/*
-	TEST_CASE("std::vector<Eigen::Vector2d> sdirkSolve" * doctest::description("sdirkSolve")) {
-		CHECK(1 == 1);
-	}
-	*/
 
-	TEST_CASE("std::vector<Eigen::Vector2d> sdirkSolve" * doctest::description("sdirkSolve") * doctest::skip()) {}
+	TEST_CASE("std::vector<Eigen::Vector2d> sdirkSolve" * doctest::description("sdirkSolve") * doctest::skip()) {
+		for (int i = 0; i < data.gamma.size(); i++) {
+			for (int j = 0; j < data.T.size(); j++) {
+				for (int k = 0; k < data.N.size(); k++) {
+					std::vector<Eigen::Vector2d> sol_vec = sdirkSolve(data.z0, data.N[k], data.T[j], data.gamma[i]);
+					std::vector<Eigen::Vector2d> stud_vec = sdirkSolve_TEST(data.z0, data.N[k], data.T[j], data.gamma[i]);
+					
+					CHECK(sol_vec.size() == stud_vec.size());
+					for (int l = 0; l < sol_vec.size(); l++) {
+						Eigen::Vector2d sol = sol_vec[l];
+						Eigen::Vector2d stud = sol_vec[l];
+						
+						CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+					}
+				}
+			}
+		}
+	}
 	
 	TEST_CASE("double cvgSDIRK" * doctest::description("cvgSDIRK") * doctest::skip()) {}
 }
