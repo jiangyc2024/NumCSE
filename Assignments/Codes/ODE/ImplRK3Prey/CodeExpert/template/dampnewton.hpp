@@ -40,3 +40,4 @@ void dampnewton(FuncType &&F, JacType &&DF,
 }
 
 #endif
+
