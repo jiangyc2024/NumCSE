@@ -8,7 +8,7 @@
 
 struct TestData {
 	TestData() {
-		s = 2;
+		// Dimension of state space
 		d = 2;
 		
 		// Variables for testing (iterations, final times)
@@ -20,6 +20,8 @@ struct TestData {
  		y0 << 100, 5;
  		
  		// Definition of coefficients in Butcher scheme
+ 		s = 2;
+ 		
 		A.resize(s, s);
 		b.resize(s);
 		A << 5. / 12., -1. / 12., 3. / 4., 1. / 4.;
