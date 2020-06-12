@@ -8,67 +8,68 @@
 
 struct TestData {
 	TestData() {
-		// Definition of coefficients in Butcher scheme
 		s = 2;
-		A.resize(s, s);
-		b.resize(s);
-	    A << 5. / 12., -1. / 12., 3. / 4., 1. / 4.;
-        b << 3. / 4., 1. / 4.;
-        
-		// Dimension of state space
- 		d = 2;
- 		
- 		
- 		// Initial value for model
+		d = 2;
+		
+		// Variables for testing (iterations, final times)
+ 		N = {128, 256, 512, 1024, 2048};
+	    T = {2.0, 5.0, 10.0, 20.0, 50.0};  
+	    
+	    // Initial value for model
  		y0.resize(d);
  		y0 << 100, 5;
  		
- 		// Variables for testing (iterations, final times)
- 		N = {128, 256, 512, 1024, 2048};
-        T = {2.0, 5.0, 10.0, 20.0, 50.0};  
+ 		// Definition of coefficients in Butcher scheme
+		A.resize(s, s);
+		b.resize(s);
+		A << 5. / 12., -1. / 12., 3. / 4., 1. / 4.;
+		b << 3. / 4., 1. / 4.;
+		
+		// Coefficients for predator/prey model
+		alpha1 = 3.;
+		alpha2 = 2.;
+		beta1 = 0.1;
+		beta2 = 0.1;
+		
+		f = [this](const VectorXd &y) {
+			auto temp = y;
+			temp(0) *= alpha1 - beta1 * y(1);
+			temp(1) *= -alpha2 + beta2 * y(0);
+			return temp;
+		};
+		
+		Jf = [this](const VectorXd &y) {
+			MatrixXd temp(2, 2);
+			temp << alpha1 - beta1 * y(1), -beta1 * y(0), 
+			        beta2 * y(1), -alpha2 + beta2 * y(0);
+			return temp;
+		};
 	}
 	
 	unsigned int s;
-	MatrixXd A;
-	VectorXd b;
-	
 	unsigned int d;
-	VectorXd y0;
 	
 	std::vector<unsigned int> N;
 	std::vector<double> T;
+	
+	VectorXd y0;
+	MatrixXd A;
+	VectorXd b;
+	
+	double alpha1;
+	double alpha2;
+	double beta1;
+	double beta2;
+	
+	std::function<MatrixXd(const VectorXd&)> Jf;
+	std::function<VectorXd(const VectorXd&)> f;
 };
 
 TestData data;
 
 TEST_SUITE("ImplRK Prey") {
 	TEST_CASE("std::vector<VectorXd> solve" * doctest::description("RK solving")) {
-		// Workaround for weird behaviour when defining these functions
-		// inside of the TestData struct.
-		std::function<VectorXd(const VectorXd&)> f;
-		std::function<MatrixXd(const VectorXd&)> Jf;
-		
-		double alpha1 = 3.;
-		double alpha2 = 2.;
-		double beta1 = 0.1;
-		double beta2 = 0.1;
-
-		f = [&alpha1, &alpha2, &beta1, &beta2](const VectorXd &y) {
-		auto temp = y;
-		temp(0) *= alpha1 - beta1 * y(1);
-		temp(1) *= -alpha2 + beta2 * y(0);
-		return temp;
-		};
-		
-		Jf = [&alpha1, &alpha2, &beta1, &beta2](const VectorXd &y) {
-			MatrixXd temp(2, 2);
-			temp << alpha1 - beta1 * y(1), -beta1 * y(0), beta2 * y(1),
-				-alpha2 + beta2 * y(0);
-			return temp;
-		};
-	
-	
-		// Instantiate classes
+		// Instantiate objects
 		implicit_RKIntegrator RK_sol(data.A, data.b);
 		implicit_RKIntegrator_TEST RK_stud(data.A, data.b);
 		
