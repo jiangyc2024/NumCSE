@@ -76,8 +76,8 @@ TEST_SUITE("ImplRK Prey") {
 		// Test with various values
 		for (int i = 0; i < data.T.size(); i++) {
 			for (int j = 0; j < data.N.size(); j++) {
-				std::vector<VectorXd> sol_vec = RK_sol.solve(f, Jf, data.T[i], data.y0, data.N[j]);
-				std::vector<VectorXd> stud_vec = RK_stud.solve_TEST(f, Jf, data.T[i], data.y0, data.N[j]);				
+				std::vector<VectorXd> sol_vec = RK_sol.solve(data.f, data.Jf, data.T[i], data.y0, data.N[j]);
+				std::vector<VectorXd> stud_vec = RK_stud.solve_TEST(data.f, data.Jf, data.T[i], data.y0, data.N[j]);				
 				
 				VectorXd sol = sol_vec.back();
 				VectorXd stud = stud_vec.back();
