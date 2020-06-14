@@ -19,8 +19,7 @@ using namespace Eigen;
  *! lies, e.g. R^d, represented by e.g. VectorXd.
  */
 /* SAM_LISTING_BEGIN_0 */
-template <class State>
-class RKIntegrator {
+template <class State> class RKIntegrator {
 public:
   /*!
   *! \brief Constructor for the RK method.
@@ -30,8 +29,7 @@ public:
   *! \param[in] $\Vb$ Vector containing coefficients of lower
   *! part of Butcher tableau.
   */
-  RKIntegrator(const MatrixXd & A,
-               const VectorXd & b)
+  RKIntegrator(const MatrixXd & A, const VectorXd & b)
     // TO DO: Use an initializer list to Initialize the private
     // variables A, b, s.
     // START
@@ -62,9 +60,7 @@ public:
   *! \return The vector containing all steps $y^n$ (for each $n$)
   *! including initial and final value.
   */
-  template <class Function>
-  std::vector<State> solve(Function &&f, double T,
-                           const State &y0, unsigned int N) const {
+  template <class Function> std::vector<State> solve(Function &&f, double T, const State &y0, unsigned int N) const {
     std::vector<State> res;
     // Will contain all steps, reserve memory for efficiency
     res.reserve(N+1);
@@ -90,8 +86,7 @@ private:
   *! \param[in] $y_0$ initial state
   *! \param[out] $y_1$ next step $y^{n+1} = y^n + \dots$
   */
-  template <class Function>
-  void step(const Function &f, double h, const State & y0, State & y1) const {
+  template <class Function> void step(const Function &f, double h, const State & y0, State & y1) const {
     // TO DO: Compute a single step of the explicit Runge-Kutta method
     // (defined by A, b, s) for y'=f(y) starting at State y0 and using
     // step size h. Store the result in the State y1.
