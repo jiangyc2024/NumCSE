@@ -1,6 +1,8 @@
 //
 // TEMPLATE FILE FOR INDEPENDENT TESTS OF HOMEWORK ASSIGNMENTS
 // compatible with CodeExpert
+// 
+// Remove this after writing test
 //
 
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
@@ -13,6 +15,11 @@
 
 struct TestData {
 	// put all test data in here if all tests use the same data
+	TestData() {
+		// Initialise variables here
+	}
+	
+	// Declare variables here
 };
 
 TestData data;
@@ -28,7 +35,7 @@ TEST_SUITE("EXERCISE_NAME" /* to be changed */) {
 	TEST_CASE("FUNCTION_SIG" /* to be changed */ * doctest::description("ANYTHING" /* to be changed */)) {
 		
 		// use doctest macros to test, e.g. CHECK(x <= y)
-		// for floating point equality CHECK(x == doctest::approx(y).epsilon(1e-6))
+		// for floating point equality CHECK(x == doctest::Approx(0.).epsilon(1e-6))
 		
 	}
 	
