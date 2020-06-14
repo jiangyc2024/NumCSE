@@ -48,8 +48,8 @@ TEST_SUITE("RK3Prey") {
 		RKIntegrator<VectorXd> sol_RK(data.A, data.b);
 		RKIntegrator_TEST<VectorXd> stud_RK(data.A, data.b);
 		
-		std::vector<VectorXd> sol_vec = RK_sol.solve(data.f, data.T, data.y0, data.N);
-		std::vector<VectorXd> stud_vec = RK_stud.solve_TEST(data.f, data.T, data.y0, data.N);
+		std::vector<VectorXd> sol_vec = sol_RK.solve(data.f, data.T, data.y0, data.N);
+		std::vector<VectorXd> stud_vec = stud_RK.solve(data.f, data.T, data.y0, data.N);
 		
 		VectorXd sol = sol_vec.back();
 		VectorXd stud = stud_vec.back();
