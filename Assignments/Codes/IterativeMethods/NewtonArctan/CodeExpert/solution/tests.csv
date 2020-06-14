@@ -1,2 +1,0 @@
-// "testname", "input", "expected output", "points", "execution time limit (ms)"
-"arctan", "(any input)", "1.39175 \n -1.39175\n 1.39175",  "1", "5000",
