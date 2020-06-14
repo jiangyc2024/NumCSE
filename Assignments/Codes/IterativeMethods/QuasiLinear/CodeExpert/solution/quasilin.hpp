@@ -54,9 +54,9 @@ Eigen::VectorXd solveQuasiLinSystem(double rtol, double atol, Eigen::VectorXd &b
 
     double err = (x - x_new).norm();
     x = x_new;
-
+	
+	// Check if Fixed point method is successful
     if (err < atol || err < rtol * x_new.norm()) {
-      std::cout << "Fixed point method successful" << std::endl;
       break;
     }
   }
@@ -123,8 +123,8 @@ Eigen::VectorXd solveQLSystem_Newton(double rtol, double atol, Eigen::VectorXd &
     double err = (x - x_new).norm();
     x = x_new;
 
+	// Check if Newton method is successful
     if (err < atol || err < rtol * x_new.norm()) {
-      std::cout << "Newton method successful" << std::endl;
       break;
     }
   }
