@@ -11,21 +11,25 @@
 
 namespace plt = matplotlibcpp;
 
-//TO DO (8-3.e): define the function quadinf that integrates the input 
+// TO DO (8-3.e): define the function quadinf that integrates the input 
 // lambda f over the real axis. First trasform the integrand with a change
-// of variables and then use a n point Gauss quadrature.
-//Use the signature
-//template <class Function> 
-//double quadinf(const int n, const Function& f);
-
-
-// Hint: lambda functions can take parameters inside the [] brackets
+// of variables and then use an n point Gauss quadrature.
+// Hint 1: lambda functions can take parameters inside the [] brackets
 // Hint 2: you may write an auxiliary function to compute the quadrature over 
-//          a bounded interval.
-
-//Warning: the template will not compile until this function is defined.
+//         a bounded interval.
 
 //START
+
+/* SAM_LISTING_BEGIN_1 */
+
+// Optional: define an auxiliary function here as follows
+/*
+template <class Function> double quad(...) {
+
+}
+*/
+
+/* SAM_LISTING_END_1 */
 
 /* SAM_LISTING_BEGIN_2 */
 template <class Function> double quadinf(const int n, Function &&f) {

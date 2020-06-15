@@ -13,16 +13,11 @@ namespace plt = matplotlibcpp;
 
 // TO DO (8-3.e): define the function quadinf that integrates the input
 // lambda f over the real axis. First, trasform the integrand with a change
-// of variables and then use a n point Gauss quadrature.
-// Use the signature
-// template <class Function>
-// double quadinf(const int n, Function &&f);
-
-// Hint: lambda functions can take parameters inside the [] brackets
+// of variables and then use an n point Gauss quadrature.
+// Hint 1: lambda functions can take parameters inside the [] brackets
 // Hint 2: you may write an auxiliary function to compute the quadrature over
-//          a bounded interval.
+//         a bounded interval.
 
-// Warning: the template will not compile until this function is defined.
 // START
 
 //! @brief Compute $\int_a^b f(x) dx \approx \sum w_i f(x_i)$ (with scaling of
@@ -36,9 +31,7 @@ namespace plt = matplotlibcpp;
 //! @return Approximation of integral $\int_a^b f(x) dx$
 
 /* SAM_LISTING_BEGIN_1 */
-template <class Function>
-double quad(Function &&f, const Eigen::VectorXd &w,
-            const Eigen::VectorXd &x, double a, double b) {
+template <class Function> double quad(Function &&f, const Eigen::VectorXd &w, const Eigen::VectorXd &x, double a, double b) {
   double I = 0;
   for (int i = 0; i < w.size(); ++i) {
     I += f((x(i) + 1) * (b - a) / 2 + a) * w(i);
