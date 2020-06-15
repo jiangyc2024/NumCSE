@@ -31,6 +31,8 @@ TEST_SUITE("EXERCISE_NAME" /* to be changed */) {
 	// the name of the TEST_CASE must match the convention "RETURN_TYPE FUNCTION_NAME"
 	// e.g. "void kron", description can be anything
 	// put a * doctest::skip() behind functions that should not be tested (as below)
+	// If the function is templated, ignore the template line above the actual function
+	// signature. 
 	
 	TEST_CASE("FUNCTION_SIG" /* to be changed */ * doctest::description("ANYTHING" /* to be changed */)) {
 		

@@ -13,6 +13,8 @@ line `add_tests_numcse(tests template/tests.cpp)` to the bottom.
 2. Copy the `tests.cpp` from `NumCSE/Testing` to `EX/CodeExpert/template`
 3. If the exercise file contains multiline function names, change 
 them to singleline.
+	(a) `template <class Function>` and other templates should be on a
+	separate line above.
 4. Modify it according to the next section
 5. Copy `tests.cpp` from `EX/CodeExpert/template` to
 `EX/CodeExpert/solution`
