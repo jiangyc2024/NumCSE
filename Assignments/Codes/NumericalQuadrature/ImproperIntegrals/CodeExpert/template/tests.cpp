@@ -21,14 +21,14 @@ struct TestData {
 TestData data;
 
 TEST_SUITE("ImproperIntegrals") {
-	TEST_CASE("template <class Function> double quadinf" * doctest::description("quadinf")) {
+	TEST_CASE("double quadinf" * doctest::description("quadinf")) {
 		double sol = quadinf(data.n, data.f);
 		double stud = quadinf_TEST(data.n, data.f);
 		
 		CHECK(std::abs(sol - stud) == doctest::Approx(0.).epsilon(1e-6));
 	}
 	
-	TEST_CASE("template <class Function> double quad" * doctest::description("Optional helper function") * doctest::skip()) {}
+	TEST_CASE("double quad" * doctest::description("Optional helper function") * doctest::skip()) {}
 
 	TEST_CASE("void cvgQuadInf" * doctest::description("Convergence") * doctest::skip()) {}
 }

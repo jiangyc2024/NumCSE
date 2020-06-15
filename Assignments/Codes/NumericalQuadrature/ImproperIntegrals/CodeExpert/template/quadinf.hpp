@@ -32,7 +32,8 @@ template <class Function> double quad(...) {
 /* SAM_LISTING_END_1 */
 
 /* SAM_LISTING_BEGIN_2 */
-template <class Function> double quadinf(const int n, Function &&f) {
+template <class Function>
+double quadinf(const int n, Function &&f) {
   return NAN;
 }
 /* SAM_LISTING_END_2 */

@@ -31,7 +31,8 @@ namespace plt = matplotlibcpp;
 //! @return Approximation of integral $\int_a^b f(x) dx$
 
 /* SAM_LISTING_BEGIN_1 */
-template <class Function> double quad(Function &&f, const Eigen::VectorXd &w, const Eigen::VectorXd &x, double a, double b) {
+template <class Function>
+double quad(Function &&f, const Eigen::VectorXd &w, const Eigen::VectorXd &x, double a, double b) {
   double I = 0;
   for (int i = 0; i < w.size(); ++i) {
     I += f((x(i) + 1) * (b - a) / 2 + a) * w(i);
@@ -48,7 +49,8 @@ template <class Function> double quad(Function &&f, const Eigen::VectorXd &w, co
 //! @return Approximation of integral $\int_{-\infty}^\infty f(x) dx$
 
 /* SAM_LISTING_BEGIN_2 */
-template <class Function> double quadinf(const int n, Function &&f) {
+template <class Function>
+double quadinf(const int n, Function &&f) {
   Eigen::VectorXd w, x;
   // Compute nodes and weights of Gauss quadrature rule
   // using Golub-Welsh algorithm
