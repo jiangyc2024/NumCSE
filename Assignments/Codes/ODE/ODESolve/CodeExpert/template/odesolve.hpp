@@ -7,13 +7,13 @@
 
 #include <Eigen/Dense>
 
-#include "matplotlibcpp.h"
+//#include "matplotlibcpp.h"
 #include "polyfit.hpp"
 
 using Vector = Eigen::VectorXd;
 using Matrix = Eigen::MatrixXd;
 
-namespace plt = matplotlibcpp;
+//namespace plt = matplotlibcpp;
 
 
 //! \tparam DiscEvlOp type for evolution operator (e.g. lambda function type)
@@ -88,9 +88,7 @@ double testcvpExtrapolatedEuler(void) {
 //! \param[in] hmin minimal step size
 /* SAM_LISTING_BEGIN_3 */
 template <class DiscEvlOp>
-std::pair< std::vector<double>, std::vector<Vector> > 
-odeintssctrl(DiscEvlOp&& Psi, double T, const Vector &y0, double h0, 
-             unsigned int p, double reltol, double abstol, double hmin) {
+std::pair< std::vector<double>, std::vector<Vector> > odeintssctrl(DiscEvlOp&& Psi, double T, const Vector &y0, double h0, unsigned int p, double reltol, double abstol, double hmin) {
   std::vector<double> t;
   std::vector<Vector> Y;               
   // TO DO (12-3.e):  Compute y from time 0 to T with adaptive time step.
