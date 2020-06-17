@@ -38,14 +38,14 @@ struct TestData {
 TestData data;
 
 TEST_SUITE("NestedQuad") {
-	TEST_CASE("template <class Function> double evalquad" * doctest::description("evalquad()")) {
+	TEST_CASE("double evalquad" * doctest::description("evalquad()")) {
 		double sol = evalquad(data.a, data.b, data.f, data.Q);
 		double stud = evalquad_TEST(data.a, data.b, data.f, data.Q);
 		
 		CHECK(std::abs(sol - stud) == doctest::Approx(0.).epsilon(1e-6));
 	}
 	
-	TEST_CASE("template <class Function> double gaussquadtriangle" * doctest::description("evalquad()")) {
+	TEST_CASE("double gaussquadtriangle" * doctest::description("evalquad()")) {
 		double sol = gaussquadtriangle(data.g, data.N);
 		double stud = gaussquadtriangle_TEST(data.g, data.N);
 		
