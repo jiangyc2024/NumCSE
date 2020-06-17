@@ -67,7 +67,7 @@ void julia(void) {
       double y = -2 + 4.0 * j / (res - 1);
       Vector2d z(x, y);
       for (int k = 0; k < N_it; k++) {
-        z -= DF_matrix(z).lu().solve(F_vectorF(z));
+        z -= DF_matrix(z).lu().solve(F_vector(z));
         // Check if we are sufficiently close to any of the three roots:
         if ((z - z1).norm() < tol) {
           C(i, j) = 1.0 - 1.0 * k / N_it;

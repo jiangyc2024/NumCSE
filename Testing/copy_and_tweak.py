@@ -11,13 +11,13 @@ def parseWriteChange(student_sol, copy, tests):
 	Checks the c++ file student_sol for function definitions and changes the name of those to *_TEST.
 	"""
 	suffix = "_TEST"
-	keyword = "[CLASS]"
+	keyword = "[OUT OF CLASS]"
 	
 	# get all function signatures to be tested from the test file
 	function_signatures = []
 	for line in tests:
 		parse = re.match('\s*TEST_CASE\("([\S\s]*)"\s\*\sdoctest::description.*', line)
-		if parse and keyword in parse.group(1):
+		if parse and keyword not in parse.group(1):
 			function_signatures.append(parse)
 	
 	classes = []
@@ -42,8 +42,10 @@ def parseWriteChange(student_sol, copy, tests):
 					copy.write(parse.group(1) + el.group(1) + suffix + parse.group(2) + "\n")
 					write = False
 			if write and not line.startswith("#endif") and not line.startswith("#include"):
+				new_line = line
 				for el in classes:
-					copy.write(line.replace(el, el + suffix))
+					new_line = line.replace(el, el + suffix)
+				copy.write(new_line)
 		copy.write("\n")
 				
 def searchStudentSolution(main):
