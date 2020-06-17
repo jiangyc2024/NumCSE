@@ -42,22 +42,30 @@ struct TestData {
 TestData data;
 
 TEST_SUITE("RK3Prey") {
-	TEST_CASE("template <class Function> std::vector<State> solve" * doctest::description("RKIntegrator.solve()")) {
-		// TODO: can't test bc of redefinition errors. 
-		// Might be because the class is templated (the State thing)?
+	TEST_CASE("std::vector<State> solve" * doctest::description("RKIntegrator.solve()")) {
 		RKIntegrator<VectorXd> sol_RK(data.A, data.b);
 		RKIntegrator_TEST<VectorXd> stud_RK(data.A, data.b);
 		
 		std::vector<VectorXd> sol_vec = sol_RK.solve(data.f, data.T, data.y0, data.N);
-		std::vector<VectorXd> stud_vec = stud_RK.solve(data.f, data.T, data.y0, data.N);
+		std::vector<VectorXd> stud_vec = stud_RK.solve_TEST(data.f, data.T, data.y0, data.N);
+
+		bool stud_vec_exists = stud_vec.size() > 0;
 		
-		VectorXd sol = sol_vec.back();
-		VectorXd stud = stud_vec.back();
-		
-		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+		CHECK (stud_vec_exists);
+		if (stud_vec_exists) {
+			VectorXd sol = sol_vec.back();
+			VectorXd stud = stud_vec.back();
+			
+			bool last_vec_samesize = sol.size() == stud.size();
+			
+			CHECK(last_vec_samesize);
+			if (last_vec_samesize) {
+				CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+			}
+		}
 	}
 	
-	TEST_CASE("template <class Function> void step" * doctest::description("RKIntegrator.step()") * doctest::skip()) {}
+	TEST_CASE("void step" * doctest::description("RKIntegrator.step()") * doctest::skip()) {}
 	
 	TEST_CASE("double RK3prey" * doctest::description("Convergence rate") * doctest::skip()) {}
 	
