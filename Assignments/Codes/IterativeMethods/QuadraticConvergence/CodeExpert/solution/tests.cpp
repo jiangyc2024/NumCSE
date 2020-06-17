@@ -11,7 +11,7 @@ struct TestData {
 		
 		f = [] (double x) {
 			return x * std::exp(x) - 1;
-		}
+		};
 	}
 	
 	double x0;
@@ -21,7 +21,7 @@ struct TestData {
 TestData data;
 
 TEST_SUITE("Steffensen") {
-	TEST_CASE("template <class Function> double steffensen"* doctest::description("Testing Steffensen")) {
+	TEST_CASE("double steffensen"* doctest::description("Testing Steffensen")) {
 		// Test on the same function that testSteffensen() uses
 		double sol = steffensen(data.f, data.x0);
 		double stud = steffensen_TEST(data.f, data.x0);
@@ -29,9 +29,15 @@ TEST_SUITE("Steffensen") {
 		CHECK(std::abs(sol - stud) == doctest::Approx(0.).epsilon(1e-6));
 	}
 	
+	TEST_CASE("void operator()" * doctest::description("Logger operator") * doctest::skip()) {}
+	
+	TEST_CASE("std::vector<T> getInfo" * doctest::description("Logge getter") * doctest::skip()) {}
+	
+	TEST_CASE("void print_log()" * doctest::description("Logger printer") * doctest::skip()) {}
+	
 	TEST_CASE("void testSteffensen" * doctest::description("Test Steffensen") * doctest::skip()) {}
 	
-	TEST_CASE("template <class Function> double steffensen_log" * doctest::description("Steffensen log") * doctest::skip()) {}
+	TEST_CASE("double steffensen_log" * doctest::description("Steffensen log") * doctest::skip()) {}
 	
 	TEST_CASE("void orderSteffensen" * doctest::description("Steffensen order") * doctest::skip()) {}
 }
