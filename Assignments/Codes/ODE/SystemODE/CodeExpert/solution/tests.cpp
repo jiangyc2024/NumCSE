@@ -30,12 +30,12 @@ struct TestData {
 TestData data;
 
 TEST_SUITE("SystemODE") {
-	TEST_CASE("template <class Function, class State> void rk4step" * doctest::description("Step")) {
+	TEST_CASE("void rk4step" * doctest::description("Step")) {
 		VectorXd sol;
 		VectorXd stud;
 		
-		rk4step<std::function<VectorXd (VectorXd)>, VectorXd> (data.f, data.h, data.y0, sol);
-		rk4step_TEST<std::function<VectorXd (VectorXd)>, VectorXd> (data.f, data.h, data.y0, stud);
+		rk4step(data.f, data.h, data.y0, sol);
+		rk4step_TEST(data.f, data.h, data.y0, stud);
 		
 		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
