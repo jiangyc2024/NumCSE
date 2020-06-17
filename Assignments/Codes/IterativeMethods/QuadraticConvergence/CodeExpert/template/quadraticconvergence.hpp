@@ -46,7 +46,8 @@ class Logger {
  *! @param[out] x Final estimation returned by the Steffensen's method
  */
 /* SAM_LISTING_BEGIN_0 */
-template <class Function> double steffensen(Function &&f, double x0) {
+template <class Function>
+double steffensen(Function &&f, double x0) {
   
   double x = x0;
   // TO DO (9-4.a): implement the Steffensen's method for a function f
@@ -76,7 +77,8 @@ void testSteffensen(void) {
  */
 
 /* SAM_LISTING_BEGIN_3 */
-template <class Function> double steffensen_log(Function &&f, double x0, Logger<double> *logger_p = nullptr) {
+template <class Function>
+double steffensen_log(Function &&f, double x0, Logger<double> *logger_p = nullptr) {
   
   double x = x0;
   // TO DO (9-4.c): Modify the function steffensen: use the class Logger to
