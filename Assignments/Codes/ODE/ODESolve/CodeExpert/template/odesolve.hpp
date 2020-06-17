@@ -7,13 +7,13 @@
 
 #include <Eigen/Dense>
 
-//#include "matplotlibcpp.h"
+#include "matplotlibcpp.h"
 #include "polyfit.hpp"
 
 using Vector = Eigen::VectorXd;
 using Matrix = Eigen::MatrixXd;
 
-//namespace plt = matplotlibcpp;
+namespace plt = matplotlibcpp;
 
 
 //! \tparam DiscEvlOp type for evolution operator (e.g. lambda function type)

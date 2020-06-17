@@ -7,13 +7,13 @@
 
 #include <Eigen/Dense>
 
-//#include "matplotlibcpp.h"
+#include "matplotlibcpp.h"
 #include "polyfit.hpp"
 
 using Vector = Eigen::VectorXd;
 using Matrix = Eigen::MatrixXd;
 
-//namespace plt = matplotlibcpp;
+namespace plt = matplotlibcpp;
 
 
 //! \tparam DiscEvlOp type for evolution operator (e.g. lambda function type)
@@ -170,7 +170,6 @@ std::pair< std::vector<double>, std::vector<Vector> > odeintssctrl(DiscEvlOp&& P
 /* SAM_LISTING_BEGIN_4 */
 void solveTangentIVP(void)
 {
-/*
   auto f = [] (const Vector &y) -> Vector { return Vector::Ones(1) + y*y; };
   Vector y0 = Vector::Zero(1);
   // TO DO (12-3.f): run the adaptive integration algorithm and plot the 
@@ -211,7 +210,6 @@ void solveTangentIVP(void)
   
   plt::savefig("./cx_out/tangent.png");
   // END
-*/
 }
 /* SAM_LISTING_END_4 */
 #endif
