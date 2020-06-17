@@ -8,7 +8,8 @@
 using namespace Eigen;
 
 /* SAM_LISTING_BEGIN_1 */
-template <class Function, class State> void rk4step(Function &&odefun, double h, const State &y0, State &y1) {
+template <class Function, class State>
+void rk4step(Function &&odefun, double h, const State &y0, State &y1) {
   // TO DO: (12-4.c) Implement a single step of RK4 for
   // the ODE y' = odefun(y), starting from y0 and using
   // the step size h. Save the result in y1.
