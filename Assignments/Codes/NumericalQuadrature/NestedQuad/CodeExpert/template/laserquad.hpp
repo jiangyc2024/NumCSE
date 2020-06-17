@@ -21,7 +21,8 @@ namespace plt = matplotlibcpp;
 //! @param[in] Q quadrature rule
 //! @return Approximation of integral $\int_a^b f(x) dx$
 /* SAM_LISTING_BEGIN_1 */
-template <class Function> double evalquad(const double a, const double b, Function &&f, const QuadRule &Q) {
+template <class Function>
+double evalquad(const double a, const double b, Function &&f, const QuadRule &Q) {
   double I;
   // TO DO: (8-4.b) Use Q to approximate the integral of f over [a,b]
   // START
@@ -39,7 +40,8 @@ template <class Function> double evalquad(const double a, const double b, Functi
 //! @param[in] N number of quadrature points (in each direction)
 //! @return Approximation of integral $\int_\Delta f(x,b) dx dy$
 /* SAM_LISTING_BEGIN_2 */
-template <class Function> double gaussquadtriangle(const Function &f, const unsigned N) {
+template <class Function>
+double gaussquadtriangle(const Function &f, const unsigned N) {
   double I;
   // TO DO: (8-4.c) Use N-node gaussquad() to integrate f over
   // the triangle 0<=x,y, x+y<=1.
