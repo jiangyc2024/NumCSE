@@ -15,14 +15,9 @@ MatrixXd matode(const MatrixXd &Y0, double T) {
   MatrixXd YT;
   // START
   
-  // Temporary solution necessary for testing
+  // Temporary solution needed so tests compile. 
+  // Replace with your solution.
   return MatrixXd::Zero(3, 3);
-  /*
-  YT.resize(3, 3);
-  YT << 0, 0, 0,
-        0, 0, 0,
-        0, 0, 0;
-  */
         
   // END
   return YT;

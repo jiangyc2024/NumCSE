@@ -53,7 +53,8 @@ VectorXd adaptivepolyintp(Function&& f, double a, double b, double tol, int N, s
             (fvals_at_sampling_points - intpolyvals_at_sampling_points)
             .cwiseAbs();
     // We use an Eigen "Visitor"
-    // 
+    // https://eigen.tuxfamily.org/dox/group__TutorialReductionsVisitorsBroadcasting.html
+
     double max = 0; int idx = 0;
     max = err.maxCoeff(&idx);
     
