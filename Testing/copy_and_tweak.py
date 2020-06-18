@@ -19,7 +19,6 @@ def parseWriteChange(student_sol, copy, tests):
 		parse = re.match('\s*TEST_CASE\("([\S\s]*)"\s\*\sdoctest::description.*', line)
 		if parse and keyword not in parse.group(1):
 			function_signatures.append(parse)
-	
 	classes = []
 	
 	for file in student_sol:
@@ -43,6 +42,7 @@ def parseWriteChange(student_sol, copy, tests):
 					write = False
 			if write and not line.startswith("#endif") and not line.startswith("#include"):
 				new_line = line
+				# replace all class occurences with its test version
 				for el in classes:
 					new_line = line.replace(el, el + suffix)
 				copy.write(new_line)

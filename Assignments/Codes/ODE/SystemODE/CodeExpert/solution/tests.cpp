@@ -34,8 +34,10 @@ TEST_SUITE("SystemODE") {
 		VectorXd sol;
 		VectorXd stud;
 		
-		rk4step(data.f, data.h, data.y0, sol);
-		rk4step_TEST(data.f, data.h, data.y0, stud);
+		auto f_copy = data.f;
+		
+		rk4step(std::move(data.f), data.h, data.y0, sol);
+		rk4step_TEST(std::move(f_copy), data.h, data.y0, stud);
 		
 		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
