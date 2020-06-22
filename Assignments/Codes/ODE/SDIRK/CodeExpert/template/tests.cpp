@@ -57,7 +57,9 @@ TEST_SUITE("SDIRK") {
 		}
 	}
 	
-	TEST_CASE("double cvgSDIRK" * doctest::description("cvgSDIRK") * doctest::skip()) {}
+	TEST_CASE("double cvgSDIRK" * doctest::description("cvgSDIRK")) {
+		MESSAGE("This function wasn't tested. Run the program to see its output.");
+	}
 }
 
 
