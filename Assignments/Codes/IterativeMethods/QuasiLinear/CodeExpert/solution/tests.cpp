@@ -30,15 +30,23 @@ TEST_SUITE("QuasiLinear") {
 	TEST_CASE("Eigen::VectorXd fixed_point_step" * doctest::description("Fixed point step")) {
 		Eigen::VectorXd sol = fixed_point_step(data.x, data.b);
 		Eigen::VectorXd stud = fixed_point_step_TEST(data.x, data.b);
-		printf("sol size is: %d\n\n", sol.size());
-		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+		
+		bool samesize = sol.size() == stud.size();
+		CHECK(samesize);
+		if (samesize) {
+			CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+		}
 	}
 	
 	TEST_CASE("Eigen::VectorXd newton_step" * doctest::description("Newton step")) {
 		Eigen::VectorXd sol = newton_step(data.x, data.b);
 		Eigen::VectorXd stud = newton_step_TEST(data.x, data.b);
 		
-		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+		bool samesize = sol.size() == stud.size();
+		CHECK(samesize);
+		if (samesize) {
+			CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+		}
 	}
 	
 	TEST_CASE("Eigen::VectorXd solveQuasiLinSystem" * doctest::description("Fixed point iteration")) {
