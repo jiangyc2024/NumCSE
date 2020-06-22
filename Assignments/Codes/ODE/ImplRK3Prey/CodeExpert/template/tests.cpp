@@ -84,10 +84,11 @@ TEST_SUITE("ImplRK Prey") {
 				VectorXd sol = sol_vec.back();
 				VectorXd stud = stud_vec.back();
 				
-				
 				CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 			}
 		}
+		
+		MESSAGE("Run the program to see a convergence study.");
 	}
 	
 	TEST_CASE("MatrixXd kron" * doctest::description("skipped") * doctest::skip()) {}
