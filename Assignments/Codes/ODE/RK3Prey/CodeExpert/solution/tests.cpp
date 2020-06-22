@@ -65,9 +65,13 @@ TEST_SUITE("RK3Prey") {
 		}
 	}
 	
-	TEST_CASE("void step" * doctest::description("RKIntegrator.step()") * doctest::skip()) {}
+	TEST_CASE("void step" * doctest::description("RKIntegrator.step()")) {
+		MESSAGE("This function wasn't tested. Rely on the solve() testing.");
+	}
 	
-	TEST_CASE("double RK3prey" * doctest::description("Convergence rate") * doctest::skip()) {}
+	TEST_CASE("double RK3prey" * doctest::description("Convergence rate")) {
+		MESSAGE("This function wasn't tested. Run the program to see its output.");
+	}
 	
 	TEST_CASE("RKIntegrator" * doctest::description("RKIntegrator initialiser") * doctest::skip()) {}
 }
