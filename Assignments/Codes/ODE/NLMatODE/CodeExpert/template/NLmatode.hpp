@@ -14,10 +14,6 @@ MatrixXd matode(const MatrixXd &Y0, double T) {
   // of the matrix IVP $Y' = -(Y-Y')*Y$ at time $T$
   MatrixXd YT;
   // START
-  
-  // Temporary solution needed so tests compile. 
-  // Replace with your solution.
-  return MatrixXd::Zero(3, 3);
         
   // END
   return YT;
