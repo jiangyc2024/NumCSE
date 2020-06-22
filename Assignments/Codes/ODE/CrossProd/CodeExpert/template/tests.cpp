@@ -34,14 +34,20 @@ struct TestData {
 TestData data;
 
 TEST_SUITE("CrossProduct") {
+	
+
 	TEST_CASE("std::vector<VectorXd> solve_imp_mid" * doctest::description("Implicit midpoint")) {
 		std::vector<VectorXd> impl_mid_sol = solve_imp_mid(data.f, data.Jf, data.T, data.y0, data.N);
 		std::vector<VectorXd> impl_mid_stud = solve_imp_mid_TEST(data.f, data.Jf, data.T, data.y0, data.N);
 
 		auto sol = impl_mid_sol.back();
 		auto stud = impl_mid_stud.back();
-
-		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+		
+		bool samesize = sol.size() == stud.size();
+		CHECK(samesize);
+		if (samesize) {
+			CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+		}
 	}
 
 	TEST_CASE("std::vector<VectorXd> solve_lin_mid" * doctest::description("Implicit linear midpoint")) {
@@ -50,10 +56,18 @@ TEST_SUITE("CrossProduct") {
 
 		auto sol = impl_lin_mid_sol.back();
 		auto stud = impl_lin_mid_stud.back();
-
-		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+		
+		bool samesize = sol.size() == stud.size();
+		CHECK(samesize);
+		if (samesize) {
+			CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+		}
 	}
 	
-	TEST_CASE("void tab_crossprod" * doctest::description("Tabulate results" ) * doctest::skip()) {}
+	TEST_CASE("void tab_crossprod" * doctest::description("Tabulate results")) {
+		INFO("This function wasn't tested. Run the program to see its output.");
+		
+		WARN(false);
+	}
 }
 
