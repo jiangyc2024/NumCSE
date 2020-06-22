@@ -41,9 +41,10 @@ from `tests.csv` in the doctest descriptions.
 	For example, CrossProd needed `#include <vector>`. 
 	
 	(c) If a test case defined in `main.cpp` or `tests.csv` isn't
-	testable (eg: it relies on output from the program), then 
+	testable or doesn't make sense to test, then 
 	skip it according to the template function in `tests.cpp`.
 	Make note of this though so we know about it.
+3. Follow the guidlines in `tests.cpp` for more information.
 	
 TestData example: 
 ``` cpp
@@ -75,10 +76,10 @@ TestData example:
 ## Compiling, testing: 
 (first 2 steps skippable if you've already done them)
 1. `cd` to `NumCSE/`
-2. run: `mkdir buld && cd build && cmake ..`
+2. run: `mkdir build && cd build && cmake ..`
 	(a) This creates the CMake hierarchy
 3. `cd` to your exercise but inside `NumCSE/build/`
-	(a) Basically instead of `NumCSE/Assignments/...` it will be
+	(a) Instead of `NumCSE/Assignments/...` it will be
 	`NumCSE/build/Assignments/...`
 4. In the CodeExpert folder of your assignment, run `make`
 	(a) This should be repeated every time you change something
@@ -88,7 +89,7 @@ but in `NumCSE/build/bin/Assignments/...`. Then run whatever
 binary you want. There should be solution, template, and tests.
 For example: run `./tests`.
 	(a) It's a good idea to change the student file
-	(in `EX/CodeExpert/template/EX_NAME.hpp`) to have the solution,
-	then re-run make as above and test the tests binary to see
-	if all tests you wrote pass. 
+	(in `EX/CodeExpert/template/EX_NAME.hpp`) to be the solution,
+	then run `make` again to ensure the tests pass on the correct
+	answer.
 
