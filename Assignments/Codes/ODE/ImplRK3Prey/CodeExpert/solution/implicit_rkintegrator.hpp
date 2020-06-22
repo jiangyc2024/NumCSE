@@ -1,7 +1,4 @@
-#ifndef IMPLICIT_RKINTEGRATOR_HPP
-#define IMPLICIT_RKINTEGRATOR_HPP
-
-//#pragma once
+#pragma once
 
 #include <cassert>
 #include <iomanip>
@@ -77,8 +74,7 @@ public:
    *! including initial and final value
    */
   template <class Function, class Jacobian>
-  std::vector<VectorXd> solve(Function &&f, Jacobian &&Jf, double T,
-                              const VectorXd &y0, unsigned int N) const {
+  std::vector<VectorXd> solve(Function &&f, Jacobian &&Jf, double T, const VectorXd &y0, unsigned int N) const {
     // Iniz step size
     double h = T / N;
 
@@ -125,8 +121,7 @@ private:
    *! \param[out] y1 next step y^{n+1} = y^n + ...
    */
   template <class Function, class Jacobian>
-  void step(Function &&f, Jacobian &&Jf, double h, const VectorXd &y0,
-            VectorXd &y1) const {
+  void step(Function &&f, Jacobian &&Jf, double h, const VectorXd &y0, VectorXd &y1) const {
 
     int d = y0.size();
     MatrixXd eye = MatrixXd::Identity(d, d);
@@ -171,5 +166,3 @@ private:
   unsigned int s;
 };
 /* SAM_LISTING_END_1 */
-
-#endif
