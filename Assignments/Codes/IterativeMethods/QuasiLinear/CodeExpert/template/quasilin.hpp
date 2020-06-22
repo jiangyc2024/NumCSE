@@ -13,10 +13,6 @@ Eigen::VectorXd fixed_point_step(const Eigen::VectorXd &xk, const Eigen::VectorX
   Eigen::VectorXd x_new;
   // TO DO (9-10.b): implement one step of the fixed point iteration
   // START
- 
-  // Placeholder for compilation. Replace with your own solution.
-  Eigen::VectorXd temp = Eigen::VectorXd::Zero(b.size());
-  return temp;
   
   // END
   return x_new;
@@ -50,10 +46,6 @@ Eigen::VectorXd newton_step(const Eigen::VectorXd &x, const Eigen::VectorXd &b) 
   // TO DO (9-10.f): implement one Newton step exploiting the
   // Sherman-Morrison-Woodbury formula.
   // START
-  
-  // Placeholder for compilation. Replace with your own solution.
-  Eigen::VectorXd temp = Eigen::VectorXd::Zero(x.size());
-  return temp;
   
   // END
   return x_new;
