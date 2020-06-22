@@ -44,6 +44,8 @@ TEST_SUITE("AdaptivePolyIntp") {
 		}
 	}
 	
-	TEST_CASE("void plotInterpolationError" * doctest::description("Plot error") * doctest::skip()) {}
+	TEST_CASE("void plotInterpolationError" * doctest::description("Plot error")) {
+		MESSAGE("This function wasn't tested. Run the program to see its output.");
+	}
 }
 
