@@ -93,7 +93,6 @@ Required:
 - C++ compiler (C++11 support required), tested only with gcc and clang
 - git
 - cmake
-- mathgl (requires libpng, opengl and zlib)
 - eigen
 
 Optional:
