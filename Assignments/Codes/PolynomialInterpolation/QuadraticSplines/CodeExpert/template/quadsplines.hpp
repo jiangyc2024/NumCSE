@@ -26,11 +26,6 @@ std::pair<VectorXd, VectorXd> increments (const VectorXd &t) {
   VectorXd ddt;
   //START
   
-  // Temporary values so tests work. Replace with your own solution.
-  VectorXd t1 = VectorXd::Zero(t.size() + 3);
-  VectorXd t2 = VectorXd::Zero(t.size() + 2);
-  return std::make_pair(t1, t2);
-  
   //END
   return std::make_pair(dt,ddt);
 }
