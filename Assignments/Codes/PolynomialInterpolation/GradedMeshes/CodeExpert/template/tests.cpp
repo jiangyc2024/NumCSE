@@ -40,16 +40,28 @@ TEST_SUITE("GradedMeshes") {
 		CHECK(std::abs(sol_sin - stud_sin) == doctest::Approx(0.).epsilon(1e-6));
 	}
 	
-	TEST_CASE("VectorXd polyfit" * doctest::description("polyfit helper") * doctest::skip()) {}
+	TEST_CASE("VectorXd polyfit" * doctest::description("polyfit helper")) {
+		MESSAGE("This function wasn't tested. Run the program to see its output.");
+	}
 	
-	TEST_CASE("void cvgplotEquidistantMesh" * doctest::description("Equidistant mesh convergence plot") * doctest::skip()) {}
+	TEST_CASE("void cvgplotEquidistantMesh" * doctest::description("Equidistant mesh convergence plot")) {
+		MESSAGE("This function wasn't tested. Run the program to see its output.");
+	}
 	
-	TEST_CASE("Eigen::VectorXd cvgrateEquidistantMesh" * doctest::description("Equidistant mesh convergence") * doctest::skip()) {}
+	TEST_CASE("Eigen::VectorXd cvgrateEquidistantMesh" * doctest::description("Equidistant mesh convergence")) {
+		MESSAGE("This function wasn't tested. Run the program to see its output.");
+	}
 	
-	TEST_CASE("void testcvgEquidistantMesh" * doctest::description("Equidistant mesh convergence tabulation") * doctest::skip()) {}
+	TEST_CASE("void testcvgEquidistantMesh" * doctest::description("Equidistant mesh convergence tabulation")) {
+		MESSAGE("This function wasn't tested. Run the program to see its output.");
+	}
 	
-	TEST_CASE("Eigen::MatrixXd cvgrateGradedMesh" * doctest::description("Graded mesh convergence") * doctest::skip()) {}
+	TEST_CASE("Eigen::MatrixXd cvgrateGradedMesh" * doctest::description("Graded mesh convergence")) {
+		MESSAGE("This function wasn't tested. Run the program to see its output.");
+	}
 	
-	TEST_CASE("void testcvgGradedMesh" * doctest::description("Graded mesh convergence tabulation") * doctest::skip()) {}
+	TEST_CASE("void testcvgGradedMesh" * doctest::description("Graded mesh convergence tabulation")) {
+		MESSAGE("This function wasn't tested. Run the program to see its output.");
+	}
 }
 
