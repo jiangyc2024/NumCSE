@@ -54,9 +54,7 @@ TEST_SUITE("_____EXERCISE_NAME_____") {
 	// Functions that print, but aren't tested.
 	// Typically congerence/error studies, tabulating results.
 	TEST_CASE("FUNCTION" * doctest::description("DESCRIPTION")) {
-		INFO("This function wasn't tested. Run the program to see its output.");
-		
-		WARN(false);
+		MESSAGE("This function wasn't tested. Run the program to see its output.");
 	}
 	
 	// Functions that aren't tested
