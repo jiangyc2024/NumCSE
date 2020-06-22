@@ -28,8 +28,12 @@ TEST_SUITE("QuadraticSplines") {
 		std::pair<VectorXd, VectorXd> sol = increments(data.t);
 		std::pair<VectorXd, VectorXd> stud = increments_TEST(data.t);
 		
-		CHECK((sol.first - stud.first).norm() == doctest::Approx(0.).epsilon(1e-6));
-		CHECK((sol.second - stud.second).norm() == doctest::Approx(0.).epsilon(1e-6));
+		bool samesize = sol.first.size() == stud.first.size() && sol.second.size() == stud.second.size();
+		CHECK(samesize);
+		if (samesize) {
+			CHECK((sol.first - stud.first).norm() == doctest::Approx(0.).epsilon(1e-6));
+			CHECK((sol.second - stud.second).norm() == doctest::Approx(0.).epsilon(1e-6));
+		}
 	}
 	
 	TEST_CASE("VectorXd compute_c" * doctest::description("compute_c")) {
@@ -55,8 +59,12 @@ TEST_SUITE("QuadraticSplines") {
 		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
 	
-	TEST_CASE("void plotquadspline" * doctest::description("Plot quadtratic spline") * doctest::skip()) {}
+	TEST_CASE("void plotquadspline" * doctest::description("Plot quadtratic spline")) {
+		MESSAGE("This function wasn't tested. Run the program to see its output.");
+	}
 	
-	TEST_CASE("std::vector<double> qsp_error" * doctest::description("Error of quadtratic spline") * doctest::skip()) {}
+	TEST_CASE("std::vector<double> qsp_error" * doctest::description("Error of quadtratic spline")) {
+		MESSAGE("This function wasn't tested. Run the program to see its output.");
+	}
 }
 
