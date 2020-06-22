@@ -28,8 +28,12 @@ TEST_SUITE("ImproperIntegrals") {
 		CHECK(std::abs(sol - stud) == doctest::Approx(0.).epsilon(1e-6));
 	}
 	
-	TEST_CASE("double quad" * doctest::description("Optional helper function") * doctest::skip()) {}
+	TEST_CASE("double quad" * doctest::description("Optional helper function")) {
+		MESSAGE("This function wasn't tested. Run the program to see its output.");
+	}
 
-	TEST_CASE("void cvgQuadInf" * doctest::description("Convergence") * doctest::skip()) {}
+	TEST_CASE("void cvgQuadInf" * doctest::description("Convergence")) {
+		MESSAGE("This function wasn't tested. Run the program to see its output.");
+	}
 }
 
