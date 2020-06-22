@@ -14,7 +14,6 @@
 #include <Eigen/Dense>
 
 struct TestData {
-	// put all test data in here if all tests use the same data
 	TestData() {
 		// Initialise variables here
 	}
@@ -24,24 +23,43 @@ struct TestData {
 
 TestData data;
 
-TEST_SUITE("EXERCISE_NAME" /* to be changed */) {
+TEST_SUITE("_____EXERCISE_NAME_____") {
+	// One test case for every function in the header files the student
+	// is asked to modify.
+	// 
+	// FUNC of each TEST_CASE must be the part of the function's signature:
+	// "RETURN_TYPE FUNCTION_NAME", e.g. "void kron". Don't include anything to do
+	// with templates.
+	//
+	// Description can be anything. Usually taken from tests.csv or main.cpp.
 	
-	// there must be a test case for every function in the header files that the
-	// students should modify
-	// the name of the TEST_CASE must match the convention "RETURN_TYPE FUNCTION_NAME"
-	// e.g. "void kron", description can be anything
-	// put a * doctest::skip() behind functions that should not be tested (as below)
-	// If the function is templated, ignore the template line above the actual function
-	// signature. 
-	
-	TEST_CASE("FUNCTION_SIG" /* to be changed */ * doctest::description("ANYTHING" /* to be changed */)) {
+	// Normal tests
+	TEST_CASE("FUNCTION" * doctest::description("DESCRIPTION")) {
+		// Student functions have _TEST appended to them.
+		// Use CHECK macro to test. Semantics are CHECK(expr), pass if expr returns 1/true.
+		// For floating point equality CHECK(x == doctest::Approx(0.).epsilon(1e-6));
+		// The example here ensures compilation with a size check. Otherwise testing aborts
+		// on run if the student's answer is unfinished or wrong.
 		
-		// use doctest macros to test, e.g. CHECK(x <= y)
-		// for floating point equality CHECK(x == doctest::Approx(0.).epsilon(1e-6))
+		Eigen::VectorXd sol = FUNCTION();
+		Eigen::VectorXd stud = FUNCTION_TEST();
 		
+		bool samesize = sol.size() == stud.size();
+		CHECK(samesize);
+		if (samesize) {
+			CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+		}
 	}
 	
-	// example for functions to be skipped by testing
-	TEST_CASE("FUNCTION_SIG" /* to be changed */ * doctest::description("ANYTHING" /* to be changed */) * doctest::skip()) {}
+	// Functions that print, but aren't tested.
+	// Typically congerence/error studies, tabulating results.
+	TEST_CASE("FUNCTION" * doctest::description("DESCRIPTION")) {
+		INFO("This function wasn't tested. Run the program to see its output.");
+		
+		WARN(false);
+	}
+	
+	// Functions that aren't tested
+	TEST_CASE("FUNCTION" * doctest::description("DESCRIPTION") * doctest::skip()) {}
 }
 
