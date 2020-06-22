@@ -39,9 +39,16 @@ TEST_SUITE("SystemODE") {
 		rk4step(std::move(data.f), data.h, data.y0, sol);
 		rk4step_TEST(std::move(f_copy), data.h, data.y0, stud);
 		
-		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+		bool samesize = sol.size() == stud.size();
+		CHECK(samesize);
+		
+		if (samesize) {
+			CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+		}
 	}
 	
-	TEST_CASE("double testcvgRK4" * doctest::description("Convergence rate") * doctest::skip()) {}
+	TEST_CASE("double testcvgRK4" * doctest::description("Convergence rate") * doctest::skip()) {
+		MESSAGE("This function wasn't tested. Run the program to see its output.");
+	}
 }
 
