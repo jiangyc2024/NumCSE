@@ -77,8 +77,12 @@ TEST_SUITE("ODEsolve") {
 		}
 	}
 	
-	TEST_CASE("double testcvpExtrapolatedEuler" * doctest::description("testcvpExtrapolatedEuler") * doctest::skip()) {}
+	TEST_CASE("double testcvpExtrapolatedEuler" * doctest::description("testcvpExtrapolatedEuler")) {
+		MESSAGE("This function wasn't tested. Run the program to see its output.");
+	}
 	
-	TEST_CASE("void solveTangentIVP" * doctest::description("solveTangentIVP") * doctest::skip()) {}
+	TEST_CASE("void solveTangentIVP" * doctest::description("solveTangentIVP")) {
+		MESSAGE("This function wasn't tested. Run the program to see its output.");
+	}
 }
 
