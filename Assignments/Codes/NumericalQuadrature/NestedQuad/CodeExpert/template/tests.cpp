@@ -52,6 +52,8 @@ TEST_SUITE("NestedQuad") {
 		CHECK(std::abs(sol - stud) == doctest::Approx(0.).epsilon(1e-6));
 	}
 	
-	TEST_CASE("void convtest2DQuad" * doctest::description("convtest2DQuad() for 2 nodes") * doctest::skip()) {}
+	TEST_CASE("void convtest2DQuad" * doctest::description("convtest2DQuad() for 2 nodes")) {
+		MESSAGE("This function wasn't tested. Run the program to see its output.");
+	}
 }
 
