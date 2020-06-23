@@ -5,8 +5,6 @@
 //// This file is part of the NumCSE repository.
 ////
 
-// TODO: file should be hidden from student, otherwise they know how focus made
-
 #pragma once
 
 #include <Eigen/Dense>
