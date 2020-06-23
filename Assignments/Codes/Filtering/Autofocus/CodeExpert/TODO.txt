@@ -1,0 +1,12 @@
+1. Existing TODO comments in autofocus.hpp (template and solution)
+2. Rewrite mgl into matplotlib
+3. Add CMake
+    (a) Remember to enable the new testing with the extra line, see
+    README.md in NumCSE/Testing/
+4. Add task.json file (CodeExpert)
+5. Test compilation, running (must first remove mgl dependency)
+6. Clean up other junk in the exercise folder
+7. Add exercise numbers, better task description in autofocus.hpp
+8. Write more comprehensive tests?
+9. Replace M in tests.cpp (template and solution) with the correct
+one
