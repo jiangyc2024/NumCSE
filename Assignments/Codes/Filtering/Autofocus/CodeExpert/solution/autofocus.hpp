@@ -22,13 +22,16 @@
 using namespace Eigen;
 
 /*!
- * \brief save_image
+ * \brief Save differently blurred images.
  * \param focus
  */
 void save_image(double focus) {
     // Create empty object
     PGMObject q;
 
+    // TO DO: (a) Read matrix of image generated
+    // by "set_focus" and save as an image in format ".pgm".
+    // START
     // Set data using function "set\_data"
     // Data obtained from "set\_focus"
     q.set_data(set_focus(focus));
@@ -40,10 +43,11 @@ void save_image(double focus) {
        << ".pgm";
     std::ofstream file(ss.str());
     file << q;
+    // END
 }
 
 /*!
- * \brief plot_freq
+ * \brief Plot spectrum for different $f$.
  * \param focus
  */
 void plot_freq(double focus) {
@@ -53,9 +57,13 @@ void plot_freq(double focus) {
         return x < a ? a : x > b ? b : x;
     };
 
+    // TO DO: (b) compute D containing the spectrum of set_focus(focus).
+    // "clamp" the data between 0 and 8000.
+    // START
     MatrixXd D = fft2r(set_focus(focus))
             .cwiseAbs()
             .unaryExpr(clamp) / b;
+    // END
 
     // Plot values of $\mathbf{X}$.
     mglData Xd(D.cols(), D.rows(), D.data());
@@ -75,13 +83,15 @@ void plot_freq(double focus) {
 }
 
 /*!
- * \brief high_frequency_content
+ * \brief Compute $V(\mathbf{B}(f))$.
  * \param M
- * \return
+ * \return V
  */
 double high_frequency_content(const MatrixXd & M) {
     int n = M.rows(),m = M.cols();
     double V = 0;
+    // TO DO: compute $V(\mathbf{M}).
+    // START
     for(unsigned int i = 0; i < M.rows(); ++i) {
         for(unsigned int j = 0; j < M.cols(); ++j) {
             double a = n/2. - std::abs(i - n/2.);
@@ -89,11 +99,12 @@ double high_frequency_content(const MatrixXd & M) {
             V += (a*a + b*b) * M(i,j) * M(i,j);
         }
     }
+    // END
     return V;
 }
 
 /*!
- * \brief plotV
+ * \brief Plot $V(\mathbf{B}(f))$.
  */
 void plotV() {
 
@@ -101,6 +112,8 @@ void plotV() {
 
     VectorXd x(N), y(N);
 
+    // TO DO: (c) Plot $V(\mathbf{B}(f))$.
+    // START
     for(unsigned int i = 0; i < N; ++i) {
         double V = high_frequency_content(
                     // Find 2D spectrum of matrix $\mathbf{B}(t)$
@@ -113,7 +126,8 @@ void plotV() {
         x(i) = 5. / (N-1) * i;
         y(i) = V;
     }
-
+    
+    // END
     mgl::Figure fig;
     fig.title("High frequency content.");
     fig.plot(x, y, "r+").label("$V(\\mathbf{B}(f))$");
@@ -125,7 +139,7 @@ void plotV() {
 }
 
 /*!
- * \brief autofocus
+ * \brief Find most focused image.
  * \return
  */
 double autofocus() {
@@ -145,6 +159,8 @@ double autofocus() {
     unsigned int Niter = std::ceil(std::log2(
                 (max_focus - min_focus) / min_step
                 ));
+    // TO DO: (d) Use bisection method to find best focus.
+    // START
     // Returns $V(B(f))$
     auto computeV = [] (double focus) {
         return high_frequency_content(
@@ -161,6 +177,6 @@ double autofocus() {
         step = step / 2.;
         f0 = f0 + (dV > 0 ? 1 : -1) * step;
     }
-
+    // END
     return f0;
 }

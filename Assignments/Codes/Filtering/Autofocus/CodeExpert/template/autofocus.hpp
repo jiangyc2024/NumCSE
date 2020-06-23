@@ -45,9 +45,9 @@ void plot_freq(double focus) {
     int b = 8000;
     // TO DO: (b) compute D containing the spectrum of set_focus(focus).
     // "clamp" the data between 0 and 8000.
-    MatrixXd D;
     // START
-
+    MatrixXd D;
+    
     // END
 
     // Plot values of $\mathbf{X}$.
