@@ -5,7 +5,7 @@ using namespace Eigen;
 int main(void) {
 
   /* SAM_LISTING_BEGIN_2 */
-  // Definitiion of coefficients in Butcher scheme
+  // Definition of coefficients in Butcher scheme
   unsigned int s = 2;
   MatrixXd A(s, s);
   VectorXd b(s);

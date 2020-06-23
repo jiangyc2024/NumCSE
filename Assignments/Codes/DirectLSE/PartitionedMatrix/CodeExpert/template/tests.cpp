@@ -8,8 +8,7 @@
 
 struct TestData {
 	TestData() {
-		const int n = 9;
-		std::srand(n);
+		const std::size_t n = 50;
 		R = Eigen::MatrixXd::Random(n, n).triangularView<Eigen::Upper>();
 		v = Eigen::VectorXd::Random(n);
 		u = Eigen::VectorXd::Random(n);

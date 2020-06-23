@@ -22,8 +22,7 @@ Eigen::MatrixXd sparseSPD(int n) {
 
 struct TestData {
 	TestData() {
-		std::srand(31);
-		n = 8;
+		n = 20;
 		A = sparseSPD(n);
 		As = A.sparseView();
 		As.makeCompressed();

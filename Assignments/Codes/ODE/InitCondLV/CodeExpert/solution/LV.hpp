@@ -1,4 +1,5 @@
-
+#ifndef LV_HPP
+#define LV_HPP
 //// 
 //// Copyright (C) 2016 SAM (D-MATH) @ ETH Zurich
 //// Author(s): lfilippo <filippo.leonardi@sam.math.ethz.ch> 
@@ -114,3 +115,5 @@ Vector2d findInitCond(void){
   return y;
 }
 /* SAM_LISTING_END_2 */
+
+#endif

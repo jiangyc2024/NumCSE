@@ -78,8 +78,7 @@ void testSteffensen(void) {
 
 /* SAM_LISTING_BEGIN_3 */
 template <class Function>
-double steffensen_log(Function &&f, double x0, 
-                          Logger<double> *logger_p = nullptr) {
+double steffensen_log(Function &&f, double x0, Logger<double> *logger_p = nullptr) {
   
   double x = x0;
   // TO DO (9-4.c): Modify the function steffensen: use the class Logger to

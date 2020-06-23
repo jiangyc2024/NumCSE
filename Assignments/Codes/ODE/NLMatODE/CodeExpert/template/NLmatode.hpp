@@ -14,7 +14,7 @@ MatrixXd matode(const MatrixXd &Y0, double T) {
   // of the matrix IVP $Y' = -(Y-Y')*Y$ at time $T$
   MatrixXd YT;
   // START
-  
+        
   // END
   return YT;
 }
@@ -27,7 +27,7 @@ MatrixXd matode(const MatrixXd &Y0, double T) {
 bool checkinvariant(const MatrixXd &M, double T) {
   // TO DO (12-5.c): check if $Y'*Y$ is preserved at the time $T$ by matode.
   // START
-  return false;
+  return true;
   // END
 }
 /* SAM_LISTING_END_2 */

@@ -1,5 +1,0 @@
-// "testname", "input", "expected output", "points", "execution time limit (ms)"
-
-"constructor", "(any input)", "5 0 0 0 8 0 \n 12 0 4 9 0 0 \n 0 11 10 0 0 7", "1", "5000",
-"test mvmult", "(any input)", "84 \n 171 \n 178",  "1", "5000",
-"test mtvmult", "(any input)", "29 \n 33 \n 50 \n 18 \n  8 \n 21",  "1", "5000",

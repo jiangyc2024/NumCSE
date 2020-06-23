@@ -8,7 +8,7 @@
 
 struct TestData {
 	TestData() {
-		M = 10;
+		M = 100;
 		xa = VectorXd::Random(M);
 	}
 	
@@ -31,13 +31,15 @@ TEST_SUITE("StructuredMatrixVector") {
 		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
 	
-	TEST_CASE("int multAmin_runtime" * doctest::description("skipped") * doctest::skip()) {}
+	TEST_CASE("int multAmin_runtime" * doctest::description("multAmin_runtime")) {
+		MESSAGE("This function wasn't tested. Run the program to see its output.");
+	}
 	
 	TEST_CASE("Eigen::MatrixXd multABunitv" * doctest::description("multABunitv")) {
 		Eigen::MatrixXd sol, stud;
 		
 		sol = multABunitv();
-		stud =multABunitv_TEST();
+		stud = multABunitv_TEST();
 		
 		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
