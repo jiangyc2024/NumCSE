@@ -22,8 +22,7 @@ namespace plt = matplotlibcpp;
 //! @return Approximation of integral $\int_a^b f(x) dx$
 /* SAM_LISTING_BEGIN_1 */
 template <class Function>
-double evalquad(const double a, const double b, Function &&f,
-                const QuadRule &Q) {
+double evalquad(const double a, const double b, Function &&f, const QuadRule &Q) {
   double I;
   // TO DO: (8-4.b) Use Q to approximate the integral of f over [a,b]
   // START

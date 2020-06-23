@@ -225,8 +225,7 @@ void testcvgEquidistantMesh(void) {
  * linear interpolation of t^alpha[j] using a beta[k]-graded mesh on [0,1].
  */
 /* SAM_LISTING_BEGIN_3 */
-Eigen::MatrixXd cvgrateGradedMesh(const Eigen::VectorXd &alpha,
-                                  const Eigen::VectorXd &beta) {
+Eigen::MatrixXd cvgrateGradedMesh(const Eigen::VectorXd &alpha, const Eigen::VectorXd &beta) {
   int n_alphas = alpha.size();
   int n_betas = beta.size();
   MatrixXd Rates(n_betas, n_alphas);

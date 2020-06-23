@@ -1,6 +1,0 @@
-// "testname", "input", "expected output", "points", "execution time limit (ms)"
-"increments", "(any input)", "0.5 \n 0.1 \n 0.1 \n 0.3 \n 0.5 \n 0.1 \n 0.6 \n 0.2 \n 0.4", "1", "5000",
-"compute_c", "(any input)", "0.355736 \n 1.15991 \n 0.209733 \n  1.40556",  "1", "5000",
-"compute_d", "(any input)", "1.06141 \n 1.51564 \n 1.84473 \n 1.31634 \n 1.06141",  "1", "5000",
-"quadsplines", "(any input)", "1.06141 \n 0.976439 \n 1.63152",  "1", "5000",
-"compute_error", "(any input)", "0.606776 \n 0.434326 \n 0.0402719  \n  0.00253016  \n  0.000261929 \n 3.13621e-05  \n  3.87463e-06 \n 4.8303e-07",  "1", "5000",

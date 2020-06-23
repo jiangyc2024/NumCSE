@@ -40,8 +40,12 @@ TEST_SUITE("CrossProduct") {
 
 		auto sol = impl_mid_sol.back();
 		auto stud = impl_mid_stud.back();
-
-		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+		
+		bool samesize = sol.size() == stud.size();
+		CHECK(samesize);
+		if (samesize) {
+			CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+		}
 	}
 
 	TEST_CASE("std::vector<VectorXd> solve_lin_mid" * doctest::description("Implicit linear midpoint")) {
@@ -50,10 +54,16 @@ TEST_SUITE("CrossProduct") {
 
 		auto sol = impl_lin_mid_sol.back();
 		auto stud = impl_lin_mid_stud.back();
-
-		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+		
+		bool samesize = sol.size() == stud.size();
+		CHECK(samesize);
+		if (samesize) {
+			CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+		}
 	}
-	
-	TEST_CASE("void tab_crossprod" * doctest::description("Tabulate results" ) * doctest::skip()) {}
+
+	TEST_CASE("void tab_crossprod" * doctest::description("Tabulate results")) {
+		MESSAGE("This function wasn't tested. Run the program to see its output.");
+	}
 }
 

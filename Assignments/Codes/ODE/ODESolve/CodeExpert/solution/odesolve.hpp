@@ -125,9 +125,7 @@ double testcvpExtrapolatedEuler(void) {
 //! \param[in] hmin minimal step size
 /* SAM_LISTING_BEGIN_3 */
 template <class DiscEvlOp>
-std::pair< std::vector<double>, std::vector<Vector> > 
-odeintssctrl(DiscEvlOp&& Psi, double T, const Vector &y0, double h0, 
-             unsigned int p, double reltol, double abstol, double hmin) {
+std::pair< std::vector<double>, std::vector<Vector> > odeintssctrl(DiscEvlOp&& Psi, double T, const Vector &y0, double h0, unsigned int p, double reltol, double abstol, double hmin) {
   std::vector<double> t;
   std::vector<Vector> Y;               
   // TO DO (12-3.e):  Compute y from time 0 to T with adaptive time step.
@@ -159,7 +157,7 @@ odeintssctrl(DiscEvlOp&& Psi, double T, const Vector &y0, double h0,
     }
   }
   if (h < hmin) {
-    std::cerr << "Warning: Failure at t="
+    std::cerr << "Warning: Failure at t = "
       << t.back()
       << ". Unable to meet integration tolerances without reducing the step size below the smallest value allowed ("<< hmin <<") at time t." << std::endl;
   }

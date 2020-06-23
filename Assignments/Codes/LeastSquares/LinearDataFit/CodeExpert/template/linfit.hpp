@@ -12,10 +12,7 @@
 
 #include <Eigen/Dense>
 
-//#include "matplotlibcpp.h"
-
 using namespace Eigen;
-//namespace plt = matplotlibcpp;
 
 /* @param[in] b $n$ size vector 
  * @param[out] A $n \times 4$ matrix

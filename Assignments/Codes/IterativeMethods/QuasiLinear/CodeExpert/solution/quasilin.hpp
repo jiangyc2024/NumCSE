@@ -9,8 +9,7 @@
 //! \param[in] xk previous step $x^{(k)}$
 //! \param[out] x_new next step $x^{(k+1)}$
 /* SAM_LISTING_BEGIN_1 */
-Eigen::VectorXd fixed_point_step(const Eigen::VectorXd &xk,
-                                 const Eigen::VectorXd &b) {
+Eigen::VectorXd fixed_point_step(const Eigen::VectorXd &xk, const Eigen::VectorXd &b) {
   Eigen::VectorXd x_new;
   // TO DO (9-10.b): implement one step of the fixed point iteration
   // START
@@ -39,8 +38,7 @@ Eigen::VectorXd fixed_point_step(const Eigen::VectorXd &xk,
 //! \param[in] b rhs vector $b \in \mathbf{R}^n$
 //! \param[out] x next step $x^{(k+1)}$
 /* SAM_LISTING_BEGIN_2 */
-Eigen::VectorXd solveQuasiLinSystem(double rtol, double atol,
-                                    Eigen::VectorXd &b) {
+Eigen::VectorXd solveQuasiLinSystem(double rtol, double atol, Eigen::VectorXd &b) {
   int n = b.size();
 
   Eigen::VectorXd x(n);
@@ -56,9 +54,9 @@ Eigen::VectorXd solveQuasiLinSystem(double rtol, double atol,
 
     double err = (x - x_new).norm();
     x = x_new;
-
+	
+	// Check if Fixed point method is successful
     if (err < atol || err < rtol * x_new.norm()) {
-      std::cout << "Fixed point method successful" << std::endl;
       break;
     }
   }
@@ -71,8 +69,7 @@ Eigen::VectorXd solveQuasiLinSystem(double rtol, double atol,
 //! \param[in] x previous step $x^{(k)}$
 //! \param[out] x_new next step in Newton iteration $x^{(k+1)}$
 /* SAM_LISTING_BEGIN_3 */
-Eigen::VectorXd newton_step(const Eigen::VectorXd &x,
-                            const Eigen::VectorXd &b) {
+Eigen::VectorXd newton_step(const Eigen::VectorXd &x, const Eigen::VectorXd &b) {
   Eigen::VectorXd x_new;
   // TO DO (9-10.f): implement one Newton step exploiting the
   // Sherman-Morrison-Woodbury formula.
@@ -109,8 +106,7 @@ Eigen::VectorXd newton_step(const Eigen::VectorXd &x,
 //! \param[in] b rhs vector $b \in \mathbf{R}^n$
 //! \param[out] x next step $x^{(k+1)}$
 /* SAM_LISTING_BEGIN_4 */
-Eigen::VectorXd solveQLSystem_Newton(double rtol, double atol,
-                                     Eigen::VectorXd &b) {
+Eigen::VectorXd solveQLSystem_Newton(double rtol, double atol, Eigen::VectorXd &b) {
   int n = b.size();
 
   Eigen::VectorXd x(n);
@@ -127,8 +123,8 @@ Eigen::VectorXd solveQLSystem_Newton(double rtol, double atol,
     double err = (x - x_new).norm();
     x = x_new;
 
+	// Check if Newton method is successful
     if (err < atol || err < rtol * x_new.norm()) {
-      std::cout << "Newton method successful" << std::endl;
       break;
     }
   }

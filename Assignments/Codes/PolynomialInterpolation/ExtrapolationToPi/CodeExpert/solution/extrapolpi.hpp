@@ -1,4 +1,3 @@
-
 #include <Eigen/Dense>
 #include <iostream>
 #include <iomanip>
@@ -10,7 +9,7 @@ namespace plt = matplotlibcpp;
 
 /* SAM_LISTING_BEGIN_0 */
 double extrapolate_to_pi(unsigned int k) {
-  double pi=0;
+  double pi = 0;
   // TO DO (6-8.b): Use the Aitken-Neville scheme to approximate
   // pi by extrapolation.
   // Hint: You can use the constant M_PI and Eigen's sin(),

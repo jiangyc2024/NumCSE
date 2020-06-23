@@ -1,4 +1,0 @@
-// "testname", "input", "expected output", "points", "execution time limit (ms)"
-"PhiAndW: Phi", "(any input)", "0.194835  2.25777",  "1", "500000",
-"PhiAndW: W", "(any input)", "-0.158907 0.0637957\n -0.121175 -0.610455",  "1", "500000",
-"findInitCond: y", "(any input)", "3.10988 2.08098",  "1", "500000",

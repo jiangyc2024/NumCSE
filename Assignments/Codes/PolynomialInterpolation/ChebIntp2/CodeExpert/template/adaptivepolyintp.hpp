@@ -23,12 +23,9 @@ namespace plt = matplotlibcpp;
  */
 /* SAM_LISTING_BEGIN_1 */
 template <class Function>
-
-VectorXd adaptivepolyintp( Function&& f, double a, double b,
-                      double tol, int N,
-                      /* Ignore the following line for part a) */
-                      std::vector<double> *errortab = nullptr ) {
-  // TO DO (7-3.a) : implement the greedy algorithm for adaptive interpolation
+VectorXd adaptivepolyintp(Function&& f, double a, double b, double tol, int N, std::vector<double> *errortab = nullptr) {
+  // TO DO (7-3.a) : implement the greedy algorithm for adaptive interpolation.
+  // Ignore the errortab part of this function for now.
   
   // Generate sampling points and evaluate $f$ there
   VectorXd sampling_points = VectorXd::LinSpaced(N, a, b),

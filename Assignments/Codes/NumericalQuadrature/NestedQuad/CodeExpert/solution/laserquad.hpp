@@ -22,8 +22,7 @@ namespace plt = matplotlibcpp;
 //! @return Approximation of integral $\int_a^b f(x) dx$
 /* SAM_LISTING_BEGIN_1 */
 template <class Function>
-double evalquad(const double a, const double b, Function &&f,
-                const QuadRule &Q) {
+double evalquad(const double a, const double b, Function &&f, const QuadRule &Q) {
   double I;
   // TO DO: (8-4.b) Use Q to approximate the integral of f over [a,b]
   // START
@@ -96,7 +95,6 @@ double gaussquadtriangle(const Function& f, const unsigned N) {
 void convtest2DQuad(unsigned int nmax = 20) {
   // "Exact" integral
   const double I_ex = 0.366046550000405;
-
   // TO DO: (8-4.d) Tabulate the error of gaussquadtriangle() for
   // a laser beam intensity, using n=1,2,3,...,nmax nodes.
   // START
