@@ -8,8 +8,8 @@
 
 struct TestData {
 	TestData() {
-		z = Eigen::VectorXd::Random(50);
-		g = Eigen::VectorXd::Random(50);
+		z = Eigen::VectorXd::Random(15);
+		g = Eigen::VectorXd::Random(15);
 	}
 	
 	Eigen::VectorXd z, g;

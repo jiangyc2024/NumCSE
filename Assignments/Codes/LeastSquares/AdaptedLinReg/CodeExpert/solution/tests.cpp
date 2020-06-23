@@ -8,13 +8,12 @@
 
 struct TestData {
 	TestData() {
-		n = 25;
+		n = 50;
 		t = Eigen::VectorXd::LinSpaced(n, 0., 1.);
-		std::srand(41);
 		noise = Eigen::VectorXd::Random(n);
 	}
 	
-	int n;
+	std::size_t n;
 	Eigen::VectorXd t, noise;
 };
 

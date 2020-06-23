@@ -9,8 +9,7 @@
 struct TestData {
 	TestData() {
 		tol = 1e-3;
-		n = 10;
-		std::srand(21);
+		n = 50;
 		d = Eigen::VectorXd::Random(n);
 	}
 	double tol;
@@ -34,7 +33,9 @@ TEST_SUITE("RankOneInvit") {
 		CHECK(sol == doctest::Approx(stud).epsilon(1e-6));
 	}
 	
-	TEST_CASE("void rankoneinvit_runtime" * doctest::description("skipped") * doctest::skip()) {}
+	TEST_CASE("void rankoneinvit_runtime" * doctest::description("runtime")) {
+		MESSAGE("This function wasn't tested. Run the program to see its output.");
+	}
 	
 }
 

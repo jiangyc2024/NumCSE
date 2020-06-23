@@ -39,7 +39,9 @@ TEST_SUITE("EvaluatingDerivatives") {
 		CHECK(sol.second == doctest::Approx(stud.second).epsilon(1e-6));
 	}
 	
-	TEST_CASE("bool polyTestTime" * doctest::description("polyTestTime() returns true") * doctest::skip()) {}
+	TEST_CASE("bool polyTestTime" * doctest::description("polyTestTime() returns true")) {
+		MESSAGE("This function wasn't tested. Run the program to see its output.");
+	}
 	
 	TEST_CASE("VectorXd dipoleval" * doctest::description("dipoleval()")) {
 		auto sol = dipoleval(data.t, data.y, data.x_vec);

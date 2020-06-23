@@ -10,7 +10,7 @@
 
 struct TestData {
 	TestData() {
-		n = 999;
+		n = 1000;
 		alpha = -4.;
 		beta = 1.;
 		T.resize(n, n);
@@ -25,11 +25,10 @@ struct TestData {
 		T.setFromTriplets(triplets.begin(), triplets.end());
 		T.makeCompressed();
 		z = Eigen::VectorXd::LinSpaced(n, -1., 1.);
-		std::srand(39);
 		c = T * z + 0.5 * Eigen::VectorXd::Random(n);
 	}
 	
-	int n;
+	std::size_t n;
 	double alpha, beta;
 	Eigen::SparseMatrix<double> T;
 	Eigen::VectorXd z, c;
