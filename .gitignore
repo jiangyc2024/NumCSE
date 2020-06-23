@@ -8,6 +8,8 @@ install_manifest.txt
 build
 third_party
 octave-workspace
+cmake_debug
+cmake_release
 
 # Compiled Object files
 *.slo
