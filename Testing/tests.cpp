@@ -51,6 +51,21 @@ TEST_SUITE("_____EXERCISE_NAME_____") {
 		}
 	}
 	
+	// test case for out of class definitions of functions with the following
+	// signature: void Class::member(param1, param2)
+	// It is extremely important to include the exact key [OUT OF CLASS] in the name
+	// of the test; copy_and_tweak.py knows then that this is a class member function
+	// and will only change the name of the class to *_TEST.
+	// Class member function testing is NOT independent!
+	TEST_CASE("void member [OUT OF CLASS]" * doctest::description("DESCRIPTION, e.g. void Class::member")) {
+		// checks here
+		
+		// generate test objects of that class with Class_TEST, refer to its member
+		// functions with Class_TEST.member(param1, param2)
+		// refer to the object Class for the solution object
+		
+	}
+	
 	// Functions that print, but aren't tested.
 	// Typically congerence/error studies, tabulating results.
 	TEST_CASE("FUNCTION" * doctest::description("DESCRIPTION")) {
