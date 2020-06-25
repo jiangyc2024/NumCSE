@@ -18,6 +18,8 @@ struct TestData {
 TestData data;
 
 TEST_SUITE("Autofocus") {
+	TEST_CASE("MatrixXd set_focus" * doctest::description("skipped") * doctest::skip()) {}
+	
 	TEST_CASE("double high_frequency_content" * doctest::description("Compute V")) {		
 		double sol = high_frequency_content(data.M);
 		double stud = high_frequency_content_TEST(data.M);

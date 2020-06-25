@@ -1,9 +1,8 @@
 1. Existing TODO comments in autofocus.hpp (template and solution)
-2. Rewrite mgl into matplotlib
-3. Test compilation, running (must first remove mgl dependency)
+2. Check correctness of mathgl to matplotlibcpp conversion
+3. SPEEEEEEED UP
 4. Clean up other junk in the exercise folder
 5. Add exercise numbers, better task description in autofocus.hpp
 6. Write more comprehensive tests?
 7. Replace M in tests.cpp (template and solution) with the correct
 one
-8. Put include guards into autofocus.hpp
