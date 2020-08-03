@@ -1,2 +1,7 @@
 # message(WARNING "NCSE Eigen Tutorial is skipped currently!")
 #add_executable (ncse_eigentutorial main.cpp)
+add_executable (ncse_eigentutorial_eigentypedemo eigentypedemo.cpp)
+add_executable (ncse_eigentutorial_initdense initdense.cpp)
+add_executable (ncse_eigentutorial_blockinit blockinit.cpp)
+add_executable (ncse_eigentutorial_blockaccess blockaccess.cpp)
+add_executable (ncse_eigentutorial_matarray matarray.cpp)
