@@ -18,6 +18,7 @@
 
 using namespace std;
 
+/* SAM_LISTING_BEGIN_1 */
 int main() {
   // initialize a vector from an initializer list
   std::vector<double> v({1.2,2.3,3.4,4.5,5.6,6.7,7.8});
@@ -31,3 +32,5 @@ int main() {
   for(auto x: w) cout << x << ' '; cout << ']' << endl;
   return(0);
 }
+/* SAM_LISTING_END_1 */
+
