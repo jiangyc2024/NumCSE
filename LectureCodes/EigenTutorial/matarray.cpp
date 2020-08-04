@@ -9,7 +9,6 @@ using namespace Eigen;
 using namespace std;
 
 void matArray(int nrows, int ncols) {
-
   MatrixXd m1(nrows, ncols), m2(nrows, ncols);
   for (int i = 0; i < m1.rows(); i++)
     for (int j = 0; j < m1.cols(); j++) {
@@ -30,8 +29,6 @@ void matArray(int nrows, int ncols) {
 }
 
 int main(int argc, char **argv) {
-
   cout << "matArray(6, 7)" << endl << endl;
-
   matArray(6, 7);
 }

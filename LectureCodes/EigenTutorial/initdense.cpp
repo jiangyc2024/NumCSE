@@ -11,7 +11,6 @@ using namespace std;
 /** Demo for initialization of dense matrices */
 
 void initDense(size_t const rows, size_t const cols) {
-
   // Just allocate space for matrix, no initialisation; No guarantee for
   // zero-entries
   MatrixXd A(rows, cols);
@@ -36,7 +35,6 @@ void initDense(size_t const rows, size_t const cols) {
 }
 
 int main(int argc, char **argv) {
-
   cout << "initDense(3, 2)" << endl << endl;
   initDense(3, 2);
 }

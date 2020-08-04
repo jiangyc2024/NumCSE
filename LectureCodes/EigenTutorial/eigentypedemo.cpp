@@ -9,8 +9,9 @@ using namespace Eigen;
 using namespace std;
 
 /** Demo for use of matrix and vector types in Eigen */
-template <typename Scalar> void eigenTypeDemo(unsigned int const dim) {
-
+/* SAM_LISTING_BEGIN_1 */
+template <typename Scalar>
+void eigenTypeDemo(unsigned int const dim) {
   // General dynamic (variable size) matrices
   using dynMat_t = Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>;
   // Dynamic (variable size) column vectors
@@ -25,11 +26,9 @@ template <typename Scalar> void eigenTypeDemo(unsigned int const dim) {
   dynRowVec_t rowvec(dim);
 
   // Initialisation through component access
-  for (index_t i = 0; i < colvec.size(); ++i)
-    colvec(i) = (entry_t)i;
+  for (index_t i = 0; i < colvec.size(); ++i) colvec(i) = (entry_t)i;
 
-  for (index_t i = 0; i < rowvec.size(); ++i)
-    rowvec(i) = (entry_t)1 / (i + 1);
+  for (index_t i = 0; i < rowvec.size(); ++i) rowvec(i) = (entry_t)1 / (i + 1);
 
   colvec[0] = (entry_t)3.14;
   rowvec[dim - 1] = (entry_t)2.718;
@@ -47,9 +46,9 @@ template <typename Scalar> void eigenTypeDemo(unsigned int const dim) {
 
   cout << "size of vecprod = (" << nrows << ',' << ncols << ")" << endl;
 }
+/* SAM_LISTING_END_1 */
 
 int main(int argc, char **argv) {
-
   cout << "eigenTypeDemo<float>(7)" << endl << endl;
   eigenTypeDemo<float>(7);
 }
