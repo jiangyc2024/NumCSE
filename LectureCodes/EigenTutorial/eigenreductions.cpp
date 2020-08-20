@@ -1,4 +1,4 @@
-/* Demonstraction code for coursed Numerical Methods  for CSE, ETH Zurich
+/* Demonstraction code for course Numerical Methods  for CSE, ETH Zurich
    Reductions  in Eigen, see
    https://eigen.tuxfamily.org/dox/group__TutorialReductionsVisitorsBroadcasting.html
    @author Ralf Hiptmair

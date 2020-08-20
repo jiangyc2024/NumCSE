@@ -4,4 +4,4 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wall -Wextra -Wno-deprecated
 
 add_executable (ncse_eigentutorial main.cpp)
 add_executable (ncse_eigenreductions eigenreductions.cpp)
-
+add_executable (ncse_eigenoptiming eigenoptiming.cpp)
