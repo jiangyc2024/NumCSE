@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 import math
 import matplotlib.pyplot as plt
-from astropy.io import ascii
 
 x = pd.read_fwf( "timings.txt", widths = [5, 10, 10, 10, 10]).to_numpy( )
 print( x )
