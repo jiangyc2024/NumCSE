@@ -3,7 +3,7 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 
-x = pd.read_fwf( "timings.txt", widths = [5, 10, 10, 10, 10]).to_numpy( )
+x = pd.read_fwf( "timings.txt", widths = [10, 10, 10, 10, 10]).to_numpy( )
 print( x )
 plt.figure( )
 plt.title( "inversion of diagonal matrices\nperformance vs. matrix size" )

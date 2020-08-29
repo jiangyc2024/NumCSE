@@ -3,3 +3,4 @@ project(sparsetiming)
 
 add_executable_numcse(main sparsetiming.cpp)
 
+include_directories( ${CMAKE_SOURCE_DIR}/Utils )

@@ -15,3 +15,5 @@ add_executable (ncse_eigenoptiming eigenoptiming.cpp)
 
 # This is the old code 
 add_executable (ncse_eigentutorial main.cpp)
+
+include_directories( ${CMAKE_SOURCE_DIR}/Utils )

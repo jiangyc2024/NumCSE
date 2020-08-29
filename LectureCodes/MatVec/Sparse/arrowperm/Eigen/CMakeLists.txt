@@ -3,3 +3,4 @@ project(arrowperm)
 
 add_executable_numcse(main main.cpp)
 
+include_directories(${CMAKE_SOURCE_DIR}/Utils)
