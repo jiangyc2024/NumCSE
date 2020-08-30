@@ -18,6 +18,8 @@ endif()
 # note: disabled since absolute paths are fine for now
 #SET(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # set cmake module path
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMake/Modules/")
 
