@@ -87,7 +87,6 @@ struct _interpreter {
   PyObject *s_python_function_suptitle;
   PyObject *s_python_function_bar;
   PyObject *s_python_function_subplots_adjust;
-  PyObject *s_python_function_triplot;
 
   /* For now, _interpreter is implemented as a singleton since its currently not
      possible to have multiple independent embedded python interpreters without
@@ -219,7 +218,6 @@ private:
     s_python_function_bar = PyObject_GetAttrString(pymod, "bar");
     s_python_function_subplots_adjust =
         PyObject_GetAttrString(pymod, "subplots_adjust");
-    s_python_function_triplot = PyObject_GetAttrString(pymod, "triplot");
 
     if (!s_python_function_show || !s_python_function_close ||
         !s_python_function_draw || !s_python_function_pause ||
@@ -241,7 +239,7 @@ private:
         !s_python_function_stem || !s_python_function_xkcd ||
         !s_python_function_text || !s_python_function_suptitle ||
         !s_python_function_bar || !s_python_function_subplots_adjust ||
-        !s_python_function_spy || !s_python_function_triplot) {
+        !s_python_function_spy) {
       throw std::runtime_error("Couldn't find required function!");
     }
 
@@ -284,8 +282,7 @@ private:
         !PyFunction_Check(s_python_function_text) ||
         !PyFunction_Check(s_python_function_suptitle) ||
         !PyFunction_Check(s_python_function_bar) ||
-        !PyFunction_Check(s_python_function_subplots_adjust) ||
-        !PyFunction_Check(s_python_function_triplot)) {
+        !PyFunction_Check(s_python_function_subplots_adjust)) {
       throw std::runtime_error(
           "Python object is unexpectedly not a PyFunction.");
     }
@@ -927,37 +924,6 @@ bool spy(const Matrix &A,
   Py_DECREF(kwargs);
   if (res)
     Py_DECREF(res);
-
-  return res;
-}
-
-template <typename Vector, typename Matrix>
-bool triplot(const Vector &x, const Vector &y, const Matrix & T, const std::map<std::string, std::string>& keywords = {} ) {
-
-  assert(x.size() == y.size());
-
-  PyObject *xarray = get_array(x);
-  PyObject *yarray = get_array(y);
-  PyObject *Tarray = get_2darray(T);
-
-  PyObject *plot_args = PyTuple_New(3);
-  PyTuple_SetItem(plot_args, 0, xarray);
-  PyTuple_SetItem(plot_args, 1, yarray);
-  PyTuple_SetItem(plot_args, 2, Tarray);
-
-  PyObject *kwargs = PyDict_New();
-  for (std::map<std::string, std::string>::const_iterator it = keywords.begin();
-       it != keywords.end(); ++it) {
-    PyDict_SetItemString(kwargs, it->first.c_str(),
-                         PyUnicode_FromString(it->second.c_str()));
-  }
-
-  PyObject *res = PyObject_Call( detail::_interpreter::get().s_python_function_triplot, plot_args, kwargs );
-
-  Py_DECREF( plot_args );
-  Py_DECREF( kwargs );
-
-  if( res ) Py_DECREF( res );
 
   return res;
 }
