@@ -23,6 +23,8 @@ TEST_SUITE("Lyapunov") {
 		auto C_sol = buildC(data.A);
 		auto C_stud = buildC_TEST(data.A);
 		
+		REQUIRE(C_sol.rows() == C_stud.rows());
+		REQUIRE(C_sol.cols() == C_stud.cols());
 		CHECK((C_sol - C_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
 	
@@ -32,6 +34,8 @@ TEST_SUITE("Lyapunov") {
 		solveLyapunov(data.A, X_sol);
 		solveLyapunov_TEST(data.A, X_stud);
 		
+		REQUIRE(X_sol.rows() == X_stud.rows());
+		REQUIRE(X_sol.cols() == X_stud.cols());
 		CHECK((X_sol - X_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
 	

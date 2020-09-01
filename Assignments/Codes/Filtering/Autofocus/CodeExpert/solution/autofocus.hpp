@@ -82,20 +82,6 @@ void plot_freq(double focus) {
     // END
 
     // Plot values of $\mathbf{X}$.
-//    mglData Xd(D.cols(), D.rows(), D.data());
-//    mglGraph gr;
-//    gr.Colorbar("bcwyr");
-//    std::stringstream ss;
-//    ss << "Spectrumm with f = "
-//       << focus
-//       << ".";
-//    gr.Title(ss.str().c_str());
-//    gr.Axis(); gr.Tile(Xd, "bcwyr");
-//    std::stringstream ss2;
-//    ss2 << "./cx_out/spectrum_focus="
-//        << focus
-//        << ".png";
-//    gr.WritePNG(ss2.str().c_str());
 	// Axis labels
 	std::vector<double> xticks(5);
 	for (int i = 0; i < 5; ++i) {

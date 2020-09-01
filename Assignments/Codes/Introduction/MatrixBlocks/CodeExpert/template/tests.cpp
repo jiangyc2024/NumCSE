@@ -14,6 +14,8 @@ TEST_SUITE("MatrixBlocks") {
 		const auto sol = zero_row_col(A, 0, 1);
 		const auto stud = zero_row_col_TEST(A, 0, 1);
 		
+		REQUIRE(sol.rows() == stud.rows());
+		REQUIRE(sol.cols() == stud.cols());
 		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 		
 	}
@@ -24,6 +26,8 @@ TEST_SUITE("MatrixBlocks") {
 		const auto sol = swap_left_right_blocks(B, 2);
 		const auto stud = swap_left_right_blocks_TEST(B, 2);
 		
+		REQUIRE(sol.rows() == stud.rows());
+		REQUIRE(sol.cols() == stud.cols());
 		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 		
 	}
@@ -33,6 +37,8 @@ TEST_SUITE("MatrixBlocks") {
 		const auto sol = tridiagonal(4, -1, 2, -1);
 		const auto stud = tridiagonal_TEST(4, -1, 2, -1);
 		
+		REQUIRE(sol.rows() == stud.rows());
+		REQUIRE(sol.cols() == stud.cols());
 		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 		
 	}

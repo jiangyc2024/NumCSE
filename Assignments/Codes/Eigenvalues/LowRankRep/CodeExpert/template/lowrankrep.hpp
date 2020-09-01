@@ -56,7 +56,9 @@ std::tuple<MatrixXd, MatrixXd, MatrixXd> svd_AB(const MatrixXd& A, const MatrixX
   //matrices U,S,V of the svd decomposition of A*B^T
   //Hint: You can define a tuple of objects using std::make_tuple
   //START
-  
+  // replace the dummies
+  MatrixXd U, S, V;
+  return std::make_tuple(U, S, V);
   //END
 }
 /* SAM_LISTING_END_1 */
@@ -85,7 +87,9 @@ std::pair<MatrixXd,MatrixXd> rank_k_approx(const MatrixXd & Ax,const MatrixXd & 
   //Hint: you can define pairs of objects using std::make_pair
   //Hint: use std::get<i>(my_tuple) to extract the i-th element of a tuple
   //START
-  
+  // replace the dummies
+  MatrixXd Az, Bz;
+  return std::make_pair(Az, Bz);
   //END
 }
 /* SAM_LISTING_END_2 */

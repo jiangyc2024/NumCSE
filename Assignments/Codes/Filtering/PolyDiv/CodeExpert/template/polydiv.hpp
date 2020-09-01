@@ -29,13 +29,7 @@ VectorXd polyMult_naive(const VectorXd & u, const VectorXd & v)
 	
 	// TODO: multiply polynomials $u$ and $v$ naively
 	// START
-	for(int i=0; i<uv.size(); ++i) {
-		int fst = std::max(0, i - (dim - 1));
-		int lst = std::min(i, dim - 1);
-		for(int j=fst; j<=lst; ++j) {
-			uv(i) += u_tmp(j) * v_tmp(i-j);
-		}
-	}
+	
 	// END
 	
 	return uv;
@@ -63,11 +57,7 @@ VectorXd polyMult_fast(const VectorXd & u, const VectorXd & v)
 	
 	// TODO: multiply polynomials $u$ and $v$ efficiently
 	// START
-	Eigen::FFT<double> fft;
-	VectorXcd u_tmp_ = fft.fwd(u_tmp);
-	VectorXcd v_tmp_ = fft.fwd(v_tmp);
-	VectorXcd tmp = u_tmp_.cwiseProduct(v_tmp_);
-	uv = fft.inv(tmp).real();
+	
 	// END
 	
 	return uv;
@@ -96,17 +86,7 @@ VectorXd polyDiv(const VectorXd & uv, const VectorXd & u)
 	/* SAM_LISTING_BEGIN_3 */
 	// TODO: make sure that $uv$ can be divided by $u$
 	// START
-	// Machine precision
-	double epsilon = std::numeric_limits<double>::epsilon();
-	for(int i=dim-1; i>=0; --i) { // Right-most value of longest vector
-		// is not necessarily numerically different than 0...
-		if(std::abs(uv_tmp(i)) > epsilon*uv.norm()) {
-			// No problem
-			break;
-		} else if(std::abs(u_tmp(i)) > epsilon*u.norm()) {
-			std::exit(EXIT_FAILURE);
-		}
-	}
+	
 	// END
 	/* SAM_LISTING_END_3 */
 	
@@ -114,14 +94,7 @@ VectorXd polyDiv(const VectorXd & uv, const VectorXd & u)
 	
 	// TODO: divide polynomials $uv$ and $u$ efficiently (no remainder)
 	// START
-	Eigen::FFT<double> fft;
-	VectorXcd uv_tmp_ = fft.fwd(uv_tmp);
-	VectorXcd u_tmp_ = fft.fwd(u_tmp);
-	VectorXcd tmp = uv_tmp_.cwiseQuotient(u_tmp_);
-	v = fft.inv(tmp).real();
 	
-	v.conservativeResizeLike(VectorXd::Zero(mn - m + 1));
-	// (mn-1) - (m-1) + 1
 	// END
 	return v;
 }

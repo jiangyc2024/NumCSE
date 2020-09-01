@@ -23,6 +23,7 @@ TEST_SUITE("FFTLSQ") {
 		auto sol = gauss_fit(d, 3);
 		auto stud = gauss_fit_TEST(d, 3);
 		
+		REQUIRE(sol.size() == stud.size());
 		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
 }

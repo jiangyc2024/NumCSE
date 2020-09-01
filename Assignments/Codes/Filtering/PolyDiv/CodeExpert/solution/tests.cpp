@@ -24,6 +24,7 @@ TEST_SUITE("polyDiv") {
 		auto sol = polyMult_naive(data.u, data.v);
 		auto stud = polyMult_naive_TEST(data.u, data.v);
 		
+		REQUIRE(sol.size() == stud.size());
         CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
 
@@ -31,6 +32,7 @@ TEST_SUITE("polyDiv") {
 		auto sol = polyMult_fast(data.u, data.v);
 		auto stud = polyMult_fast_TEST(data.u, data.v);
 		
+		REQUIRE(sol.size() == stud.size());
         CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
 		
@@ -40,7 +42,9 @@ TEST_SUITE("polyDiv") {
 		auto sol_v = polyDiv(sol_uv, data.v);
 		auto stud_v = polyDiv_TEST(stud_uv, data.v);
 		
+		REQUIRE(sol_uv.size() == stud_uv.size());
+		REQUIRE(sol_v.size() == stud_v.size());
         CHECK((sol_v - stud_v).norm() == doctest::Approx(0.).epsilon(1e-6));
-		CHECK((data.v - stud_v).norm() == doctest::Approx(0.).epsilon(1e-6));
+		CHECK((sol_uv - stud_uv).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
 }

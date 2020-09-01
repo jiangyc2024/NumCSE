@@ -30,6 +30,7 @@ TEST_SUITE("PartitionedMatrix") {
 		solvelse(data.R, data.v, data.u, data.bb, xo_sol);
 		solvelse_TEST(data.R, data.v, data.u, data.bb, xo_stud);
 		
+		REQUIRE(xo_sol.size() == xo_stud.size());
 		CHECK((xo_sol - xo_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 		
 	}
@@ -42,6 +43,7 @@ TEST_SUITE("PartitionedMatrix") {
 		bool check_stud = testSolveLSE_TEST(data.R, data.v, data.u, data.bb, xe_stud);
 		
 		// check if LU-Decomposition was done correctly
+		REQUIRE(xe_sol.size() == xe_stud.size());
 		CHECK((xe_sol - xe_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 		CHECK(check_stud == check_sol);
 		

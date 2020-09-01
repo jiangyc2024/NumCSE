@@ -32,6 +32,8 @@ TEST_SUITE("GridFunction") {
 		eval(X_sol, data.f);
 		eval_TEST(X_stud, data.f);
 		
+		REQUIRE(X_sol.rows() == X_stud.rows());
+		REQUIRE(X_sol.cols() == X_stud.cols());
 		CHECK((X_sol - X_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
 	
@@ -41,11 +43,15 @@ TEST_SUITE("GridFunction") {
 		Eigen::SparseMatrix<double> A_small_sol = build_matrix(data.S, std::array<std::size_t, 2>{3, 3});
 		Eigen::SparseMatrix<double> A_small_stud = build_matrix_TEST(data.S, std::array<std::size_t, 2>{3, 3});
 		
+		REQUIRE(A_small_sol.rows() == A_small_stud.rows());
+		REQUIRE(A_small_sol.cols() == A_small_stud.cols());
 		CHECK((A_small_stud - A_small_sol).norm() == doctest::Approx(0.).epsilon(1e-6));
 		
 		Eigen::SparseMatrix<double> A_sol = build_matrix(data.S, std::array<std::size_t, 2>{data.n, data.m});
 		Eigen::SparseMatrix<double> A_stud = build_matrix_TEST(data.S, std::array<std::size_t, 2>{data.n, data.m});
 		
+		REQUIRE(A_sol.rows() == A_stud.rows());
+		REQUIRE(A_sol.cols() == A_stud.cols());
 		CHECK((A_stud - A_sol).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
 	
@@ -58,6 +64,8 @@ TEST_SUITE("GridFunction") {
 		mult(A, X, Y_sol);
 		mult_TEST(A, X, Y_stud);
 		
+		REQUIRE(Y_sol.rows() == Y_stud.rows());
+		REQUIRE(Y_sol.cols() == Y_stud.cols());
 		CHECK((Y_sol - Y_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
 	
@@ -72,6 +80,8 @@ TEST_SUITE("GridFunction") {
 		solve(A, Y, X_sol);
 		solve_TEST(A, Y, X_stud);
 		
+		REQUIRE(X_sol.rows() == X_stud.rows());
+		REQUIRE(X_sol.cols() == X_stud.cols());
 		CHECK((X_sol - X_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
 	

@@ -14,7 +14,9 @@ TEST_SUITE("Toeplitz") {
 
 		auto sol = toeplitz(c, r);
 		auto stud = toeplitz_TEST(c, r);
-
+		
+		REQUIRE(sol.rows() == stud.rows());
+		REQUIRE(sol.cols() == stud.cols());
 		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
 	
@@ -32,7 +34,8 @@ TEST_SUITE("Toeplitz") {
 
 		auto sol = ttsolve(h, y);
 		auto stud = ttsolve_TEST(h, y);
-
+		
+		REQUIRE(sol.size() == stud.size());
 		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
 	

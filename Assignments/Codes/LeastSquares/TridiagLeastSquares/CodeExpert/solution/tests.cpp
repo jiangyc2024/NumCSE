@@ -42,6 +42,7 @@ TEST_SUITE("TridiagLeastSquares") {
 		Eigen::VectorXd sol = lsqEst(data.z, data.c);
 		Eigen::VectorXd stud = lsqEst_TEST(data.z, data.c);
 		
+		REQUIRE(sol.size() == stud.size());
 		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
 	

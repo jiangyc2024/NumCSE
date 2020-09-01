@@ -51,6 +51,10 @@ TEST_SUITE("TriDiagQR") {
 
 		sol_A.getDense(Q_sol, R_sol);
 		stud_A.getDense(Q_stud, R_stud);
+		REQUIRE(Q_sol.rows() == Q_stud.rows());
+		REQUIRE(Q_sol.cols() == Q_stud.cols());
+		REQUIRE(R_sol.rows() == R_stud.rows());
+		REQUIRE(R_sol.cols() == R_stud.cols());
 		CHECK((Q_sol - Q_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 		CHECK((R_sol - R_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 
@@ -59,6 +63,10 @@ TEST_SUITE("TriDiagQR") {
 		TriDiagonalQR_TEST stud_B(B);
 		sol_B.getDense(Q_sol, R_sol);
 		stud_B.getDense(Q_stud, R_stud);
+		REQUIRE(Q_sol.rows() == Q_stud.rows());
+		REQUIRE(Q_sol.cols() == Q_stud.cols());
+		REQUIRE(R_sol.rows() == R_stud.rows());
+		REQUIRE(R_sol.cols() == R_stud.cols());
 		CHECK((Q_sol - Q_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 		CHECK((R_sol - R_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
@@ -70,6 +78,7 @@ TEST_SUITE("TriDiagQR") {
 		Eigen::VectorXd x = Eigen::VectorXd::Random(data.n);
 		Eigen::VectorXd sol = sol_A.applyQT(x);
 		Eigen::VectorXd stud = stud_A.applyQT(x);
+		REQUIRE(sol.size() == stud.size());
 		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 
 		TriDiagonalMatrix B(data.d_B, data.l_B, data.u_B);
@@ -77,6 +86,7 @@ TEST_SUITE("TriDiagQR") {
 		TriDiagonalQR_TEST stud_B(B);
 		sol = sol_B.applyQT(x);
 		stud = stud_B.applyQT(x);
+		REQUIRE(sol.size() == stud.size());
 		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
 	
@@ -93,11 +103,13 @@ TEST_SUITE("TriDiagQR") {
 			Eigen::VectorXd b = Eigen::VectorXd::LinSpaced(data.n, 1, data.n);
 			Eigen::VectorXd sol = sol_A.solve(b);
 			Eigen::VectorXd stud = stud_A.solve(b);
+			REQUIRE(sol.size() == stud.size());
 			CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 
 			b = Eigen::VectorXd::Random(data.n);
 			sol = sol_B.solve(b);
 			stud = stud_B.solve(b);
+			REQUIRE(sol.size() == stud.size());
 			CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 		}
 		SUBCASE("exception test") {
