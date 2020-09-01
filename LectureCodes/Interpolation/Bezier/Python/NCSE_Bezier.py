@@ -365,6 +365,12 @@ def plotConvexHull(filename = "convexhull.eps"):
     plt.show(block = False)
     
 if __name__ == "__main__":
+    print("""
+    Visualization script for creating graphics for the section on Algorithms for cuurve design
+    for the course Numerical Methods for CSE.
+
+    The names of the EPS files are given as default for the filename arguments.
+    """)
     plt.rcParams.update({
         "text.usetex": True})
     # The "car shape"
