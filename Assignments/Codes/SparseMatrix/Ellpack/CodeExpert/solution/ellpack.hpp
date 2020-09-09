@@ -56,8 +56,8 @@ double EllpackMat::operator()(index_t i, index_t j) const {
   assert(0 <= i && i < m && 0 <= j && j < n && "Index out of bounds!");
 
   for (index_t l = i * maxcols; l < (i + 1) * maxcols; ++l) {
-    if (col[l] == j)
-      return val[l];
+	  if (col.at(l) == j)
+		  return val.at(l);
   }
   return 0;
 }

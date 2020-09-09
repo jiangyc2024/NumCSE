@@ -28,6 +28,7 @@ TEST_SUITE("StructuredMatrixVector") {
 		multAmin(data.xa, sol);
 		multAmin_TEST(data.xa, stud);
 		
+		REQUIRE(sol.size() == stud.size());
 		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
 	
@@ -41,6 +42,8 @@ TEST_SUITE("StructuredMatrixVector") {
 		sol = multABunitv();
 		stud = multABunitv_TEST();
 		
+		REQUIRE(sol.rows() == stud.rows());
+		REQUIRE(sol.cols() == stud.cols());
 		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
 }

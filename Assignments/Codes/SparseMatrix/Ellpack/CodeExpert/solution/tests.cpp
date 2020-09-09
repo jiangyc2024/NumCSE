@@ -44,7 +44,7 @@ TEST_SUITE("Ellpack") {
 		
 		for (std::size_t i = 0; i < data.m; ++i) {
 			for (std::size_t j = 0; j < data.n; ++j) {
-				CHECK(sol(i, j) == doctest::Approx(stud(i, j)).epsilon(1e-6));
+				REQUIRE(sol(i, j) == doctest::Approx(stud(i, j)).epsilon(1e-6));
 			}
 		}
 	}
@@ -61,6 +61,7 @@ TEST_SUITE("Ellpack") {
 		sol.mvmult(x, sol_vec);
 		stud.mvmult(x, stud_vec);
 		
+		REQUIRE(sol_vec.size() == stud_vec.size());
 		CHECK((stud_vec - sol_vec).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
 	
@@ -75,7 +76,8 @@ TEST_SUITE("Ellpack") {
 
 		sol.mtvmult(x, sol_vec);
 		stud.mtvmult(x, stud_vec);
-
+		
+		REQUIRE(sol_vec.size() == stud_vec.size());
 		CHECK((stud_vec - sol_vec).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
 
