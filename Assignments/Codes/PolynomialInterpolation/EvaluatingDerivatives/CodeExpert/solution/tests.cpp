@@ -47,6 +47,7 @@ TEST_SUITE("EvaluatingDerivatives") {
 		auto sol = dipoleval(data.t, data.y, data.x_vec);
 		auto stud = dipoleval_TEST(data.t, data.y, data.x_vec);
 		
+		REQUIRE(sol.size() == stud.size());
 		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
 	
@@ -54,6 +55,7 @@ TEST_SUITE("EvaluatingDerivatives") {
 		auto sol = dipoleval_alt(data.t, data.y, data.x_vec);
 		auto stud = dipoleval_alt_TEST(data.t, data.y, data.x_vec);
 		
+		REQUIRE(sol.size() == stud.size());
 		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
 	

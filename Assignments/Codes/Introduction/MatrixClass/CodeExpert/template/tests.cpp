@@ -13,6 +13,8 @@ TEST_SUITE("MatrixClass") {
 		const auto sol = smallTriangular(1, 2, 3);
 		const auto stud = smallTriangular_TEST(1, 2, 3);
 		
+		REQUIRE(sol.rows() == stud.rows());
+		REQUIRE(sol.cols() == stud.cols());
 		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 		
 	}
@@ -22,6 +24,8 @@ TEST_SUITE("MatrixClass") {
 		const auto sol = constantTriangular(3, 20);
 		const auto stud = constantTriangular_TEST(3, 20);
 		
+		REQUIRE(sol.rows() == stud.rows());
+		REQUIRE(sol.cols() == stud.cols());
 		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 		
 	}
@@ -40,6 +44,7 @@ TEST_SUITE("MatrixClass") {
 		const auto sol = arithmetics(4);
 		const auto stud = arithmetics_TEST(4);
 		
+		REQUIRE(sol.size() == stud.size());
 		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 		
 	}

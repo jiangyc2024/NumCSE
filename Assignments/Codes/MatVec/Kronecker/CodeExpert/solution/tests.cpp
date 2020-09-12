@@ -23,6 +23,8 @@ TEST_SUITE("Kronecker") {
     Eigen::MatrixXd C_stud;
     kron(data.A, data.B, C_sol);
     kron_TEST(data.A, data.B, C_stud);
+    REQUIRE(C_sol.rows() == C_stud.rows());
+    REQUIRE(C_sol.cols() == C_stud.cols());
     CHECK((C_sol - C_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
   }
 
@@ -31,6 +33,7 @@ TEST_SUITE("Kronecker") {
     Eigen::VectorXd y_stud;
     kron_mult(data.A, data.B, data.x, y_sol);
     kron_mult_TEST(data.A, data.B, data.x, y_stud);
+    REQUIRE(y_sol.size() == y_stud.size());
     CHECK((y_sol - y_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
   }
 
@@ -39,6 +42,7 @@ TEST_SUITE("Kronecker") {
     Eigen::VectorXd y_stud;
     kron_reshape(data.A, data.B, data.x, y_sol);
     kron_reshape_TEST(data.A, data.B, data.x, y_stud);
+    REQUIRE(y_sol.size() == y_stud.size());
     CHECK((y_sol - y_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
   }
 

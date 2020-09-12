@@ -58,7 +58,7 @@ def searchStudentSolution(main):
 	Returns a list of filenames.
 	"""
 	return_list = []
-	other_headers = ["polyfit", "polyval", "ode45", "solution", "solution2", "solution3"] # other headers ending with .hpp
+	other_headers = ["polyfit", "polyval", "ode45", "fft", "solution", "solution2", "solution3"] # other headers ending with .hpp
 	for line in main:
 		parse = re.match('\s*\#include\s*"(.*).hpp"', line)
 		if parse and parse.group(1) not in other_headers:
