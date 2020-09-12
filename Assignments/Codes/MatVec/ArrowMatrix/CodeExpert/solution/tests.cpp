@@ -22,7 +22,7 @@ TEST_SUITE("Arrow matrix x vector multiplication") {
 		
 		// test identity matrix
 		Eigen::VectorXd ones_d = Eigen::VectorXd::Ones(100);
-		Eigen::VectorXd zero_a = Eigen::VectorXd:Zero(100);
+		Eigen::VectorXd zero_a = Eigen::VectorXd::Zero(100);
 		Eigen::VectorXd y_stud_ident;
 		
 		efficient_arrow_matrix_2_times_x_TEST(ones_d, zero_a, a, y_stud_ident);
