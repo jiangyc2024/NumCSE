@@ -70,6 +70,13 @@ void efficient_arrow_matrix_2_times_x(const VectorXd &d,
          "Vector size must be the same!");
     int n = d.size();
 
+	// TO DO: (2-1.c) Implement an efficient version of arrow_matrix_2_times_x.
+	// Hint: Notice that performing two matrix vector multiplications is less
+	// expensive than a matrix-matrix multiplication.
+	// Therefore, as first step, we need a way to efficiently compute A*x
+	
+	// START
+	
     // Notice that we can compute (A*A)*x more efficiently using
     // A*(A*x). This is, in fact, performing two matrix vector
     // multiplications
@@ -108,6 +115,8 @@ void efficient_arrow_matrix_2_times_x(const VectorXd &d,
 
     // <=> y = A*(A*x)
     y = A_times_x(A_times_x(x));
+	
+	// END
 }
 /* SAM_LISTING_END_1 */
 
@@ -151,16 +160,18 @@ void runtime_arrow_matrix() {
                             x = Eigen::VectorXd::Random(n),
                             y;
 
-            // Compute times
+            // Compute times for original implementation
             timer.start();
             arrow_matrix_2_times_x(d, a, x, y);
             timer.stop();
             
              
-            // Compute times for efficient implementation
+            // TO DO: (2-1.e) Compute times for efficient implementation
+			// START
             timer_eff.start();
             efficient_arrow_matrix_2_times_x(d, a, x, y);
             timer_eff.stop();
+			// END
 
         }
         
