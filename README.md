@@ -5,8 +5,12 @@ This repository hosts all the codes used in the lecture notes and assignments.
 **Additional links**
 
 - [Course VVZ](http://www.vvz.ethz.ch/Vorlesungsverzeichnis/lerneinheit.view?semkez=2020W&ansicht=KATALOGDATEN&lerneinheitId=140998&lang=de)
-- [Git tutorial](https://gitlab.math.ethz.ch/tille/gitlab-introduction/blob/master/git/README.md)
-- [Debugger tutorial](https://gitlab.math.ethz.ch/tille/debugging-cpp-code-with-lldb)
+- Documentation:
+	- [Cppreference](https://en.cppreference.com/w/)
+	- [Eigen](http://eigen.tuxfamily.org/dox/)
+- Tutorials:
+	- [Git tutorial](https://gitlab.math.ethz.ch/tille/gitlab-introduction/blob/master/git/README.md)
+	- [Debugger tutorial](https://gitlab.math.ethz.ch/tille/debugging-cpp-code-with-lldb)
 
 ## Project Structure
 
