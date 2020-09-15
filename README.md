@@ -15,12 +15,9 @@ This repository hosts all the codes used in the lecture notes and assignments.
 ## Project Structure
 
 - `LectureCodes` - all codes used in the lecture notes / script sorted by their subject; there are different versions of the same code: C++ / Matlab (for most of the codes) / Python (for most of the codes)
-- `Assignments` - all codes used in the assignment. The path for each problem is:
+- `Assignments` - all codes used in the current assignments. The path for each problem is – note the CodeExpert subfolders:
     - for templates: `Assignments/Codes/<Chapter>/<ProblemName>/CodeExpert/template`
     - for solutions: `Assignments/Codes/<Chapter>/<ProblemName>/CodeExpert/solution`
-    - each one of these folder has an independent `CMake` file. Either within the cloned repository
-      or using the `Download zip` button, you shoud be able to compile and execute the
-      codes for the problem using:
 - `MathGL` - legacy plotting; documentation and example codes for MathGL
 - `CMake` - macros, modules used by CMake
 - `CppTutorial` - tutorial for C++
