@@ -101,7 +101,8 @@ double casting() {
   // first we need to cast the "int" vector u to a "std::complex<double>"
   // vector. Use u.cast< NEW TYPE >() to achieve this. The result of the inner
   // product will be 1*(1-i) + 1*(5+i) = 6 + 0i, a real number. You can get the
-  // real part of an std::complex<double> using the method "real()". START
+  // real part of an std::complex<double> using the method "real()".
+  // START
   std::complex<double> z = u.cast<std::complex<double>>().dot(v);
   x = z.real();
   // END
