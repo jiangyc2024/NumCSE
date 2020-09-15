@@ -1,19 +1,18 @@
 #ifndef ARROWMATRIX_FUNCTIONS_HPP
 #define ARROWMATRIX_FUNCTIONS_HPP
 
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 
 #include <Eigen/Dense>
 #include <vector>
 
-#include "timer.h"
 #include "matplotlibcpp.h"
 #include "plot.hpp"
+#include "timer.h"
 
 using namespace Eigen;
 namespace plt = matplotlibcpp;
-
 
 /* @brief Build an "arrow matrix" and compute A*A*y
  * Given vectors $a$ and $d$, returns A*A*x in $y$, where A is built from a, d
@@ -25,34 +24,31 @@ namespace plt = matplotlibcpp;
 /* SAM_LISTING_BEGIN_0 */
 void arrow_matrix_2_times_x(const VectorXd &d, const VectorXd &a,
                             const VectorXd &x, VectorXd &y) {
-    assert(d.size() == a.size() && a.size() == x.size() &&
-           "Vector size must be the same!");
-    int n = d.size();
+  assert(d.size() == a.size() && a.size() == x.size() &&
+         "Vector size must be the same!");
+  int n = d.size();
 
-    // In this lines, we extract the blocks used to construct the matrix A.
-    VectorXd d_head = d.head(n-1);
-    VectorXd a_head = a.head(n-1);
-    MatrixXd d_diag = d_head.asDiagonal();
+  // In this lines, we extract the blocks used to construct the matrix A.
+  VectorXd d_head = d.head(n - 1);
+  VectorXd a_head = a.head(n - 1);
+  MatrixXd d_diag = d_head.asDiagonal();
 
-    MatrixXd A(n,n);
+  MatrixXd A(n, n);
 
-    // We build the matrix A using the "comma initialization": each expression separated
-    // by a comma is a "block" of the matrix we are building.
-    // d\_diag is the top left (n-1)x(n-1) block
-    // a\_head is the top right vertical vector
-    // a\_head.transpose() is the bottom left horizontal vector
-    // d(n-1) is a single element (a 1x1 matrix), on the bottom right corner
-    // This is how the matrix looks like:
-    // A = | D   | a      |
-    //     |-----+--------|
-    //     | a\^T | d(n-1) |
-    A << d_diag,             a_head,
-         a_head.transpose(), d(n-1);
+  // We build the matrix A using the "comma initialization": each expression
+  // separated by a comma is a "block" of the matrix we are building. d\_diag is
+  // the top left (n-1)x(n-1) block a\_head is the top right vertical vector
+  // a\_head.transpose() is the bottom left horizontal vector
+  // d(n-1) is a single element (a 1x1 matrix), on the bottom right corner
+  // This is how the matrix looks like:
+  // A = | D   | a      |
+  //     |-----+--------|
+  //     | a\^T | d(n-1) |
+  A << d_diag, a_head, a_head.transpose(), d(n - 1);
 
-    y = A*A*x;
+  y = A * A * x;
 }
 /* SAM_LISTING_END_0 */
-
 
 /* @brief Build an "arrow matrix"
  * Given vectors $a$ and $b$, returns A*A*x in $y$, where A is build from a,d
@@ -62,11 +58,9 @@ void arrow_matrix_2_times_x(const VectorXd &d, const VectorXd &a,
  * @param[out] y The vector y = A*A*x
  */
 /* SAM_LISTING_BEGIN_1 */
-void efficient_arrow_matrix_2_times_x(const VectorXd &d,
-                                      const VectorXd &a,
-                                      const VectorXd &x,
-                                      VectorXd &y) {
-    assert(d.size() == a.size() && a.size() == x.size() &&
+void efficient_arrow_matrix_2_times_x(const VectorXd &d, const VectorXd &a,
+                                      const VectorXd &x, VectorXd &y) {
+  assert(d.size() == a.size() && a.size() == x.size() &&
          "Vector size must be the same!");
     int n = d.size();
 
@@ -120,12 +114,11 @@ void efficient_arrow_matrix_2_times_x(const VectorXd &d,
 }
 /* SAM_LISTING_END_1 */
 
-
 /* \brief Compute the runtime of arrow matrix multiplication.
  * Repeat tests 10 times, and output the minimal runtime
  * amongst all times. Test both the inefficient and the efficient
  * versions.
-*/
+ */
 void runtime_arrow_matrix() {
     /* SAM_LISTING_BEGIN_3 */
     
@@ -188,17 +181,27 @@ void runtime_arrow_matrix() {
         //time needed
         elap_time.push_back(timer.min());
         elap_time_eff.push_back(timer_eff.min());
+
     }
 
-    /* DO NOT CHANGE */ 
-    //create plot
-    plot(vec_size, elap_time, elap_time_eff, "./cx_out/text.png");
-    
-    /* SAM_LISTING_END_3 */
-  
+    // Print results (for grading): inefficient
+    std::cout << std::setw(8) << n << std::scientific << std::setprecision(3)
+              << std::setw(15) << timer.min() << std::setw(15)
+              << timer_eff.min() << std::endl;
+
+    // time needed
+    elap_time.push_back(timer.min());
+    elap_time_eff.push_back(timer_eff.min());
+  }
+
+  /* DO NOT CHANGE */
+  // create plot
+  plot(vec_size, elap_time, elap_time_eff, "./cx_out/text.png");
+
+  /* SAM_LISTING_END_3 */
 }
 
-// Additional 
+// Additional
 
 // Rename long variable name to duration_t (easy to change)
 using duration_t = std::chrono::nanoseconds;
@@ -211,29 +214,28 @@ using duration_t = std::chrono::nanoseconds;
  * \param[in] repeats Number of repetitions.
  */
 template <class Function>
-duration_t timing(const Function & F, int repeats = 10) {
-    // Shortcut for time_point
-    using time_point_t = std::chrono::high_resolution_clock::time_point;
+duration_t timing(const Function &F, int repeats = 10) {
+  // Shortcut for time_point
+  using time_point_t = std::chrono::high_resolution_clock::time_point;
 
-    // Loop many times
-    duration_t min_elapsed;
-    for(int r = 0; r < repeats; r++) {
-        // Start clock (MATLAB: tic)
-        time_point_t start = std::chrono::high_resolution_clock::now();
+  // Loop many times
+  duration_t min_elapsed;
+  for (int r = 0; r < repeats; r++) {
+    // Start clock (MATLAB: tic)
+    time_point_t start = std::chrono::high_resolution_clock::now();
 
-        // Run function
-        F();
+    // Run function
+    F();
 
-        // Stop clock (MATLAB: toc) and measure difference
-        duration_t elapsed = std::chrono::duration_cast<duration_t>(
-                            std::chrono::high_resolution_clock::now() - start);
+    // Stop clock (MATLAB: toc) and measure difference
+    duration_t elapsed = std::chrono::duration_cast<duration_t>(
+        std::chrono::high_resolution_clock::now() - start);
 
-        // Compute min between all runs
-        min_elapsed = r == 0 ? elapsed : std::min(elapsed, min_elapsed);
-    }
+    // Compute min between all runs
+    min_elapsed = r == 0 ? elapsed : std::min(elapsed, min_elapsed);
+  }
 
-    return min_elapsed;
-
+  return min_elapsed;
 }
 
 /* \brief Compute timing using chrono
@@ -241,41 +243,35 @@ duration_t timing(const Function & F, int repeats = 10) {
  */
 void runtime_arrow_matrix_with_chrono() {
 
-    // Table header
-    std::cout << std::setw(8) << "n"
-              << std::scientific << std::setprecision(3)
-              << std::setw(15) << "original"
-              << std::setw(15) << "efficient"
+  // Table header
+  std::cout << std::setw(8) << "n" << std::scientific << std::setprecision(3)
+            << std::setw(15) << "original" << std::setw(15) << "efficient"
+            << std::endl;
+
+  // Run from $2^5$ to $2^11$ with powers of two
+  for (unsigned int n = (1 << 5); n < (1 << 12); n = n << 1) {
+    // Create random vectors
+    VectorXd d = VectorXd::Random(n);
+    VectorXd a = VectorXd::Random(n);
+    VectorXd x = VectorXd::Random(n);
+    VectorXd y(n);
+
+    // Call "timing", using a lambda function for F
+    // Remember: we cannot pass arrow\_matrix\_2\_times\_x directly to timing
+    // the timing function expects a n object with operator()(void)
+    duration_t elapsed =
+        timing([&a, &d, &x, &y]() { arrow_matrix_2_times_x(d, a, x, y); }, 10);
+    // Call "timing", using a lambda function for F
+    duration_t elapsed_efficient = timing(
+        [&a, &d, &x, &y]() { efficient_arrow_matrix_2_times_x(d, a, x, y); },
+        10);
+
+    // Output timings (not part of the exercice)
+    std::cout << std::setw(8) << n << std::scientific << std::setprecision(3)
+              << std::setw(15) << elapsed.count() * 1e-9           // ns to s
+              << std::setw(15) << elapsed_efficient.count() * 1e-9 // ns to s
               << std::endl;
-
-    // Run from $2^5$ to $2^11$ with powers of two
-    for(unsigned int n = (1 << 5); n < (1 << 12); n = n << 1) {
-        // Create random vectors
-        VectorXd d = VectorXd::Random(n);
-        VectorXd a = VectorXd::Random(n);
-        VectorXd x = VectorXd::Random(n);
-        VectorXd y(n);
-
-        // Call "timing", using a lambda function for F
-        // Remember: we cannot pass arrow\_matrix\_2\_times\_x directly to timing
-        // the timing function expects a n object with operator()(void)
-        duration_t elapsed = timing([&a, &d, &x, &y] () {
-            arrow_matrix_2_times_x(d, a, x, y);
-        }, 10);
-        // Call "timing", using a lambda function for F
-        duration_t elapsed_efficient = timing([&a, &d, &x, &y] () {
-            efficient_arrow_matrix_2_times_x(d, a, x, y);
-        }, 10);
-
-        // Output timings (not part of the exercice)
-        std::cout << std::setw(8)<< n
-                  << std::scientific << std::setprecision(3)
-                  << std::setw(15) << elapsed.count() * 1e-9 // ns to s
-                  << std::setw(15) << elapsed_efficient.count() * 1e-9 // ns to s
-                  << std::endl;
-    }
-
+  }
 }
-
-
+	
 #endif
