@@ -95,7 +95,7 @@ double casting() {
   v(0) = z0;
   v(1) = z1;
 
-  double x;
+  double x = 0.0;
   // TO DO: Calculate the inner product of u and v, and store the result in x.
   // Hint: The inner product of two vectors is given by u.dot(v), but
   // first we need to cast the "int" vector u to a "std::complex<double>"
@@ -106,6 +106,7 @@ double casting() {
   std::complex<double> z = u.cast<std::complex<double>>().dot(v);
   x = z.real();
   // END
+  
   return x;
 }
 /* SAM_LISTING_END_2 */

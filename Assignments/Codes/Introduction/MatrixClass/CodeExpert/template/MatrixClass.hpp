@@ -74,10 +74,11 @@ double casting() {
 
   // Because the syntax Eigen::Matrix< type, n_rows, n_cols > is very
   // cumbersome, Eigen provides convenience classes that work as shorthands.
-  // For example, Eigen::Matrix2d is shorthand for Eigen::Matrix< double, 2, 2 >.
-  
+  // For example, Eigen::Matrix2d is shorthand for Eigen::Matrix< double, 2, 2
+  // >.
+
   // Vectors are just a special type of matrices that have only one column.
-  // Thus, VectorXi is a shorthand for Eigen::Matrix< int, Eigen::Dynamic, 1 >.  
+  // Thus, VectorXi is a shorthand for Eigen::Matrix< int, Eigen::Dynamic, 1 >.
   // Constant(2,1) creates a vector of size 2 and initializes the entries with
   // the value 1.
   Eigen::VectorXi u = Eigen::VectorXi::Constant(2, 1);
@@ -92,21 +93,20 @@ double casting() {
   v(0) = z0;
   v(1) = z1;
 
-  double x;
+  double x = 0.0;
   // TO DO: Calculate the inner product of u and v, and store the result in x.
   // Hint: The inner product of two vectors is given by u.dot(v), but
-  // first we need to cast the "int" vector u to a "std::complex<double>" vector.
-  // Use u.cast< NEW TYPE >() to achieve this.
-  // The result of the inner product will be 1*(1-i) + 1*(5+i) = 6 + 0i,
-  // a real number. You can get the real part of an std::complex<double>
-  // using the method "real()".
+  // first we need to cast the "int" vector u to a "std::complex<double>"
+  // vector. Use u.cast< NEW TYPE >() to achieve this. The result of the inner
+  // product will be 1*(1-i) + 1*(5+i) = 6 + 0i, a real number. You can get the
+  // real part of an std::complex<double> using the method "real()".
   // START
-  
+
   // END
+  
   return x;
 }
 /* SAM_LISTING_END_2 */
-
 
 /* SAM_LISTING_BEGIN_3 */
 Eigen::VectorXcd arithmetics(int n) {
@@ -126,14 +126,14 @@ Eigen::VectorXcd arithmetics(int n) {
   A = constantTriangular(n, 5.0).transpose().cast<std::complex<double>>();
   // The n by n identity matrix,
   I = Eigen::MatrixXcd::Identity(n, n);
-  
+
   // Declare the n by n matrix B.
-  Eigen::MatrixXcd B(n,n);
-  
+  Eigen::MatrixXcd B(n, n);
+
   // TO DO: Fill in the matrix B such that B(k,l) = (k+l*i)/(k-l*i),
   // where i is the imaginary unity, i^2 = -1.
   // START
-  
+
   // END
 
   // We can perform arithmetics on matrices: +, -, *
@@ -151,12 +151,11 @@ Eigen::VectorXcd arithmetics(int n) {
   // TO DO: Initialize the entries of u as the integers from 1 to n,
   // multiply u by the matrix C, and store the result in v.
   // START
-  
+
   // END
 
   return v;
 }
 /* SAM_LISTING_END_3 */
-
 
 #endif
