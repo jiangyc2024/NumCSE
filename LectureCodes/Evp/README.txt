@@ -29,8 +29,8 @@ All files should have the following header
 
 ///////////////////////////////////////////////////////////////////////////
 /// Demonstration code for lecture "Numerical Methods for CSE" @ ETH Zurich
-/// <one line description> 
-/// (C) <year> SAM, D-MATH
+/// Porting <MATLAB title>.m to C++/eIGEN.
+/// (C) 2020 SAM, D-MATH
 /// Author(s): <name>
 /// Repository: https://gitlab.math.ethz.ch/NumCSE/NumCSE/
 /// Do not remove this header.
