@@ -23,10 +23,11 @@ MatrixXd zero_row_col(const MatrixXd &A, int p, int q) {
    */
   // Make a copy of A.
   MatrixXd Anew(A);
-  
+
   // TO DO: Set the entries of row number p and column number q to zero.
   // Hint: We can access rows and columns of A by A.row() and A.col().
-  // The setZero() is useful here. START
+  // The method setZero() is useful here.
+  // START
   
   // END
 
@@ -41,9 +42,9 @@ MatrixXd swap_left_right_blocks(const MatrixXd &A, int p) {
    * A, and C denotes the q=(A.cols() - p) last columns, this functions returns
    * D = [C B].
    */
-  
+
   MatrixXd B, C;
-  
+
   // We can use .rows() and .cols() to get the number of rows and columns in A.
   int q = A.cols() - p;
 
@@ -53,10 +54,11 @@ MatrixXd swap_left_right_blocks(const MatrixXd &A, int p) {
   B = A.block(0, 0, A.rows(), p);
 
   // TO DO: Use A.block() to define C as the matrix containing the last q
-  // columns of A. START
-  
+  // columns of A.
+  // START
+
   // END
-  
+
   // Make a copy of A.
   MatrixXd Anew(A);
   // The block() method can access arbitrary blocks within a matrix.
@@ -64,8 +66,9 @@ MatrixXd swap_left_right_blocks(const MatrixXd &A, int p) {
   Anew.leftCols(q) = C;
 
   // TO DO: Use A.rightCols() to fill in the remaining columns of the new matrix
-  // A. START
-  
+  // A.
+  // START
+
   // END
 
   // Tip: Many more methods exist that are special cases of block(),
@@ -96,8 +99,9 @@ MatrixXd tridiagonal(int n, double a, double b, double c) {
   // TO DO: Fill the matrix A with zeros. Then fill the subdiagonal with the
   // value a, the diagonal with b and the superdiagonal with c. Hint: You can
   // get the diagonal of A by A.diagonal(). Moreover, you can get the super- and
-  // subdiagonals by passing +1 or -1 as arguments to A.diagonal(). START
-  
+  // subdiagonals by passing +1 or -1 as arguments to A.diagonal().
+  // START
+
   // END
   return A;
 }
