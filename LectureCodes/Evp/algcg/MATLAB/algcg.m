@@ -7,7 +7,7 @@ for i = 1 : maxit
    if (i == 1), p = r; 
    else  beta = rho/rho1; p = r + beta * p; end
    q = evalA(p); alpha = rho/(p' * q);
-   x = x + alpha * p;    % update of approximate solution
-   if (norm(b-A*x) <= tol*n0) return; end % termination, see Rem.~\ref{rem:cgterm}
-   r = r - alpha * q;      % update of residual
+   x = x + alpha * p;  % update of approximate solution
+   if (norm(b-evalA(x)) <= tol*n0) return; end % termination, see Rem.~\ref{rem:cgterm}
+   r = r - alpha * q;  % update of residual
 end  

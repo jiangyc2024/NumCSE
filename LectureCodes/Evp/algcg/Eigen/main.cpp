@@ -12,18 +12,27 @@
 #include <Eigen/Dense>
 #include <iostream>
 
+using namespace Eigen;
+
 int main() {
     // Input values.
     // Assume A is square (so evalA returs a vector size n).
     int n = 2;
-    // TODO: evalA
+    MatrixXd A(n, n);
+    std::function<VectorXd (VectorXd)> evalA;
     VectorXd b(n);
     VectorXd x(n);
     double tol = 1e-6;
     unsigned int maxit;
 
     // Assign arbitrary values.
-    // TODO: evalA
+    A << 1, 3, 
+         5, 7;
+
+    evalA = [A] (VectorXd x) {
+        return A * x;
+    };
+
     b << 1,
          2;
 

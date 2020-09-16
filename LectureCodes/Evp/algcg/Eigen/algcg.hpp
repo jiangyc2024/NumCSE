@@ -12,11 +12,11 @@
 
 using namespace Eigen;
 
-VectorXd cg(MatrixXd evalA, VectorXd b, VectorXd x, double tol, unsigned int maxit) {
+VectorXd cg(std::function<VectorXd (VectorXd)> evalA, 
+            VectorXd b, VectorXd x, double tol, unsigned int maxit) {
     // x supplies the initial guess, 
     // maxit the maximal number of CG steps.
-    // evalA must pass a handle to a MATLAB function realising A*x
-    // ^^^ ???? so evalA is a function? that does A * x? 
+    // evalA must pass a handle to a function realising A*x
 
     VectorXd r = b - evalA(x);
     double rho = 1;
@@ -42,7 +42,7 @@ VectorXd cg(MatrixXd evalA, VectorXd b, VectorXd x, double tol, unsigned int max
         x = x + alpha * p; // Update approximate solution
 
         // Termination, see Rem. cgterm
-        if ((b - A * x).norm() <= tol * n0) {
+        if ((b - evalA(x)).norm() <= tol * n0) {
             // ^ MAYBE the A * x should be evalA(x)? Since 
             // evalA(x) should "realise A * x"?
             break;
