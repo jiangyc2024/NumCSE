@@ -15,7 +15,7 @@ $matlab_title$
 
 TODO: 
 gradit (in progress, anwillia)
-algcg 
+algcg (in progress, anwillia)
 plottheorate
 pcgbase
 trusssim
