@@ -6,7 +6,7 @@
 // TO DO: Include the appropriate header files and namespaces
 // START
 #include <Eigen/Dense>
-
+#include <iostream>
 using namespace Eigen;
 // END
 
@@ -21,11 +21,16 @@ using namespace Eigen;
 
 // TO DO: Write a function "average" that takes as argument a "MatrixXd" object
 // and returns a "double". m = average(A) should calculate the average of the
-// entries of A. START
+// entries of A.
+// START
 /* SAM_LISTING_BEGIN_0 */
 double average(const MatrixXd &A) {
-	// placeholder
-	return 0.;
+  /*
+   * Calculates the average of the entries of A
+   */
+  double m;
+
+  return m;
 }
 /* SAM_LISTING_END_0 */
 // END
@@ -77,7 +82,7 @@ bool has_zero_column(const MatrixXd &A) {
   // TO DO: Check if any one of the norms is equal to zero.
   // Hint: Use an array to perform entry-wise comparison.
   // START
-  
+
   // END
 
   return result;
@@ -94,12 +99,14 @@ MatrixXd columns_sum_to_zero(const MatrixXd &A) {
   MatrixXd B(A);
 
   // TO DO: Replace the diagonal of B with values such that the columns of B sum
-  // up to zero. Hint: Use diagonal(), rowwise(), and sum(). START
+  // up to zero. Hint: Use diagonal(), rowwise(), and sum().
+  // START
 
   // END
 
   return B;
 }
+
 /* SAM_LISTING_END_3 */
 
 #endif
