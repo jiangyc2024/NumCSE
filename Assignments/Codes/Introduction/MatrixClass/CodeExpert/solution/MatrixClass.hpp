@@ -81,9 +81,9 @@ double casting() {
 
   // Vectors are just a special type of matrices that have only one column.
   // Thus, VectorXi is a shorthand for Eigen::Matrix< int, Eigen::Dynamic, 1 >.
-  // Constant(2,1) creates a vector of size 2 and initializes the entries with
-  // the value 1.
-  Eigen::VectorXi u = Eigen::VectorXi::Constant(2, 1);
+  // Constant(n,x) creates a vector of size n and initializes the entries with
+  // the value x.
+  Eigen::VectorXi u = Eigen::VectorXi::Constant(2, 2);
 
   // std::complex is a template class for complex numbers.
   // Here we declare two complex numbers, with real and imaginary parts
@@ -100,7 +100,7 @@ double casting() {
   // Hint: The inner product of two vectors is given by u.dot(v), but
   // first we need to cast the "int" vector u to a "std::complex<double>"
   // vector. Use u.cast< NEW TYPE >() to achieve this. The result of the inner
-  // product will be 1*(1-i) + 1*(5+i) = 6 + 0i, a real number. You can get the
+  // product will be 2*(1-i) + 2*(5+i) = 12 + 0i, a real number. You can get the
   // real part of an std::complex<double> using the method "real()".
   // START
   std::complex<double> z = u.cast<std::complex<double>>().dot(v);
@@ -133,8 +133,8 @@ Eigen::VectorXcd arithmetics(int n) {
   // Declare the n by n matrix B.
   Eigen::MatrixXcd B(n, n);
 
-  // TO DO: Fill in the matrix B such that B(k,l) = (k+l*i)/(k-l*i),
-  // where i is the imaginary unity, i^2 = -1.
+  // TO DO: Fill in the matrix B such that B(k-1,l-1) = (k+l*i)/(k-l*i),
+  // where i is the imaginary unity, i^2 = -1 and k,l=1,...,n.
   // START
   for (int k = 0; k < n; k++) {
     for (int l = 0; l < n; l++) {
