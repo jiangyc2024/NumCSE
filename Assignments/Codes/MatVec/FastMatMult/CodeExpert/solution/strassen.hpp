@@ -75,7 +75,7 @@ MatrixXd strassenMatMult(const MatrixXd& A, const MatrixXd& B) {
 }
 /* SAM_LISTING_END_0 */
 
-/* SAM_LISTING_BEGIN_! */
+/* SAM_LISTING_BEGIN_1 */
 double test_strassen() {
     // Check algorithm for correctness
 
