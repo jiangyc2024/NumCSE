@@ -120,7 +120,7 @@ void time_strassen() {
     // Timer to collect runtime of each individual run
     Timer timer, timer_own;
 
-    // TO DO: Use the .start(), and .stop() methods of timer and timer_own to
+    // TO DO: Use the .start(), and .stop() methods of timer and timer\_own to
     // measure the runtimes of Eigen's built-in multiplication and Strassen's
     // algorithm. Perform a few trials for each k (use the variable
     // repetitions). START
