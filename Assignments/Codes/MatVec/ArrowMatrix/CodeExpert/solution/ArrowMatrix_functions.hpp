@@ -65,9 +65,9 @@ void efficient_arrow_matrix_2_times_x(const VectorXd &d, const VectorXd &a,
          "Vector size must be the same!");
   int n = d.size();
 
-  // TO DO: (2-1.c) Implement an efficient version of arrow_matrix_2_times_x.
-  // Hint: Notice that performing two matrix vector multiplications is less
-  // expensive than a matrix-matrix multiplication.
+  // TO DO: (2-1.c) Implement an efficient version of
+  // arrow\_matrix\_2\_times\_x. Hint: Notice that performing two matrix vector
+  // multiplications is less expensive than a matrix-matrix multiplication.
   // Therefore, as first step, we need a way to efficiently compute A*x
 
   // START
