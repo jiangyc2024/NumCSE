@@ -99,7 +99,7 @@ double test_strassen() {
 }
 /* SAM_LISTING_END_1 */
 
-/* SAM_LISTING_END_2 */
+/* SAM_LISTING_BEGIN_2 */
 void time_strassen() {
   // Unfortunately, the time limit set by Code Expert may not be sufficiently
   // long to show the advantage of Strassen's algorithm for large matrices.
