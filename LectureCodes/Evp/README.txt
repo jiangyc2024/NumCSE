@@ -1,6 +1,8 @@
 Translate MATLAB lecture codes into C++. 
 
-Collect all of them in this folder, then we will eventually move them somewhere that makes more sense.
+Collect all of them in this folder for now, then we will eventually move them somewhere that makes more sense.
+
+FORMATTING:
 
 Follow the general structure given by the previous contributor, with some changes:
 
@@ -16,10 +18,10 @@ $matlab_title$
 
 Use += type operators where possible.
 
+Configure editor to use google c++ formatting.
+
 
 TODO: 
-gradit (in progress, anwillia)
-algcg (in progress, anwillia)
 plottheorate
 pcgbase
 trusssim
