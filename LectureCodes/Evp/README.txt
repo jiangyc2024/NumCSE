@@ -2,15 +2,19 @@ Translate MATLAB lecture codes into C++.
 
 Collect all of them in this folder, then we will eventually move them somewhere that makes more sense.
 
-Follow the general structure given by the previous contributor, so: 
+Follow the general structure given by the previous contributor, with some changes:
 
 $matlab_title$
  | Eigen
    | CMakeLists.txt
    | main.cpp
    | $matlab_title$.hpp
+   | $matlab_title$.cpp
  | MATLAB
    | $matlab_file$ // just copied from the given files
+
+
+Use += type operators where possible.
 
 
 TODO: 
