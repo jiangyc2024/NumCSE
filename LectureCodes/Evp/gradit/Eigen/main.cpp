@@ -7,13 +7,13 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 
-
-#include "gradit.hpp"
 #include <Eigen/Dense>
 #include <iostream>
 
+#include "gradit.hpp"
+
 int main() {
-    // Input values. 
+    // Input values.
     // b and x must be column vectors of same size.
     // Asume A is square.
 
