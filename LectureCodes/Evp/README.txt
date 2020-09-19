@@ -22,8 +22,8 @@ Configure editor to use google c++ formatting.
 
 
 TODO: 
-plottheorate
-pcgbase
+plottheorate (in progress)
+pcgbase (done, but sizable difference to what MATLAB outputs)
 trusssim
 trussimdriver
 sspowitrp2d
