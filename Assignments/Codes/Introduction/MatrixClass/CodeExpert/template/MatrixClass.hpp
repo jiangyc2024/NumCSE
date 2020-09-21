@@ -92,7 +92,7 @@ double casting() {
   v(0) = z0;
   v(1) = z1;
 
-  double x;
+  double x = 0.0;
   // TO DO: Calculate the inner product of u and v, and store the result in x.
   // Hint: The inner product of two vectors is given by u.dot(v), but
   // first we need to cast the "int" vector u to a "std::complex<double>"
@@ -101,6 +101,7 @@ double casting() {
   // real part of an std::complex<double> using the method "real()". START
 
   // END
+  
   return x;
 }
 /* SAM_LISTING_END_2 */
@@ -127,8 +128,8 @@ Eigen::VectorXcd arithmetics(int n) {
   // Declare the n by n matrix B.
   Eigen::MatrixXcd B(n, n);
 
-  // TO DO: Fill in the matrix B such that B(k,l) = (k+l*i)/(k-l*i),
-  // where i is the imaginary unity, i^2 = -1.
+  // TO DO: Fill in the matrix B such that B(k-1,l-1) = (k+l*i)/(k-l*i),
+  // where i is the imaginary unity, i^2 = -1 and k,l=1,...,n.
   // START
 
   // END
