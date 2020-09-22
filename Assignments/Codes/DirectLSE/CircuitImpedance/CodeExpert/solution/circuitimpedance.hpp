@@ -100,7 +100,6 @@ NodalPotentials::NodalPotentials(double R, double Rx): R_(R), Rx_(Rx) {
 	for(voltage& volt: S) {
 		// Shift index down by 1 and get voltage in W2
 		int i = std::get<0>(volt) - 1;
-		double source_voltage = std::get<2>(volt);
 		// Add resistance to matrix diagonal: contribution of source current
 		// scaled by $R$.
 		A_Rx(i,i) += 1;
@@ -134,16 +133,16 @@ public:
 	ImpedanceMap& operator=(ImpedanceMap&&) = default;
 	~ImpedanceMap() = default;
 	
-	ImpedanceMap(double R);
+	ImpedanceMap(double R, double V);
 	double operator()(double Rx) const;
 private:
-	PartialPivLU<MatrixXd> lu_; //< Store LU decomp. of matrix $A$.
 	double R_, V_; //< Resistance $R$ and source voltage $W$.
-	VectorXd b_; //< R.h.s vector prescribing sink/source voltages.
+	VectorXd w_, z_;
+	double alpha_, beta_;
 	std::size_t nnodes_;
 };
 
-ImpedanceMap::ImpedanceMap(double R): R_(R), nnodes_(15){
+ImpedanceMap::ImpedanceMap(double R, double V): R_(R), V_(V), nnodes_(15){
 	// We implement the topology of the resistances by pushing each
 	// Resistance between node i < j in a std::vector of
 	// pair $(i,j) \in \mathbb{N}^2$
@@ -211,45 +210,37 @@ ImpedanceMap::ImpedanceMap(double R): R_(R), nnodes_(15){
 	// ($R$ is the  resistence between node $i$ and ground/source
 	// node, $V$ is voltage at sink or source)
 	// and to its own diagonal with $R$
-	b_ = MatrixXd::Zero(nnodes_, 1);
-	for(voltage & volt: S) {
+	VectorXd b = VectorXd::Zero(nnodes_);
+	for(voltage& volt: S) {
 		// Shift index down by 1 and get voltage in W2
 		int i = std::get<0>(volt) - 1;
 		double source_voltage = std::get<2>(volt);
 		// Add voltage to r.h.s. (resistance assumed to be $R$)
-		b_(i) += source_voltage;
+		b(i) += source_voltage;
 		// Add resistance to matrix diagonal: contribution of source current
 		// scaled by $R$.
 		A0(i,i) += 1;
 	}
+
+	PartialPivLU<MatrixXd> lu(A0);
+	w_ = lu.solve(b);
 	
-	// Precompute the 'lu' factorization of A0
-	lu_ = A0.lu();
+	VectorXd u0 = VectorXd::Zero(nnodes_);
+	u0(13) = -1.;
+	u0(14) = 1.;
+	z_ = lu.solve(u0);
+	
+	alpha_ = u0.dot(z_);
+	beta_ = u0.dot(w_);
 }
 
 double ImpedanceMap::operator()(double Rx) const {
 	// Store the scaled factor for convenience
 	double xi = R_ / Rx;
 	
-	// Create $u$: the vector in $A+u*v^\top$
-	VectorXd u = VectorXd::Zero(nnodes_);
-	u(13) = -std::sqrt(xi);
-	u(14) = std::sqrt(xi);
-	// Here: v = u
-	
-	// Use SMW formula to compute $(A + u \cdot u^\top)^{-1} \cdot b$.
-	// Formula:
-	// $A^{-1} * b - A^{-1}*u**(I+V*A^{-1}*U)^{-1}V*A^{-1} b$
-	
-	// Start by precomputing $A^{-1} b$, needed twice
-	VectorXd Ainvrhs = lu_.solve(b_);
-	// Then, precompute $A^{-1} u$, needed twice
-	VectorXd Ainvu = lu_.solve(u);
-	// Then, compute alpha. Alpha is just a number.
-	double alpha = 1. + u.dot(Ainvu);
 	// Put the formula toghether, x is a column vector containing voltages
 	// at each node (except 16 and 17, which are prescribed)
-	VectorXd x = Ainvrhs - Ainvu * u.dot(Ainvrhs) / alpha;
+	VectorXd x = w_ - xi * beta_ / (1. + xi * alpha_) * z_;
 	
 	// Compute the current $I = \Delta W_{16,5} / R$
 	// and then impedance $= V / I$.
