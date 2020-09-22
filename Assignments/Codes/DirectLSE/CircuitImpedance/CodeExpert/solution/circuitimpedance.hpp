@@ -8,11 +8,81 @@
 
 using namespace Eigen;
 
+/* SAM_LISTNG_BEGIN_6 */
+// Models a resistance between node i,j with i < j
+// (in principle, it can handle different resistances)
 using resistor = std::pair<int, int>;
+// Vector containing all resistances in
+// the circuit (excluded the variable one, which is modelled afterwards)
 using resistor_topology = std::vector<resistor>;
+// Models a ground or source of voltage, indexes store the node
+// connected to the ground/source through a resistance
 using voltage = std::tuple<int, int, double>;
+// Vector containing a voltage object for each node connected to sink or source.
 using voltage_topology = std::vector<voltage>;
+/* SAM_LISTING_END_6 */
 
+// \brief Struct implementing the topology of the circuit (cf. Figure)
+/* SAM_LISTING_BEGIN_7 */
+struct Topology {
+	/* \brief Initializes the topologies.
+	 * \param V Source voltage $V$ at node $16$ (in Volt),
+	 * 			ground is set to $0V$ at node $17$
+	 */
+	Topology(double V) {
+		// TODO: (3-5.d) (optional) Fill in the vectors to model the topology.
+		// START
+		
+		// We implement the topology of the resistances by pushing each
+		// Resistance between node i < j in a std::vector of
+		// pair $(i,j) \in \mathbb{N}^2$
+		// This way we can automatically build a symmetric
+		// matrix, take care of indexing
+		// and avoid mistakes during the matrix filling
+		T.reserve(23);
+		T.push_back(resistor(1,2));
+		T.push_back(resistor(1,5));
+		T.push_back(resistor(2,5));
+		T.push_back(resistor(2,3));
+		T.push_back(resistor(2,14));
+		T.push_back(resistor(3,4));
+		T.push_back(resistor(3,15));
+		T.push_back(resistor(4,6));
+		T.push_back(resistor(4,15));
+		T.push_back(resistor(5,7));
+		T.push_back(resistor(5,14));
+		T.push_back(resistor(6,9));
+		T.push_back(resistor(6,15));
+		T.push_back(resistor(7,10));
+		T.push_back(resistor(7,11));
+		T.push_back(resistor(8,9));
+		T.push_back(resistor(8,12));
+		T.push_back(resistor(8,13));
+		T.push_back(resistor(8,15));
+		T.push_back(resistor(9,13));
+		T.push_back(resistor(10,11));
+		T.push_back(resistor(11,12));
+		T.push_back(resistor(12,13));
+		// We omit the resistor between node 14 and 15 for an easier matrix filling.
+		
+		// We implement voltage ground and sources by
+		// specifying which node is connected to ground/source
+		// trough a resistance. This will be also part of the r.h.s.
+		S.reserve(4);
+		S.push_back(voltage(6, 16, V));
+		S.push_back(voltage(7, 17, 0));
+		S.push_back(voltage(11,17, 0));
+		S.push_back(voltage(14,17, 0));
+		// END
+	}
+	
+	resistor_topology T;
+	voltage_topology S;
+};
+/* SAM_LISTING_END_7 */
+
+// \brief Class implementing the nodal potentials with fixed Rx
+/* SAM_LISTING_BEGIN_0 */
 class NodalPotentials {
 public:
 	NodalPotentials() = delete;
@@ -25,61 +95,36 @@ public:
 	NodalPotentials(double R, double Rx);
 	[[nodiscard]] VectorXd operator()(double V) const;
 private:
+	// TODO: (3-5.d) Specify which variables should be stored.
+	// START
 	VectorXd nodal_voltage_;
 	double R_, Rx_, xi_;
+	// END
 };
+/* SAM_LISTING_END_0 */
 
-NodalPotentials::NodalPotentials(double R, double Rx): R_(R), Rx_(Rx) {
+/* \brief Does necessary precomputations for the class
+ * \param R Resistance (in Ohm) value of $R$
+ * \param Rx Resistance (in Ohm) value of $Rx$
+ */
+/* SAM_LISTING_BEGIN_1 */
+NodalPotentials::NodalPotentials(double R, double Rx):
+	// TODO: (3-5.d) initializer list.
+	// START
+	R_(R), Rx_(Rx)
+	// END
+	{
+	// TODO: (3-5.d) Do necessary and expensive precomputations here.
+	// START
 	assert(Rx_ != 0. && "Rx should not be equal to zero!");
 	xi_ = R_ / Rx_;
 	
-	// We implement the topology of the resistances by pushing each
-	// Resistance between node i < j in a std::vector of
-	// pair $(i,j) \in \mathbb{N}^2$
-	// This way we can automatically build a symmetric
-	// matrix, take care of indexing
-	// and avoid mistakes during the matrix filling
-	resistor_topology T;
-	T.reserve(23);
-	T.push_back(resistor(1,2));
-	T.push_back(resistor(1,5));
-	T.push_back(resistor(2,5));
-	T.push_back(resistor(2,3));
-	T.push_back(resistor(2,14));
-	T.push_back(resistor(3,4));
-	T.push_back(resistor(3,15));
-	T.push_back(resistor(4,6));
-	T.push_back(resistor(4,15));
-	T.push_back(resistor(5,7));
-	T.push_back(resistor(5,14));
-	T.push_back(resistor(6,9));
-	T.push_back(resistor(6,15));
-	T.push_back(resistor(7,10));
-	T.push_back(resistor(7,11));
-	T.push_back(resistor(8,9));
-	T.push_back(resistor(8,12));
-	T.push_back(resistor(8,13));
-	T.push_back(resistor(8,15));
-	T.push_back(resistor(9,13));
-	T.push_back(resistor(10,11));
-	T.push_back(resistor(11,12));
-	T.push_back(resistor(12,13));
-	// We omit the resistor between node 14 and 15 for an easier matrix filling.
-	
-	// We implement voltage ground and sources by
-	// specifying which node is connected to ground/source
-	// trough a resistance. This will be also part of the r.h.s.
-	voltage_topology S;
-	S.reserve(4);
-	S.push_back(voltage(6, 16, 1));
-	S.push_back(voltage(7, 17, 0));
-	S.push_back(voltage(11,17, 0));
-	S.push_back(voltage(14,17, 0));
+	Topology top(1.);
 	
 	// Automatically build A_Rx filling from topology
 	// A_Rx is the matrix $A_R$ (i.e. with $R_x = R$)
 	MatrixXd A_Rx = MatrixXd::Zero(15, 15);
-	for(resistor & res: T) {
+	for(resistor& res: top.T) {
 		// Shift indices down by 1 (indices in Figure start from 1)
 		std::size_t i = res.first - 1;
 		std::size_t j = res.second - 1;
@@ -97,7 +142,7 @@ NodalPotentials::NodalPotentials(double R, double Rx): R_(R), Rx_(Rx) {
 	// components with $\Delta W_{i,j}$ with $j > 15$.
 	// Each node $i$ connected to ground or source contributes
 	// to to its own diagonal with $R$
-	for(voltage& volt: S) {
+	for(voltage& volt: top.S) {
 		// Shift index down by 1 and get voltage in W2
 		int i = std::get<0>(volt) - 1;
 		// Add resistance to matrix diagonal: contribution of source current
@@ -117,13 +162,27 @@ NodalPotentials::NodalPotentials(double R, double Rx): R_(R), Rx_(Rx) {
 	
 	// Solve unscaled linear system.
 	nodal_voltage_ = A_Rx.lu().solve(b);
+	// END
 }
+/* SAM_LISTING_END_1 */
 
-Eigen::VectorXd NodalPotentials::operator()(double V) const {
-	// Scale the vector.
+/* \param V Source voltage $V$ at node $16$ (in Volt)
+ * \return Vector of potentials at nodes
+ */
+/* SAM_LISTING_BEGIN_2 */
+VectorXd NodalPotentials::operator()(double V) const {
+	// TODO: (3-5.d) Return the values of the potential at the nodes.
+	// START
 	return nodal_voltage_ * V;
+	// END
 }
+/* SAM_LISTING_END_2 */
 
+/* \brief Computes impedance of the entire circuit (between node 16 and 17) exploiting
+*  the SMW formula for the inversion of low rank perturbations of a matrix A0,
+*  whose factorization in known in advance
+*/
+/* SAM_LISTING_BEGIN_3 */
 class ImpedanceMap {
 public:
 	ImpedanceMap() = delete;
@@ -136,60 +195,37 @@ public:
 	ImpedanceMap(double R, double V);
 	double operator()(double Rx) const;
 private:
+	// TODO: (3-5.g) Specify which variables should be stored.
+	// START
 	double R_, V_; //< Resistance $R$ and source voltage $W$.
 	VectorXd w_, z_;
 	double alpha_, beta_;
 	std::size_t nnodes_;
+	// END
 };
+/* SAM_LISTING_END_3 */
 
-ImpedanceMap::ImpedanceMap(double R, double V): R_(R), V_(V), nnodes_(15){
-	// We implement the topology of the resistances by pushing each
-	// Resistance between node i < j in a std::vector of
-	// pair $(i,j) \in \mathbb{N}^2$
-	// This way we can automatically build a symmetric
-	// matrix, take care of indexing
-	// and avoid mistakes during the matrix filling
-	resistor_topology T;
-	T.reserve(23);
-	T.push_back(resistor(1,2));
-	T.push_back(resistor(1,5));
-	T.push_back(resistor(2,5));
-	T.push_back(resistor(2,3));
-	T.push_back(resistor(2,14));
-	T.push_back(resistor(3,4));
-	T.push_back(resistor(3,15));
-	T.push_back(resistor(4,6));
-	T.push_back(resistor(4,15));
-	T.push_back(resistor(5,7));
-	T.push_back(resistor(5,14));
-	T.push_back(resistor(6,9));
-	T.push_back(resistor(6,15));
-	T.push_back(resistor(7,10));
-	T.push_back(resistor(7,11));
-	T.push_back(resistor(8,9));
-	T.push_back(resistor(8,12));
-	T.push_back(resistor(8,13));
-	T.push_back(resistor(8,15));
-	T.push_back(resistor(9,13));
-	T.push_back(resistor(10,11));
-	T.push_back(resistor(11,12));
-	T.push_back(resistor(12,13));
-	// The "base" matrix $A_0$ will have no resistance between 14 and 15
-	
-	// We implement voltage ground and sources by
-	// specifying which node is connected to ground/source
-	// trough a resistance. This will be also part of the r.h.s.
-	voltage_topology S;
-	S.reserve(4);
-	S.push_back(voltage(6, 16, V_));
-	S.push_back(voltage(7, 17, 0));
-	S.push_back(voltage(11,17, 0));
-	S.push_back(voltage(14,17, 0));
+/* \brief Build system matrix and r.h.s. and performs a LU decomposition
+ * Does necessary and expensive precomputations
+ * \param R Resistance (in Ohm) value of $R$
+ * \param V Source voltage $V$ at node $16$ (in Volt),
+ *          ground is set to $0V$ at node $17$
+ */
+/* SAM_LISTING_BEGIN_4 */
+ImpedanceMap::ImpedanceMap(double R, double V)
+	// TODO: (3-5.g) initializer list.
+	// START
+	: R_(R), V_(V),
+	// END
+	nnodes_(15) {
+	// TODO: (3-5.g) Do necessary and expensive precomputations here.
+	// START
+	Topology top(V_);
 	
 	// Automatically build A0 filling from topology
 	// A0 is the matrix $A_R$ (i.e. with $R_x = R$)
 	MatrixXd A0 = MatrixXd::Zero(nnodes_, nnodes_);
-	for(resistor & res: T) {
+	for(resistor& res: top.T) {
 		// Shift indices down by 1 (indices in Figure start from 1)
 		std::size_t i = res.first - 1;
 		std::size_t j = res.second - 1;
@@ -211,7 +247,7 @@ ImpedanceMap::ImpedanceMap(double R, double V): R_(R), V_(V), nnodes_(15){
 	// node, $V$ is voltage at sink or source)
 	// and to its own diagonal with $R$
 	VectorXd b = VectorXd::Zero(nnodes_);
-	for(voltage& volt: S) {
+	for(voltage& volt: top.S) {
 		// Shift index down by 1 and get voltage in W2
 		int i = std::get<0>(volt) - 1;
 		double source_voltage = std::get<2>(volt);
@@ -221,20 +257,30 @@ ImpedanceMap::ImpedanceMap(double R, double V): R_(R), V_(V), nnodes_(15){
 		// scaled by $R$.
 		A0(i,i) += 1;
 	}
-
+	
+	// Following the "smart" approach
 	PartialPivLU<MatrixXd> lu(A0);
 	w_ = lu.solve(b);
-	
 	VectorXd u0 = VectorXd::Zero(nnodes_);
 	u0(13) = -1.;
 	u0(14) = 1.;
 	z_ = lu.solve(u0);
-	
 	alpha_ = u0.dot(z_);
 	beta_ = u0.dot(w_);
+	// END
 }
+/* SAM_LISTING_END_4 */
 
+/* \brief Compute the impedance given the resistance $R_x$.
+ * Use SMW formula for low rank perturbations
+ * \param Rx Resistence $R_x > 0$ between node 14 and 15
+ * \return Impedance $V / I$ of the system $A_{R_x}$
+ */
+/* SAM_LISTING_BEGIN_5 */
 double ImpedanceMap::operator()(double Rx) const {
+	// TODO: (3-5.g) Return the impedance of the circuit given a specific Rx
+	// START
+	assert(Rx != 0 && "Rx should not be equal to zero!");
 	// Store the scaled factor for convenience
 	double xi = R_ / Rx;
 	
@@ -246,6 +292,8 @@ double ImpedanceMap::operator()(double Rx) const {
 	// and then impedance $= V / I$.
 	// Here $\Delta W_{16,5} = W_{16} - x_5 = V - x_5$.
 	return V_ * R_ / (V_ - x(5));
+	// END
 }
+/* SAM_LISITNG_END_5 */
 
 #endif
