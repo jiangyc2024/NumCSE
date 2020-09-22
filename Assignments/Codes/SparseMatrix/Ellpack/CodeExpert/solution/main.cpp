@@ -36,6 +36,10 @@ int main(int, char**) {
     triplets.push_back(Triplet_new(2,1,11));
     triplets.push_back(Triplet_new(1,0,12));
 
+    //triplets with repeated index
+    triplets.push_back(Triplet_new(0,0,1));
+    triplets.push_back(Triplet_new(1,3,2));
+
     // Build Ellpack matrix
     EllpackMat E(triplets, m, n);
 
@@ -47,8 +51,7 @@ int main(int, char**) {
       }
       std::cout << std::endl;
     }
-    
-  
+
 
     std::cout << " ------------- Test of y = E*x --------------- " << std::endl;
     Vector x(6);

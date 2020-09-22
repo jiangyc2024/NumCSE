@@ -109,6 +109,13 @@ EllpackMat::EllpackMat(const Triplets &triplets, index_t m, index_t n)
         val[l] = tr.value();
         break;
       }
+
+      //if it's a repeated index, just sum up
+      if(col[l] == tr.col()){
+          val[l] += tr.value();
+          break;
+      }
+
     }
     assert(l < (tr.row() + 1) * maxcols &&
            "You did not reserve enough columns!");
