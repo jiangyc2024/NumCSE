@@ -144,7 +144,6 @@ private:
 };
 
 ImpedanceMap::ImpedanceMap(double R): R_(R), nnodes_(15){
-	
 	// We implement the topology of the resistances by pushing each
 	// Resistance between node i < j in a std::vector of
 	// pair $(i,j) \in \mathbb{N}^2$
@@ -212,20 +211,20 @@ ImpedanceMap::ImpedanceMap(double R): R_(R), nnodes_(15){
 	// ($R$ is the  resistence between node $i$ and ground/source
 	// node, $V$ is voltage at sink or source)
 	// and to its own diagonal with $R$
-	b = MatrixXd::Zero(nnodes_, 1);
+	b_ = MatrixXd::Zero(nnodes_, 1);
 	for(voltage & volt: S) {
 		// Shift index down by 1 and get voltage in W2
 		int i = std::get<0>(volt) - 1;
 		double source_voltage = std::get<2>(volt);
 		// Add voltage to r.h.s. (resistance assumed to be $R$)
-		b(i) += source_voltage;
+		b_(i) += source_voltage;
 		// Add resistance to matrix diagonal: contribution of source current
 		// scaled by $R$.
 		A0(i,i) += 1;
 	}
 	
 	// Precompute the 'lu' factorization of A0
-	lu = A0.lu();
+	lu_ = A0.lu();
 }
 
 double ImpedanceMap::operator()(double Rx) const {
@@ -233,7 +232,7 @@ double ImpedanceMap::operator()(double Rx) const {
 	double xi = R_ / Rx;
 	
 	// Create $u$: the vector in $A+u*v^\top$
-	VectorXd u = VectorXd::Zero(nnodes);
+	VectorXd u = VectorXd::Zero(nnodes_);
 	u(13) = -std::sqrt(xi);
 	u(14) = std::sqrt(xi);
 	// Here: v = u
@@ -243,9 +242,9 @@ double ImpedanceMap::operator()(double Rx) const {
 	// $A^{-1} * b - A^{-1}*u**(I+V*A^{-1}*U)^{-1}V*A^{-1} b$
 	
 	// Start by precomputing $A^{-1} b$, needed twice
-	VectorXd Ainvrhs = lu.solve(b_);
+	VectorXd Ainvrhs = lu_.solve(b_);
 	// Then, precompute $A^{-1} u$, needed twice
-	VectorXd Ainvu = lu.solve(u);
+	VectorXd Ainvu = lu_.solve(u);
 	// Then, compute alpha. Alpha is just a number.
 	double alpha = 1. + u.dot(Ainvu);
 	// Put the formula toghether, x is a column vector containing voltages
