@@ -7,7 +7,7 @@
 
 using namespace Eigen;
 
-/* SAM_LISTNG_BEGIN_6 */
+/* SAM_LISTING_BEGIN_6 */
 // Models a resistance between node i,j with i < j
 // (in principle, it can handle different resistances)
 using resistor = std::pair<int, int>;
