@@ -140,18 +140,18 @@ NodalPotentials::NodalPotentials(double R, double Rx)
     // into the diagonal of both nodes
     A_Rx(i, i) += 1;
     A_Rx(j, j) += 1;
-    // Fill the off diagonal (negative part in $\Delta W_{i,j}$,
+    // Fill the off diagonal (negative part in $\Delta V_{i,j}$,
     // the matrix is kept symmetric
     A_Rx(i, j) -= 1;
     A_Rx(j, i) -= 1;
   }
 
   // Fill in the rest (source and ground), i.e.
-  // components with $\Delta W_{i,j}$ with $j > 15$.
+  // components with $\Delta V_{i,j}$ with $j > 15$.
   // Each node $i$ connected to ground or source contributes
   // to to its own diagonal with $R$
   for (voltage& volt : top.S) {
-    // Shift index down by 1 and get voltage in W2
+    // Shift index down by 1 and get voltage in V2
     int i = std::get<0>(volt) - 1;
     // Add resistance to matrix diagonal: contribution of source current
     // scaled by $R$.
@@ -252,14 +252,14 @@ ImpedanceMap::ImpedanceMap(double R, double V)
     // into the diagonal of both nodes
     A0(i, i) += 1;
     A0(j, j) += 1;
-    // Fill the off diagonal (negative part in $\Delta W_{i,j}$,
+    // Fill the off diagonal (negative part in $\Delta V_{i,j}$,
     // the matrix is kept symmetric
     A0(i, j) -= 1;
     A0(j, i) -= 1;
   }
 
   // Fill in the rest (source and ground), i.e.
-  // components with $\Delta W_{i,j}$ with $j > 15$.
+  // components with $\Delta V_{i,j}$ with $j > 15$.
   // Each node $i$ connected to ground or source contributes
   // to the r.h.s $b$ with $R \cdot V$
   // ($R$ is the  resistence between node $i$ and ground/source
@@ -267,7 +267,7 @@ ImpedanceMap::ImpedanceMap(double R, double V)
   // and to its own diagonal with $R$
   VectorXd b = VectorXd::Zero(nnodes_);
   for (voltage& volt : top.S) {
-    // Shift index down by 1 and get voltage in W2
+    // Shift index down by 1 and get voltage in V2
     int i = std::get<0>(volt) - 1;
     double source_voltage = std::get<2>(volt);
     // Add voltage to r.h.s. (resistance assumed to be $R$)
@@ -310,7 +310,7 @@ double ImpedanceMap::operator()(double Rx) const {
   // at each node (except 16 and 17, which are prescribed)
   VectorXd x = w_ - xi * beta_ / (1. + xi * alpha_) * z_;
 
-  // Compute the current $I = \Delta W_{16,5} / R$
+  // Compute the current $I = \Delta V_{16,5} / R$
   // and then impedance $= V / I$.
   // Here $\Delta W_{16,5} = W_{16} - x_5 = V - x_5$.
   return_value = V_ * R_ / (V_ - x(5));
