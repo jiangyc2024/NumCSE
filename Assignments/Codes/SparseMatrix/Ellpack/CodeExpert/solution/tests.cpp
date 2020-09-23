@@ -14,26 +14,42 @@ struct TestData {
         m = 70;
         n = 100;
 
+        //repeated ratio
+        r = 0.1;
+
         std::random_device rd;
         std::mt19937 gen(rd());
         std::uniform_int_distribution<> row(0, m - 1);
         std::uniform_int_distribution<> col(0, n - 1);
         std::uniform_real_distribution<> val(0., 100.);
 
+
         // fill 5 percent with non-zero entries
         const std::size_t ntriplets = 0.05 * (m * n);
-        triplets.reserve(2 * ntriplets);
+        triplets.reserve((1 + r) * ntriplets);
+        std::uniform_int_distribution<> repeated_idx(0, ntriplets - 1);
 
         // fill with random values in random rows and columns
         for (std::size_t i = 0; i < ntriplets; ++i) {
-            auto r{row(gen)}, c{col(gen)};
-            //make repeated index
-            triplets.push_back(Eigen::Triplet<double>(r, c, val(gen)));
-            triplets.push_back(Eigen::Triplet<double>(r, c, val(gen)));
+            triplets.push_back(Eigen::Triplet<double>(row(gen), col(gen), val(gen)));
         }
+
+        //make repeated index
+        for (std::size_t i = 0; i < r * ntriplets; ++i) {
+            int idx{repeated_idx(gen)};
+            int row{triplets[idx].row()}, col{triplets[idx].col()};
+
+            triplets.push_back(Eigen::Triplet<double>(row, col, val(gen)));
+        }
+
+        //shuffle triplets
+        auto rng = std::default_random_engine {};
+        std::shuffle(std::begin(triplets), std::end(triplets), rng);
+
     }
 
     std::size_t m, n;
+    double r;
     std::vector<Eigen::Triplet<double> > triplets;
 };
 
