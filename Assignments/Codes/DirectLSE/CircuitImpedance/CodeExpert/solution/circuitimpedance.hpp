@@ -22,7 +22,15 @@ using voltage = std::tuple<int, int, double>;
 using voltage_topology = std::vector<voltage>;
 /* SAM_LISTING_END_6 */
 
-// \brief Struct implementing the topology of the circuit (cf. Figure)
+/* \brief Struct implementing the topology of the circuit (cf. Figure).
+ * Used to build the matrix of the problem.
+ * Note that the resistor between node 14 and 15 is omitted.
+ * Members: T a resistor_topology, i.e. a vector of index-pairs; each resistor
+ * 			has the same constant resistance; that is the reason why the resistor
+ *			between 14-15 is omitted
+ *			S a voltage_topology, i.e. a vector of tuples; (i,j,V) voltage V is applied
+ *			to resistor between node i and j
+ */
 /* SAM_LISTING_BEGIN_7 */
 struct Topology {
 	/* \brief Initializes the topologies.
@@ -30,9 +38,6 @@ struct Topology {
 	 * 			ground is set to $0V$ at node $17$
 	 */
 	Topology(double V) {
-		// TODO: (3-5.d) (optional) Fill in the vectors to model the topology.
-		// START
-		
 		// We implement the topology of the resistances by pushing each
 		// Resistance between node i < j in a std::vector of
 		// pair $(i,j) \in \mathbb{N}^2$
@@ -73,7 +78,6 @@ struct Topology {
 		S.push_back(voltage(7, 17, 0));
 		S.push_back(voltage(11,17, 0));
 		S.push_back(voltage(14,17, 0));
-		// END
 	}
 	
 	resistor_topology T;
@@ -108,17 +112,19 @@ private:
  * \param Rx Resistance (in Ohm) value of $Rx$
  */
 /* SAM_LISTING_BEGIN_1 */
-NodalPotentials::NodalPotentials(double R, double Rx):
+NodalPotentials::NodalPotentials(double R, double Rx)
 	// TODO: (3-5.d) initializer list.
 	// START
-	R_(R), Rx_(Rx)
+	: R_(R), Rx_(Rx)
 	// END
 	{
-	// TODO: (3-5.d) Do necessary and expensive precomputations here.
+	// TODO: (3-5.d) Build the matrix and the r.h.s. vector by either using
+	//		 the topology struct or by hardcoding the matrix and vector.
 	// START
 	assert(Rx_ != 0. && "Rx should not be equal to zero!");
 	xi_ = R_ / Rx_;
 	
+	// Build the topology for a source voltage of 1.
 	Topology top(1.);
 	
 	// Automatically build A_Rx filling from topology
@@ -160,7 +166,7 @@ NodalPotentials::NodalPotentials(double R, double Rx):
 	VectorXd b = VectorXd::Zero(15);
 	b(5) = 1.;
 	
-	// Solve unscaled linear system.
+	// Solve unscaled linear system and store in member.
 	nodal_voltage_ = A_Rx.lu().solve(b);
 	// END
 }
@@ -171,10 +177,14 @@ NodalPotentials::NodalPotentials(double R, double Rx):
  */
 /* SAM_LISTING_BEGIN_2 */
 VectorXd NodalPotentials::operator()(double V) const {
+	VectorXd return_vector = VectorXd::Zero(15);
+	
 	// TODO: (3-5.d) Return the values of the potential at the nodes.
 	// START
-	return nodal_voltage_ * V;
+	return_vector = nodal_voltage_ * V;
 	// END
+
+	return return_vector;
 }
 /* SAM_LISTING_END_2 */
 
@@ -200,7 +210,7 @@ private:
 	double R_, V_; //< Resistance $R$ and source voltage $W$.
 	VectorXd w_, z_;
 	double alpha_, beta_;
-	std::size_t nnodes_;
+	static const std::size_t nnodes_ = 15;
 	// END
 };
 /* SAM_LISTING_END_3 */
@@ -215,11 +225,16 @@ private:
 ImpedanceMap::ImpedanceMap(double R, double V)
 	// TODO: (3-5.g) initializer list.
 	// START
-	: R_(R), V_(V),
+	: R_(R), V_(V)
 	// END
-	nnodes_(15) {
-	// TODO: (3-5.g) Do necessary and expensive precomputations here.
+	{
+	// TODO: (3-5.g) Build the matrix and the r.h.s. vector by either using
+	// 		 the topology or by hardcoding the matrix and vector. Also, do
+	//		 the setup phase for the solver here or find an even smarter way
+	//		 for an efficient implementation
 	// START
+
+	// Build the topology with source voltage V_.
 	Topology top(V_);
 	
 	// Automatically build A0 filling from topology
@@ -258,7 +273,8 @@ ImpedanceMap::ImpedanceMap(double R, double V)
 		A0(i,i) += 1;
 	}
 	
-	// Following the "smart" approach
+	// Following the "smart" approach for the SMW formula;
+	// we don't even have to store the LU-decomposition!
 	PartialPivLU<MatrixXd> lu(A0);
 	w_ = lu.solve(b);
 	VectorXd u0 = VectorXd::Zero(nnodes_);
@@ -278,6 +294,8 @@ ImpedanceMap::ImpedanceMap(double R, double V)
  */
 /* SAM_LISTING_BEGIN_5 */
 double ImpedanceMap::operator()(double Rx) const {
+	double return_value = 0.;
+	
 	// TODO: (3-5.g) Return the impedance of the circuit given a specific Rx
 	// START
 	assert(Rx != 0 && "Rx should not be equal to zero!");
@@ -291,8 +309,10 @@ double ImpedanceMap::operator()(double Rx) const {
 	// Compute the current $I = \Delta W_{16,5} / R$
 	// and then impedance $= V / I$.
 	// Here $\Delta W_{16,5} = W_{16} - x_5 = V - x_5$.
-	return V_ * R_ / (V_ - x(5));
+	return_value = V_ * R_ / (V_ - x(5));
 	// END
+	
+	return return_value;
 }
 /* SAM_LISITNG_END_5 */
 

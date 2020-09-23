@@ -22,7 +22,15 @@ using voltage = std::tuple<int, int, double>;
 using voltage_topology = std::vector<voltage>;
 /* SAM_LISTING_END_6 */
 
-// \brief Struct implementing the topology of the circuit (cf. Figure)
+/* \brief Struct implementing the topology of the circuit (cf. Figure).
+ * Used to build the matrix of the problem.
+ * Note that the resistor between node 14 and 15 is omitted.
+ * Members: T a resistor_topology, i.e. a vector of index-pairs; each resistor
+ * 			has the same constant resistance; that is the reason why the resistor
+ *			between 14-15 is omitted
+ *			S a voltage_topology, i.e. a vector of tuples; (i,j,V) voltage V is applied
+ *			to resistor between node i and j
+ */
 /* SAM_LISTING_BEGIN_7 */
 struct Topology {
 	/* \brief Initializes the topologies.
@@ -30,10 +38,46 @@ struct Topology {
 	 * 			ground is set to $0V$ at node $17$
 	 */
 	Topology(double V) {
-		// TODO: (3-5.d) (optional) Fill in the vectors to model the topology.
-		// START
+		// We implement the topology of the resistances by pushing each
+		// Resistance between node i < j in a std::vector of
+		// pair $(i,j) \in \mathbb{N}^2$
+		// This way we can automatically build a symmetric
+		// matrix, take care of indexing
+		// and avoid mistakes during the matrix filling
+		T.reserve(23);
+		T.push_back(resistor(1,2));
+		T.push_back(resistor(1,5));
+		T.push_back(resistor(2,5));
+		T.push_back(resistor(2,3));
+		T.push_back(resistor(2,14));
+		T.push_back(resistor(3,4));
+		T.push_back(resistor(3,15));
+		T.push_back(resistor(4,6));
+		T.push_back(resistor(4,15));
+		T.push_back(resistor(5,7));
+		T.push_back(resistor(5,14));
+		T.push_back(resistor(6,9));
+		T.push_back(resistor(6,15));
+		T.push_back(resistor(7,10));
+		T.push_back(resistor(7,11));
+		T.push_back(resistor(8,9));
+		T.push_back(resistor(8,12));
+		T.push_back(resistor(8,13));
+		T.push_back(resistor(8,15));
+		T.push_back(resistor(9,13));
+		T.push_back(resistor(10,11));
+		T.push_back(resistor(11,12));
+		T.push_back(resistor(12,13));
+		// We omit the resistor between node 14 and 15 for an easier matrix filling.
 		
-		// END
+		// We implement voltage ground and sources by
+		// specifying which node is connected to ground/source
+		// trough a resistance. This will be also part of the r.h.s.
+		S.reserve(4);
+		S.push_back(voltage(6, 16, V));
+		S.push_back(voltage(7, 17, 0));
+		S.push_back(voltage(11,17, 0));
+		S.push_back(voltage(14,17, 0));
 	}
 	
 	resistor_topology T;
@@ -73,7 +117,8 @@ NodalPotentials::NodalPotentials(double R, double Rx)
 	
 	// END
 	{
-	// TODO: (3-5.d) Do necessary and expensive precomputations here.
+	// TODO: (3-5.d) Build the matrix and the r.h.s. vector by either using
+	//		 the topology struct or by hardcoding the matrix and vector.
 	// START
 	
 	// END
@@ -85,13 +130,14 @@ NodalPotentials::NodalPotentials(double R, double Rx)
  */
 /* SAM_LISTING_BEGIN_2 */
 VectorXd NodalPotentials::operator()(double V) const {
+	VectorXd return_vector = VectorXd::Zero(15);
+	
 	// TODO: (3-5.d) Return the values of the potential at the nodes.
 	// START
 	
-	// dummy return
-	return VectorXd::Zero(15);
-	
 	// END
+
+	return return_vector;
 }
 /* SAM_LISTING_END_2 */
 
@@ -116,7 +162,6 @@ private:
 	// START
 	
 	// END
-	std::size_t nnodes_;
 };
 /* SAM_LISTING_END_3 */
 
@@ -127,13 +172,16 @@ private:
  *          ground is set to $0V$ at node $17$
  */
 /* SAM_LISTING_BEGIN_4 */
-ImpedanceMap::ImpedanceMap(double R, double V):
+ImpedanceMap::ImpedanceMap(double R, double V)
 	// TODO: (3-5.g) initializer list.
 	// START
 	
 	// END
-	nnodes_(15) {
-	// TODO: (3-5.g) Do necessary and expensive precomputations here.
+	{
+	// TODO: (3-5.g) Build the matrix and the r.h.s. vector by either using
+	// 		 the topology or by hardcoding the matrix and vector. Also, do
+	//		 the setup phase for the solver here or find an even smarter way
+	//		 for an efficient implementation
 	// START
 	
 	// END
@@ -147,13 +195,14 @@ ImpedanceMap::ImpedanceMap(double R, double V):
  */
 /* SAM_LISTING_BEGIN_5 */
 double ImpedanceMap::operator()(double Rx) const {
+	double return_value = 0.;
+	
 	// TODO: (3-5.g) Return the impedance of the circuit given a specific Rx
 	// START
 	
-	// dummy return
-	return 0.;
-	
 	// END
+	
+	return return_value;
 }
 /* SAM_LISITNG_END_5 */
 
