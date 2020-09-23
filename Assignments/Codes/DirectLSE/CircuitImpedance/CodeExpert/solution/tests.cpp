@@ -14,7 +14,7 @@ TEST_SUITE("Resistance to impedance map") {
 	TEST_CASE("VectorXd operator() [OUT OF CLASS]" * doctest::description("NodalPotentails operator()")) {
 		// all resistors have same resistance
 		NodalPotentials sol1(1, 1);
-		NodalPotentails_TEST stud1(1, 1);
+		NodalPotentials_TEST stud1(1, 1);
 		// check for two different source voltages
 		VectorXd vec_sol1 = sol1(1);
 		VectorXd vec_stud1 = stud1(1);
