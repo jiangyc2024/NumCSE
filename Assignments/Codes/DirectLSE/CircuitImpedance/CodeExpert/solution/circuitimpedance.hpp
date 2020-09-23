@@ -312,7 +312,7 @@ double ImpedanceMap::operator()(double Rx) const {
 
   // Compute the current $I = \Delta V_{16,5} / R$
   // and then impedance $= V / I$.
-  // Here $\Delta W_{16,5} = W_{16} - x_5 = V - x_5$.
+  // Here $\Delta V_{16,5} = V_{16} - x_5 = V - x_5$.
   return_value = V_ * R_ / (V_ - x(5));
   // END
 
