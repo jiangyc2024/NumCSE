@@ -26,8 +26,10 @@ using voltage_topology = std::vector<voltage>;
  * Note that the resistor between node 14 and 15 is omitted.
  * Members: T a resistor_topology, i.e. a vector of index-pairs; each resistor
  * 			has the same constant resistance; that is the reason why
- *the resistor between 14-15 is omitted S a voltage_topology, i.e. a vector of
- *tuples; (i,j,V) voltage V is applied to resistor between node i and j
+ *			the resistor between 14-15 is omitted
+ *			S a voltage_topology, i.e. a vector of
+ *			tuples; (i,j,V) voltage V is applied to resistor between
+ *node i and j
  */
 /* SAM_LISTING_BEGIN_7 */
 struct Topology {
@@ -100,7 +102,7 @@ class NodalPotentials {
  private:
   // TODO: (3-5.d) Specify which variables should be stored.
   // START
-
+  
   // END
 };
 /* SAM_LISTING_END_0 */
@@ -111,15 +113,15 @@ class NodalPotentials {
  */
 /* SAM_LISTING_BEGIN_1 */
 NodalPotentials::NodalPotentials(double R, double Rx)
-// TODO: (3-5.d) initializer list.
-// START
-
+    // TODO: (3-5.d) initializer list.
+    // START
+    
 // END
 {
   // TODO: (3-5.d) Build the matrix and the r.h.s. vector by either using
   //		 the topology struct or by hardcoding the matrix and vector.
   // START
-
+  
   // END
 }
 /* SAM_LISTING_END_1 */
@@ -133,7 +135,7 @@ VectorXd NodalPotentials::operator()(double V) const {
 
   // TODO: (3-5.d) Return the values of the potential at the nodes.
   // START
-
+  
   // END
 
   return return_vector;
@@ -160,7 +162,7 @@ class ImpedanceMap {
  private:
   // TODO: (3-5.g) Specify which variables should be stored.
   // START
-
+  
   // END
 };
 /* SAM_LISTING_END_3 */
@@ -173,9 +175,9 @@ class ImpedanceMap {
  */
 /* SAM_LISTING_BEGIN_4 */
 ImpedanceMap::ImpedanceMap(double R, double V)
-// TODO: (3-5.g) initializer list.
-// START
-
+    // TODO: (3-5.g) initializer list.
+    // START
+    
 // END
 {
   // TODO: (3-5.g) Build the matrix and the r.h.s. vector by either using
@@ -183,14 +185,14 @@ ImpedanceMap::ImpedanceMap(double R, double V)
   //		 the setup phase for the solver here or find an even smarter way
   //		 for an efficient implementation
   // START
-
+  
   // END
 }
 /* SAM_LISTING_END_4 */
 
 /* \brief Compute the impedance given the resistance $R_x$.
  * Use SMW formula for low rank perturbations
- * \param Rx Resistence $R_x > 0$ between node 14 and 15
+ * \param Rx Resistance $R_x > 0$ between node 14 and 15
  * \return Impedance $V / I$ of the system $A_{R_x}$
  */
 /* SAM_LISTING_BEGIN_5 */
@@ -199,7 +201,7 @@ double ImpedanceMap::operator()(double Rx) const {
 
   // TODO: (3-5.g) Return the impedance of the circuit given a specific Rx
   // START
-
+  
   // END
 
   return return_value;

@@ -26,8 +26,10 @@ using voltage_topology = std::vector<voltage>;
  * Note that the resistor between node 14 and 15 is omitted.
  * Members: T a resistor_topology, i.e. a vector of index-pairs; each resistor
  * 			has the same constant resistance; that is the reason why
- *the resistor between 14-15 is omitted S a voltage_topology, i.e. a vector of
- *tuples; (i,j,V) voltage V is applied to resistor between node i and j
+ *			the resistor between 14-15 is omitted
+ *			S a voltage_topology, i.e. a vector of
+ *			tuples; (i,j,V) voltage V is applied to resistor between
+ *node i and j
  */
 /* SAM_LISTING_BEGIN_7 */
 struct Topology {
@@ -208,7 +210,7 @@ class ImpedanceMap {
  private:
   // TODO: (3-5.g) Specify which variables should be stored.
   // START
-  double R_, V_;  //< Resistance $R$ and source voltage $W$.
+  double R_, V_;  //< Resistance $R$ and source voltage $V$.
   VectorXd w_, z_;
   double alpha_, beta_;
   static const std::size_t nnodes_ = 15;
@@ -291,7 +293,7 @@ ImpedanceMap::ImpedanceMap(double R, double V)
 
 /* \brief Compute the impedance given the resistance $R_x$.
  * Use SMW formula for low rank perturbations
- * \param Rx Resistence $R_x > 0$ between node 14 and 15
+ * \param Rx Resistance $R_x > 0$ between node 14 and 15
  * \return Impedance $V / I$ of the system $A_{R_x}$
  */
 /* SAM_LISTING_BEGIN_5 */
@@ -304,7 +306,7 @@ double ImpedanceMap::operator()(double Rx) const {
   // Store the scaled factor for convenience
   double xi = R_ / Rx;
 
-  // Put the formula toghether, x is a column vector containing voltages
+  // Put the formula together, x is a column vector containing voltages
   // at each node (except 16 and 17, which are prescribed)
   VectorXd x = w_ - xi * beta_ / (1. + xi * alpha_) * z_;
 

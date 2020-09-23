@@ -9,11 +9,11 @@ int main() {
   // Print NodalPotentials for some source voltages
   std::cout << "--> Some NodalPotentials" << std::endl;
   std::cout << "Nodal potentials for V = 1:" << std::endl;
-  std::cout << NP(1) << std::endl << std::endl;
+  std::cout << NP(1).transpose() << std::endl << std::endl;
   std::cout << "Nodal potentials for V = 2:" << std::endl;
-  std::cout << NP(2) << std::endl << std::endl;
+  std::cout << NP(2).transpose() << std::endl << std::endl;
   std::cout << "Nodal potentials for V = 2.5:" << std::endl;
-  std::cout << NP(2.5) << std::endl << std::endl;
+  std::cout << NP(2.5).transpose() << std::endl << std::endl;
 
   // Create an ImpedanceMap with resistance 1 and voltage 1
   ImpedanceMap IM(1, 1);
