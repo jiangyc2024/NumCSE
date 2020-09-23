@@ -33,6 +33,7 @@ public:
   double operator()(index_t i, index_t j) const;
   void mvmult(const VectorXd &x, VectorXd &y) const;
   void mtvmult(const VectorXd &x, VectorXd &y) const;
+  index_t get_maxcols() const;
 private:
   std::vector<double> val; //< Vector containing values
   // corresponding to entries in 'col'
@@ -44,6 +45,10 @@ private:
   index_t m, n;    //< Number of rows, number of columns
 };
 /* SAM_LISTING_END_0 */
+
+index_t EllpackMat::get_maxcols() const {
+    return maxcols;
+}
 
 /* @brief Retrieve value of cell $(i,j)$
  * \param[in] i Row index
@@ -80,13 +85,25 @@ EllpackMat::EllpackMat(const Triplets &triplets, index_t m, index_t n)
   std::vector<unsigned int> counters(m);
   // Fill counters with 0
   std::fill(counters.begin(), counters.end(), 0);
+
+  //counters especially for handling repeated index
+  std::vector<std::vector<unsigned int>> counters_col(m);
+
   // 'maxcols' starts with no entry for each row
   maxcols = 0;
   // Loop over each triplet and increment the corresponding counter, updating
   // maxcols if necessary
   for (const Triplet_new &tr : triplets) {
-    if (++counters[tr.row()] > maxcols)
-      maxcols = counters[tr.row()];
+    std::vector<unsigned int> &col_idx = counters_col[tr.row()];
+    //if it's not a repeated index, then check if maxcols needs to be updated
+    if(std::find(col_idx.begin(), col_idx.end(), tr.col()) == col_idx.end()){
+        //bookkeep the col of new(not repeated) triplet
+        col_idx.push_back(tr.col());
+        if (++counters[tr.row()] > maxcols){
+            maxcols = counters[tr.row()];
+        }
+    }
+
   }
   std::cout << "Maxcols: " << maxcols << std::endl;
 

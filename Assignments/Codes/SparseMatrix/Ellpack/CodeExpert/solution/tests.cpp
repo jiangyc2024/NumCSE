@@ -67,6 +67,13 @@ TEST_SUITE("Ellpack") {
 			}
 		}
 	}
+
+    TEST_CASE("index_t get_maxcols [OUT OF CLASS]" * doctest::description("get_maxcols")) {
+	    EllpackMat sol(data.triplets, data.m, data.n);
+        EllpackMat_TEST stud(data.triplets, data.m, data.n);
+
+        REQUIRE(sol.get_maxcols() == stud.get_get_maxcols());
+    }
 	
 	TEST_CASE("void mvmult [OUT OF CLASS]" * doctest::description("mvmult")) {
 		EllpackMat sol(data.triplets, data.m, data.n);
