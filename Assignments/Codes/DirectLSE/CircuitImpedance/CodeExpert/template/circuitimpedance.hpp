@@ -24,12 +24,12 @@ using voltage_topology = std::vector<voltage>;
 /* \brief Struct implementing the topology of the circuit (cf. Figure).
  * Used to build the matrix of the problem.
  * Note that the resistor between node 14 and 15 is omitted.
- * Members: T a resistor_topology, i.e. a vector of index-pairs; each resistor
+ * Members: T a resistor\_topology, i.e. a vector of index-pairs; each resistor
  * 			has the same constant resistance; that is the reason why
  *			the resistor between 14-15 is omitted
- *			S a voltage_topology, i.e. a vector of
+ *			S a voltage\_topology, i.e. a vector of
  *			tuples; (i,j,V) voltage V is applied to resistor between
- *node i and j
+ *			node i and j
  */
 /* SAM_LISTING_BEGIN_7 */
 struct Topology {

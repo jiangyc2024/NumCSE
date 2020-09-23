@@ -24,10 +24,10 @@ using voltage_topology = std::vector<voltage>;
 /* \brief Struct implementing the topology of the circuit (cf. Figure).
  * Used to build the matrix of the problem.
  * Note that the resistor between node 14 and 15 is omitted.
- * Members: T a resistor_topology, i.e. a vector of index-pairs; each resistor
+ * Members: T a resistor\_topology, i.e. a vector of index-pairs; each resistor
  * 			has the same constant resistance; that is the reason why
  *			the resistor between 14-15 is omitted
- *			S a voltage_topology, i.e. a vector of
+ *			S a voltage\_topology, i.e. a vector of
  *			tuples; (i,j,V) voltage V is applied to resistor between
  *node i and j
  */
@@ -129,8 +129,8 @@ NodalPotentials::NodalPotentials(double R, double Rx)
   // Build the topology for a source voltage of 1.
   Topology top(1.);
 
-  // Automatically build A_Rx filling from topology
-  // A_Rx is the matrix $A_R$ (i.e. with $R_x = R$)
+  // Automatically build A\_Rx filling from topology
+  // A\_Rx is the matrix $A_R$ (i.e. with $R_x = R$)
   MatrixXd A_Rx = MatrixXd::Zero(15, 15);
   for (resistor& res : top.T) {
     // Shift indices down by 1 (indices in Figure start from 1)
@@ -238,7 +238,7 @@ ImpedanceMap::ImpedanceMap(double R, double V)
   //		 for an efficient implementation
   // START
 
-  // Build the topology with source voltage V_.
+  // Build the topology with source voltage V\_.
   Topology top(V_);
 
   // Automatically build A0 filling from topology
