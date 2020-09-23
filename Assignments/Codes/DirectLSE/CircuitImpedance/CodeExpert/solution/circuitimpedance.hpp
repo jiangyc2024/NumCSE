@@ -318,6 +318,6 @@ double ImpedanceMap::operator()(double Rx) const {
 
   return return_value;
 }
-/* SAM_LISITNG_END_5 */
+/* SAM_LISTING_END_5 */
 
 #endif
