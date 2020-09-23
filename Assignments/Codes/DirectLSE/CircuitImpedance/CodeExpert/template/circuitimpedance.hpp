@@ -95,7 +95,7 @@ class NodalPotentials {
   ~NodalPotentials() = default;
 
   NodalPotentials(double R, double Rx);
-  [[nodiscard]] VectorXd operator()(double V) const;
+  VectorXd operator()(double V) const;
 
  private:
   // TODO: (3-5.d) Specify which variables should be stored.
