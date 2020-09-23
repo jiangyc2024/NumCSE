@@ -26,6 +26,7 @@ struct TestData {
 
         // fill 5 percent with non-zero entries
         const std::size_t ntriplets = 0.05 * (m * n);
+        //reserve for normal random data(ntriplets) and artificially repeated data(r * ntriplets)
         triplets.reserve((1 + r) * ntriplets);
         std::uniform_int_distribution<> repeated_idx(0, ntriplets - 1);
 

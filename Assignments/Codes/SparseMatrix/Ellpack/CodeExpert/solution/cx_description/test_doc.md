@@ -27,5 +27,6 @@ $x = [4,5,6,7,8,9]^{T}$. The result is compared with the exact solution  $[88,18
 
 > `mtvmult()`: it should compute $E^Tx$ where $x=[1,2,3]^T$. The result is compared with the exact solution $[30,33,50,22,8,21]^{T}$.
 
->Addition to the output from main, We test the constructor, `mvmult()` and `mtvmult()` using random matrix of size $70 * 100$ with artificial repeated index. 
->For multiplication, we also use random generated vectors.
+>Addition to the output from main, We test the correctness of constructor, maxcols, `mvmult()` and `mtvmult()` using random matrix of size $70 * 100$ with 0.1 repeating ratio. 
+>For multiplication, we also use random generated vectors of length 100 and 70 respectively
+>and check the correctness of their multiplication with the random matrix and its tranpose respectively.
