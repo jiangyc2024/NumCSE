@@ -6,14 +6,13 @@
 
 struct TestData {
 	TestData() {
-		A << 1, 2, 3, 4;
-		B << 5, 6, 7, 8;
-		srand(5);
-		x = Eigen::VectorXd::Random(4);
+		A = Eigen::MatrixXd::Random(10, 10);
+		B = Eigen::MatrixXd::Random(10, 10);
+		x = Eigen::VectorXd::Random(100);
 	}
-	Eigen::Matrix2d A;
-	Eigen::Matrix2d B;
-	Eigen::Vector4d x;
+	Eigen::MatrixXd A;
+	Eigen::MatrixXd B;
+	Eigen::VectorXd x;
 };
 
 TestData data;
@@ -24,6 +23,8 @@ TEST_SUITE("Kronecker") {
 		Eigen::MatrixXd C_stud;
 		kron(data.A, data.B, C_sol);
 		kron_TEST(data.A, data.B, C_stud);
+		REQUIRE(C_sol.rows() == C_stud.rows());
+		REQUIRE(C_sol.cols() == C_stud.cols());
 		CHECK((C_sol - C_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
 	
@@ -32,6 +33,7 @@ TEST_SUITE("Kronecker") {
 		Eigen::VectorXd y_stud;
 		kron_mult(data.A, data.B, data.x, y_sol);
 		kron_mult_TEST(data.A, data.B, data.x, y_stud);
+		REQUIRE(y_sol.size() == y_stud.size());
 		CHECK((y_sol - y_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
 	
@@ -40,8 +42,11 @@ TEST_SUITE("Kronecker") {
 		Eigen::VectorXd y_stud;
 		kron_reshape(data.A, data.B, data.x, y_sol);
 		kron_reshape_TEST(data.A, data.B, data.x, y_stud);
+		REQUIRE(y_sol.size() == y_stud.size());
 		CHECK((y_sol - y_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
 	
-	TEST_CASE("void kron_runtime" * doctest::description("Test runtime") * doctest::skip()) {}
+	TEST_CASE("void kron_runtime" * doctest::description("Test runtime")) {
+		MESSAGE("This function wasn't tested. Run the program to see its output.");
+	}
 }

@@ -6,14 +6,11 @@
 // includes for test data
 #include <Eigen/Dense>
 
-struct TestData {
-};
-
-TestData data;
-
 TEST_SUITE("Cancellation") {
 	
-	TEST_CASE("void sinederv" * doctest::description("skipped") * doctest::skip()) {}
+	TEST_CASE("void sinederv" * doctest::description("skipped")) {
+		MESSAGE("This function wasn't tested. Run the program to see its output.");
+	}
 	
 }
 

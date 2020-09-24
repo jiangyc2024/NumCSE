@@ -23,15 +23,16 @@ template <typename Scalar> void eigenTypeDemo(unsigned int dim) {
   dynColVec_t colvec(dim);
   dynRowVec_t rowvec(dim);
   for (index_t i = 0; i < colvec.size(); ++i)
-    colvec(i) = (Scalar)i;
+    colvec[i] = (entry_t)i;
   for (index_t i = 0; i < rowvec.size(); ++i)
-    rowvec(i) = (Scalar)1 / (i + 1);
-  colvec[0] = (Scalar)3.14;
-  rowvec[dim - 1] = (Scalar)2.718;
+    rowvec[i] = (entry_t)1 / (i + 1);
+  colvec[0] = (entry_t)3.14;
+  rowvec[dim - 1] = (entry_t)2.718;
   cout << "colvec = " << colvec << endl << "rwovec = " << rowvec << endl;
   dynMat_t vecprod = colvec * rowvec;
   const int nrows = vecprod.rows();
   const int ncols = vecprod.cols();
+  cout << "vecprod is " << nrows << " x " << ncols << "-matrix" << endl;
 }
 /* SAM_LISTING_END_1 */
 
@@ -43,26 +44,26 @@ void blockInit(int size = 6) {
 
   MatrixXd mat(size, size);
   mat << MatrixXd::Zero(size / 2, size / 2),
-    MatrixXd::Identity(size / 2, size / 2),
-    MatrixXd::Identity(size / 2, size / 2),
-    MatrixXd::Zero(size / 2, size / 2);
+      MatrixXd::Identity(size / 2, size / 2),
+      MatrixXd::Identity(size / 2, size / 2),
+      MatrixXd::Zero(size / 2, size / 2);
   std::cout << "#1 " << mat << std::endl;
 
   MatrixXd botRows(size / 2, size);
   for (int l = 0; l < botRows.size(); ++l)
     botRows(l) = l;
   mat << MatrixXd::Zero(size / 2, size / 2),
-    MatrixXd::Identity(size / 2, size / 2), botRows;
+      MatrixXd::Identity(size / 2, size / 2), botRows;
   std::cout << "#2 " << mat << std::endl;
 
   mat << MatrixXd::Constant(size, size - 4, 1.5),
-    MatrixXd::Constant(size, 4, 3.5);
+      MatrixXd::Constant(size, 4, 3.5);
   std::cout << "#3 " << mat << std::endl;
   mat << MatrixXd::Constant(size - 2, size - 4, 1.5), // top row, first block
-    MatrixXd::Constant(size - 2, 3, 3.5),           // top row, second block
-    MatrixXd::Constant(size - 2, 1, 7.5),           //  top row, third block
-    MatrixXd::Constant(2, size - 2, 2.5),           // bottom row, left block
-    MatrixXd::Constant(2, 2, 4.5);                  // bottom row, right block
+      MatrixXd::Constant(size - 2, 3, 3.5),           // top row, second block
+      MatrixXd::Constant(size - 2, 1, 7.5),           //  top row, third block
+      MatrixXd::Constant(2, size - 2, 2.5),           // bottom row, left block
+      MatrixXd::Constant(2, 2, 4.5);                  // bottom row, right block
   std::cout << "#4 " << mat << std::endl;
 }
 /* SAM_LISTING_END_2 */
@@ -110,13 +111,13 @@ void blockOps(int nrows = 6, int ncols = 7) {
   blockAccess(M);
 }
 
-/** @brief Access to a matrix block 
+/** @brief Access to a matrix block
     @tparam Matrix any Eigen matrix compatible type
     @param M reference to a matrix-like object.
 
-    Since Eigen uses expression templates, the expressions often evaluate to 
-    temporary objects. This function demonstrates a way to accept such objects 
-    as arguments of functions  
+    Since Eigen uses expression templates, the expressions often evaluate to
+    temporary objects. This function demonstrates a way to accept such objects
+    as arguments of functions
 */
 /* SAM_LISTING_BEGIN_4 */
 template <typename Matrix> void blockAccess(Eigen::MatrixBase<Matrix> &M) {

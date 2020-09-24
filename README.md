@@ -1,44 +1,37 @@
 # Numerical Methods for CSE
 
-This repository will host all the codes used in the lecture notes and assignments.
+This repository hosts all the codes used in the lecture notes and assignments.
 
 **Additional links**
 
-- [Course webpage](https://www.sam.math.ethz.ch/~grsam/HS16/NumCSE/)
-- [Course VVZ](http://www.vvz.ethz.ch/Vorlesungsverzeichnis/lerneinheitPre.do?lerneinheitId=109126&semkez=2016W&lang=de)
-- [Git tutorial](https://gitlab.math.ethz.ch/tille/gitlab-introduction/blob/master/git/README.md)
-- [Debugger tutorial](https://gitlab.math.ethz.ch/tille/debugging-cpp-code-with-lldb)
+- [Course VVZ](http://www.vvz.ethz.ch/Vorlesungsverzeichnis/lerneinheit.view?semkez=2020W&ansicht=KATALOGDATEN&lerneinheitId=140998&lang=de)
+- Documentation:
+	- [Cppreference](https://en.cppreference.com/w/)
+	- [Eigen](http://eigen.tuxfamily.org/dox/)
+- Tutorials:
+	- [Git tutorial](https://gitlab.math.ethz.ch/tille/gitlab-introduction/blob/master/git/README.md)
+	- [Debugger tutorial](https://gitlab.math.ethz.ch/tille/debugging-cpp-code-with-lldb)
 
 ## Project Structure
 
-- `LectureCodes` - all codes used in the lecture notes / script sorted by their subject
-- `MathGL` - documentation and example codes for MathGL
+- `LectureCodes` - all codes used in the lecture notes / script sorted by their subject; there are different versions of the same code: C++ / Matlab (for most of the codes) / Python (for most of the codes)
+- `Assignments` - all codes used in the current assignments. The path for each problem is – note the CodeExpert subfolders:
+    - for templates: `Assignments/Codes/<Chapter>/<ProblemName>/CodeExpert/template`
+    - for solutions: `Assignments/Codes/<Chapter>/<ProblemName>/CodeExpert/solution`
+- `MathGL` - legacy plotting; documentation and example codes for MathGL
 - `CMake` - macros, modules used by CMake
-- `Assignments` - all codes used in the assignment. The path for each problem is:
-    - for templates: `Assignments/Codes/<Chapter>/<ProblemName>/templates_nolabels`
-    - for solutions: `Assignments/Codes/<Chapter>/<ProblemName>/solutions_nolabels`
-    - each one of these folder has an independent `CMake` file. Either within the cloned repository
-      or using the `Download zip` button, you shoud be able to compile and execute the
-      codes for the problem using:
-
-```
-$ cmake .
-$ make
-$ ./executable_name
-```
+- `CppTutorial` - tutorial for C++
+- `Docker` - provides a Dockerfile for setup of a Docker container for the repository
+- `FFT` - demos for FFT
+- `MatplotlibC++` - contains the header for MatplotlibC++
+- `OldExam` - code of old exam problems
+- `Testing` - contains necessary files for independent testing
+- `Utils` - folder for utility codes
 
 ## How to use
 
-In the [LectureCodes](LectureCodes/) you can find a folder for each code from the lecture notes script.
-
-There you can find different versions of the same code:
-
-- C++
-- Matlab (most of the codes)
-- Python (most of the codes)
-
 ### Source Download and Compilation
-
+	
 	$ git clone https://gitlab.math.ethz.ch/NumCSE/NumCSE.git
 	$ cd NumCSE
 	$ mkdir build && cd build
@@ -64,6 +57,9 @@ Targets will be in the format `<code-type>_<chapter>_<problem-name>_<executable-
 - `<problem-name>`: is a short name for the problem
 - `<executable-name>`: is a short name for the executable
 
+*OR* navigate to the assignment or lecture code folder inside `build`, then run 
+`make` to compile all sources that correspond to that specific folder. To execute the binaries go to the specific subfolder in `build/bin` and run `./executable_name`.
+
 The corresponding executable will be located in:
 - For assignments:
 
@@ -85,15 +81,22 @@ may (or may not) speed up the compilation time.
 
 __Alternative download__ [zip](https://gitlab.math.ethz.ch/NumCSE/NumCSE/repository/archive.zip?ref=master)
 
-### Third party libraries
+### Working on homework problems
+- All current homework problems are located in `Assignments/Codes/[...]/CodeExpert` subfolders! Please work only on these codes as the other ones are considered to be outdated and are currently not maintained.
+- Every homework problem comes with a set of tests that can be found in `tests.cpp`. These tests are independent which means that you can fail a subproblem - let's say a - (or do not work on it at all) and call the function from this subproblem in a following subproblem - let's say b; the tests of a correct implementation of b will not fail because your solution will be linked against the mastersolution.
+- To compile normal executables as well as tests, just go to your `build` folder, navigate to the `CodeExpert` subfolder of the specific exercise and then run `make`. Once compiled, you can find the executables in the specific `CodeExpert` subfolder of `build/bin`. To run them, call `./template` for your solution, `./solution` for the mastersolution and `./tests` for the tests.
+- _Add-On:_ If you want to test multiple exercise at once or you do not want exact information provided by doctest-test-executables, you can invoke CTest in a subfolder with a makefile generated by CMake by writing `make test` (`make all test` if executables have not been compiled before). This will run all tests in this folder.
 
-Dependencies / Requirements
+### Dependencies / Requirements
 
 Required:
-- C++ compiler (C++11 support required), tested only with gcc and clang
-- git
-- cmake
-- eigen
+- C++ compiler (C++17 support required), tested only with gcc and clang
+- Git
+- Cmake
+- Eigen (best to install it yourself, but will be installed during cmake-process if not found)
+- Python
+- Numpy
+- Matplotlib
 
 Optional:
 - boost
@@ -102,13 +105,17 @@ Optional:
 - MKL
 - FFTW
 
-Visualization using `matplotlibcpp.h`
+### Visualization using `matplotlibcpp.h`
 
 MatplotlibC++ provides a C++ interface to Python's matplotlib
 plotting library. It is header-only and simple to use.
 A documentation is available [here](https://matplotlib-cpp.readthedocs.io/en/latest/)
 
-### F.A.Q.
+### Testing using `doctest.h`
+
+Doctest is a fast, header-only unit testing framework used to test the homework codes.
+
+### Known issues
 
 #### `Unable to find the required Boost libraries`
 #### `Could NOT find ZLIB` or `Could not find PNG`

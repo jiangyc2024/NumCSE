@@ -18,7 +18,7 @@
 template <typename Scalar>
 std::vector<Eigen::Triplet<Scalar>>
 convertToTriplets(Eigen::SparseMatrix<Scalar> &A) {
-  // vector of triplets to be grown in the following loops
+  // Empty vector of triplets to be grown in the following loop
   std::vector<Eigen::Triplet<Scalar>> triplets{};
   // Loop over row/columns (depending on column/row major format
   for (int k = 0; k < A.outerSize(); ++k) {

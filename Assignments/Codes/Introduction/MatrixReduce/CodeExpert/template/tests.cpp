@@ -47,10 +47,13 @@ TEST_SUITE("MatrixReduce") {
 	
 	TEST_CASE("MatrixXd columns_sum_to_zero" * doctest::description("columns_sum_to_zero")) {
 		
-		std::srand(5);
 		Eigen::Matrix3d C = Eigen::Matrix3d::Random() + Eigen::Matrix3d::Constant(1);
 		
-		CHECK((columns_sum_to_zero(C) - columns_sum_to_zero_TEST(C)).norm() == doctest::Approx(0.).epsilon(1e-6));
+		auto sol = columns_sum_to_zero(C);
+		auto stud = columns_sum_to_zero_TEST(C);
+		REQUIRE(sol.rows() == stud.rows());
+		REQUIRE(sol.cols() == stud.cols());
+		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 		
 	}
 	

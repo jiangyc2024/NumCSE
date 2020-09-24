@@ -3,8 +3,6 @@ import sys
 
 #
 # CURRENT ISSUES:
-#   - The cmake version can only be called from the folder's local cmake file and its build folder.
-#   - does not recognize inheriting classes
 #   - probably more issues
 #
 
@@ -13,14 +11,15 @@ def parseWriteChange(student_sol, copy, tests):
 	Checks the c++ file student_sol for function definitions and changes the name of those to *_TEST.
 	"""
 	suffix = "_TEST"
+	keyword = "[OUT OF CLASS]"
 	
 	# get all function signatures to be tested from the test file
 	function_signatures = []
 	for line in tests:
-		#parse = re.match('\s*TEST_CASE\("([\S\s]*)(\s*)(\S*)"\s\*\sdoctest::description.*', line)
-		parse = re.match('\s*TEST_CASE\("([\S\s]*)"\s\*\sdoctest::description.*', line)
-		if parse:
+		parse = re.match('\s*TEST_CASE\("([\S\s]*)"\s\*.*', line)
+		if parse and keyword not in parse.group(1):
 			function_signatures.append(parse)
+	classes = []
 	
 	for file in student_sol:
 		# expect include guards, change them
@@ -31,19 +30,26 @@ def parseWriteChange(student_sol, copy, tests):
 			next(file)
 		for line in file:
 			write = True
-			for el in function_signatures:
-				#parse = re.match("(\s*)" + el.group(1) + el.group(2) + el.group(3) + "(\s*\(.*)", line)
-				parse = re.match("(\s*)" + re.escape(el.group(1)) + "(\s*\(.*)", line)
-				if parse:
-					#copy.write(parse.group(1) + el.group(1) + el.group(2) + el.group(3) + suffix + parse.group(2) + "\n")
-					copy.write(parse.group(1) + el.group(1) + suffix + parse.group(2) + "\n")
-					write = False
 			parse_class = re.match("\s*(class|struct)(\s*)(\S*)(\s*)({|\s*)", line)
 			if parse_class:
 				copy.write(parse_class.group(1) + parse_class.group(2) + parse_class.group(3) + suffix + parse_class.group(4) + parse_class.group(5) + "\n")
+				classes.append(parse_class.group(3))
 				write = False
-			if write and not line.startswith("#endif"):
-				copy.write(line)
+			for el in function_signatures:
+				parse = re.match("(\s*)" + re.escape(el.group(1)) + "(\s*\(.*)", line)
+				if parse:
+					parse2 = re.search("(<.*>)$", re.escape(el.group(1)))
+					if parse2:
+						copy.write(parse.group(1) + el.group(1).replace(parse2.group(1), "") + suffix + parse2.group(1) + parse.group(2) + "\n")
+					else:
+						copy.write(parse.group(1) + el.group(1) + suffix + parse.group(2) + "\n")
+					write = False
+			if write and not line.startswith("#endif") and not line.startswith("#include"):
+				new_line = line
+				# replace all class occurences with its test version
+				for el in classes:
+					new_line = line.replace(el, el + suffix)
+				copy.write(new_line)
 		copy.write("\n")
 				
 def searchStudentSolution(main):
@@ -52,7 +58,7 @@ def searchStudentSolution(main):
 	Returns a list of filenames.
 	"""
 	return_list = []
-	other_headers = ["polyfit", "ode45", "solution", "solution2", "solution3"] # other headers ending with .hpp
+	other_headers = ["polyfit", "polyval", "ode45", "fft", "solution", "solution2", "solution3"] # other headers ending with .hpp
 	for line in main:
 		parse = re.match('\s*\#include\s*"(.*).hpp"', line)
 		if parse and parse.group(1) not in other_headers:

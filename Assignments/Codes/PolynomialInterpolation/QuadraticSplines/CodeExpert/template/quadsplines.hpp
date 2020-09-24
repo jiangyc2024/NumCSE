@@ -17,7 +17,7 @@ namespace plt = matplotlibcpp;
    [output] pair of vectors of size n+2 and n+1, respectively
 */
 /* SAM_LISTING_BEGIN_0 */
-std::pair<VectorXd, VectorXd> increments(const VectorXd &t) {
+std::pair<VectorXd, VectorXd> increments (const VectorXd &t) {
   // TO DO (6-6.g) : compute the increments t_j - t_{j-1} 
   // for j = 0,...,n+1 and t_{j+1} - t_{j-1} for j = 0,...,n
   // Assume that t is sorted and that t does not include the endpoints.
@@ -39,7 +39,7 @@ std::pair<VectorXd, VectorXd> increments(const VectorXd &t) {
    [output] c Vector of size n
 */
 /* SAM_LISTING_BEGIN_1 */
-VectorXd compute_c( const VectorXd &t, const VectorXd &y) {
+VectorXd compute_c (const VectorXd &t, const VectorXd &y) {
   const unsigned int n = y.size(); //number of intervals
   VectorXd c(n);
   // TO DO (6-6.g) : Build the (sparse) matrix for spline interpolation 
@@ -61,7 +61,7 @@ VectorXd compute_c( const VectorXd &t, const VectorXd &y) {
    [output] d_ext Vector of size n+1
 */
 /* SAM_LISTING_BEGIN_9*/   
-VectorXd compute_d ( const VectorXd &c, const VectorXd &t ) {
+VectorXd compute_d (const VectorXd &c, const VectorXd &t) {
   const unsigned int n = c.size(); //number of intervals
   VectorXd d_ext(n + 1);
   //TO DO (): compute coefficients d_j for j = 0...n 
@@ -102,7 +102,7 @@ VectorXd quadspline(const VectorXd &t, const VectorXd &y, const VectorXd &x) {
    [output] plot
 */
 /* SAM_LISTING_BEGIN_3 */
-void plotquadspline( const std::string &filename ) {
+void plotquadspline(const std::string &filename) {
   
   VectorXd mesh = VectorXd::LinSpaced(9,.1,.9);
   auto f = [] (VectorXd t) {
@@ -125,7 +125,7 @@ void plotquadspline( const std::string &filename ) {
    [output] Err vector of size n = 2^q
 */
 /* SAM_LISTING_BEGIN_4 */
-std::vector<double> qsp_error(unsigned int q) {
+std::vector<double> qsp_error (unsigned int q) {
   
   std::vector<double> Err;
   unsigned int N = 10000; 

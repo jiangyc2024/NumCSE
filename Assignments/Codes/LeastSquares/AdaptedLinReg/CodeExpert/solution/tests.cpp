@@ -8,13 +8,12 @@
 
 struct TestData {
 	TestData() {
-		n = 25;
+		n = 50;
 		t = Eigen::VectorXd::LinSpaced(n, 0., 1.);
-		std::srand(41);
 		noise = Eigen::VectorXd::Random(n);
 	}
 	
-	int n;
+	std::size_t n;
 	Eigen::VectorXd t, noise;
 };
 
@@ -29,6 +28,7 @@ TEST_SUITE("AdaptedLinReg") {
 		sol = linReg(data.t, y);
 		stud = linReg_TEST(data.t, y);
 		
+		REQUIRE(sol.size() == stud.size());
 		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
 	
@@ -39,6 +39,7 @@ TEST_SUITE("AdaptedLinReg") {
 		sol = expFit(data.t, y);
 		stud = expFit_TEST(data.t, y);
 		
+		REQUIRE(sol.size() == stud.size());
 		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
 	

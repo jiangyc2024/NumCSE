@@ -5,7 +5,7 @@
 using namespace Eigen;
 /* SAM_LISTING_BEGIN_0 */
 /**
- * @brief Equvalent to MATLAB function A = spdiags(B,d,m,n)
+ * @brief Equivalent to MATLAB function A = spdiags(B,d,m,n)
  * spdiags(B,d,m,n) creates an m-by-n sparse matrix by taking the 
  * columns of B and placing them along the diagonals specified by d. see MATLAB doc
  * @param B A min(m,n)-by-p matrix, usually (but not necessarily) full, whose columns are the diagonals of A.

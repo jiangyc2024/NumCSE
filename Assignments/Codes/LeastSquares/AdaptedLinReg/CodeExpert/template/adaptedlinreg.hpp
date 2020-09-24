@@ -12,7 +12,9 @@ using namespace Eigen;
 /* SAM_LISTING_BEGIN_0 */
 VectorXd linReg(const VectorXd &t, const VectorXd &y) {
   // START
-
+  // replace the dummy
+  Eigen::VectorXd ret;
+  return ret;
   // END
 }
 /* SAM_LISTING_END_0 */
@@ -26,7 +28,9 @@ VectorXd linReg(const VectorXd &t, const VectorXd &y) {
 /* SAM_LISTING_BEGIN_1 */
 VectorXd expFit(const VectorXd &t, const VectorXd &y) {
   // START
-
+  // replace the dummy
+  Eigen::VectorXd ret;
+  return ret;
   // END
 }
 /* SAM_LISTING_END_1 */

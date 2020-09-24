@@ -21,7 +21,8 @@ using namespace Eigen;
 
 // TO DO: Write a function "average" that takes as argument a "MatrixXd" object
 // and returns a "double". m = average(A) should calculate the average of the
-// entries of A. START
+// entries of A.
+// START
 /* SAM_LISTING_BEGIN_0 */
 double average(const MatrixXd &A) {
   /*
@@ -99,7 +100,8 @@ MatrixXd columns_sum_to_zero(const MatrixXd &A) {
   MatrixXd B(A);
 
   // TO DO: Replace the diagonal of B with values such that the columns of B sum
-  // up to zero. Hint: Use diagonal(), rowwise(), and sum(). START
+  // up to zero. Hint: Use diagonal(), rowwise(), and sum().
+  // START
   int p = std::min(B.rows(), B.cols());
   B.diagonal() = VectorXd::Zero(p);
   B.diagonal() = -B.rowwise().sum();
