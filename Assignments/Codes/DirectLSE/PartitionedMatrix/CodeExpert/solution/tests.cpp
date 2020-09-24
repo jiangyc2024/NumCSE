@@ -51,3 +51,15 @@ TEST_SUITE("PartitionedMatrix") {
 	
 }
 
+  TEST_CASE("bool testSolveLSE" * doctest::description("testSolveLSE")) {
+    Eigen::VectorXd xe_sol, xe_stud;
+
+    bool check_sol = testSolveLSE(data.R, data.v, data.u, data.bb, xe_sol);
+    bool check_stud =
+        testSolveLSE_TEST(data.R, data.v, data.u, data.bb, xe_stud);
+
+    // check if LU-Decomposition was done correctly
+    CHECK((xe_sol - xe_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+    CHECK(check_stud == check_sol);
+  }
+}
