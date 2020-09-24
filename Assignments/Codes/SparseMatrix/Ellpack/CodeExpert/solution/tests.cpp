@@ -73,7 +73,7 @@ TEST_SUITE("Ellpack") {
 	    EllpackMat sol(data.triplets, data.m, data.n);
         EllpackMat_TEST stud(data.triplets, data.m, data.n);
 
-        REQUIRE(sol.get_maxcols() == stud.get_get_maxcols());
+        REQUIRE(sol.get_maxcols() == stud.get_maxcols());
     }
 	
 	TEST_CASE("void mvmult [OUT OF CLASS]" * doctest::description("mvmult")) {
