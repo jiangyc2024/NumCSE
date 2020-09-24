@@ -149,7 +149,7 @@ EllpackMat::EllpackMat(const Triplets &triplets, index_t m, index_t n)
 void EllpackMat::mvmult(const VectorXd &x, VectorXd &y) const {
   assert(x.size() == n && "Incompatible vector x size!");
   assert(y.size() == m && "Incompatible vector y size!");
-  // TODO (3-15.b) : implement the multiplication $\cob{A^{\top}*x}$ using the
+  // TODO (3-15.b) : implement the multiplication $\cob{A*x}$ using the
   // class EllpackMat, with optimal complexity.
 
   // START

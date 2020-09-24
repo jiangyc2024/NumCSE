@@ -28,17 +28,15 @@ int main(int, char**) {
     // Fill in some triplets
     triplets.push_back(Triplet_new(1,2,4));
     triplets.push_back(Triplet_new(0,0,5));
-    triplets.push_back(Triplet_new(1,2,6));
+    triplets.push_back(Triplet_new(1,2,6));  //repeated index
     triplets.push_back(Triplet_new(2,5,7));
     triplets.push_back(Triplet_new(0,4,8));
+    triplets.push_back(Triplet_new(0,0,1));  //repeated index
     triplets.push_back(Triplet_new(1,3,9));
     triplets.push_back(Triplet_new(2,2,10));
+    triplets.push_back(Triplet_new(1,3,2));  //repeated index
     triplets.push_back(Triplet_new(2,1,11));
     triplets.push_back(Triplet_new(1,0,12));
-
-    //triplets with repeated index
-    triplets.push_back(Triplet_new(0,0,1));
-    triplets.push_back(Triplet_new(1,3,2));
 
     // Build Ellpack matrix
     EllpackMat E(triplets, m, n);
