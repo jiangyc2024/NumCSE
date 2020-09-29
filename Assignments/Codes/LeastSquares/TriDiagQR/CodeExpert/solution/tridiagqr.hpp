@@ -1,12 +1,12 @@
-#include <iostream>
 #include <Eigen/Dense>
+#include <iostream>
 
 /* SAM_LISTING_BEGIN_0 */
 struct TriDiagonalMatrix {
-  Eigen::Index n;    // Matrix size $n\times n$
-  Eigen::VectorXd d; // $n$-vector of diagonal entries
-  Eigen::VectorXd l; // $n-1$-vector, entries of first lower diagonal
-  Eigen::VectorXd u; // $n-1$-vector, entries of first upper diagonal
+  Eigen::Index n;     // Matrix size $n\times n$
+  Eigen::VectorXd d;  // $n$-vector of diagonal entries
+  Eigen::VectorXd l;  // $n-1$-vector, entries of first lower diagonal
+  Eigen::VectorXd u;  // $n-1$-vector, entries of first upper diagonal
 
   TriDiagonalMatrix(const Eigen::VectorXd &d, const Eigen::VectorXd &l,
                     const Eigen::VectorXd &u)
@@ -27,7 +27,10 @@ inline double sign(double x) {
 
 // An alternative:
 // https://stackoverflow.com/questions/1903954/is-there-a-standard-sign-function-signum-sgn-in-c-c
-template <typename T> int sgn(T val) { return (T(0) < val) - (val < T(0)); }
+template <typename T>
+int sgn(T val) {
+  return (T(0) < val) - (val < T(0));
+}
 
 /* @brief Calculates the rotation matrix corresponding to rho.
  */
@@ -67,8 +70,8 @@ std::tuple<double, double, double> compGivensRotation(Eigen::Vector2d a) {
       t = -a(0) / a(1);
       sigma = 1.0 / std::sqrt(1.0 + t * t);
       gamma = sigma * t;
-    } else {            // Then abs(a(0)) >= abs(a(1)) > 0
-      t = -a(1) / a(0); // a(0) != 0
+    } else {             // Then abs(a(0)) >= abs(a(1)) > 0
+      t = -a(1) / a(0);  // a(0) != 0
       gamma = 1.0 / std::sqrt(1.0 + t * t);
       sigma = gamma * t;
     }
@@ -91,18 +94,20 @@ std::tuple<double, double, double> compGivensRotation(Eigen::Vector2d a) {
 
 /* SAM_LISTING_BEGIN_2 */
 class TriDiagonalQR {
-public:
+ public:
   explicit TriDiagonalQR(const TriDiagonalMatrix &A);
 
-  template <typename VecType> Eigen::VectorXd applyQT(const VecType &x) const;
-  template <typename VecType> Eigen::VectorXd solve(const VecType &b) const;
+  template <typename VecType>
+  Eigen::VectorXd applyQT(const VecType &x) const;
+  template <typename VecType>
+  Eigen::VectorXd solve(const VecType &b) const;
   // For debugging purposes: extract factors as dense matrices
-  std::pair<Eigen::MatrixXd,Eigen::MatrixXd> getQRFactors(void) const;
+  std::pair<Eigen::MatrixXd, Eigen::MatrixXd> getQRFactors(void) const;
 
-private:
-  Eigen::Index n;      // size of the square matrix
-  Eigen::MatrixXd B;   // Three non-zero upper diagonals of R
-  Eigen::VectorXd rho; // Encoded Givens rotations
+ private:
+  Eigen::Index n;       // size of the square matrix
+  Eigen::MatrixXd B;    // Three non-zero upper diagonals of R
+  Eigen::VectorXd rho;  // Encoded Givens rotations
 };
 /* SAM_LISTING_END_2 */
 
@@ -128,14 +133,14 @@ TriDiagonalQR::TriDiagonalQR(const TriDiagonalMatrix &A) : n(A.n) {
     // START
     std::tuple<double, double, double> params =
         compGivensRotation(Ablock.col(0));
-    rho[k] = std::get<0>(params); // Store rotation parameter
+    rho[k] = std::get<0>(params);  // Store rotation parameter
     gamma = std::get<1>(params);
     sigma = std::get<2>(params);
 
     // Update B
     Eigen::Matrix2d G;
     G << gamma, -sigma, sigma, gamma;
-    Ablock = G * Ablock; // Rotate to eliminate Ablock(1,0)
+    Ablock = G * Ablock;  // Rotate to eliminate Ablock(1,0)
     B.row(k) = Ablock.row(0);
     B(k + 1, 0) = Ablock(1, 1);
     B(k + 1, 2) = Ablock(1, 2);
@@ -202,7 +207,8 @@ Eigen::VectorXd TriDiagonalQR::solve(const VecType &b) const {
 
 /* @brief Computes Q and R as dense matrices.
  */
-std::pair<Eigen::MatrixXd,Eigen::MatrixXd> TriDiagonalQR::getQRFactors() const {
+std::pair<Eigen::MatrixXd, Eigen::MatrixXd> TriDiagonalQR::getQRFactors()
+    const {
   // This function is only for demonstration purposes,
   // and is not in any way optimal.
   Eigen::MatrixXd Q = Eigen::MatrixXd::Identity(n, n);
@@ -239,8 +245,8 @@ unsigned int invit(const MatrixType &A, Eigen::VectorXd &x, double TOL = 1E-6,
 /* SAM_LISTING_BEGIN_7 */
 template <>
 unsigned int invit<TriDiagonalMatrix>(const TriDiagonalMatrix &A,
-                                  Eigen::VectorXd &x, double TOL,
-                                  unsigned int maxit) {
+                                      Eigen::VectorXd &x, double TOL,
+                                      unsigned int maxit) {
   int it = 0;
   // TO DO (4-4.g): Specialize (efficiently) the template function invit()
   // for the TriDiagonalMatrix class.
