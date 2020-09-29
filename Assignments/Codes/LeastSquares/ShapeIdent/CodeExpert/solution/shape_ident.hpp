@@ -104,18 +104,13 @@ Shape identify(const MatrixXd Xstop,
     double res_stop = solve_lsq(Xstop, P, Astop);
     double res_priority = solve_lsq(Xpriority, P, Apriority);
 
-    std::cout << "'Stop' residual norm: " << res_stop << std::endl
-              << "'Prioriy' residual norm: " << res_priority << std::endl;
-
     // If residual with stop Model is bigger than the one with priority sign,
     // probably it it is priority sign, otherwise is a stop sign.
     if(res_stop <= res_priority) {
-        std::cout << "Points appear to define a stop sign!" << std::endl;
         A = Astop;
         return Stop;
     }
     else {
-        std::cout << "Points appear to define a priority road sign!" << std::endl;
         A = Apriority;
         return Priority;
     }
