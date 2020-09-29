@@ -1,4 +1,4 @@
-# Problem ?-? Autofocus // TODO: add specific number
+# Problem 5-1: Autofocus with FFT
 
 > For the task description of this exercise, please refer to [NCSE20_Problems.pdf](
 https://www.sam.math.ethz.ch/~grsam/NCSE20/HOMEWORK/NCSE20_Problems.pdf). 
