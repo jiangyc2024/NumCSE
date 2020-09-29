@@ -1,5 +1,11 @@
 include_directories(../../../Utils)
 
+#copy files from source dir to binary dir
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/solution/image.pgm
+        DESTINATION ${CMAKE_BINARY_DIR}/bin/Assignments/Codes/Filtering/Autofocus/CodeExpert)
+#make output directory
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/bin/Assignments/Codes/Filtering/Autofocus/CodeExpert/cx_out)
+
 add_executable_numcse(solution solution/main.cpp)
 get_target_name_numcse(solution SOLUTION)
 target_compile_definitions(${SOLUTION} PRIVATE SOLUTION=1 INTERNAL=1)

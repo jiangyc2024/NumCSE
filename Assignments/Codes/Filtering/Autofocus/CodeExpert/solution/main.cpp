@@ -43,6 +43,7 @@ int main() {
                 }
                 break;
         case 3: plotV();
+                break;
         case 4: std::cout << "Autofocus returns:"
                 << autofocus()
                 << std::endl;

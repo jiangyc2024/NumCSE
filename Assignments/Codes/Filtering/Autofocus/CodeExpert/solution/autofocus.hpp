@@ -136,7 +136,7 @@ double high_frequency_content(const MatrixXd & M) {
  */
 void plotV() {
 
-    unsigned int N = 100;
+    unsigned int N = 20;
 
     VectorXd x(N), y(N);
 
@@ -161,7 +161,7 @@ void plotV() {
 	plt::plot(x, y, "r+", {{"label", "$V(\\mathbf{B}(f))$"}});
     plt::xlabel("$f$");
     plt::ylabel("$V(\\mathbf{B}(f))$");
-    plt::savefig("._/cx_out/focus_plot.png");
+    plt::savefig("./cx_out/focus_plot.png");
 }
 
 /*!
