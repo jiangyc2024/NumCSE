@@ -7,10 +7,10 @@
 
 struct TestData {
 	TestData() {
-        // TODO: use the correct one
-        M.resize(2, 2);
-        M << 1, 2,
-             3, 4;
+        //use the image shot at focus 2
+        double focus = 2;
+        M = set_focus(focus);
+
 	}
     Eigen::MatrixXd M;
 };
@@ -27,11 +27,11 @@ TEST_SUITE("Autofocus") {
         CHECK(std::abs(sol - stud) == doctest::Approx(0.).epsilon(1e-6));
 	}
 
-    TEST_CASE("double autofocus" * doctest::description("Find most focused image")) {		
-		double sol = autofocus();
+    TEST_CASE("double autofocus" * doctest::description("Find most focused image")) {
 		double stud = autofocus_TEST();
-		
-		CHECK(std::abs(sol - stud) == doctest::Approx(0.).epsilon(1e-6));
+
+		//opitmal focus is at around 2
+		CHECK(std::abs(stud) == doctest::Approx(2.).epsilon(1e-1));
 	}
 		
 	TEST_CASE("void save_image" * doctest::description("Save image")) {
