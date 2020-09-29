@@ -50,7 +50,7 @@ void givenscoltrf(const VectorXd &aIn, MatrixXd &Q, VectorXd &aOut) {
     Map<VectorXd, 0, InnerStride<>> aOutMap(aOut.data(), 2, InnerStride<>(j));
     aOutMap = G * aOutMap;
     // select 1st and jth column of Q (Q(:,[1,j]) in \matlab)
-    y Map<MatrixXd, 0, OuterStride<>> QMap(Q.data(), n, 2,
+    Map<MatrixXd, 0, OuterStride<>> QMap(Q.data(), n, 2,
                                            OuterStride<>(j * n));
     QMap = QMap * G.transpose();
   }
