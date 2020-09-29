@@ -1,5 +1,5 @@
-#include <Eigen/Dense>
 #include <iostream>
+#include <Eigen/Dense>
 
 /* SAM_LISTING_BEGIN_0 */
 struct TriDiagonalMatrix {
@@ -10,7 +10,7 @@ struct TriDiagonalMatrix {
 
   TriDiagonalMatrix(const Eigen::VectorXd &d, const Eigen::VectorXd &l,
                     const Eigen::VectorXd &u)
-      : d(d), l(l), u(u), n(d.size()) {
+      : n(d.size()), d(d), l(l), u(u) {
     assert((n - 1) == l.size() && (n - 1) == l.size());
   }
 };
@@ -35,14 +35,14 @@ template <typename T> int sgn(T val) { return (T(0) < val) - (val < T(0)); }
 inline Eigen::Matrix2d Givens(double rho) {
   double gamma, sigma;
   if (std::abs(rho) < 1.0) {
-    sigma = 2.0 * rho;
+    sigma = 0.5 * std::sqrt(2.0) * rho;
     gamma = std::sqrt(1.0 - sigma * sigma);
   } else if (std::abs(rho) > 1.0) {
-    gamma = 2.0 / rho;
+    gamma = 0.5 * std::sqrt(2.0) / rho;
     sigma = std::sqrt(1 - gamma * gamma);
   } else {
-    gamma = 0;
-    sigma = rho;
+    gamma = 0.0;
+    sigma = sign(rho);
   }
   Eigen::Matrix2d G;
   G << gamma, sigma, -sigma, gamma;
@@ -81,9 +81,9 @@ std::tuple<double, double, double> compGivensRotation(Eigen::Vector2d a) {
   if (gamma == 0.0)
     rho = sign(sigma);
   else if (std::abs(gamma) > std::abs(sigma))
-    rho = 0.5 * sign(gamma) * sigma;
+    rho = std::sqrt(2.0) * sign(gamma) * sigma;
   else
-    rho = 2.0 * sign(sigma) / gamma;
+    rho = 0.5 * std::sqrt(2.0) * sign(sigma) / gamma;
   // END
   return std::make_tuple(rho, gamma, sigma);
 }
@@ -96,7 +96,8 @@ public:
 
   template <typename VecType> Eigen::VectorXd applyQT(const VecType &x) const;
   template <typename VecType> Eigen::VectorXd solve(const VecType &b) const;
-  void getDense(Eigen::MatrixXd &Q, Eigen::MatrixXd &R);
+  // For debugging purposes: extract factors as dense matrices
+  std::pair<Eigen::MatrixXd,Eigen::MatrixXd> getQRFactors(void) const;
 
 private:
   Eigen::Index n;      // size of the square matrix
@@ -201,11 +202,11 @@ Eigen::VectorXd TriDiagonalQR::solve(const VecType &b) const {
 
 /* @brief Computes Q and R as dense matrices.
  */
-void TriDiagonalQR::getDense(Eigen::MatrixXd &Q, Eigen::MatrixXd &R) {
+std::pair<Eigen::MatrixXd,Eigen::MatrixXd> TriDiagonalQR::getQRFactors() const {
   // This function is only for demonstration purposes,
   // and is not in any way optimal.
-  Q = Eigen::MatrixXd::Identity(n, n);
-  R = Eigen::MatrixXd::Zero(n, n);
+  Eigen::MatrixXd Q = Eigen::MatrixXd::Identity(n, n);
+  Eigen::MatrixXd R = Eigen::MatrixXd::Zero(n, n);
   R.diagonal() = B.col(0);
   R.diagonal(1) = B.col(1).head(n - 1);
   R.diagonal(2) = B.col(2).head(n - 2);
@@ -215,6 +216,8 @@ void TriDiagonalQR::getDense(Eigen::MatrixXd &Q, Eigen::MatrixXd &R) {
     G.block(k, k, 2, 2) = Givens(rho[k]);
     Q = Q * G;
   }
+
+  return std::make_pair(Q, R);
 }
 
 /* SAM_LISTING_BEGIN_6 */

@@ -1,4 +1,3 @@
-
 #include "tridiagqr.hpp"
 #include <Eigen/Dense>
 #include <iostream>
@@ -56,7 +55,9 @@ int main() {
   TriDiagonalMatrix A = TriDiagonalMatrix(d,l,u);
   TriDiagonalQR Aqr = TriDiagonalQR(A);
   MatrixXd Q,R;
-  Aqr.getDense(Q,R);
+  auto QR = Aqr.getQRFactors();
+	Q = std::get<0>(QR);
+	R = std::get<1>(QR);
   
   // Also try a random tridiagonal matrix B.
   std::srand(5);
@@ -66,7 +67,9 @@ int main() {
   TriDiagonalMatrix B = TriDiagonalMatrix(d,l,u);
   TriDiagonalQR Bqr = TriDiagonalQR(B);
   MatrixXd Bq,Br;
-  Bqr.getDense(Bq,Br);
+  auto BQR = Bqr.getQRFactors();
+	Bq = std::get<0>(BQR);
+	Br = std::get<1>(BQR);
   MatrixXd Bdense(n,n);
   Bdense.setZero();
   Bdense.diagonal() = d;

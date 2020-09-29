@@ -32,14 +32,14 @@ TEST_SUITE("TriDiagQR") {
 	TEST_CASE("inline Eigen::Matrix2d Givens" * doctest::description("skipped") * doctest::skip()) {}
 	
 	TEST_CASE("std::tuple<double, double, double> compGivensRotation" * doctest::description("Givens rotation")) {
-		Eigen::MatrixXd a = Eigen::MatrixXd::Random(2, 10);
+		Eigen::MatrixXd a = Eigen::MatrixXd::Random(2, 3);
 		std::tuple<double, double, double> params_sol, params_stud;
 		for (std::size_t k = 0; k < a.cols(); ++k) {
 			params_sol = compGivensRotation(a.col(k));
 			params_stud = compGivensRotation_TEST(a.col(k));
-			CHECK(std::get<0>(params_sol) == doctest::Approx(std::get<0>(params_stud)).epsilon(1e-6));
-			CHECK(std::get<1>(params_sol) == doctest::Approx(std::get<1>(params_stud)).epsilon(1e-6));
-			CHECK(std::get<2>(params_sol) == doctest::Approx(std::get<2>(params_stud)).epsilon(1e-6));
+			CHECK(std::get<0>(params_sol) == doctest::Approx(std::get<0>(params_stud)).epsilon(1e-9));
+			CHECK(std::get<1>(params_sol) == doctest::Approx(std::get<1>(params_stud)).epsilon(1e-9));
+			CHECK(std::get<2>(params_sol) == doctest::Approx(std::get<2>(params_stud)).epsilon(1e-9));
 		}
 	}
 	
@@ -49,26 +49,34 @@ TEST_SUITE("TriDiagQR") {
 		TriDiagonalQR_TEST stud_A(A);
 		Eigen::MatrixXd Q_sol, Q_stud, R_sol, R_stud;
 
-		sol_A.getDense(Q_sol, R_sol);
-		stud_A.getDense(Q_stud, R_stud);
+		auto QR_sol = sol_A.getQRFactors();
+		Q_sol = std::get<0>(QR_sol);
+		R_sol = std::get<1>(QR_sol);
+		auto QR_stud = stud_A.getQRFactors();
+		Q_stud = std::get<0>(QR_stud);
+		R_stud = std::get<1>(QR_stud);
 		REQUIRE(Q_sol.rows() == Q_stud.rows());
 		REQUIRE(Q_sol.cols() == Q_stud.cols());
 		REQUIRE(R_sol.rows() == R_stud.rows());
 		REQUIRE(R_sol.cols() == R_stud.cols());
-		CHECK((Q_sol - Q_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
-		CHECK((R_sol - R_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+		CHECK((Q_sol - Q_stud).norm() == doctest::Approx(0.).epsilon(1e-9));
+		CHECK((R_sol - R_stud).norm() == doctest::Approx(0.).epsilon(1e-9));
 
 		TriDiagonalMatrix B(data.d_B, data.l_B, data.u_B);
 		TriDiagonalQR sol_B(B);
 		TriDiagonalQR_TEST stud_B(B);
-		sol_B.getDense(Q_sol, R_sol);
-		stud_B.getDense(Q_stud, R_stud);
+		QR_sol = sol_B.getQRFactors();
+		Q_sol = std::get<0>(QR_sol);
+		R_sol = std::get<1>(QR_sol);
+		QR_stud = stud_B.getQRFactors();
+		Q_stud = std::get<0>(QR_stud);
+		R_stud = std::get<1>(QR_stud);
 		REQUIRE(Q_sol.rows() == Q_stud.rows());
 		REQUIRE(Q_sol.cols() == Q_stud.cols());
 		REQUIRE(R_sol.rows() == R_stud.rows());
 		REQUIRE(R_sol.cols() == R_stud.cols());
-		CHECK((Q_sol - Q_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
-		CHECK((R_sol - R_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+		CHECK((Q_sol - Q_stud).norm() == doctest::Approx(0.).epsilon(1e-9));
+		CHECK((R_sol - R_stud).norm() == doctest::Approx(0.).epsilon(1e-9));
 	}
 	
 	TEST_CASE("Eigen::VectorXd applyQT [OUT OF CLASS]" * doctest::description("applyQT()")) {
@@ -79,7 +87,7 @@ TEST_SUITE("TriDiagQR") {
 		Eigen::VectorXd sol = sol_A.applyQT(x);
 		Eigen::VectorXd stud = stud_A.applyQT(x);
 		REQUIRE(sol.size() == stud.size());
-		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-9));
 
 		TriDiagonalMatrix B(data.d_B, data.l_B, data.u_B);
 		TriDiagonalQR sol_B(B);
@@ -87,7 +95,7 @@ TEST_SUITE("TriDiagQR") {
 		sol = sol_B.applyQT(x);
 		stud = stud_B.applyQT(x);
 		REQUIRE(sol.size() == stud.size());
-		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-9));
 	}
 	
 	TEST_CASE("Eigen::VectorXd solve [OUT OF CLASS]" * doctest::description("solve()")) {
@@ -104,13 +112,37 @@ TEST_SUITE("TriDiagQR") {
 			Eigen::VectorXd sol = sol_A.solve(b);
 			Eigen::VectorXd stud = stud_A.solve(b);
 			REQUIRE(sol.size() == stud.size());
-			CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+			CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-9));
+			
+			// test solution
+			// test against Eigen's dense matrix multiplication
+//			Eigen::VectorXd spaced = Eigen::VectorXd::LinSpaced(10, 1, 10);
+//			Eigen::MatrixXd A = spaced.asDiagonal();
+//			A.diagonal<-1>() = Eigen::VectorXd::LinSpaced(9, 3, 12);
+//			A.diagonal<1>() = spaced.head(9);
+//			Eigen::VectorXd x = A.lu().solve(spaced);
+//			TriDiagonalMatrix spaced_tri(spaced, Eigen::VectorXd::LinSpaced(9, 3, 12), spaced.head(9));
+//			TriDiagonalQR spaced_QR(spaced_tri);
+//			Eigen::VectorXd x_spaced = spaced_QR.solve(spaced);
+//			CHECK((x - x_spaced).norm() == doctest::Approx(0.).epsilon(1e-9));
+//
+//			Eigen::VectorXd random = Eigen::VectorXd::Random(10);
+//			Eigen::MatrixXd B = random.asDiagonal();
+//			Eigen::VectorXd random2 = Eigen::VectorXd::Random(9);
+//			B.diagonal<-1>() = random2;
+//			B.diagonal<1>() = spaced.head(9);
+//			x = B.lu().solve(random);
+//			TriDiagonalMatrix random_tri(random, random2, spaced.head(9));
+//			TriDiagonalQR random_QR(random_tri);
+//			Eigen::VectorXd x_random = random_QR.solve(random);
+//			CHECK((x - x_random).norm() == doctest::Approx(0.).epsilon(1e-9));
 
 			b = Eigen::VectorXd::Random(data.n);
 			sol = sol_B.solve(b);
 			stud = stud_B.solve(b);
 			REQUIRE(sol.size() == stud.size());
-			CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+			CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-9));
+			
 		}
 		SUBCASE("exception test") {
 			TriDiagonalMatrix B2 = B;
@@ -130,7 +162,7 @@ TEST_SUITE("TriDiagQR") {
 
 	}
 	
-	TEST_CASE("void getDense [OUT OF CLASS]" * doctest::description("skipped") * doctest::skip()) {}
+	TEST_CASE("std::pair<Eigen::MatrixXd,Eigen::MatrixXd> getQRFactors [OUT OF CLASS]" * doctest::description("skipped") * doctest::skip()) {}
 	
 	TEST_CASE("unsigned int invit" * doctest::description("skipped") * doctest::skip()) {}
 	
@@ -141,14 +173,8 @@ TEST_SUITE("TriDiagQR") {
 		Eigen::VectorXd x_sol = Eigen::VectorXd::Random(data.n);
 		x_sol *= 10;
 		Eigen::VectorXd x_stud = x_sol;
-		unsigned int N_sol = invit<TriDiagonalMatrix>(A, x_sol);
-		unsigned int N_stud = invit<TriDiagonalMatrix>(A, x_stud);
-		CHECK(N_sol == N_stud);
-		x_sol = Eigen::VectorXd::Random(data.n);
-		x_sol *= 10;
-		x_stud = x_sol;
-		N_sol = invit<TriDiagonalMatrix>(A, x_sol, 1E-10, 100);
-		N_stud = invit<TriDiagonalMatrix>(A, x_stud, 1E-10, 100);
+		unsigned int N_sol = invit<TriDiagonalMatrix>(A, x_sol, 1E-10, 100);
+		unsigned int N_stud = invit_TEST<TriDiagonalMatrix>(A, x_stud, 1E-10, 100);
 		CHECK(N_sol == N_stud);
 	}
 }
