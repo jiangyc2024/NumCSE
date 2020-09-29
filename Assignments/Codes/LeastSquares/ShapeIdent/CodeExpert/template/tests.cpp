@@ -54,7 +54,6 @@ TEST_SUITE("ShapeIdent") {
 		CHECK((A_sol - A_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
                 CHECK(sol - stud == doctest::Approx(0.).epsilon(1e-6));
 	}
-        TEST_CASE("enum Shape" * doctest::description("skipped") * doctest::skip()) {}
         TEST_CASE("Shape identify" * doctest::description("identify()")) {
 
                 MatrixXd A_stud, A_sol;
