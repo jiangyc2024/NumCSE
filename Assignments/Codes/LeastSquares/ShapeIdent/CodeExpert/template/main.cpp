@@ -1,4 +1,3 @@
-
 #include <iostream>
 
 #include "shape_ident.hpp"

@@ -1,12 +1,6 @@
 #ifndef SHAPE_IDENT_HPP
 #define SHAPE_IDENT_HPP
 
-#include <iostream>
-#include <list>
-#include <ctime>
-#include <random>
-#include <cmath>
-
 #include <Eigen/Dense>
 
 using namespace Eigen;
