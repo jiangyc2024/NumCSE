@@ -50,7 +50,7 @@ TEST_SUITE("ShapeIdent") {
 		stud = shape_ident_matrix_TEST(data.Xstop);
 		
 		REQUIRE(sol.size() == stud.size());
-		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-9));
 	}
 	TEST_CASE("double solve_lsq" * doctest::description("solve_lsq()")) {
 
@@ -61,8 +61,8 @@ TEST_SUITE("ShapeIdent") {
 		stud = solve_lsq_TEST(data.Xstop, data.P1, A_stud);
 		
 		REQUIRE(A_sol.size() == A_stud.size());
-		CHECK((A_sol - A_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
-                CHECK(sol - stud == doctest::Approx(0.).epsilon(1e-6));
+		CHECK((A_sol - A_stud).norm() == doctest::Approx(0.).epsilon(1e-9));
+                CHECK(sol - stud == doctest::Approx(0.).epsilon(1e-9));
 	}
         TEST_CASE("Shape identify" * doctest::description("identify()")) {
 
@@ -80,9 +80,9 @@ TEST_SUITE("ShapeIdent") {
                 REQUIRE(A_sol1.size() == A_stud1.size());
                 REQUIRE(A_sol2.size() == A_stud2.size());
                 REQUIRE(A_sol3.size() == A_stud3.size());
-		CHECK((A_sol1 - A_stud1).norm() == doctest::Approx(0.).epsilon(1e-6));
-		CHECK((A_sol2 - A_stud2).norm() == doctest::Approx(0.).epsilon(1e-6));
-		CHECK((A_sol3 - A_stud3).norm() == doctest::Approx(0.).epsilon(1e-6));
+		CHECK((A_sol1 - A_stud1).norm() == doctest::Approx(0.).epsilon(1e-9));
+		CHECK((A_sol2 - A_stud2).norm() == doctest::Approx(0.).epsilon(1e-9));
+		CHECK((A_sol3 - A_stud3).norm() == doctest::Approx(0.).epsilon(1e-9));
                 CHECK(s_sol1 == s_stud1);
                 CHECK(s_sol2 == s_stud2);
                 CHECK(s_sol3 == s_stud3);

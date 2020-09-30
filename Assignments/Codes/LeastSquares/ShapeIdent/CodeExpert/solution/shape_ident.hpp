@@ -22,9 +22,9 @@ using namespace Eigen;
 MatrixXd shape_ident_matrix(const MatrixXd & X) {
     assert(X.rows() == 2 && "X must have 2 rows!");
     unsigned n = X.cols();
-
-    MatrixXd B = MatrixXd::Zero(2*n, 4);
-
+	MatrixXd B = MatrixXd::Zero(2*n, 4);
+	// TODO: (4-7.c) Build system matrix $\mathbf{B}$.
+	// START
     for(unsigned int row = 0; row < n; ++row) {
         // Odd row, first two columns
         B(2*row,  0) = X(0,row);
@@ -33,7 +33,7 @@ MatrixXd shape_ident_matrix(const MatrixXd & X) {
         B(2*row+1,2) = X(0,row);
         B(2*row+1,3) = X(1,row);
     }
-
+	// END
     return B;
 }
 /* SAM_LISTING_END_0 */
@@ -56,6 +56,9 @@ double solve_lsq(const MatrixXd & X,
     assert(P.rows() == 2 && "P must have 2 rows!");
     assert(X.cols() == P.cols() && "P and X must have same size!");
     unsigned n = X.cols();
+	double norm_of_residual = 0.;
+	// TODO: (4-7.d) solve LSQ problem, return best linear approximation and residual
+	// START
     // Build system matrix
     MatrixXd B = shape_ident_matrix(X);
 
@@ -75,7 +78,9 @@ double solve_lsq(const MatrixXd & X,
                 2, 2).transpose();
 
     // Residual: must reshape P
-    return (Map<const MatrixXd>(P.data(), 2, n) - A*X).norm();
+    norm_of_residual = (Map<const MatrixXd>(P.data(), 2, n) - A*X).norm();
+	// END
+	return norm_of_residual;
 }
 /* SAM_LISTING_END_1 */
 
@@ -97,6 +102,8 @@ Shape identify(const MatrixXd Xstop,
                const MatrixXd Xpriority,
                const MatrixXd & P,
                MatrixXd & A) {
+	// TODO: (4-7.e) Use residual do decide wether shape defines stop or priority road sign.
+	// START
     // Best linear transformation for both "model" shape
     MatrixXd Astop, Apriority;
 
@@ -114,6 +121,7 @@ Shape identify(const MatrixXd Xstop,
         A = Apriority;
         return Priority;
     }
+	// END
 }
 /* SAM_LISTING_END_2 */
 

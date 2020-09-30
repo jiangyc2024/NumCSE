@@ -22,11 +22,12 @@ using namespace Eigen;
 MatrixXd shape_ident_matrix(const MatrixXd & X) {
     assert(X.rows() == 2 && "X must have 2 rows!");
     unsigned n = X.cols();
-    // TODO: Build system matrix $\mathnbf{B}$.
+	MatrixXd B = MatrixXd::Zero(2*n, 4);
+    // TODO: (4-7.c) Build system matrix $\mathbf{B}$.
     // START
-    MatrixXd B = MatrixXd::Zero(2*n, 4);
-    return B;
+    
     // END
+	return B;
 }
 /* SAM_LISTING_END_0 */
 
@@ -48,10 +49,12 @@ double solve_lsq(const MatrixXd & X,
     assert(P.rows() == 2 && "P must have 2 rows!");
     assert(X.cols() == P.cols() && "P and X must have same size!");
     unsigned n = X.cols();
-    // TODO: solve LSQ problem, return best linear approximation and residual
+	double norm_of_residual = 0.;
+    // TODO: (4-7.d) solve LSQ problem, return best linear approximation and residual
     // START
-    return 0.;
+    
     // END
+	return norm_of_residual;
 }
 /* SAM_LISTING_END_1 */
 
@@ -73,7 +76,7 @@ Shape identify(const MatrixXd Xstop,
                const MatrixXd Xpriority,
                const MatrixXd & P,
                MatrixXd & A) {
-    // TODO: Use residual do decide wether shape defines stop or priority road sign.
+    // TODO: (4-7.e) Use residual do decide wether shape defines stop or priority road sign.
     // START
     return Stop;
     // END
