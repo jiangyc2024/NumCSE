@@ -25,6 +25,7 @@ struct TestData {
     T.setFromTriplets(triplets.begin(), triplets.end());
     T.makeCompressed();
     z = Eigen::VectorXd::LinSpaced(n, -1., 1.);
+    std::srand(39);
     c = T * z + 0.5 * Eigen::VectorXd::Random(n);
   }
 
