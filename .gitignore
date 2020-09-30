@@ -63,3 +63,6 @@ main
 
 # independent testing
 copy.hpp
+
+# macos
+.DS_Store
