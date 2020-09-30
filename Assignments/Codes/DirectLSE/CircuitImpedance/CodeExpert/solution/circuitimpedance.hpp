@@ -310,7 +310,7 @@ double ImpedanceMap::operator()(double Rx) const {
   // at each node (except 16 and 17, which are prescribed)
   VectorXd x = w_ - xi * beta_ / (1. + xi * alpha_) * z_;
 
-  // Compute the current $I = \Delta V_{16,6} / R$
+  // Compute the current $I = -\Delta V_{16,6} / R$
   // and then impedance $= V / I$.
   // Here $\Delta V_{16,6} = V_{16} - x_6 = V - x_6$.
   return_value = V_ * R_ / (x(5) - V_);
