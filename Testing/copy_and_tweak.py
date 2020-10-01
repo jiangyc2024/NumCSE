@@ -38,7 +38,8 @@ def parseWriteChange(student_sol, copy, tests):
 			for el in function_signatures:
 				parse = re.match("(\s*)" + re.escape(el.group(1)) + "(\s*\(.*)", line)
 				if parse:
-					parse2 = re.search("(<.*>)$", re.escape(el.group(1)))
+					# parse2 = re.search("(<.*>)$", re.escape(el.group(1)))
+					parse2 = re.search("(<.*>)$", el.group(1))
 					if parse2:
 						copy.write(parse.group(1) + el.group(1).replace(parse2.group(1), "") + suffix + parse2.group(1) + parse.group(2) + "\n")
 					else:
