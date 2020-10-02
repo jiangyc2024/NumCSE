@@ -43,6 +43,8 @@ TEST_SUITE("Sylvester") {
 		Eigen::SparseMatrix<double> Xdiag_sol = solveDiagSylvesterEq(diagA);
 		Eigen::SparseMatrix<double> Xdiag_stud = solveDiagSylvesterEq_TEST(diagA);
 		
+		REQUIRE(Xdiag_sol.rows() == Xdiag_stud.rows());
+		REQUIRE(Xdiag_sol.cols() == Xdiag_stud.cols());
 		CHECK((Xdiag_sol - Xdiag_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
 	
@@ -50,6 +52,8 @@ TEST_SUITE("Sylvester") {
 		Eigen::SparseMatrix<double> sol = sparseKron(data.As);
 		Eigen::SparseMatrix<double> stud = sparseKron_TEST(data.As);
 		
+		REQUIRE(sol.rows() == stud.rows());
+		REQUIRE(sol.cols() == stud.cols());
 		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
 	
@@ -57,6 +61,8 @@ TEST_SUITE("Sylvester") {
 		Eigen::MatrixXd sol = solveSpecialSylvesterEq(data.As);
 		Eigen::MatrixXd stud = solveSpecialSylvesterEq_TEST(data.As);
 		
+		REQUIRE(sol.rows() == stud.rows());
+		REQUIRE(sol.cols() == stud.cols());
 		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
 	

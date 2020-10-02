@@ -16,7 +16,7 @@ def parseWriteChange(student_sol, copy, tests):
 	# get all function signatures to be tested from the test file
 	function_signatures = []
 	for line in tests:
-		parse = re.match('\s*TEST_CASE\("([\S\s]*)"\s\*\sdoctest::description.*', line)
+		parse = re.match('\s*TEST_CASE\("([\S\s]*)"\s\*.*', line)
 		if parse and keyword not in parse.group(1):
 			function_signatures.append(parse)
 	classes = []
@@ -38,13 +38,14 @@ def parseWriteChange(student_sol, copy, tests):
 			for el in function_signatures:
 				parse = re.match("(\s*)" + re.escape(el.group(1)) + "(\s*\(.*)", line)
 				if parse:
-					parse2 = re.search("(<.*>)$", re.escape(el.group(1)))
+					# parse2 = re.search("(<.*>)$", re.escape(el.group(1)))
+					parse2 = re.search("(<.*>)$", el.group(1))
 					if parse2:
 						copy.write(parse.group(1) + el.group(1).replace(parse2.group(1), "") + suffix + parse2.group(1) + parse.group(2) + "\n")
 					else:
 						copy.write(parse.group(1) + el.group(1) + suffix + parse.group(2) + "\n")
 					write = False
-			if write and not line.startswith("#endif") and not line.startswith("#include"):
+			if write and not line.startswith("#endif") and not line.startswith("#include") and not line.startswith("enum"): # skip all one liner enums
 				new_line = line
 				# replace all class occurences with its test version
 				for el in classes:
@@ -58,7 +59,7 @@ def searchStudentSolution(main):
 	Returns a list of filenames.
 	"""
 	return_list = []
-	other_headers = ["polyfit", "polyval", "ode45", "solution", "solution2", "solution3"] # other headers ending with .hpp
+	other_headers = ["polyfit", "polyval", "ode45", "fft", "solution", "solution2", "solution3"] # other headers ending with .hpp
 	for line in main:
 		parse = re.match('\s*\#include\s*"(.*).hpp"', line)
 		if parse and parse.group(1) not in other_headers:

@@ -23,6 +23,8 @@ TEST_SUITE("LeastSquaresFrobenius") {
 		Eigen::MatrixXd sol = min_frob(data.z, data.g);
 		Eigen::MatrixXd stud = min_frob_TEST(data.z, data.g);
 		
+		REQUIRE(sol.rows() == stud.rows());
+		REQUIRE(sol.cols() == stud.cols());
 		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
 	}
 	

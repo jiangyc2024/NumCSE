@@ -18,7 +18,7 @@ using namespace Eigen;
 //! The least squares solution is returned by value
 VectorXd normeqsolve(const MatrixXd &A,const VectorXd &b) {
   if (b.size() != A.rows()) throw runtime_error("Dimension mismatch");
-  // Cholesky solver
+  // Use Cholesky factorization for s.p.d. system matrix, \cref{par:chol} 
   VectorXd x = (A.transpose()*A).llt().solve(A.transpose()*b);
   return x;
 }
