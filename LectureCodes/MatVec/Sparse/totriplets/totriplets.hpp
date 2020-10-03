@@ -7,8 +7,8 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include <Eigen/Sparse>
-#include <vector>
 #include <iostream>
+#include <vector>
 
 // Conversion of a sparse matrix (in CRS/CCS format) to COO/triplet format
 // see
@@ -24,12 +24,12 @@ convertToTriplets(Eigen::SparseMatrix<Scalar> &A) {
   for (int k = 0; k < A.outerSize(); ++k) {
     // Loop over inner dimension and obtain triplets corresponding
     // to non-zero entries.
-    for (typename Eigen::SparseMatrix<Scalar>::InnerIterator it(A, k); it; ++it) {
+    for (typename Eigen::SparseMatrix<Scalar>::InnerIterator it(A, k); it;
+         ++it) {
       // Retrieve triplet data from iterator
-      triplets.emplace_back(it.row(),it.col(),it.value());
+      triplets.emplace_back(it.row(), it.col(), it.value());
     }
   }
   return triplets;
 }
 /* SAM_LISTING_END_0 */
-

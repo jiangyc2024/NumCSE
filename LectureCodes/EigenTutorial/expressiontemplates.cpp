@@ -42,8 +42,10 @@ void init(size_t s) {
 }
 
 int main() {
+  const vector<size_t> sizes = {10, 20, 40, 80, 160, 320, 640};
+
   timeTable(
-      {10, 20, 40, 80, 160, 320, 640},
+      sizes,
       {slowInvertDiagonal, fastInvertDiagonal, slowAddThree, fastAddThree},
       init, {"size", "slow inv.", "fast inv.", "slow add", "fast add"});
 }
