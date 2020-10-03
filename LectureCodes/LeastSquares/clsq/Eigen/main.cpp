@@ -29,7 +29,7 @@ int main() {
     cout << "n = " << endl << n << endl;
     }
     {
-    auto [c,n] = clsq2(A, dim);
+    auto [c,n] = clsq2(A, 4-dim);
     cout << "c = " << c << endl;
     cout << "n = " << endl << n << endl;
     }

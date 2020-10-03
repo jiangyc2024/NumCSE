@@ -51,12 +51,12 @@ std::pair<Eigen::VectorXd, Eigen::VectorXd> clsq2(const Eigen::MatrixXd &A,
   assert(m >= n);
   const Eigen::MatrixXd R =
     A.householderQr().matrixQR().template triangularView<Eigen::Upper>(); // \Label[line]{fh:1}
-  const auto V = R.block(n - d, n - d, m + d - n, d) // \Label[line]{fh:2}
+  const auto V = R.block(d, d, m -d , n-d) // \Label[line]{fh:2}
                      .jacobiSvd(Eigen::ComputeFullV) // \Label[line]{fh:3}
                      .matrixV(); // \Label[line]{fh:4}
-  const auto y = V.col(d - 1); // \Label[line]{fh:5}
-  const auto b = R.block(0, n - d, n - d, d) * y; // \Label[line]{fh:6}
-  const auto S = R.topLeftCorner(n - d, n - d); // \Label[line]{fh:7}
+  const auto y = V.col(n-d - 1); // \Label[line]{fh:5}
+  const auto b = R.block(0, d, d, n-d) * y; // \Label[line]{fh:6}
+  const auto S = R.topLeftCorner(d, d); // \Label[line]{fh:7}
   const Eigen::VectorXd D = S.diagonal().cwiseAbs(); // \Label[line]{fh:8}
   if (D.minCoeff() < (numeric_limits<double>::epsilon()) * D.maxCoeff()) // \Label[line]{fh:9}
     throw runtime_error("Upper left block of R not regular"); // \Label[line]{fh:A}
