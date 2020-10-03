@@ -1,3 +1,11 @@
+###################################################
+# Code for ETH course "Numerical Methods for CSE"
+# Author: H. Gratten
+# Date: Oct 01 2020
+# Pyhton script demonstrating the use of soundcompression by means of FFT
+# Demo code for Chapter 4 of the course
+# https://www.sam.math.ethz.ch/~grsam/NCSE20/NumCSE_Lecture_Document.pdf
+##################################################
 import wave
 import numpy as np
 from numpy.fft import fft, ifft
