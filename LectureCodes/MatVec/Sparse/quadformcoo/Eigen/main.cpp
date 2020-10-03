@@ -31,6 +31,7 @@ Eigen::MatrixXd cooToDense(const COOMat &A) {
   return M;
 }
 
+/* SAM_LISTING_BEGIN_1 */
 double evalQuadFormCOO(const COOMat &A, const Eigen::VectorXd &x) {
   double s = 0.0;
   for (const Eigen::Triplet<double> &t : A) {
@@ -39,6 +40,7 @@ double evalQuadFormCOO(const COOMat &A, const Eigen::VectorXd &x) {
   }
   return s;
 }
+/* SAM_LISTING_END_1 */
 
 } // namespace QuadFormCOO
 
