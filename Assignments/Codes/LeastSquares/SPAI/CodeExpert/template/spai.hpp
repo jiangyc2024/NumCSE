@@ -61,6 +61,37 @@ SparseMatrix<double> init_A(unsigned int n) {
 }
 /* SAM_LISTING_END_2 */
 
+// @brief Class implementing a SPAI preconditioner that works with Eigen's ConjugateGradient
+/* SAM_LISTING_BEGIN_4 */
+template <typename MatrixType>
+class SPAIPreconditioner {
+public:
+	SPAIPreconditioner() {}
+	
+	// @param[in] $A$ The matrix that is a Sparse Approximate Inverse (or a derived one)
+	explicit SPAIPreconditioner(const MatrixType& A): A_(A) {}
+	
+	SPAIPreconditioner& analyzePattern(const MatrixType&) { return *this; }
+	
+	SPAIPreconditioner& factorize(const MatrixType&) { return *this; }
+	
+	SPAIPreconditioner& compute(const MatrixType&) { return *this; }
+	
+	/* @brief Applies the SPAI to the input vector
+	 * @param[in] $b$ A vector
+	 */
+	template <typename VectorType>
+	inline const VectorType solve(const VectorType& b) const {
+		assert(b.size() == A_.cols());
+		return A_ * b;
+	}
+	
+	ComputationInfo info() { return Success; }
+private:
+	MatrixType A_;
+};
+/* SAM_LISTING_END_4 */
+
 /* @brief Compute a vector of ConjugateGradient iterations needed until convergence
  * without and with a preconditioner that is given by the SPAI
  * @param[in] L The amount of systems you want to check, system size is then given by

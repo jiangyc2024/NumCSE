@@ -4,9 +4,6 @@
 #include <vector>
 #include <tuple>
 
-// to be removed
-#include <iostream>
-
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 
@@ -127,6 +124,37 @@ SparseMatrix<double> init_A(unsigned int n) {
 }
 /* SAM_LISTING_END_2 */
 
+// @brief Class implementing a SPAI preconditioner that works with Eigen's ConjugateGradient
+/* SAM_LISTING_BEGIN_4 */
+template <typename MatrixType>
+class SPAIPreconditioner {
+public:
+	SPAIPreconditioner() {}
+	
+	// @param[in] $A$ The matrix that is a Sparse Approximate Inverse (or a derived one)
+	explicit SPAIPreconditioner(const MatrixType& A): A_(A) {}
+	
+	SPAIPreconditioner& analyzePattern(const MatrixType&) { return *this; }
+	
+	SPAIPreconditioner& factorize(const MatrixType&) { return *this; }
+	
+	SPAIPreconditioner& compute(const MatrixType&) { return *this; }
+
+	/* @brief Applies the SPAI to the input vector
+	 * @param[in] $b$ A vector
+	 */
+	template <typename VectorType>
+	inline const VectorType solve(const VectorType& b) const {
+		assert(b.size() == A_.cols());
+		return A_ * b;
+	}
+	
+	ComputationInfo info() { return Success; }
+private:
+	MatrixType A_;
+};
+/* SAM_LISTING_END_4 */
+
 /* @brief Compute a vector of ConjugateGradient iterations needed until convergence
  * without and with a preconditioner that is given by the SPAI
  * @param[in] L The amount of systems you want to check, system size is then given by
@@ -152,20 +180,17 @@ tuple_vector testSPAIPrecCG(unsigned int L) {
 		SparseMatrix<double> A = init_A(n);
 		SparseMatrix<double> B = spai(A);
 		// compute Ax = b without preconditioner
-		ConjugateGradient<SparseMatrix<double>> cg(A);
+		ConjugateGradient<SparseMatrix<double>, Lower|Upper, IdentityPreconditioner> cg(A);
 		VectorXd sol = cg.solve(b.head(N));
 		
 		// compute Ax = b with preconditioner
-		ConjugateGradient<SparseMatrix<double>> cg_preconditioner;
+		ConjugateGradient<SparseMatrix<double>, Lower|Upper, SPAIPreconditioner<SparseMatrix<double>>> cg_preconditioner;
 		// note the wrapper around B.transpose():
 		// this changes the storage order which has to match when executing operator+
-		SparseMatrix<double> preconditioner = 0.5 * (B + SparseMatrix<double>(B.transpose()));
-		cg_preconditioner.preconditioner().compute(preconditioner);
+		SPAIPreconditioner<SparseMatrix<double>> preconditioner(0.5 * (B + SparseMatrix<double>(B.transpose())));
+		cg_preconditioner.preconditioner() = preconditioner;
 		cg_preconditioner.compute(A);
 		VectorXd sol_prec = cg_preconditioner.solve(b.head(N));
-		
-		// to be removed
-		std::cout << (sol - sol_prec).norm() << std::endl;
 		
 		cg_iterations[i] = {N, cg.iterations(), cg_preconditioner.iterations()};
 	}
