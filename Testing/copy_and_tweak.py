@@ -41,7 +41,7 @@ def parseWriteChange(student_sol, copy, tests):
 					# parse2 = re.search("(<.*>)$", re.escape(el.group(1)))
 					parse2 = re.search("(<.*>)$", el.group(1))
 					if parse2:
-						copy.write(parse.group(1) + el.group(1).replace(parse2.group(1), "") + suffix + parse2.group(1) + parse.group(2) + "\n")
+						copy.write(parse.group(1) + el.group(1).replace(parse2.group(1), "") + suffix + parse2.group(1) + parse.group(3) + "\n")
 					else:
 						copy.write(parse.group(1) + el.group(1) + suffix + parse.group(3) + "\n")
 					write = False
