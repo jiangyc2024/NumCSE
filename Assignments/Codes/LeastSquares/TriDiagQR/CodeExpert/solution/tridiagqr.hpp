@@ -11,7 +11,7 @@ struct TriDiagonalMatrix {
   TriDiagonalMatrix(const Eigen::VectorXd &d, const Eigen::VectorXd &l,
                     const Eigen::VectorXd &u)
       : n(d.size()), d(d), l(l), u(u) {
-    assert((n - 1) == l.size() && (n - 1) == l.size());
+    assert((n - 1) == l.size() && (n - 1) == u.size());
   }
 };
 /* SAM_LISTING_END_0 */
