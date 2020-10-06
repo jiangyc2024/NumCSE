@@ -2,9 +2,15 @@
 #define SPAI_HPP
 
 #include <vector>
+#include <tuple>
+
+// to be removed
+#include <iostream>
 
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
+
+#include <unsupported/Eigen/KroneckerProduct>
 
 using namespace Eigen;
 
@@ -90,22 +96,82 @@ SparseMatrix<double> spai(SparseMatrix<double>& A) {
 	
 	// Build and return SPAI preconditioner
 	B.setFromTriplets(triplets.begin(), triplets.end());
-	B.makeCompressed();
 	// END
 	
+	B.makeCompressed();
 	return B;
 }
 /* SAM_LISTING_END_1 */
 
+/* @brief Compute $A$
+ * @param[in] n The squareroot of the matrix size wanted
+ * @param[out] A A $n^2 \times n^2$ sparse s.p.d. matrix
+ */
 /* SAM_LISTING_BEGIN_2 */
-
+SparseMatrix<double> init_A(unsigned int n) {
+	SparseMatrix<double> L(n, n);
+	SparseMatrix<double> R(n, n);
+	L.reserve(n);
+	R.reserve(n + 2 * (n - 1));
+	L.insert(0, 0) = std::exp(1. / n);
+	R.insert(0, 0) = 2.;
+	for (unsigned int i = 1; i < n; ++i) {
+		L.insert(i, i) = std::exp((i + 1.) / n);
+		R.insert(i, i) = 2.;
+		R.insert(i - 1, i) = -1.;
+		R.insert(i, i - 1) = -1.;
+	}
+	SparseMatrix<double> A = kroneckerProduct(L, R);
+	A.makeCompressed();
+	return A;
+}
 /* SAM_LISTING_END_2 */
 
+/* @brief Compute a vector of ConjugateGradient iterations needed until convergence
+ * without and with a preconditioner that is given by the SPAI
+ * @param[in] L The amount of systems you want to check, system size is then given by
+ * $N = (2^{1,...,L})^2$
+ * @param[out] vector of tuples consisting of three values: the system size, the number of iterations
+ * needed without preconditioning, the number of iterations with preconditioning
+ */
 /* SAM_LISTING_BEGIN_3 */
-std::vector<std::pair<unsigned int, unsigned int>> testSPAIPrecCG(unsigned int L) {
-	std::vector<std::pair<unsigned int, unsigned int>> cg_iterations()
+using tuple_vector = std::vector<std::tuple<unsigned int, unsigned int, unsigned int>>;
+tuple_vector testSPAIPrecCG(unsigned int L) {
+	tuple_vector cg_iterations(L);
 	
+	// TODO: (4-6.d) Compute the iterations needed by the ConjugateGradient solver without
+	// a preconditioner as well as with one
+	// START
+	// initialize r.h.s. with its maximal size
+	// we will use head() to get smaller versions of it
+	VectorXd b = VectorXd::Ones(1 << (2 * L));
 	
+	// loop over $n = 2^{1,...,L}$, keep two running variables
+	for (unsigned int n = 2, i = 0; n <= (1 << L); n <<= 1, ++i) {
+		unsigned int N = n * n;
+		SparseMatrix<double> A = init_A(n);
+		SparseMatrix<double> B = spai(A);
+		// compute Ax = b without preconditioner
+		ConjugateGradient<SparseMatrix<double>> cg(A);
+		VectorXd sol = cg.solve(b.head(N));
+		
+		// compute Ax = b with preconditioner
+		ConjugateGradient<SparseMatrix<double>> cg_preconditioner;
+		// note the wrapper around B.transpose():
+		// this changes the storage order which has to match when executing operator+
+		SparseMatrix<double> preconditioner = 0.5 * (B + SparseMatrix<double>(B.transpose()));
+		cg_preconditioner.preconditioner().compute(preconditioner);
+		cg_preconditioner.compute(A);
+		VectorXd sol_prec = cg_preconditioner.solve(b.head(N));
+		
+		// to be removed
+		std::cout << (sol - sol_prec).norm() << std::endl;
+		
+		cg_iterations[i] = {N, cg.iterations(), cg_preconditioner.iterations()};
+	}
+	//END
+	
+	return cg_iterations;
 }
 /* SAM_LISTING_END_3 */
 
