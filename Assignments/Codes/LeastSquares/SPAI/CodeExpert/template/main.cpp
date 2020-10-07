@@ -28,10 +28,7 @@ int main() {
       SparseMatrix<double> I(5, 5);
       I.setIdentity();
 
-      std::cout << "M = " << std::endl << M << std::endl;
-      std::cout << "N = " << std::endl << N << std::endl;
-
-      std::cout << "Error: " << (I - M * N).norm() << std::endl;
+      std::cout << "Error (n = 5): " << (I - M * N).norm() << std::endl;
 
       SparseMatrix<double> M2(n * n, n * n);
       SparseMatrix<double> I2(n, n);
