@@ -103,6 +103,7 @@ class SymmetrizedSPAIPreconditioner {
  */
 /* SAM_LISTING_BEGIN_3 */
 std::vector<std::pair<unsigned int, unsigned int>> testSPAIPrecCG(unsigned int L) {
+
   std::vector<std::pair<unsigned int, unsigned int>> cg_iterations(L);
 
   // TODO: (4-6.d) Compute the iterations needed by the ConjugateGradient solver
