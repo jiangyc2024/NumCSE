@@ -58,8 +58,7 @@ The three matrices are tested separately.
 
 ***
 
-> `std::pair<MatrixXd,MatrixXd> rank_k_approx(const MatrixXd & Ax,const MatrixXd & Ay, const MatrixXd & Bx,const MatrixXd & By)`: Here the input for the test is
-are $A_X, A_Y,B_X,B_Y$ given by
+> `std::pair<MatrixXd,MatrixXd> rank_k_approx(const MatrixXd & Ax,const MatrixXd & Ay, const MatrixXd & Bx,const MatrixXd & By)`: Here the input for the test $A_X, A_Y,B_X,B_Y$ given by
 ```
 1 0       8 -2      2  1      4  4
 9 2       3  4      2  3      5  0
