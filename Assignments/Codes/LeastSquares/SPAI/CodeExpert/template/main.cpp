@@ -47,16 +47,16 @@ int main() {
       break;
     }
     case 1: {
-      tuple_vector tv = testSPAIPrecCG(6);
+      std::vector<std::pair<unsigned int, unsigned int>> tv = testSPAIPrecCG(6);
       std::cout << "Table for the number of iterations:\n";
       std::cout << std::setw(30) << "N" << std::setw(30)
                 << "#it.'s w/out preconditioner" << std::setw(30)
                 << "#it.'s w/ preconditioner\n";
       int i = 1;
-      for (auto& tuple : tv) {
+      for (auto& pair : tv) {
 	i *= 4;
         std::cout << std::setw(30) << i  << std::setw(30)
-                  << std::get<0>(tuple) << std::setw(30) << std::get<1>(tuple)
+                  << std::get<0>(pair) << std::setw(30) << std::get<1>(pair)
                   << std::endl;
       }
       break;

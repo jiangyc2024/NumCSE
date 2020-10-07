@@ -102,10 +102,8 @@ class SymmetrizedSPAIPreconditioner {
  * with preconditioning
  */
 /* SAM_LISTING_BEGIN_3 */
-using tuple_vector =
-    std::vector<std::tuple<unsigned int, unsigned int>>;
-tuple_vector testSPAIPrecCG(unsigned int L) {
-  tuple_vector cg_iterations(L);
+std::vector<std::pair<unsigned int, unsigned int>> testSPAIPrecCG(unsigned int L) {
+  std::vector<std::pair<unsigned int, unsigned int>> cg_iterations(L);
 
   // TODO: (4-6.d) Compute the iterations needed by the ConjugateGradient solver
   // without a preconditioner as well as with one 

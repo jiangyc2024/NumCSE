@@ -25,10 +25,10 @@ TEST_SUITE("Sparse Approximate Inverse (SPAI)") {
   TEST_CASE("SparseMatrix<double> init_A" * doctest::description("skipped") *
             doctest::skip()) {}
 
-  TEST_CASE("tuple_vector testSPAIPrecCG" *
+  TEST_CASE("std::vector<std::pair<unsigned int, unsigned int>> testSPAIPrecCG" *
             doctest::description("Iteration test")) {
-    tuple_vector sol = testSPAIPrecCG(5);
-    tuple_vector stud = testSPAIPrecCG_TEST(5);
+    std::vector<std::pair<unsigned int, unsigned int>> sol = testSPAIPrecCG(5);
+    std::vector<std::pair<unsigned int, unsigned int>> stud = testSPAIPrecCG_TEST(5);
 
     REQUIRE(sol.size() == stud.size());
     for (std::size_t i = 0; i < sol.size(); ++i) {
