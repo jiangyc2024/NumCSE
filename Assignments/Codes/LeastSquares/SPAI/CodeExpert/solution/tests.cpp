@@ -32,8 +32,8 @@ TEST_SUITE("Sparse Approximate Inverse (SPAI)") {
 
     REQUIRE(sol.size() == stud.size());
     for (std::size_t i = 0; i < sol.size(); ++i) {
+      CHECK(std::get<0>(sol[i]) == std::get<0>(stud[i]));
       CHECK(std::get<1>(sol[i]) == std::get<1>(stud[i]));
-      CHECK(std::get<2>(sol[i]) == std::get<2>(stud[i]));
     }
   }
 }

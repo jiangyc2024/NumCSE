@@ -52,9 +52,11 @@ int main() {
       std::cout << std::setw(30) << "N" << std::setw(30)
                 << "#it.'s w/out preconditioner" << std::setw(30)
                 << "#it.'s w/ preconditioner\n";
+      int i = 1;
       for (auto& tuple : tv) {
-        std::cout << std::setw(30) << std::get<0>(tuple) << std::setw(30)
-                  << std::get<1>(tuple) << std::setw(30) << std::get<2>(tuple)
+	i *= 4;
+        std::cout << std::setw(30) << i  << std::setw(30)
+                  << std::get<0>(tuple) << std::setw(30) << std::get<1>(tuple)
                   << std::endl;
       }
       break;

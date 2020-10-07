@@ -167,7 +167,7 @@ class SymmetrizedSPAIPreconditioner {
  */
 /* SAM_LISTING_BEGIN_3 */
 using tuple_vector =
-    std::vector<std::tuple<unsigned int, unsigned int, unsigned int>>;
+    std::vector<std::tuple<unsigned int, unsigned int>>;
 tuple_vector testSPAIPrecCG(unsigned int L) {
   tuple_vector cg_iterations(L);
 
@@ -203,7 +203,7 @@ tuple_vector testSPAIPrecCG(unsigned int L) {
     // check if both solutions coincide
     assert((sol - sol_prec).norm() <= 1e-9);
 
-    cg_iterations[i] = {N, cg.iterations(), cg_preconditioner.iterations()};
+    cg_iterations[i] = {cg.iterations(), cg_preconditioner.iterations()};
   }
   // END
 
