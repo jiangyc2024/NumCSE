@@ -1,7 +1,6 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "doctest.h"
-
 #include "copy.hpp"
+#include "doctest.h"
 
 // includes for test data
 #include <Eigen/Dense>
@@ -34,7 +33,7 @@ struct TestData {
 TestData data;
 
 TEST_SUITE("LowRankRep") {
-  TEST_CASE("std::pair<MatrixXd,MatrixXd> factorize_X_AB" *
+  TEST_CASE("std::pair<MatrixXd, MatrixXd> factorize_X_AB" *
             doctest::description("factor")) {
     auto sol = factorize_X_AB(data.X, data.k);
     auto stud = factorize_X_AB_TEST(data.X, data.k);
@@ -58,7 +57,8 @@ TEST_SUITE("LowRankRep") {
     auto sol1 = std::get<1>(sol);
     auto stud1 = std::get<1>(stud);
     auto sol2 = std::get<2>(sol);
-    auto stud2 = std::get<2>(stud) REQUIRE(sol0.rows() == stud0.rows());
+    auto stud2 = std::get<2>(stud);
+    REQUIRE(sol0.rows() == stud0.rows());
     REQUIRE(sol0.cols() == stud0.cols());
     REQUIRE(sol1.rows() == stud1.rows());
     REQUIRE(sol1.cols() == stud1.cols());
@@ -69,7 +69,7 @@ TEST_SUITE("LowRankRep") {
     CHECK((sol2 - stud2).norm() == doctest::Approx(0.).epsilon(1e-6));
   }
 
-  TEST_CASE("std::pair<MatrixXd,MatrixXd> rank_k_approx" *
+  TEST_CASE("std::pair<MatrixXd, MatrixXd> rank_k_approx" *
             doctest::description("approx Z")) {
     auto sol = rank_k_approx(data.Ax, data.Ay, data.Bx, data.By);
     auto stud = rank_k_approx_TEST(data.Ax, data.Ay, data.Bx, data.By);

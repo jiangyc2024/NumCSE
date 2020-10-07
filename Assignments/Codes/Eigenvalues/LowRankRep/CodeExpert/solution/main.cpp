@@ -1,7 +1,7 @@
+#include <Eigen/Dense>
 #include <iostream>
 #include <limits>
 
-#include <Eigen/Dense>
 #include "lowrankrep.hpp"
 
 using namespace Eigen;
