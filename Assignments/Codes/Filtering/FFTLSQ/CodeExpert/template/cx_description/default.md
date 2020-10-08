@@ -1,4 +1,4 @@
-# Problem 5-2 FFTLSQ // TODO: add specific number
+# Problem 5-2 FFTLSQ
 
 > For the task description of this exercise, please refer to [NCSE20_Problems.pdf](
 https://www.sam.math.ethz.ch/~grsam/NCSE20/HOMEWORK/NCSE20_Problems.pdf). 
