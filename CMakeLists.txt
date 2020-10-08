@@ -119,18 +119,15 @@ include_directories(${CMAKE_SOURCE_DIR}/Utils) # oh dear
 include_directories("${CMAKE_SOURCE_DIR}/MatplotlibC++")
 
 # find Python3
-find_package(Python3 COMPONENTS Interpreter Development)
+find_package(Python3 COMPONENTS Interpreter Development NumPy)
 if (${Python3_FOUND})
   include_directories(${Python3_INCLUDE_DIRS})
 else()
   message(WARNING "Python3 not found."
   "\nPlease install it to use any function of `matplotlibcpp.h`.")
 endif()
-
-# find NumPy
-find_package(NumPy)
-if (${PYTHON_NUMPY_FOUND})
-  include_directories(${PYTHON_NUMPY_INCLUDE_DIR})
+if (${Python3_NumPy_FOUND})
+  include_directories(${Python3_NumPy_INCLUDE_DIRS})
 else()
   message(WARNING "Python3 NumPy not found, proceeding with -DWITHOUT_NUMPY."
   " Some functions of `matplotlibcpp.h` might not work as expected.")
