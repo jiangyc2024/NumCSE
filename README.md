@@ -163,3 +163,11 @@ MathGL installation missing (possibly because of previous point) or corrupted:
 Known issue (Mac OS X):
 - run `cmake .` and `make` twice
 - if this doesn't fix problem: try with clean `clone`
+
+### `'Python.h' file not found` or `Python3 not found.  Please install it to use any function of matplotlibcpp.h.`
+
+Cmake failed to identify a proper Python3 distribution with matplotlib and numpy installed.
+The easiest way is to install the anaconda distribution, activate conda envrionment using `conda activate base` or
+`conda activate self_defined_env`. And then rerun the cmake configuration `cmake ..` in build folder.
+
+
