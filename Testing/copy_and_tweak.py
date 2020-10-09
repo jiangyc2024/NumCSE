@@ -3,7 +3,6 @@ import sys
 
 #
 # CURRENT ISSUES:
-#   - probably more issues
 #
 
 def parseWriteChange(student_sol, copy, tests):
@@ -45,7 +44,8 @@ def parseWriteChange(student_sol, copy, tests):
 					else:
 						copy.write(parse.group(1) + el.group(1) + suffix + parse.group(3) + "\n")
 					write = False
-			if write and not line.startswith("#endif") and not line.startswith("#include") and not line.startswith("enum"): # skip all one liner enums
+			# if write and not line.startswith("#endif") and not line.startswith("#include") and not line.startswith("enum"): # skip all one liner enums
+			if write and not line.startswith("#endif") and not line.startswith('#include "') and not line.startswith("enum"): # skip all one liner enums
 				new_line = line
 				# replace all class occurences with its test version
 				for el in classes:
