@@ -9,6 +9,7 @@ TEST_SUITE("Toeplitz") {
   TEST_CASE("MatrixXd toeplitz" * doctest::description("Toeplitz matrix")) {
     Eigen::VectorXd c = Eigen::VectorXd::Random(50);
     Eigen::VectorXd r = Eigen::VectorXd::Random(50);
+    c(0) = r(0);
 
     auto sol = toeplitz(c, r);
     auto stud = toeplitz_TEST(c, r);

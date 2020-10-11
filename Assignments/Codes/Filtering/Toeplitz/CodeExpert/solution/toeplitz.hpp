@@ -170,6 +170,7 @@ VectorXd ttsolve(const VectorXd& h, const VectorXd& y) {
 
   x = ttrecsolve(h_tmp, y_tmp, l);
   x.conservativeResize(n);
+  x.bottomRows(n - m).setZero();
   // END
 
   return x;
