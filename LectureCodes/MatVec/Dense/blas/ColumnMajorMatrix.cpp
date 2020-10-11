@@ -43,7 +43,7 @@ void ColumnMajorMatrix::initRand() {
   srand(42);
   for (int j = 0; j < m; ++j) {
     for (int i = 0; i < n; ++i) {
-      operator()(i, j) = (Real)(arc4random());
+      operator()(i, j) = (Real)(drand48());
     }
   }
 }
