@@ -41,12 +41,13 @@ MatrixXd set_focus(double f0);
  * \brief Save differently blurred images.
  * \param focus
  */
+/* SAM_LISTING_BEGIN_1 */
 void save_image(double focus) {
   // Create empty object
   PGMObject q;
 
   // TO DO: (a) Read matrix of image generated
-  // by "set_focus" and save as an image in format ".pgm".
+  // by "set\_focus" and save as an image in format ".pgm".
   // START
   // Set data using function "set\_data"
   // Data obtained from "set\_focus"
@@ -59,17 +60,19 @@ void save_image(double focus) {
   file << q;
   // END
 }
+/* SAM_LISTING_END_1 */
 
 /*!
  * \brief Plot spectrum for different $f$.
  * \param focus
  */
+/* SAM_LISTING_BEGIN_0 */
 void plot_freq(double focus) {
   int a = 0;
   int b = 8000;
   auto clamp = [a, b](double x) { return x < a ? a : x > b ? b : x; };
 
-  // TO DO: (b) compute D containing the spectrum of set_focus(focus).
+  // TO DO: (b) compute D containing the spectrum of set\_focus(focus).
   // "clamp" the data between 0 and 8000.
   // START
   MatrixXd D = fft2r(set_focus(focus)).cwiseAbs().unaryExpr(clamp) / b;
@@ -99,16 +102,18 @@ void plot_freq(double focus) {
   ss2 << "./cx_out/spectrum_focus=" << focus << ".png";
   plt::savefig(ss2.str().c_str());
 }
+/* SAM_LISTING_END_0 */
 
 /*!
  * \brief Compute $V(\mathbf{B}(f))$.
  * \param M
  * \return V
  */
+/* SAM_LISTING_BEGIN_2 */
 double high_frequency_content(const MatrixXd& M) {
   int n = M.rows(), m = M.cols();
   double V = 0;
-  // TO DO: compute $V(\mathbf{M}).
+  // TO DO: compute $V(\mathbf{M})$.
   // START
   for (unsigned int i = 0; i < M.rows(); ++i) {
     for (unsigned int j = 0; j < M.cols(); ++j) {
@@ -120,10 +125,12 @@ double high_frequency_content(const MatrixXd& M) {
   // END
   return V;
 }
+/* SAM_LISTING_END_2 */
 
 /*!
  * \brief Plot $V(\mathbf{B}(f))$.
  */
+/* SAM_LISTING_BEGIN_3 */
 void plotV() {
   unsigned int N = 20;
 
@@ -150,11 +157,13 @@ void plotV() {
   plt::ylabel("$V(\\mathbf{B}(f))$");
   plt::savefig("./cx_out/focus_plot.png");
 }
+/* SAM_LISTING_END_3 */
 
 /*!
  * \brief Find most focused image.
  * \return
  */
+/* SAM_LISTING_BEGIN_4 */
 double autofocus() {
   // Minimum focus
   const double min_focus = 0;
@@ -187,5 +196,6 @@ double autofocus() {
   // END
   return f0;
 }
+/* SAM_LISTING_END_4 */
 
 #endif
