@@ -113,6 +113,8 @@ TEST_SUITE("DistanceFitting") {
 		CHECK(coeff.maxCoeff()<2.5);
 
         }
-	
+	TEST_CASE("bool testNormalEquations" * doctest::description("testNormalEquations()")) {
+		CHECK(testNormalEquations_TEST(data.D));
+	}
 }
 

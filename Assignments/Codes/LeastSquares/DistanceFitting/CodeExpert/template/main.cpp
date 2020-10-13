@@ -118,4 +118,8 @@ int main() {
   else
     std::cout << "Test for runtime of solveNormalEquations failed: too slow.\n\n";
 
+  bool same = testNormalEquations(D);
+  if(same) std::cout << "Test for testNormalEquations passed!\n\n";
+  else std::cout << "Test for testNormalEquations failed.\n\n";
+
 }

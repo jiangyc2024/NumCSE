@@ -14,9 +14,10 @@ SparseMatrix<double> initA(unsigned int n) {
   unsigned int rows = n * (n - 1) / 2;
   unsigned int cols = n - 1;
   SparseMatrix<double> A(rows, cols);
-  // TO DO (0-1.b)
+  // TODO: (4-10.b) Initialize the sparse coefficient matrix for
+  // the distance fitting problem
   // START
-  
+
   // END
   A.makeCompressed();
   return A;
@@ -28,9 +29,10 @@ VectorXd solveExtendedNormalEquations(const MatrixXd &D) {
   VectorXd x;
   unsigned int n = D.cols();
   unsigned int m = n * (n - 1) / 2;
-  // TO DO (0-1.c)
+  // TODO: (4-10.c) Solve the extended normal equations with a sparse solver
+  // that Eigen provides
   // START
-  
+
   // END
   return x;
 }
@@ -39,11 +41,21 @@ VectorXd solveExtendedNormalEquations(const MatrixXd &D) {
 /* SAM_LISTING_BEGIN_2 */
 VectorXd solveNormalEquations(const MatrixXd &D) {
   VectorXd x;
-  // TO DO (0-1.e)
+  // TODO: (4-10.e) 
   // START
-  
+
   // END
   return x;
 }
-
 /* SAM_LISTING_END_2 */
+
+/* SAM_LISTING_END_3 */
+bool testNormalEquations(const MatrixXd &D){
+  // TODO: (0-1.f)
+  // START
+
+  // END
+  return false;
+}
+/* SAM_LISTING_END_3 */
+
