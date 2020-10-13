@@ -14,7 +14,8 @@ SparseMatrix<double> initA(unsigned int n) {
   unsigned int rows = n * (n - 1) / 2;
   unsigned int cols = n - 1;
   SparseMatrix<double> A(rows, cols);
-  // TO DO (0-1.b)
+  // TODO: (4-10.b) Initialize the sparse coefficient matrix for
+  // the distance fitting problem
   // START
   // Tell Eigen the number of non-zeros per column
   A.reserve(VectorXi::Constant(n - 1, n - 1));
@@ -42,7 +43,8 @@ VectorXd solveExtendedNormalEquations(const MatrixXd &D) {
   VectorXd x;
   unsigned int n = D.cols();
   unsigned int m = n * (n - 1) / 2;
-  // TO DO (0-1.c)
+  // TODO: (4-10.c) Solve the extended normal equations with a sparse solver
+  // that Eigen provides
   // START
   // initialize right hand side vector $\cob{\Vb}$ as in \prbeqref{eq:ppos}
   VectorXd b_ext = VectorXd::Zero(m + n - 1);
@@ -85,7 +87,7 @@ VectorXd solveExtendedNormalEquations(const MatrixXd &D) {
 /* SAM_LISTING_BEGIN_2 */
 VectorXd solveNormalEquations(const MatrixXd &D) {
   VectorXd x;
-  // TO DO (0-1.e)
+  // TODO: (4-10.e) 
   // START
   unsigned int n = D.cols();
   unsigned int m = n * (n - 1) / 2;
