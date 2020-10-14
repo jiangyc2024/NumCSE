@@ -18,7 +18,7 @@ int main() {
   g << 5, 4, 3, 2, 1;
   MatrixXd Mstar = min_frob(z, g);  // $M^*$
 
-  std::cout << Mstar << std::endl;
+  std::cout << "Mstar:\n" << Mstar << "\n\n";
 
   bool works = testMformula(100);
   if (works) {

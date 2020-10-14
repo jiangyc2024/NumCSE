@@ -42,8 +42,9 @@ bool testMformula(unsigned int n) {
   // error in Frobenius norm is less than tol.
   // Hint: Define z using LinSpaced and g using replicate()
   // START
-  return 0;
+
   // END
+  return 0;
 }
 /* SAM_LISTING_END_2 */
 #endif
