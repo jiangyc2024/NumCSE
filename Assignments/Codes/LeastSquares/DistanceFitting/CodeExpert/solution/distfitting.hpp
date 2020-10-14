@@ -90,7 +90,8 @@ VectorXd solveNormalEquations(const MatrixXd &D) {
   VectorXd x;
   // TODO: (4-10.e) Solve the normal equations by exploiting the
   // Sherman-Morrison-Woodbury formula, i.e. by using your results from the
-  // previous subproblem START
+  // previous subproblem
+  // START
   unsigned int n = D.cols();
   unsigned int m = n * (n - 1) / 2;
   // initialize right hand side
@@ -133,7 +134,8 @@ VectorXd solveNormalEquations(const MatrixXd &D) {
 /* SAM_LISTING_END_3 */
 bool testNormalEquations(const MatrixXd &D) {
   // TODO: (0-1.f) Call your implementations of solveExtendedNormalEquations()
-  // and solveNormalEquations() and return true, if their results agree. START
+  // and solveNormalEquations() and return true, if their results agree.
+  // START
   VectorXd x_ext = solveExtendedNormalEquations(D);
   VectorXd x_fast = solveNormalEquations(D);
   if ((x_ext - x_fast).norm() < x_ext.norm() * 1e-9) return true;

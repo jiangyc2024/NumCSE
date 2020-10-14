@@ -18,7 +18,7 @@ SparseMatrix<double> initA(unsigned int n) {
   // TODO: (4-10.b) Initialize the sparse coefficient matrix for
   // the distance fitting problem
   // START
-
+  
   // END
   A.makeCompressed();
   return A;
@@ -33,7 +33,7 @@ VectorXd solveExtendedNormalEquations(const MatrixXd &D) {
   // TODO: (4-10.c) Solve the extended normal equations with a sparse solver
   // that Eigen provides
   // START
-
+  
   // END
   return x;
 }
@@ -44,8 +44,9 @@ VectorXd solveNormalEquations(const MatrixXd &D) {
   VectorXd x;
   // TODO: (4-10.e) Solve the normal equations by exploiting the
   // Sherman-Morrison-Woodbury formula, i.e. by using your results from the
-  // previous subproblem START
-
+  // previous subproblem
+  // START
+  
   // END
   return x;
 }
@@ -54,8 +55,9 @@ VectorXd solveNormalEquations(const MatrixXd &D) {
 /* SAM_LISTING_END_3 */
 bool testNormalEquations(const MatrixXd &D) {
   // TODO: (0-1.f) Call your implementations of solveExtendedNormalEquations()
-  // and solveNormalEquations() and return true, if their results agree. START
-
+  // and solveNormalEquations() and return true, if their results agree.
+  // START
+  
   // END
   return false;
 }
