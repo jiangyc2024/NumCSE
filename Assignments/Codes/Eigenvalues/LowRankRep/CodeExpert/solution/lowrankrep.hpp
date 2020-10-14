@@ -25,7 +25,7 @@ std::pair<MatrixXd, MatrixXd> factorize_X_AB(const MatrixXd &X,
                                              const unsigned int k) {
   size_t m = X.rows(), n = X.cols();
 
-  double tol = 1e-6; // Tolerance for numerical rank: \lref{ex:svdrank}
+  double tol = 1e-6;  // Tolerance for numerical rank: \lref{ex:svdrank}
   // TO DO (4-8.b) Define A,B with k columns such that X = A*B^T
   // Hint: warnings can be displayed with std::cerr, error messages with assert
   // START
@@ -67,7 +67,6 @@ std::pair<MatrixXd, MatrixXd> factorize_X_AB(const MatrixXd &X,
 /* SAM_LISTING_BEGIN_1 */
 std::tuple<MatrixXd, MatrixXd, MatrixXd> svd_AB(const MatrixXd &A,
                                                 const MatrixXd &B) {
-
   assert(A.cols() == B.cols() &&
          "Matrices A and B should have the same column number");
   size_t m = A.rows();
@@ -122,7 +121,6 @@ std::pair<MatrixXd, MatrixXd> rank_k_approx(const MatrixXd &Ax,
                                             const MatrixXd &Ay,
                                             const MatrixXd &Bx,
                                             const MatrixXd &By) {
-
   assert(Ax.rows() == Ay.rows() && Ax.cols() == Ay.cols() &&
          "Matrices Ax and Ay should have the same dimensions");
   assert(Bx.rows() == By.rows() && Bx.cols() == By.cols() &&

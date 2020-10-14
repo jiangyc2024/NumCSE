@@ -1,7 +1,7 @@
 # Problem 4-8: Low rank approximation of matrices
 
-> For the task description of this exercise, please refer to [NCSE19_Problems.pdf](
-https://www.sam.math.ethz.ch/~grsam/NCSE19/HOMEWORK/NCSE19_Problems.pdf). 
+> For the task description of this exercise, please refer to [NCSE20_Problems.pdf](
+https://www.sam.math.ethz.ch/~ralfh/tmp/NCSE20_Problems_full.pdf). 
 
 > Open `lowrankrep.hpp` and fill in the missing code in between the delimiters `// START` and `// END` according to the instructions preceded by `// TO DO:`.
 
