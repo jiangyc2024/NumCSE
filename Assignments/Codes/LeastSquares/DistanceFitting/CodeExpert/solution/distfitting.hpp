@@ -1,11 +1,12 @@
 #pragma once
 
-#include "totriplets.hpp"
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 #include <iomanip>
 #include <iostream>
 #include <vector>
+
+#include "totriplets.hpp"
 
 using namespace Eigen;
 
@@ -87,8 +88,9 @@ VectorXd solveExtendedNormalEquations(const MatrixXd &D) {
 /* SAM_LISTING_BEGIN_2 */
 VectorXd solveNormalEquations(const MatrixXd &D) {
   VectorXd x;
-  // TODO: (4-10.e) 
-  // START
+  // TODO: (4-10.e) Solve the normal equations by exploiting the
+  // Sherman-Morrison-Woodbury formula, i.e. by using your results from the
+  // previous subproblem START
   unsigned int n = D.cols();
   unsigned int m = n * (n - 1) / 2;
   // initialize right hand side
@@ -107,12 +109,15 @@ VectorXd solveNormalEquations(const MatrixXd &D) {
   // Alternative version
 
   // Intialize the extended D
-  MatrixXd D_full = MatrixXd::Zero(n,n);
-  D_full.triangularView<Upper>() = D.triangularView<Upper>();// in case D is not just a upper triangular matrix
+  MatrixXd D_full = MatrixXd::Zero(n, n);
+  D_full.triangularView<Upper>() =
+      D.triangularView<Upper>();  // in case D is not just a upper triangular
+                                  // matrix
   MatrixXd D_fullT = D_full.transpose();
   D_full = D_full - D_fullT;
   // Calculate ATb in a more efficient way
-  VectorXd ATb_alt = D_full.transpose().block(0,0,n-1,n) * VectorXd::Ones(n);
+  VectorXd ATb_alt =
+      D_full.transpose().block(0, 0, n - 1, n) * VectorXd::Ones(n);
 
   // We use ATb on forward but ATb == ATb_alt
 
@@ -126,14 +131,13 @@ VectorXd solveNormalEquations(const MatrixXd &D) {
 /* SAM_LISTING_END_2 */
 
 /* SAM_LISTING_END_3 */
-bool testNormalEquations(const MatrixXd &D){
-  // TODO: (0-1.f)
-  // START
-  VectorXd x_ext =  solveExtendedNormalEquations(D);
+bool testNormalEquations(const MatrixXd &D) {
+  // TODO: (0-1.f) Call your implementations of solveExtendedNormalEquations()
+  // and solveNormalEquations() and return true, if their results agree. START
+  VectorXd x_ext = solveExtendedNormalEquations(D);
   VectorXd x_fast = solveNormalEquations(D);
-  if((x_ext-x_fast).norm() < x_ext.norm() * 1e-9) return true;
+  if ((x_ext - x_fast).norm() < x_ext.norm() * 1e-9) return true;
   // END
   return false;
 }
 /* SAM_LISTING_END_3 */
-

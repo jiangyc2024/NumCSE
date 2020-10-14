@@ -21,25 +21,25 @@ int main() {
             0., -1., 0.,
             0., 0., -1.;
   // clang-format on
-  
+
   if (Adense.size() == Atest.size()) {
     // Test for each row of Adense if it exists in Atest
     unsigned int n = Adense.rows();
-    bool all_rows_contained = true; // True if Adense is a permutation of Atest
+    bool all_rows_contained = true;  // True if Adense is a permutation of Atest
 
-    for(unsigned int i = 0; i<n; i++){ // Loop over all rows of Adense
+    for (unsigned int i = 0; i < n; i++) {  // Loop over all rows of Adense
       VectorXd row = Adense.row(i).transpose();
-      bool contained = false; // True if row i is contained in Atest
-      for(unsigned int j = 0; j<n; j++){ // Loop over all rows of Atest
-	VectorXd row_test = Atest.row(j).transpose();
-	if((row - row_test).norm() == 0) contained = true;
+      bool contained = false;  // True if row i is contained in Atest
+      for (unsigned int j = 0; j < n; j++) {  // Loop over all rows of Atest
+        VectorXd row_test = Atest.row(j).transpose();
+        if ((row - row_test).norm() == 0) contained = true;
       }
-      if(contained == false) all_rows_contained = false;
+      if (contained == false) all_rows_contained = false;
     }
 
     if (all_rows_contained)
       std::cout << "Test for initA passed!\n\n";
-    else 
+    else
       std::cout << "Test for initA failed: wrong output.\n\n";
   } else
     std::cout << "Test for initA failed: wrong size.\n\n";
@@ -48,10 +48,8 @@ int main() {
    *	run solveExtendedNormalEquations
    */
   MatrixXd D(4, 4);
-  D << 0.0, -3.0, -4.0, -2.0, 
-       0.0, 0.0, -1.0, 1.0, 
-       0.0, 0.0, 0.0, 2.0, 
-       0.0, 0.0, 0.0, 0.0;
+  D << 0.0, -3.0, -4.0, -2.0, 0.0, 0.0, -1.0, 1.0, 0.0, 0.0, 0.0, 2.0, 0.0, 0.0,
+      0.0, 0.0;
 
   VectorXd x = solveExtendedNormalEquations(D);
   std::cout << "Solution extended normal equations:\n" << x << std::endl;
@@ -88,20 +86,19 @@ int main() {
     std::cout << "Test for solveNormalEquations failed: wrong size.\n\n";
   /*
    * test of runtime of solveNormaEquations
-   */ 
+   */
 
-  int steps = 5; // testing until dim = 2^(steps+2)
+  int steps = 5;  // testing until dim = 2^(steps+2)
   VectorXd time(steps);
 
-  for(int s = 0; s<steps; s++){
-    
-    int dim = std::pow(2, s+3);
-    MatrixXd rand = MatrixXd::Zero(dim,dim);
-    rand.triangularView<Upper>() = MatrixXd::Random(dim,dim);
+  for (int s = 0; s < steps; s++) {
+    int dim = std::pow(2, s + 3);
+    MatrixXd rand = MatrixXd::Zero(dim, dim);
+    rand.triangularView<Upper>() = MatrixXd::Random(dim, dim);
     rand.diagonal() = VectorXd::Zero(dim);
-    
+
     Timer timer = Timer();
-    for(int i = 0; i<10;i++){
+    for (int i = 0; i < 10; i++) {
       timer.start();
       VectorXd y_test = solveNormalEquations(rand);
       timer.stop();
@@ -110,16 +107,18 @@ int main() {
   }
 
   VectorXd time_log = time.array().log().matrix();
-  VectorXd coeff = time_log.tail(steps-1) - time_log.head(steps-1);
+  VectorXd coeff = time_log.tail(steps - 1) - time_log.head(steps - 1);
   coeff = coeff / std::log(2);
-  std::cout<< "Your runtime is O(n^" << coeff.maxCoeff() <<")"<< std::endl;
-  if(coeff.maxCoeff()<2.5)
+  std::cout << "Your runtime is O(n^" << coeff.maxCoeff() << ")" << std::endl;
+  if (coeff.maxCoeff() < 2.5)
     std::cout << "Test for runtime of solveNormalEquations passed!\n\n";
   else
-    std::cout << "Test for runtime of solveNormalEquations failed: too slow.\n\n";
+    std::cout
+        << "Test for runtime of solveNormalEquations failed: too slow.\n\n";
 
   bool same = testNormalEquations(D);
-  if(same) std::cout << "Test for testNormalEquations passed!\n\n";
-  else std::cout << "Test for testNormalEquations failed.\n\n";
-
+  if (same)
+    std::cout << "Test for testNormalEquations passed!\n\n";
+  else
+    std::cout << "Test for testNormalEquations failed.\n\n";
 }
