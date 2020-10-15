@@ -131,7 +131,7 @@ VectorXd solveNormalEquations(const MatrixXd &D) {
 }
 /* SAM_LISTING_END_2 */
 
-/* SAM_LISTING_END_3 */
+/* SAM_LISTING_BEGIN_3 */
 bool testNormalEquations(const MatrixXd &D) {
   // TODO: (4-10.f) Call your implementations of solveExtendedNormalEquations()
   // and solveNormalEquations() and return true, if their results agree.
