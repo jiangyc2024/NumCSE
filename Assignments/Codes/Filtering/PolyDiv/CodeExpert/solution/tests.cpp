@@ -38,9 +38,9 @@ TEST_SUITE("polyDiv") {
     CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
   }
 
-  TEST_CASE(
-      "VectorXd polyDiv" *
-      doctest::description("Polynomial division -- efficient implementation")) {
+  TEST_CASE("VectorXd polyDiv" *
+      doctest::description(
+              "Polynomial division -- efficient implementation")) {
     auto sol_uv = polyMult_fast(data.u, data.v);
     auto stud_uv = polyMult_fast_TEST(data.u, data.v);
     auto sol_v = polyDiv(sol_uv, data.v);
