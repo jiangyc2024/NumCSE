@@ -128,7 +128,7 @@ std::pair<MatrixXd, MatrixXd> rank_k_approx(const MatrixXd &Ax,
   assert(Bx.rows() == By.rows() && Bx.cols() == By.cols() &&
          "Matrices Bx and By should have the same dimensions");
   assert(Ax.cols() == Bx.cols() &&
-         "Matrices Ax, Ay, Bx and By should have the same amout of columns");
+         "Matrices Ax, Ay, Bx and By should have the same amount of columns");
   assert(Ax.cols() * 2 < Ax.rows() && Bx.cols() * 2 < Bx.rows() &&
          "2*k should not be bigger equal min(m, n)");
   // TO DO (4-8.h): Use the function svd_AB with the appropriate A,B and
