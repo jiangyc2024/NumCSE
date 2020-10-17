@@ -56,6 +56,7 @@ bool testMformula(unsigned int n) {
   // Safe test for realtive smallness of error
   return ((Mstar - M).norm() < tol * M.norm());
   // END
+  return false;
 }
 /* SAM_LISTING_END_2 */
 #endif

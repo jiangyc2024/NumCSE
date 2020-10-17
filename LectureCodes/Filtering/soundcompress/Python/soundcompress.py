@@ -120,7 +120,11 @@ plt.figure( )
 plt.title( 'sound filtering' )
 plt.xlabel( 'time[s]' )
 plt.ylabel( 'sound pressure' )
-
+# plot signal
+plt.plot(np.array( np.arange( 30000, 31000 )) / Fs, 
+	 y.real[ 30000:31000 ],color='red',linewidth=0.5,
+	 label = 'signal')
+        
 for cutoff in [ 5000, 3000, 1000 ]:
 	
 	# Applies low pass filtering (also pass symmetric counterpart of low frequencies).
@@ -133,8 +137,8 @@ for cutoff in [ 5000, 3000, 1000 ]:
 	audiowrite( 'hello_cutoff{}.wav'.format( cutoff ), y_filter, Fs )
 	sound( y_filter, Fs, 'hello.wav with cut-off frequency {}'.format( cutoff ))
 	plt.plot( 
-		np.array( np.arange( 30000, 32000 )) / Fs, 
-		y_filter.real[ 30000:32000 ],
+		np.array( np.arange( 30000, 31000 )) / Fs, 
+		y_filter.real[ 30000:31000 ],linewidth=0.5,
 		label = 'cut-off = {}'.format( cutoff ))
 
 plt.legend( )
