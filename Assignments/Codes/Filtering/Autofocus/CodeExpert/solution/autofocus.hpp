@@ -14,9 +14,6 @@
 #include "matplotlibcpp.h"
 namespace plt = matplotlibcpp;
 
-// Contains PGMObject
-#include "pgm.hpp"
-
 // Contains FFT utilities
 #include "fft.hpp"
 
@@ -44,20 +41,23 @@ MatrixXd set_focus(double f0);
 /* SAM_LISTING_BEGIN_1 */
 void save_image(double focus) {
   // Create empty object
-  PGMObject q;
+  Eigen::MatrixXd q;
 
   // TO DO: (a) Read matrix of image generated
-  // by "set\_focus" and save as an image in format ".pgm".
+  // by "set\_focus" and save as an image in format ".eps".
   // START
   // Set data using function "set\_data"
   // Data obtained from "set\_focus"
-  q.set_data(set_focus(focus));
+  q = set_focus(focus);
 
   // Create and save file
+  plt::figure();
+  plt::imshow(q, {{"cmap", "gray"}});
+  plt::axis("off");
   std::stringstream ss;
-  ss << "./cx_out/image_focus=" << (int)focus << ".pgm";
-  std::ofstream file(ss.str());
-  file << q;
+  ss << "./cx_out/image_focus=" << (int)focus << ".eps";
+  plt::savefig(ss.str().c_str());
+
   // END
 }
 /* SAM_LISTING_END_1 */
@@ -99,7 +99,7 @@ void plot_freq(double focus) {
   ss << "Spectrum with f = " << focus << ".";
   plt::title(ss.str().c_str());
   std::stringstream ss2;
-  ss2 << "./cx_out/spectrum_focus=" << focus << ".png";
+  ss2 << "./cx_out/spectrum_focus=" << focus << ".eps";
   plt::savefig(ss2.str().c_str());
 }
 /* SAM_LISTING_END_0 */
@@ -155,7 +155,7 @@ void plotV() {
   plt::plot(x, y, "r+", {{"label", "$V(\\mathbf{B}(f))$"}});
   plt::xlabel("$f$");
   plt::ylabel("$V(\\mathbf{B}(f))$");
-  plt::savefig("./cx_out/focus_plot.png");
+  plt::savefig("./cx_out/focus_plot.eps");
 }
 /* SAM_LISTING_END_3 */
 
