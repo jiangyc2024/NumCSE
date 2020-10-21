@@ -40,15 +40,12 @@ MatrixXd set_focus(double f0);
  */
 /* SAM_LISTING_BEGIN_1 */
 void save_image(double focus) {
-  // Create empty object
-  Eigen::MatrixXd q;
-
   // TO DO: (a) Read matrix of image generated
   // by "set\_focus" and save as an image in format ".eps".
   // START
   // Set data using function "set\_data"
   // Data obtained from "set\_focus"
-  q = set_focus(focus);
+  MatrixXd q = set_focus(focus);
 
   // Create and save file
   plt::figure();
