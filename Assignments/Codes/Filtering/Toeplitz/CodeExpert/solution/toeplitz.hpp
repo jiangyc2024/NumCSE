@@ -16,17 +16,11 @@ using namespace Eigen;
  * @param[out] T The $m \times n$ Toeplitz matrix from $\Vc$ and $\Vr$
  */
 /* SAM_LISTING_BEGIN_5 */
-MatrixXd toeplitz(const VectorXd& c, const VectorXd& r) {
-  if (c(0) != r(0)) {
-    std::cerr << "First entries of c and r are different!" << std::endl
-              << "We assign the first entry of c to the diagonal" << std::endl;
-  }
-
-  // Initialization
-  int m = c.size();
-  int n = r.size();
+MatrixXd toeplitz(const VectorXd &c, const VectorXd &r) {
+  // Find size of Toeplitz matrix
+  const int m = c.size();
+  const int n = r.size();
   MatrixXd T(m, n);
-
   // TODO: build Toeplitz matrix $\VT$
   // START
   for (int i = 0; i < n; ++i) {
@@ -34,9 +28,8 @@ MatrixXd toeplitz(const VectorXd& c, const VectorXd& r) {
   }
   for (int i = 0; i < m; ++i) {
     T.row(i).tail(n - i - 1) = r.segment(1, n - i - 1);
-  }  // Do not reassign the diagonal!
+  } // Do not reassign the diagonal!
   // END
-
   return T;
 }
 /* SAM_LISTING_END_5 */
@@ -48,15 +41,10 @@ MatrixXd toeplitz(const VectorXd& c, const VectorXd& r) {
  * @param[out] y An $n$-dimensional vector
  */
 /* SAM_LISTING_BEGIN_0 */
-VectorXd toepmatmult(const VectorXd& c, const VectorXd& r, const VectorXd& x) {
+VectorXd toepmatmult(const VectorXd &c, const VectorXd &r, const VectorXd &x) {
   assert(c.size() == r.size() && c.size() == x.size() &&
          "c, r, x have different lengths!");
-
-  MatrixXd T = toeplitz(c, r);
-
-  VectorXd y = T * x;
-
-  return y;
+  return toeplitz(c, r) * x;
 }
 /* SAM_LISTING_END_0 */
 
@@ -67,23 +55,23 @@ VectorXd toepmatmult(const VectorXd& c, const VectorXd& r, const VectorXd& x) {
  * @param[out] y An $n$-dimensional vector
  */
 /* SAM_LISTING_BEGIN_1 */
-VectorXd toepmult(const VectorXd& c, const VectorXd& r, const VectorXd& x) {
+VectorXd toepmult(const VectorXd &c, const VectorXd &r, const VectorXd &x) {
   assert(c.size() == r.size() && c.size() == x.size() &&
          "c, r, x have different lengths!");
   int n = c.size();
-
+  // Complex arithmetic required here
   VectorXcd cr_tmp = c.cast<std::complex<double>>();
+  VectorXcd x_tmp = x.cast<std::complex<double>>();
+  // Prepare vector encoding circulant matrix $\VC$
   cr_tmp.conservativeResize(2 * n);
   cr_tmp.tail(n) = VectorXcd::Zero(n);
   cr_tmp.tail(n - 1).real() = r.tail(n - 1).reverse();
-
-  VectorXcd x_tmp = x.cast<std::complex<double>>();
+  // Zero padding
   x_tmp.conservativeResize(2 * n);
   x_tmp.tail(n) = VectorXcd::Zero(n);
-
+  // Periodic discrete convolution from \lref{cpp:pconvfft}
   VectorXd y = pconvfft(cr_tmp, x_tmp).real();
   y.conservativeResize(n);
-
   return y;
 }
 /* SAM_LISTING_END_1 */
@@ -94,7 +82,7 @@ VectorXd toepmult(const VectorXd& c, const VectorXd& r, const VectorXd& x) {
  * @param[out] x An $n$-dimensional vector
  */
 /* SAM_LISTING_BEGIN_2 */
-VectorXd ttmatsolve(const VectorXd& h, const VectorXd& y) {
+VectorXd ttmatsolve(const VectorXd &h, const VectorXd &y) {
   assert(h.size() == y.size() && "h and y have different lengths!");
   int n = h.size();
 
@@ -116,18 +104,18 @@ VectorXd ttmatsolve(const VectorXd& h, const VectorXd& y) {
  * @param[out] x An $n$-dimensional vector
  */
 /* SAM_LISTING_BEGIN_3 */
-VectorXd ttrecsolve(const VectorXd& h, const VectorXd& y, int l) {
+VectorXd ttrecsolve(const VectorXd &h, const VectorXd &y, int l) {
   assert(h.size() == y.size() && "h and y have different lengths!");
-
+  // Result vector 
   VectorXd x;
-
+  // Trivial case of asn 1x1 LSE
   if (l == 0) {
     x.resize(1);
     x(0) = y(0) / h(0);
   } else {
     int n = std::pow(2, l);
     int m = n / 2;
-
+    // Check matching length of vectors 
     assert(h.size() == n && y.size() == n &&
            "h and y have length different from 2^l!");
 
@@ -151,7 +139,7 @@ VectorXd ttrecsolve(const VectorXd& h, const VectorXd& y, int l) {
  * @param[out] x An $n$-dimensional vector
  */
 /* SAM_LISTING_BEGIN_4 */
-VectorXd ttsolve(const VectorXd& h, const VectorXd& y) {
+VectorXd ttsolve(const VectorXd &h, const VectorXd &y) {
   assert(h.size() == y.size() && "h and y have different lengths!");
   int n = h.size();
 
