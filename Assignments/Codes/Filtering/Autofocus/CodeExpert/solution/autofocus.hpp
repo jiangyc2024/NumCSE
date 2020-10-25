@@ -40,22 +40,24 @@ MatrixXd set_focus(double f0);
  */
 /* SAM_LISTING_BEGIN_1 */
 void save_image(double focus) {
-  // TO DO: (a) Read matrix of image generated
-  // by "set\_focus" and save as an image in format ".eps".
-  // START
-  // Set data using function "set\_data"
-  // Data obtained from "set\_focus"
-  MatrixXd q = set_focus(focus);
+    // Create empty object
+    PGMObject q;
 
-  // Create and save file
-  plt::figure();
-  plt::imshow(q, {{"cmap", "gray"}});
-  plt::axis("off");
-  std::stringstream ss;
-  ss << "./cx_out/image_focus=" << (int)focus << ".eps";
-  plt::savefig(ss.str().c_str());
+    // TO DO: (a) Read matrix of image generated
+    // by "set_focus" and save as an image in format ".pgm".
+    // START
+    // Set data using function "set\_data"
+    // Data obtained from "set\_focus"
+    q.set_data(set_focus(focus));
 
-  // END
+    // Create and save file
+    std::stringstream ss;
+    ss << "./cx_out/image_focus="
+       << (int) focus
+       << ".pgm";
+    std::ofstream file(ss.str());
+    file << q;
+    // END
 }
 /* SAM_LISTING_END_1 */
 
