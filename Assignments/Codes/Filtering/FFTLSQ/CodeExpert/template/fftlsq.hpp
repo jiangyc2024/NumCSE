@@ -1,8 +1,8 @@
 #ifndef FFTLSQ_HPP
 #define FFTLSQ_HPP
 
-#include <Eigen/Dense>
 #include <math.h>
+#include <Eigen/Dense>
 
 #include "fft.hpp"
 
@@ -10,19 +10,18 @@ using namespace Eigen;
 
 /*!
  * \brief testNormEqMatrix Create the matrix $A^TA$
- * in two different ways and make sure they are 
+ * in two different ways and make sure they are
  * approximately equal.
  * \param n number of different measurements
  * \param m degree of the trigonometric polynomial to
  * be fitted
  */
 /* SAM_LISTING_BEGIN_0 */
-bool testNormEqMatrix(unsigned int n, unsigned int m){
+bool testNormEqMatrix(unsigned int n, unsigned int m) {
+  // TODO: Test if the two definitions, given in (5.2.4) and
+  // (5.2.7), of $A^T*A$ are equal.
+  // START
 
-  // TODO: Test if the two definitions, given in (5.2.4) and 
-  // (5.2.7), of $A^T*A$ are equal. 
-  // START 
-  
   // END
   return false;
 }
@@ -45,7 +44,7 @@ VectorXd find_c(const VectorXd& d, unsigned int m) {
   FFT<double> fft;
   VectorXd rhs;
   // TODO: find the coefficients
-  // START 
+  // START
 
   // END
   return rhs;

@@ -33,15 +33,13 @@ VectorXd eval_p(VectorXd c, unsigned int n) {
 }
 
 int main(int argc, char **argv) {
-
-  //testing testNormEqMatrix
+  // testing testNormEqMatrix
   unsigned int n = 10;
   unsigned int m = 3;
-  bool test = testNormEqMatrix(n,m);
-  if(test){
+  bool test = testNormEqMatrix(n, m);
+  if (test) {
     std::cout << "testNormEqMatrix passed!\n\n";
-  }
-  else{
+  } else {
     std::cout << "testNormEqMatrix failed!\n\n";
   }
   // Degree of trigonometric polynomial
@@ -59,7 +57,7 @@ int main(int argc, char **argv) {
   VectorXd g;
   g = find_c(d, m);
   std::cout << "testing find_c" << std::endl;
-  std::cout << g << std::endl <<std::endl;
+  std::cout << g << std::endl << std::endl;
 
   // Find coordinates of best poly coeff.
   unsigned int neval = 100;
