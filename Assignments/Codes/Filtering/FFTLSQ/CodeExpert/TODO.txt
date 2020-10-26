@@ -1,1 +1,2 @@
-Write more comprehensive tests?
+Implement 5-2.e), with test cases and test_doc description for it
+correct typos in pdf, plenty are in 5-2.d)

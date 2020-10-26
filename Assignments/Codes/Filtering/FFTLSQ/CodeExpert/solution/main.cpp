@@ -33,8 +33,18 @@ VectorXd eval_p(VectorXd c, unsigned int n) {
 }
 
 int main(int argc, char **argv) {
-  // Degree of trigonometric polynomial
+
+  //testing testNormEqMatrix
+  unsigned int n = 10;
   unsigned int m = 3;
+  bool test = testNormEqMatrix(n,m);
+  if(test){
+    std::cout << "testNormEqMatrix passed!\n\n";
+  }
+  else{
+    std::cout << "testNormEqMatrix failed!\n\n";
+  }
+  // Degree of trigonometric polynomial
   if (argc > 1) {
     m = std::stoi(argv[1]);
   }
@@ -47,11 +57,9 @@ int main(int argc, char **argv) {
 
   // Find best polynomial  (coefficients)
   VectorXd g;
-  // TODO: test your routine, i.e. define g
-  // START
   g = find_c(d, m);
-  // END
-  std::cout << g << std::endl;
+  std::cout << "testing find_c" << std::endl;
+  std::cout << g << std::endl <<std::endl;
 
   // Find coordinates of best poly coeff.
   unsigned int neval = 100;
@@ -83,5 +91,5 @@ int main(int argc, char **argv) {
   plt::xlabel("x");
   plt::ylabel("y");
   plt::legend();
-  plt::savefig("./cx_out/orbit.png");
+  plt::savefig("cx_out/orbit.png");
 }

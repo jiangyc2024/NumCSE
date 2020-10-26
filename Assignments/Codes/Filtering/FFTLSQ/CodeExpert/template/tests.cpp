@@ -6,6 +6,12 @@
 #include <Eigen/Dense>
 
 TEST_SUITE("FFTLSQ") {
+ TEST_CASE("bool testNormEqMatrix" * doctest::description("testNormEqMatrix()")) {
+    unsigned int n = 10;
+    unsigned int m = 3;
+    CHECK(testNormEqMatrix_TEST(n,m));
+  }
+
   TEST_CASE("VectorXd find_c" * doctest::description("find_c()")) {
     Eigen::VectorXd d(10);
     d.setRandom();
