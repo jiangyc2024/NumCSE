@@ -13,25 +13,21 @@ using namespace Eigen;
  */
 /* SAM_LISTING_BEGIN_0 */
 VectorXd polyMult_naive(const VectorXd& u, const VectorXd& v) {
-  // Initialization
-  int m = u.size();
-  int n = v.size();
-  int dim = std::max(m, n);
+  // Fetch degrees of input polynomials
+  int degu = u.size() - 1;
+  int degv = v.size() - 1;
+  // Object for product polynomial p = uv
+  int degp = degu + degv;
 
-  VectorXd u_tmp = u;
-  u_tmp.conservativeResizeLike(VectorXd::Zero(dim));
-  VectorXd v_tmp = v;
-  v_tmp.conservativeResizeLike(VectorXd::Zero(dim));
-
-  VectorXd uv(m + n - 1);  // Degree is (m-1) + (n-1)
+  VectorXd uv(degp + 1);
 
   // TODO: multiply polynomials $u$ and $v$ naively
   // START
-  for (int i = 0; i < uv.size(); ++i) {
-    int fst = std::max(0, i - (dim - 1));
-    int lst = std::min(i, dim - 1);
+  for (int i = 0; i <= degp; ++i) {
+    int fst = std::max(0, i - degv);
+    int lst = std::min(degu, i);
     for (int j = fst; j <= lst; ++j) {
-      uv(i) += u_tmp(j) * v_tmp(i - j);
+      uv(i) += u(j) * v(i - j);
     }
   }
   // END
@@ -82,41 +78,53 @@ VectorXd polyDiv(const VectorXd& uv, const VectorXd& u) {
   // Initialization
   int mn = uv.size();
   int m = u.size();
+  // need well behaved input
+  assert(uv(mn - 1) != 0. && u(m - 1) != 0.);
+  int n = mn - m + 1;
   int dim = std::max(mn, m);
 
+  // TODO: divide polynomials $uv$ and $u$ efficiently
+  // START
+
+  VectorXd v;
+
+  // zero padding
   VectorXd uv_tmp = uv;
   uv_tmp.conservativeResizeLike(VectorXd::Zero(dim));
   VectorXd u_tmp = u;
   u_tmp.conservativeResizeLike(VectorXd::Zero(dim));
 
-  /* SAM_LISTING_BEGIN_3 */
-  // TODO: make sure that $uv$ can be divided by $u$
-  // START
-  // Machine precision
-  double epsilon = std::numeric_limits<double>::epsilon();
-  for (int i = dim - 1; i >= 0; --i) {  // Right-most value of longest vector
-    // is not necessarily numerically different than 0...
-    if (std::abs(uv_tmp(i)) > epsilon * uv.norm()) {
-      // No problem
-      break;
-    } else if (std::abs(u_tmp(i)) > epsilon * u.norm()) {
-      std::exit(EXIT_FAILURE);
-    }
-  }
-  // END
-  /* SAM_LISTING_END_3 */
-
-  VectorXd v;
-
-  // TODO: divide polynomials $uv$ and $u$ efficiently (no remainder)
-  // START
   Eigen::FFT<double> fft;
   VectorXcd uv_tmp_ = fft.fwd(uv_tmp);
   VectorXcd u_tmp_ = fft.fwd(u_tmp);
-  VectorXcd tmp = uv_tmp_.cwiseQuotient(u_tmp_);
-  v = fft.inv(tmp).real();
 
-  v.conservativeResizeLike(VectorXd::Zero(mn - m + 1));
+  // check divisibility: case(i)
+  for (int i = 0; i < dim; ++i) {
+    if (abs(uv_tmp_(i)) < 1e-13) {
+      if (abs(u_tmp_(i)) < 1e-13) {
+        // make cwiseQuotient at i-th position equal 0
+        uv_tmp_(i) = 0.;  // complex assignment (0., 0.)
+        u_tmp_(i) = 1.;   // complex assignment (1., 0.)
+      } else {
+        std::cerr << "uv can't be divided by u\n";
+        throw;
+      }
+    }
+  }
+
+  VectorXcd tmp = uv_tmp_.cwiseQuotient(u_tmp_);
+
+  v = fft.inv(tmp).real();
+  // check divisibility: case(ii)
+  for (int i = n; i < dim; ++i) {
+    if (abs(v(i)) > 1e-13) {
+      std::cerr << "uv can't be divided by u\n";
+      throw;
+    }
+  }
+
+  // reshape v to a suitable size
+  v.conservativeResizeLike(VectorXd::Zero(n));
   // (mn-1) - (m-1) + 1
   // END
   return v;
