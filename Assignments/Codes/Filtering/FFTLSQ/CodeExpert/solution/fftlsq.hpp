@@ -8,7 +8,7 @@
 using namespace Eigen;
 
 /*!
- * \brief gauss_fit Find best trigonometric polynomial
+ * \brief find_c Find best trigonometric polynomial
  * passing trough distances $\mathbf{d}$.
  * Using Least Squares formulation and assuming best fitting
  * polynomial has degree $m$.
@@ -17,23 +17,22 @@ using namespace Eigen;
  * \return The coefficients of the trigonometric polinomial.
  */
 /* SAM_LISTING_BEGIN_1 */
-VectorXd gauss_fit(const VectorXd & d,
-                   unsigned int m) {
-    unsigned int n = d.size();
+VectorXd find_c(const VectorXd& d, unsigned int m) {
+  unsigned int n = d.size();
 
-    // We will use a real to complex, discrete Fourier transform.
-    FFT<double> fft;
-	VectorXd rhs;
-	// TODO: find the coefficients
-	// START
-    // Computing Fourier coefficients
-    VectorXcd temp = fft.fwd(d);
-    // Solving normal equation by inverting diagonal matrix
-    rhs = temp.head(m).real() / n;
-    rhs.tail(m-1) *= 2;
-	// END
+  // We will use a real to complex, discrete Fourier transform.
+  FFT<double> fft;
+  VectorXd rhs;
+  // TODO: find the coefficients
+  // START
+  // Computing Fourier coefficients
+  VectorXcd temp = fftr(d);
+  // Solving normal equation by inverting diagonal matrix
+  rhs = temp.head(m).real() / n;
+  rhs.tail(m - 1) *= 2;
+  // END
 
-    return rhs;
+  return rhs;
 }
 /* SAM_LISTING_END_1 */
 

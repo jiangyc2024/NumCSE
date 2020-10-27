@@ -7,26 +7,24 @@
 
 struct TestData {
   TestData() {
-    m = 3;
-    n = 2;
     k = 2;
-    X.resize(m, n);
+    X.resize(3, 2);
     X << 5, 0, 2, 1, 7, 4;
-    A.resize(m, k);
-    B.resize(n, k);
+    A.resize(3, k);
+    B.resize(4, k);
     A << 2, 1, 2, 3, 6, 1;
-    B << 4, 4, 5, 0;
-    Ax.resize(m, k);
-    Ay.resize(m, k);
-    Bx.resize(n, k);
-    By.resize(n, k);
-    Ax << 1, 0, 9, 2, 6, 3;
-    Ay << 8, -2, 3, 4, 5, 8;
-    Bx << 2, 1, 2, 3;
-    By << 4, 4, 5, 0;
+    B << 4, 4, 5, 0, 7, 4, 3, 2;
+    Ax.resize(6, k);
+    Ay.resize(6, k);
+    Bx.resize(5, k);
+    By.resize(5, k);
+    Ax << 0, 9, 2, 6, 3, 5, -2, 3, 4, 8, 9, 0;
+    Ay << 8, -2, 3, 4, 5, 8, 7, 5, 6, 3, 2, 1;
+    Bx << 2, 1, 2, -3, 6, 7, 8, 4, 5, 1;
+    By << 4, 4, -5, 0, 3, 2, 5, 9, 0, 5;
   }
 
-  std::size_t m, n, k;
+  std::size_t k;
   Eigen::MatrixXd X, A, B, Ax, Ay, Bx, By;
 };
 

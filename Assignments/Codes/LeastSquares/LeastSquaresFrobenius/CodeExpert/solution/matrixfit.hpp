@@ -21,7 +21,7 @@ using namespace Eigen;
  * @param[out] M^* The solution to the minimization problem
  */
 /* SAM_LISTING_BEGIN_1 */
-MatrixXd min_frob(const VectorXd& z, const VectorXd& g) {
+MatrixXd min_frob(const VectorXd &z, const VectorXd &g) {
   assert(z.size() == g.size() && "Size mismatch!");
   unsigned int n = g.size();
   // TO DO (4-9.d): solve the augmented normal equations
@@ -52,14 +52,11 @@ bool testMformula(unsigned int n) {
 
   MatrixXd Mstar = min_frob(z, g);
 
-  MatrixXd M = g * z.transpose() / z.squaredNorm();  // $M$
-
-  if ((Mstar - M).norm() < tol * M.norm()) {
-    return 1;
-  } else {
-    return 0;
-  }
+  MatrixXd M = g * z.transpose() / z.squaredNorm(); // $M$
+  // Safe test for realtive smallness of error
+  return ((Mstar - M).norm() < tol * M.norm());
   // END
+  return false;
 }
 /* SAM_LISTING_END_2 */
 #endif

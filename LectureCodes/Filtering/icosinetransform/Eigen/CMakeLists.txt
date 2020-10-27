@@ -5,4 +5,4 @@ include_directories(../../cosinetransform/Eigen/
                     )
 
 add_executable_numcse(main main.cpp)
-set_eigen_fft_backend(main "FFTW")
+set_eigen_fft_backend(main "Kiss FFT")

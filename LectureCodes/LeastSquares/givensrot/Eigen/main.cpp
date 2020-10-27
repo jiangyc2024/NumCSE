@@ -17,7 +17,7 @@
 
 int main() {
   std::cout << "#####################################" << std::endl;
-  std::cout << "Test of planerot" << std::endl;
+  std::cout << "New test of planerot" << std::endl;
   std::cout << "#####################################" << std::endl;
   Eigen::Vector2d a;
   a << 2, 1;
@@ -28,9 +28,12 @@ int main() {
             << a << std::endl
             << "G=\n"
             << G << std::endl
+            << "G*G^T = \n"
+            << G.transpose() * G << std::endl
             << "x=\n"
             << x << std::endl;
-  std::cout << "Error norm (Gx-a) = " << (G * a - x).norm() << std::endl;
+  std::cout << "Error norm (Gx-a) = " << (G.transpose() * a - x).norm()
+            << std::endl;
 
   std::cout << "#####################################" << std::endl;
   std::cout << "Test of givenscoltrf" << std::endl;
