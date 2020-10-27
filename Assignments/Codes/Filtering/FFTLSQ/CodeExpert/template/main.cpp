@@ -1,8 +1,8 @@
-#include <iostream>
-#include <iomanip>
-#include <vector>
-#include <string>
 #include <Eigen/Dense>
+#include <iomanip>
+#include <iostream>
+#include <string>
+#include <vector>
 
 #include "fftlsq.hpp"
 #include "matplotlibcpp.h"
@@ -35,7 +35,7 @@ VectorXd eval_p(const VectorXd& c, const unsigned int n) {
   return ret;
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
   // testing testNormEqMatrix
   unsigned int n = 10;
   unsigned int m = 3;
@@ -57,12 +57,12 @@ int main(int argc, char **argv) {
   g = find_c(d, m);
   std::cout << "testing find_c" << std::endl;
   std::cout << g << std::endl << std::endl;
-  
+
   plt::figure();
   // TODO: (5-2.e) Tabulate the coefficients of find_c for m = 1, 2, 3,
   // plot the ellipse and also the curves of the trigonimetric polynomials
   // START
-  
+
   // END
   plt::savefig("cx_out/orbit.eps");
 }

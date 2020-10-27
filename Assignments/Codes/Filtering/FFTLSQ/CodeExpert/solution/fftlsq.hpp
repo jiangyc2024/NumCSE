@@ -2,8 +2,8 @@
 #define FFTLSQ_HPP
 
 #include <math.h>
-#include <Eigen/Dense>
 
+#include <Eigen/Dense>
 #include <unsupported/Eigen/FFT>
 
 using namespace Eigen;

@@ -2,8 +2,8 @@
 #define FFTLSQ_HPP
 
 #include <math.h>
-#include <Eigen/Dense>
 
+#include <Eigen/Dense>
 #include <unsupported/Eigen/FFT>
 
 using namespace Eigen;
@@ -21,7 +21,7 @@ bool testNormEqMatrix(unsigned int n, unsigned int m) {
   // TODO: (5-2.c) Test if the two definitions, given in (5.2.4) and
   // (5.2.7), of $A^T*A$ are equal.
   // START
-  
+
   // END
   return false;
 }
@@ -45,7 +45,7 @@ VectorXd find_c(const VectorXd& d, unsigned int m) {
   VectorXd rhs;
   // TODO: (5-2.d) find the coefficients
   // START
-  
+
   // END
   return rhs;
 }
