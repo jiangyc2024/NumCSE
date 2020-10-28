@@ -42,4 +42,5 @@ int main() {
 
   // call runtime computation
   runtime_toeplitz();
+  runtime_toeplitz_with_chrono();
 }
