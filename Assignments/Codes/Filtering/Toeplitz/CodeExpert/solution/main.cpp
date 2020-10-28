@@ -34,49 +34,14 @@ int main() {
   VectorXd x_2 = ttrecsolve(h, y, 2);
   std::cout << "Error = " << (x_1 - x_2).norm() << std::endl;
 
-  // Initialization
-  int repeats = 3;
-  VectorXd out;
-
-  // Compute runtimes of different multiplicators
+  // compute and print the runtime comparsion for toepmatmult vs toepmult 
+  // and for ttmatsolve vs ttrecsole
   std::cout << "Runtime comparison of "
             << "toepmatmult vs toepmult and ttmatsolve vs ttrecsolve"
             << std::endl;
 
-  // Loop over vector size
-  for (int l = 3; l <= 11; ++l) {
-    // Timers
-    Timer tm_matmult, tm_mult, tm_ttmat, tm_ttrec;
-    int n = pow(2, l);
 
-    // Repeat test many times
-    for (int repeat = 0; repeat < repeats; ++repeat) {
-      c = VectorXd::Random(n);
-      r = VectorXd::Random(n);
-      r(0) = c(0);
-      x = VectorXd::Random(n);
-      h = VectorXd::LinSpaced(n, 1, n).cwiseInverse();
-      y = VectorXd::Random(n);
+  // call runtime computation
+  runtime_toeplitz();
 
-      // Compute runtime of toepmatmult
-      tm_matmult.start();
-      out = toepmatmult(c, r, x);
-      tm_matmult.stop();
-      // Compute runtime of toepmult
-      tm_mult.start();
-      out = toepmult(c, r, x);
-      tm_mult.stop();
-      // Compute runtime of ttmatsolve
-      tm_ttmat.start();
-      out = ttmatsolve(h, y);
-      tm_ttmat.stop();
-      // Compute runtime of ttrecsolve
-      tm_ttrec.start();
-      out = ttrecsolve(h, y, l);
-      tm_ttrec.stop();
-    }
-
-    // Print progress
-    std::cout << n << " completed" << std::endl;
-  }
 }
