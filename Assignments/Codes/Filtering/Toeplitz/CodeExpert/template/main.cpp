@@ -34,14 +34,12 @@ int main() {
   VectorXd x_2 = ttrecsolve(h, y, 2);
   std::cout << "Error = " << (x_1 - x_2).norm() << std::endl;
 
-  // compute and print the runtime comparsion for toepmatmult vs toepmult 
+  // compute and print the runtime comparsion for toepmatmult vs toepmult
   // and for ttmatsolve vs ttrecsole
   std::cout << "Runtime comparison of "
             << "toepmatmult vs toepmult and ttmatsolve vs ttrecsolve"
             << std::endl;
 
-
   // call runtime computation
   runtime_toeplitz();
-
 }

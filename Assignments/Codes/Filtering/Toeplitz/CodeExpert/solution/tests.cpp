@@ -41,9 +41,9 @@ TEST_SUITE("Toeplitz") {
     REQUIRE(sol.size() == stud.size());
     CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
   }
-  
-  TEST_CASE("void runtime_toeplitz" * doctest::description("Test and compare runtime")) {
-		MESSAGE("This function wasn't tested. Run the program to see its output.");
-	}
 
+  TEST_CASE("void runtime_toeplitz" *
+            doctest::description("Test and compare runtime")) {
+    MESSAGE("This function wasn't tested. Run the program to see its output.");
+  }
 }
