@@ -50,7 +50,20 @@ bool testNormEqMatrix(unsigned int n, unsigned int m) {
   // TODO: (5-2.c) Test if the two definitions, given in (5.2.4) and
   // (5.2.7), of $A^T*A$ are equal.
   // START
-  
+  MatrixXd A(n, m + 1);
+  // Initializing the vectors described in (5.2.4)
+  VectorXd n_linear = VectorXd::LinSpaced(n, 0, n - 1);
+  VectorXd m_linear = VectorXd::LinSpaced(m + 1, 0, m);
+  // building A as described in (5.2.4)
+  A = 2.0 * M_PI / n * n_linear * m_linear.transpose();
+  A = A.array().cos().matrix();
+  // Using the knowledge gained in (5-2.b) to
+  // initialize $A^T*A$ directly as a diagonal matrix.
+  MatrixXd ATA = MatrixXd::Zero(m + 1, m + 1);
+  ATA.diagonal() = VectorXd::Constant(m + 1, n / 2.0);
+  ATA(0, 0) = n;
+  // Comparing the two approaches to calculate $A^T*A$.
+  if ((ATA - A.transpose() * A).norm() < 1e-10 * m * n) return true;
   // END
   return false;
 }
@@ -74,7 +87,13 @@ VectorXd find_c(const VectorXd& d, unsigned int m) {
   VectorXd rhs;
   // TODO: (5-2.d) find the coefficients
   // START
-  
+  // Computing DFT of d
+  VectorXcd fourier = fft.fwd(d);
+  // Gathering what is important for the rhs.
+  rhs = fourier.real().head(m);
+  // Solving normal equation by inverting diagonal matrix
+  rhs /= n;
+  rhs.tail(m - 1) *= 2;
   // END
   return rhs;
 }
@@ -100,10 +119,62 @@ void fitEllipse(void) {
   
 
   plt::figure();
-  // TODO: (5-2.e) Tabulate the coefficients of find_c for m = 1, 2, 3,
+  // TODO: (5-2.e) Tabulate the coefficients of find_c for all m
   // plot the ellipse and also the curves of the trigonimetric polynomials
   // START
-  
+  constexpr double c = 0.8;
+  auto d_func =
+      [](const double phi) {  // no need to capture c because it is constexpr
+        assert(0. <= phi && phi <= 2. * M_PI);
+        return 1. / std::sqrt(1. - std::pow(c * std::cos(phi), 2));
+      };
+
+  // sample distance data, we reuse d from above
+  n = 100;
+  d.resize(n);
+  for (std::size_t i = 0; i < n; ++i) {
+    d(i) = d_func((2. * M_PI * i) / n);
+  }
+
+  plt::title("Orbit of planet");
+  plt::xlim(-2, 2);
+  plt::ylim(-2, 2);
+
+  // plot the ellipse given by (5.2.10) using 10000 points
+  constexpr unsigned int N = 10000;
+  VectorXd x_ellipse(N), y_ellipse(N);
+  double temp_d;
+  for (std::size_t i = 0; i < N; ++i) {
+    temp_d = d_func((2. * M_PI * i) / N);
+    x_ellipse(i) = temp_d * std::cos((2 * M_PI * i) / N);
+    y_ellipse(i) = temp_d * std::sin((2 * M_PI * i) / N);
+  }
+  plt::plot(x_ellipse, y_ellipse, "k", {{"label", "exact orbit"}});
+
+  // calculate, tabulate and plot the coefficients in one go
+  x_ellipse.resize(n);
+  y_ellipse.resize(n);
+  // create vector of colors for plots
+  std::vector<std::string> colors = {"m", "y--", "r"};
+  std::cout << "degree of polynomial | coefficients" << std::endl;
+  for (m = 1; m <= 3; ++m) {
+    VectorXd coefficients = find_c(d, m);
+
+    std::cout << std::setw(20) << m << " | " << std::setw(5)
+              << coefficients.transpose() << std::endl;
+
+    VectorXd e = eval_p(coefficients, n);
+    for (std::size_t i = 0; i < n; ++i) {
+      x_ellipse(i) = e(i) * std::cos((2 * M_PI * i) / n);
+      y_ellipse(i) = e(i) * std::sin((2 * M_PI * i) / n);
+    }
+    const std::string label = "fitted trig. poly. for m = " + std::to_string(m);
+    plt::plot(x_ellipse, y_ellipse, colors[m - 1], {{"label", label}});
+  }
+
+  plt::xlabel("x");
+  plt::ylabel("y");
+  plt::legend();
   // END
   plt::savefig("cx_out/orbit.png");
 
