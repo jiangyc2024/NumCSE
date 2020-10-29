@@ -184,7 +184,7 @@ void runtime_toeplitz() {
   // vector size
   unsigned int n;
   Timer tm_matmult, tm_mult, tm_ttmat, tm_ttrec;
-  for (unsigned int l = 3; l <= 8; l += 1) {
+  for (unsigned int l = 3; l <= 9; l += 1) {
     // vector size
     n = std::pow(2, l);
     // save vector size n
@@ -194,7 +194,7 @@ void runtime_toeplitz() {
     unsigned int repeats = 3;
 
     // TODO: (5-4.g)  Perform a runtme comparison by repeating time computation
-    // 'repeats' times 
+    // 'repeats' times
     // START
 
     // END

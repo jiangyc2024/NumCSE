@@ -46,7 +46,10 @@ TEST_SUITE("Toeplitz") {
             doctest::description("Test and compare runtime")) {
     MESSAGE("This function wasn't tested. Run the program to see its output.");
   }
-
+  TEST_CASE("using duration_t" * doctest::description("skipped") *
+            doctest::skip()) {}
+  TEST_CASE("duration_t timing" * doctest::description("skipped") *
+            doctest::skip()) {}
   TEST_CASE("void runtime_toeplitz_with_chrono" *
             doctest::description("implemented only in solution") *
             doctest::skip()) {}

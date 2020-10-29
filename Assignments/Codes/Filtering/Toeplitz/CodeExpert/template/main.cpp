@@ -17,8 +17,8 @@ int main() {
   r << 1, 4, 5;
 
   // Test toeplitz
-  std::cout << "T = "<< std::endl;
-  std::cout << toeplitz(c,r) << std::endl;
+  std::cout << "T = " << std::endl;
+  std::cout << toeplitz(c, r) << std::endl;
   x << 6, 7, 8;
 
   // Compute with both functions toepmatmult and toepmult

@@ -185,7 +185,7 @@ void runtime_toeplitz() {
             << std::setw(15) << "toepmult" << std::setw(20) << "ttmatsolve"
             << std::setw(15) << "ttrecsolve" << std::endl;
 
-  for (unsigned int l = 3; l <= 10; l += 1) {
+  for (unsigned int l = 3; l <= 9; l += 1) {
     // vector size
     unsigned int n = std::pow(2, l);
     // save vector size n
@@ -193,7 +193,7 @@ void runtime_toeplitz() {
 
     // number of repetitions
     unsigned int repeats = 3;
-    // TODO: (5-4.g) Perform a runtime comparison by repeating time computation 
+    // TODO: (5-4.g) Perform a runtime comparison by repeating time computation
     // 'repeats' times
     // START
     Timer tm_matmult, tm_mult, tm_ttmat, tm_ttrec;
@@ -299,7 +299,7 @@ void runtime_toeplitz_with_chrono() {
   // vector size
   unsigned int n;
   // repeat test 'repeats' times
-  for (unsigned int l = 3; l <= 8; ++l) {
+  for (unsigned int l = 3; l <= 9; ++l) {
     // vectore size
     n = pow(2, l);
 
