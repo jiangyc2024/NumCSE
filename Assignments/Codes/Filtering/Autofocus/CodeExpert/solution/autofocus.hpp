@@ -44,7 +44,7 @@ void save_image(double focus) {
     PGMObject q;
 
     // TO DO: (a) Read matrix of image generated
-    // by "set_focus" and save as an image in format ".pgm".
+    // by "set\_focus" and save as an image in format ".pgm".
     // START
     // Set data using function "set\_data"
     // Data obtained from "set\_focus"
