@@ -12,7 +12,7 @@ using namespace Eigen;
  * @param[out] uv Vector of coefficients of polynomial $uv = u*v$
  */
 /* SAM_LISTING_BEGIN_0 */
-VectorXd polyMult_naive(const VectorXd& u, const VectorXd& v) {
+VectorXd polyMult_naive(const VectorXd &u, const VectorXd &v) {
   // Fetch degrees of input polynomials
   int degu = u.size() - 1;
   int degv = v.size() - 1;
@@ -42,7 +42,7 @@ VectorXd polyMult_naive(const VectorXd& u, const VectorXd& v) {
  * @param[out] uv Vector of coefficients of polynomial $uv = u*v$
  */
 /* SAM_LISTING_BEGIN_1 */
-VectorXd polyMult_fast(const VectorXd& u, const VectorXd& v) {
+VectorXd polyMult_fast(const VectorXd &u, const VectorXd &v) {
   // Initialization
   int m = u.size();
   int n = v.size();
@@ -74,14 +74,18 @@ VectorXd polyMult_fast(const VectorXd& u, const VectorXd& v) {
  * from $uv = u*v$ (division without remainder)
  */
 /* SAM_LISTING_BEGIN_2 */
-VectorXd polyDiv(const VectorXd& uv, const VectorXd& u) {
+VectorXd polyDiv(const VectorXd &uv, const VectorXd &u) {
   // Initialization
   int mn = uv.size();
   int m = u.size();
   // need well behaved input
   assert(uv(mn - 1) != 0. && u(m - 1) != 0.);
+  if (mn < m) {
+    std::cerr << "uv can't be divided by u\n";
+    return Eigen::VectorXd(0);
+  }
+  int dim = mn;
   int n = mn - m + 1;
-  int dim = std::max(mn, m);
 
   // TODO: divide polynomials $uv$ and $u$ efficiently
   // START
@@ -103,11 +107,11 @@ VectorXd polyDiv(const VectorXd& uv, const VectorXd& u) {
     if (abs(uv_tmp_(i)) < 1e-13) {
       if (abs(u_tmp_(i)) < 1e-13) {
         // make cwiseQuotient at i-th position equal 0
-        uv_tmp_(i) = 0.;  // complex assignment (0., 0.)
-        u_tmp_(i) = 1.;   // complex assignment (1., 0.)
+        uv_tmp_(i) = 0.; // complex assignment (0., 0.)
+        u_tmp_(i) = 1.;  // complex assignment (1., 0.)
       } else {
         std::cerr << "uv can't be divided by u\n";
-        throw;
+        return Eigen::VectorXd(0);
       }
     }
   }
@@ -119,7 +123,7 @@ VectorXd polyDiv(const VectorXd& uv, const VectorXd& u) {
   for (int i = n; i < dim; ++i) {
     if (abs(v(i)) > 1e-13) {
       std::cerr << "uv can't be divided by u\n";
-      throw;
+      return Eigen::VectorXd(0);
     }
   }
 
