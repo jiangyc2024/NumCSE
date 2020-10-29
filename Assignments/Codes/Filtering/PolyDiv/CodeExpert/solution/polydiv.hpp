@@ -1,3 +1,4 @@
+#include <iostream>
 #include <Eigen/Dense>
 #include <algorithm>
 #include <cstdlib>
@@ -87,10 +88,10 @@ VectorXd polyDiv(const VectorXd &uv, const VectorXd &u) {
   int dim = mn;
   int n = mn - m + 1;
 
+  VectorXd v;
+
   // TODO: divide polynomials $uv$ and $u$ efficiently
   // START
-
-  VectorXd v;
 
   // zero padding
   VectorXd uv_tmp = uv;
