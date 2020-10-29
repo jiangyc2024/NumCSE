@@ -6,6 +6,11 @@
 #include <Eigen/Dense>
 
 TEST_SUITE("FFTLSQ") {
+
+  TEST_CASE("VectorXd eval_p" * doctest::description("evaluated the polynomial")) {
+		MESSAGE("This function wasn't tested. Run the program to see its output.");
+	}
+
   TEST_CASE("bool testNormEqMatrix" *
             doctest::description("testNormEqMatrix()")) {
     unsigned int n = 10;
@@ -23,4 +28,10 @@ TEST_SUITE("FFTLSQ") {
     REQUIRE(sol.size() == stud.size());
     CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
   }
+
+  TEST_CASE("void fitEllipse" * doctest::description("fit polynomial coefficients and plot ellipses")) {
+		MESSAGE("This function wasn't tested. Run the program to see its output.");
+	}
+
+  
 }

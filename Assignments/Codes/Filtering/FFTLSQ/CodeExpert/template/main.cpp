@@ -5,35 +5,9 @@
 #include <vector>
 
 #include "fftlsq.hpp"
-#include "matplotlibcpp.h"
 
 using namespace Eigen;
-namespace plt = matplotlibcpp;
 
-/*!
- * \brief eval_p Given polynomial coefficients, return value of polynomial
- * at $n$ equidistant points.
- *
- * \param p Coefficient vector of trigonometrix polynomial.
- * \param n Number of equidistant points at which to evaluate.
- * \return Value of polynomial $p$ at $2\pi i / n$.
- */
-VectorXd eval_p(const VectorXd& c, const unsigned int n) {
-  // Degree of polynomial
-  const unsigned int m = c.size();
-
-  VectorXd ret(n);
-  // Loop over all points
-  for (unsigned int i = 0; i < n; ++i) {
-    double r = 0;
-    // Loop over all coefficients
-    for (unsigned int j = 0; j < m; ++j) {
-      r += c(j) * std::cos(2 * M_PI * i * j / n);
-    }
-    ret(i) = r;
-  }
-  return ret;
-}
 
 int main(int argc, char** argv) {
   // testing testNormEqMatrix
@@ -57,12 +31,8 @@ int main(int argc, char** argv) {
   g = find_c(d, m);
   std::cout << "testing find_c" << std::endl;
   std::cout << g << std::endl << std::endl;
+  
+  // fitting the kepler orbits and plotting the solution .png figure
+  fitEllipse() ; 
 
-  plt::figure();
-  // TODO: (5-2.e) Tabulate the coefficients of find_c for m = 1, 2, 3,
-  // plot the ellipse and also the curves of the trigonimetric polynomials
-  // START
-
-  // END
-  plt::savefig("cx_out/orbit.eps");
 }
