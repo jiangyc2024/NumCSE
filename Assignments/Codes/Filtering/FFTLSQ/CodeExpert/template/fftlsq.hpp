@@ -67,7 +67,7 @@ bool testNormEqMatrix(unsigned int n, unsigned int m) {
   // END
   return false;
 }
-/* SAM_LISTING_0 */
+/* SAM_LISTING_END_0 */
 
 /*!
  * \brief find_c Find best trigonometric polynomial
