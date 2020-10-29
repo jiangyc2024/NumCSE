@@ -29,8 +29,8 @@ double diffex(Function& f, const double x, const double h0,
   // using \com{Aitken-Neville scheme} with \Blue{$x=0$}, see Code~\ref{AitkenNeville} 
   for (unsigned i = 1; i < nit; ++i) {
     // create data points for extrapolation
-    h[i] = h[i-1]/2; // Next width half a big
-    y[i] = ( f(x + h[i]) - f(x - h[i]) )/h(i - 1);
+    h[i] = h[i-1]/2; // Next width half as big
+    y[i] = ( f(x + h[i]) - f(x - h[i]) )/(2.0*h[i - 1]);
     // Aitken-Neville update
     for (int k = i - 1; k >= 0; --k) 
       y[k] = y[k+1] - (y[k+1]-y[k])*h[i]/(h[i]-h[k]);
