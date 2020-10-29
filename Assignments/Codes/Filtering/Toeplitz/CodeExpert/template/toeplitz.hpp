@@ -184,7 +184,7 @@ void runtime_toeplitz() {
   // vector size
   unsigned int n;
   Timer tm_matmult, tm_mult, tm_ttmat, tm_ttrec;
-  for (unsigned int l = 3; l <= 11; l += 1) {
+  for (unsigned int l = 3; l <= 8; l += 1) {
     // vector size
     n = std::pow(2, l);
     // save vector size n
@@ -193,8 +193,9 @@ void runtime_toeplitz() {
     // number of repetitions
     unsigned int repeats = 3;
 
-    // TO DO: (5-4.g)  Perform a runtme comparison by repeating time computation
-    // 'repeats' times START
+    // TODO: (5-4.g)  Perform a runtme comparison by repeating time computation
+    // 'repeats' times 
+    // START
 
     // END
   }
@@ -213,12 +214,11 @@ void runtime_toeplitz() {
   elap_time_ttrec.push_back(tm_mult.min());
   /* DO NOT CHANGE */
   // create plot
-  plot(vec_size, elap_time_matmult, elap_time_mult, "./cx_out/fig1.png",
-       "toepmatmult", "toepmult");
-  plot(vec_size, elap_time_ttmat, elap_time_ttrec, "./cx_out/fig2.png",
-       "ttmatsolve", "ttrecsolve");
+  plot(vec_size, elap_time_mult, elap_time_matmult, "./cx_out/fig1.png",
+       "toepmult", "toepmatmult");
+  plot(vec_size, elap_time_ttrec, elap_time_ttmat, "./cx_out/fig2.png",
+       "ttrecsolve", "ttmatsolve");
 }
-
 /* SAM_LISTING_END_6 */
 
 #endif

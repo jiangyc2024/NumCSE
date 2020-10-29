@@ -1,6 +1,7 @@
 #include <Eigen/Dense>
 #include <iostream>
 
+#define NDEBUG
 #include "timer.h"
 #include "toeplitz.hpp"
 
@@ -14,6 +15,10 @@ int main() {
   VectorXd c(n), r(n), x(n);
   c << 1, 2, 3;
   r << 1, 4, 5;
+
+  // Test toeplitz
+  std::cout << "T = "<< std::endl;
+  std::cout << toeplitz(c,r) << std::endl;
   x << 6, 7, 8;
 
   // Compute with both functions toepmatmult and toepmult
