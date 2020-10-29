@@ -3,10 +3,14 @@
 
 #include <Eigen/Dense>
 #include <cmath>
+#include <iomanip>
 #include <iostream>
 #include <unsupported/Eigen/FFT>
 
+#include "matplotlibcpp.h"
 #include "pconvfft.hpp"
+#include "plot.hpp"
+#include "timer.h"
 
 using namespace Eigen;
 
@@ -160,5 +164,61 @@ VectorXd ttsolve(const VectorXd& h, const VectorXd& y) {
   return x;
 }
 /* SAM_LISTING_END_4 */
+
+/* \brief Compute the runtime comparison of
+ * toepmatmult vs toepmult and ttmatsolve vs ttrecsolve
+ * Repeat tests 10 times, and output the minimal runtime amongst all times.
+ */
+/* SAM_LISTING_BEGIN_6 */
+void runtime_toeplitz() {
+  // memory allocation for plot
+  std::vector<double> vec_size;
+  std::vector<double> elap_time_matmult, elap_time_mult, elap_time_ttmat,
+      elap_time_ttrec;
+
+  // header for the results to print out
+  std::cout << std::setw(8) << "n" << std::setw(15) << "toepmatmult"
+            << std::setw(15) << "toepmult" << std::setw(20) << "ttmatsolve"
+            << std::setw(15) << "ttrecsolve" << std::endl;
+
+  // vector size
+  unsigned int n;
+  Timer tm_matmult, tm_mult, tm_ttmat, tm_ttrec;
+  for (unsigned int l = 3; l <= 9; l += 1) {
+    // vector size
+    n = std::pow(2, l);
+    // save vector size n
+    vec_size.push_back(n);
+
+    // number of repetitions
+    unsigned int repeats = 3;
+
+    // TODO: (5-4.g)  Perform a runtme comparison by repeating time computation
+    // 'repeats' times
+    // START
+
+    // END
+  }
+
+  // print the results: toepmult vs toepmatmult
+  std::cout << std::setw(8) << n << std::scientific << std::setprecision(3)
+            << std::setw(15) << tm_mult.min() << std::setw(15)
+            << tm_matmult.min() << std::setw(20) << tm_ttmat.min()
+            << std::setw(15) << tm_ttrec.min() << std::endl;
+
+  // save elapsed time for plot: toepmatmult vs toepmult
+  elap_time_matmult.push_back(tm_matmult.min());
+  elap_time_mult.push_back(tm_mult.min());
+  // save elapsed time for plot: ttmatsove vs ttrecsolve
+  elap_time_ttmat.push_back(tm_matmult.min());
+  elap_time_ttrec.push_back(tm_mult.min());
+  /* DO NOT CHANGE */
+  // create plot
+  plot(vec_size, elap_time_mult, elap_time_matmult, "./cx_out/fig1.png",
+       "toepmult", "toepmatmult");
+  plot(vec_size, elap_time_ttrec, elap_time_ttmat, "./cx_out/fig2.png",
+       "ttrecsolve", "ttmatsolve");
+}
+/* SAM_LISTING_END_6 */
 
 #endif
