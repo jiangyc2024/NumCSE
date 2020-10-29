@@ -119,7 +119,7 @@ void fitEllipse(void) {
   
 
   plt::figure();
-  // TODO: (5-2.e) Tabulate the coefficients of find_c for all m
+  // TODO: (5-2.e) Tabulate the coefficients of find\_c for all $m=1,2,3$
   // plot the ellipse and also the curves of the trigonimetric polynomials
   // START
   constexpr double c = 0.8;
