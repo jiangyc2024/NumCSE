@@ -3,10 +3,10 @@
 
 #include <math.h>
 
+#include "matplotlibcpp.h"
 #include <Eigen/Dense>
 #include <iomanip>
 #include <unsupported/Eigen/FFT>
-#include "matplotlibcpp.h"
 
 using namespace Eigen;
 namespace plt = matplotlibcpp;
@@ -19,7 +19,7 @@ namespace plt = matplotlibcpp;
  * \param n Number of equidistant points at which to evaluate.
  * \return Value of polynomial $p$ at $2\pi i / n$.
  */
-VectorXd eval_p(const VectorXd& c, const unsigned int n) {
+VectorXd eval_p(const VectorXd &c, const unsigned int n) {
   // Degree of polynomial
   const unsigned int m = c.size();
 
@@ -35,7 +35,6 @@ VectorXd eval_p(const VectorXd& c, const unsigned int n) {
   }
   return ret;
 }
-
 
 /*!
  * \brief testNormEqMatrix Create the matrix $A^TA$
@@ -63,7 +62,10 @@ bool testNormEqMatrix(unsigned int n, unsigned int m) {
   ATA.diagonal() = VectorXd::Constant(m + 1, n / 2.0);
   ATA(0, 0) = n;
   // Comparing the two approaches to calculate $A^T*A$.
-  if ((ATA - A.transpose() * A).norm() < 1e-10 * m * n) return true;
+  // Test for relative smallness of the Frobenius norm of the difference of the
+  // matrices
+  if ((ATA - A.transpose() * A).norm() < 1e-10 * m * n)
+    return true;
   // END
   return false;
 }
@@ -79,7 +81,7 @@ bool testNormEqMatrix(unsigned int n, unsigned int m) {
  * \return The coefficients of the trigonometric polynomial.
  */
 /* SAM_LISTING_BEGIN_1 */
-VectorXd find_c(const VectorXd& d, unsigned int m) {
+VectorXd find_c(const VectorXd &d, unsigned int m) {
   unsigned int n = d.size();
 
   // We will use a real to complex, discrete Fourier transform.
@@ -99,24 +101,22 @@ VectorXd find_c(const VectorXd& d, unsigned int m) {
 }
 /* SAM_LISTING_END_1 */
 
-
 /*!
- * \brief using implementation of find_c compute coefficients c_k and p* for m=1,2,3 
- * using matplotlibcpp's plt() create a plot showing the ellipse
- * in the same plot insert the curves descriped by p* of degrees m=1,2,3
+ * \brief using implementation of find_c compute coefficients c_k and p* for
+ * m=1,2,3 using matplotlibcpp's plt() create a plot showing the ellipse in the
+ * same plot insert the curves descriped by p* of degrees m=1,2,3
  */
 /* SAM_LISTING_BEGIN_2 */
 void fitEllipse(void) {
-    
+
   unsigned int n = 10;
   unsigned int m = 3;
-  
+
   // Test points
   constexpr unsigned int npoints = 10;
   VectorXd d(npoints);
   d << 0.987214, 1.03579, 0.997689, 0.917471, 1.00474, 0.92209, 1.03517,
       1.08863, 0.904992, 0.956089;
-  
 
   plt::figure();
   // TODO: (5-2.e) Tabulate the coefficients of find\_c for all $m=1,2,3$
@@ -124,7 +124,7 @@ void fitEllipse(void) {
   // START
   constexpr double c = 0.8;
   auto d_func =
-      [](const double phi) {  // no need to capture c because it is constexpr
+      [](const double phi) { // no need to capture c because it is constexpr
         assert(0. <= phi && phi <= 2. * M_PI);
         return 1. / std::sqrt(1. - std::pow(c * std::cos(phi), 2));
       };
@@ -177,9 +177,7 @@ void fitEllipse(void) {
   plt::legend();
   // END
   plt::savefig("cx_out/orbit.png");
-
 }
-
 /* SAM_LISTING_END_2 */
 
 #endif
