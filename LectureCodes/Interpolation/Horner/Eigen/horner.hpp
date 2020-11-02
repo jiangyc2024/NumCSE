@@ -13,7 +13,7 @@ using Eigen::VectorXd;
 // Efficient evaluation of a polynomial in monomial representation
 // using the Horner scheme \eqref{intp:Horner}
 // IN: p = vector of \com{monomial coefficients}, length = degree + 1
-// (leading coefficient in p(0), \matlab convention \cref{rem:polyMatlab})
+// (leading coefficient in p(0), \python convention \cref{rem:polyMatlab})
 //     t = vector of evaluation points \Blue{$t_i$}
 // OUT: vector of values: polynomial evaluated at \Blue{$t_i$}
 Eigen::VectorXd horner(const Eigen::VectorXd &p, const Eigen::VectorXd &t) {

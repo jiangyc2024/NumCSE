@@ -3,10 +3,14 @@
 
 #include <Eigen/Dense>
 #include <cmath>
+#include <iomanip>
 #include <iostream>
 #include <unsupported/Eigen/FFT>
 
+#include "matplotlibcpp.h"
 #include "pconvfft.hpp"
+#include "plot.hpp"
+#include "timer.h"
 
 using namespace Eigen;
 
@@ -28,7 +32,7 @@ MatrixXd toeplitz(const VectorXd &c, const VectorXd &r) {
   }
   for (int i = 0; i < m; ++i) {
     T.row(i).tail(n - i - 1) = r.segment(1, n - i - 1);
-  } // Do not reassign the diagonal!
+  }  // Do not reassign the diagonal!
   // END
   return T;
 }
@@ -106,7 +110,7 @@ VectorXd ttmatsolve(const VectorXd &h, const VectorXd &y) {
 /* SAM_LISTING_BEGIN_3 */
 VectorXd ttrecsolve(const VectorXd &h, const VectorXd &y, int l) {
   assert(h.size() == y.size() && "h and y have different lengths!");
-  // Result vector 
+  // Result vector
   VectorXd x;
   // Trivial case of asn 1x1 LSE
   if (l == 0) {
@@ -115,7 +119,7 @@ VectorXd ttrecsolve(const VectorXd &h, const VectorXd &y, int l) {
   } else {
     int n = std::pow(2, l);
     int m = n / 2;
-    // Check matching length of vectors 
+    // Check matching length of vectors
     assert(h.size() == n && y.size() == n &&
            "h and y have length different from 2^l!");
 
@@ -164,5 +168,169 @@ VectorXd ttsolve(const VectorXd &h, const VectorXd &y) {
   return x;
 }
 /* SAM_LISTING_END_4 */
+
+/* \brief Compute the runtime comparison of
+ * toepmatmult vs toepmult and ttmatsolve vs ttrecsolve
+ * Repeat tests 10 times, and output the minimal runtime amongst all times.
+ */
+/* SAM_LISTING_BEGIN_6 */
+void runtime_toeplitz() {
+  // memory allocation for plot
+  std::vector<double> vec_size;
+  std::vector<double> elap_time_matmult, elap_time_mult, elap_time_ttmat,
+      elap_time_ttrec;
+
+  // header for the results to print out
+  std::cout << std::setw(8) << "n" << std::setw(15) << "toepmatmult"
+            << std::setw(15) << "toepmult" << std::setw(20) << "ttmatsolve"
+            << std::setw(15) << "ttrecsolve" << std::endl;
+
+  for (unsigned int l = 3; l <= 9; l += 1) {
+    // vector size
+    unsigned int n = std::pow(2, l);
+    // save vector size n
+    vec_size.push_back(n);
+
+    // number of repetitions
+    unsigned int repeats = 3;
+    // TODO: (5-4.g) Perform a runtime comparison by repeating time computation
+    // 'repeats' times
+    // START
+    Timer tm_matmult, tm_mult, tm_ttmat, tm_ttrec;
+    // repeat test 'repeats' times
+    for (unsigned int rr = 0; rr < repeats; ++rr) {
+      // create runtime test using randome vectors and given vector h
+      VectorXd h = VectorXd::LinSpaced(n, 1, n).cwiseInverse();
+      VectorXd c = VectorXd::Random(n);
+      VectorXd r = VectorXd::Random(n);
+      VectorXd x = VectorXd::Random(n);
+      VectorXd y = VectorXd::Random(n);
+      r(0) = c(0);
+
+      // compute times for toepmatmult implementation
+      tm_matmult.start();
+      toepmatmult(c, r, x);
+      tm_matmult.stop();
+      // compute times for toepmult implementation
+      tm_mult.start();
+      toepmult(c, r, x);
+      tm_mult.stop();
+
+      // compute times for ttmatsolve implementation
+      tm_ttmat.start();
+      ttmatsolve(h, y);
+      tm_ttmat.stop();
+      // compute times
+      tm_ttrec.start();
+      ttrecsolve(h, y, l);
+      tm_ttrec.stop();
+    }
+    // END
+
+    // print the results: toepmult vs toepmatmult
+    std::cout << std::setw(8) << n << std::scientific << std::setprecision(3)
+              << std::setw(15) << tm_matmult.min() << std::setw(15)
+              << tm_mult.min() << std::setw(20) << tm_ttmat.min()
+              << std::setw(15) << tm_ttrec.min() << std::endl;
+
+    // save elapsed time for plot: toepmatmult vs toepmult
+    elap_time_matmult.push_back(tm_matmult.min());
+    elap_time_mult.push_back(tm_mult.min());
+    // save elapsed time for plot: ttmatsove vs ttrecsolve
+    elap_time_ttmat.push_back(tm_matmult.min());
+    elap_time_ttrec.push_back(tm_mult.min());
+
+    /* DO NOT CHANGE */
+    // create plot
+    plot(vec_size, elap_time_mult, elap_time_matmult, "./cx_out/fig1.png",
+         "toepmult", "toepmatmult");
+    plot(vec_size, elap_time_ttrec, elap_time_ttmat, "./cx_out/fig2.png",
+         "ttrecsolve", "ttmatsolve");
+  }
+}
+/* SAM_LISTING_END_6 */
+
+// Additional
+
+// rename long variable name to duration_t (easy to change)
+using duration_t = std::chrono::nanoseconds;
+
+/* \brief Compute runtime of $F$, repeating test "repeats" times
+ * Will return minimal runtime.
+ * This function uses "crhono".
+ * \tparam Function type of F, must have an operator()
+ * \param[in] F Function for which you want to measure runtime.
+ * \param[in] repeats Number of repetitions.
+ */
+template <class Function>
+duration_t timing(const Function &F, int repeats = 10) {
+  // Shortcut for time_point
+  using time_point_t = std::chrono::high_resolution_clock::time_point;
+
+  // Loop many times
+  duration_t min_elapsed;
+  for (int r = 0; r < repeats; r++) {
+    // Start clock (MATLAB: tic)
+    time_point_t start = std::chrono::high_resolution_clock::now();
+
+    // Run function
+    F();
+
+    // Stop clock (MATLAB: toc) and measure difference
+    duration_t elapsed = std::chrono::duration_cast<duration_t>(
+        std::chrono::high_resolution_clock::now() - start);
+
+    // Compute min between all runs
+    min_elapsed = r == 0 ? elapsed : std::min(elapsed, min_elapsed);
+  }
+
+  return min_elapsed;
+}
+
+/* \brief Compute timing using chrono
+ * Also demonstrate use of lambda functions
+ */
+void runtime_toeplitz_with_chrono() {
+  // table header
+  std::cout << std::setw(8) << "n" << std::setw(15) << "toepmatmult"
+            << std::setw(15) << "toepmult" << std::setw(20) << "ttmatsolve"
+            << std::setw(15) << "ttrecsolve" << std::endl;
+
+  // vector size
+  unsigned int n;
+  // repeat test 'repeats' times
+  for (unsigned int l = 3; l <= 9; ++l) {
+    // vectore size
+    n = pow(2, l);
+
+    // create runtime test using randome vectors and given vector h
+    VectorXd h = VectorXd::LinSpaced(n, 1, n).cwiseInverse();
+    VectorXd c = VectorXd::Random(n);
+    VectorXd r = VectorXd::Random(n);
+    VectorXd x = VectorXd::Random(n);
+    VectorXd y = VectorXd::Random(n);
+    r(0) = c(0);
+
+    // Call "timing", using a lambda function for F
+    // Remember: we cannot pass arrow\_matrix\_2\_times\_x directly to timing
+    // the timing function expects a n object with operator()(void)
+    duration_t elap_time_matmult =
+        timing([&c, &r, &x]() { toepmatmult(c, r, x); }, 3);
+    duration_t elap_time_mult =
+        timing([&c, &r, &x]() { toepmult(c, r, x); }, 3);
+    duration_t elap_time_ttmat = timing([&y, &h]() { ttmatsolve(y, h); }, 3);
+    duration_t elap_time_ttrec =
+        timing([&y, &h, &l]() { ttrecsolve(y, h, l); }, 3);
+
+    // output timings chrono excercice
+    // print the results: toepmult vs toepmatmult
+    std::cout << std::setw(8) << n << std::scientific << std::setprecision(3)
+              << std::setw(15) << elap_time_matmult.count() * 1e-9  // ns to s
+              << std::setw(15) << elap_time_mult.count() * 1e-9     // ns to s
+              << std::setw(15) << elap_time_ttmat.count() * 1e-9    // ns to s
+              << std::setw(15) << elap_time_ttrec.count() * 1e-9    // ns to s
+              << std::endl;
+  }
+}
 
 #endif

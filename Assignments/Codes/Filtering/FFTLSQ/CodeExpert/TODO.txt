@@ -1,1 +1,1 @@
-Write more comprehensive tests?
+correct typos in pdf, plenty are in 5-2.d)
