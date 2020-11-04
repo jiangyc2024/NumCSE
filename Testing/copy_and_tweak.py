@@ -27,6 +27,7 @@ def parseWriteChange(student_sol, copy, tests):
 			next(file)
 		elif file.readline().startswith("#pragma once"):
 			next(file)
+		enum_helper = False
 		for line in file:
 			write = True
 			parse_class = re.match("\s*(class|struct)(\s*)(\S*)(\s*)({|\s*)", line)
@@ -44,8 +45,15 @@ def parseWriteChange(student_sol, copy, tests):
 					else:
 						copy.write(parse.group(1) + el.group(1) + suffix + parse.group(3) + "\n")
 					write = False
-			# if write and not line.startswith("#endif") and not line.startswith("#include") and not line.startswith("enum"): # skip all one liner enums
-			if write and not line.startswith("#endif") and not line.startswith('#include "') and not line.startswith("enum"): # skip all one liner enums
+			# look for enums and skip the whole enum scope
+			if line.startswith("enum") or enum_helper:
+				write = False
+				enum_helper = True
+				if "}" in line:
+					enum_helper = False
+					continue
+			# write the new tweaked line but skip endifs and include statements with signature #include "..."
+			if write and not line.startswith("#endif") and not line.startswith('#include "'):
 				new_line = line
 				# replace all class occurences with its test version
 				for el in classes:
