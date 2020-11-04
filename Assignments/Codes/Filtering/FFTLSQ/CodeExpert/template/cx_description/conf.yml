@@ -3,6 +3,6 @@ descriptions:
     name: Default
     default: true
   test_doc:
-	name: Tests
+  name: Tests
 # Optionally add mulitple versions here.
 # Use the file name without the .md extension as key and add a `name:` to it.

@@ -69,6 +69,8 @@ std::tuple<MatrixXd, MatrixXd, MatrixXd> svd_AB(const MatrixXd &A,
                                                 const MatrixXd &B) {
   assert(A.cols() == B.cols() &&
          "Matrices A and B should have the same column number");
+  assert(A.cols() < A.rows() && A.cols() < B.rows() &&
+         "Matrices A and B should have less columns than rows");
   size_t m = A.rows();
   size_t n = B.rows();
   size_t k = A.cols();
@@ -125,6 +127,10 @@ std::pair<MatrixXd, MatrixXd> rank_k_approx(const MatrixXd &Ax,
          "Matrices Ax and Ay should have the same dimensions");
   assert(Bx.rows() == By.rows() && Bx.cols() == By.cols() &&
          "Matrices Bx and By should have the same dimensions");
+  assert(Ax.cols() == Bx.cols() &&
+         "Matrices Ax, Ay, Bx and By should have the same amount of columns");
+  assert(Ax.cols() * 2 < Ax.rows() && Bx.cols() * 2 < Bx.rows() &&
+         "2*k should not be bigger equal min(m, n)");
   // TO DO (4-8.h): Use the function svd_AB with the appropriate A,B and
   // return the pair Az, Bz of matrices of rank k with Z = Az*Bz
   // Hint: you can define pairs of objects using std::make_pair
@@ -137,10 +143,12 @@ std::pair<MatrixXd, MatrixXd> rank_k_approx(const MatrixXd &Ax,
   // U: m x 2k; S: 2k x 2k; V: n x 2k
   MatrixXd U, S, V;
   std::tuple<MatrixXd, MatrixXd, MatrixXd> svd_tuple = svd_AB(A, B);
-
+  U = std::get<0>(svd_tuple);
+  S = std::get<1>(svd_tuple);
+  V = std::get<2>(svd_tuple);
   size_t k = Ax.cols();
-  MatrixXd Az = std::get<0>(svd_tuple).leftCols(k) * std::get<1>(svd_tuple);
-  MatrixXd Bz = std::get<2>(svd_tuple).leftCols(k);
+  MatrixXd Az = U.leftCols(k) * S.topLeftCorner(k, k);
+  MatrixXd Bz = V.leftCols(k);
 
   return std::make_pair(Az, Bz);
   // END

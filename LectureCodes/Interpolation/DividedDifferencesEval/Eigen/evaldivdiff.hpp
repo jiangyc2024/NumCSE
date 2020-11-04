@@ -1,4 +1,21 @@
-# include "divdiff.hpp"
+#include "divdiff.hpp"
+
+/* SAM_LISTING_BEGIN_1 */
+// Evaluation of a polynomial in Newton form, that is, represented through the
+// vector of its basis expansion coefficients with respect to the Newton basis
+// \eqref{eq:newtbas}.
+Eigen::VectorXd evalNewtonForm(const Eigen::VectorXd &t,
+                               const Eigen::VectorXd &a,
+                               const Eigen::VectorXd &x) {
+  const unsigned int n = a.size() - 1;
+  const Eigen::VectorXd ones = VectorXd::Ones(x.size());
+  Eigen::VectorXd p{a[n] * ones};
+  for (int j = n - 1; j >= 0; --j) {
+    p = (x - t[j] * ones).cwiseProduct(p) + a[j] * ones;
+  }
+  return p;
+}
+/* SAM_LISTING_END_1 */
 
 using Eigen::VectorXd;
 /* SAM_LISTING_BEGIN_0 */
@@ -7,16 +24,11 @@ using Eigen::VectorXd;
 //      y = values in t
 //      x = evaluation points (as Eigen::Vector)
 // OUT: p = values in x                                           */
-void evaldivdiff(const VectorXd& t, const VectorXd& y, const VectorXd& x, VectorXd& p) {
-  const unsigned n = y.size() - 1;
-
-  // get Newton coefficients of polynomial (non in-situ implementation!)
-  VectorXd coeffs; divdiff(t, y, coeffs);
-
+void evaldivdiff(const VectorXd &t, const VectorXd &y, const VectorXd &x,
+                 VectorXd &p) {
+  // Get Newton coefficients of polynomial (non in-situ implementation!)
+  VectorXd coeffs;
+  divdiff(t, y, coeffs);
   // evaluate
-  VectorXd ones = VectorXd::Ones(x.size());
-  p = coeffs(n)*ones;
-  for (int j = n - 1; j >= 0; --j) {
-    p = (x - t(j)*ones).cwiseProduct(p) + coeffs(j)*ones;
-  }
+  p = evalNewtonForm(t, coeffs, x);
 }

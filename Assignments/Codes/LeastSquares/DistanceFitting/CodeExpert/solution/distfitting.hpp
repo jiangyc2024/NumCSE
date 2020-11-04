@@ -112,8 +112,8 @@ VectorXd solveNormalEquations(const MatrixXd &D) {
   // Intialize the extended D
   MatrixXd D_full = MatrixXd::Zero(n, n);
   D_full.triangularView<Upper>() =
-      D.triangularView<Upper>();  // in case D is not just a upper triangular
-                                  // matrix
+      D.triangularView<Upper>(); // in case D is not just a upper triangular
+                                 // matrix
   MatrixXd D_fullT = D_full.transpose();
   D_full = D_full - D_fullT;
   // Calculate ATb in a more efficient way
@@ -131,14 +131,15 @@ VectorXd solveNormalEquations(const MatrixXd &D) {
 }
 /* SAM_LISTING_END_2 */
 
-/* SAM_LISTING_END_3 */
+/* SAM_LISTING_BEGIN_3 */
 bool testNormalEquations(const MatrixXd &D) {
   // TODO: (4-10.f) Call your implementations of solveExtendedNormalEquations()
   // and solveNormalEquations() and return true, if their results agree.
   // START
   VectorXd x_ext = solveExtendedNormalEquations(D);
   VectorXd x_fast = solveNormalEquations(D);
-  if ((x_ext - x_fast).norm() < x_ext.norm() * 1e-9) return true;
+  if ((x_ext - x_fast).norm() < x_ext.norm() * 1e-9)
+    return true;
   // END
   return false;
 }

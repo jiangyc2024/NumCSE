@@ -48,11 +48,12 @@ void givenscoltrf(const VectorXd &aIn, MatrixXd &Q, VectorXd &aOut) {
     // select 1st and jth element of aOut and use the Map function
     // to prevent copying; equivalent to aOut([1,j]) in \matlab
     Map<VectorXd, 0, InnerStride<>> aOutMap(aOut.data(), 2, InnerStride<>(j));
-    aOutMap = G * aOutMap;
+    aOutMap = G.transpose() * aOutMap;
     // select 1st and jth column of Q (Q(:,[1,j]) in \matlab)
-    Map<MatrixXd, 0, OuterStride<>> QMap(Q.data(), n, 2,
-                                           OuterStride<>(j * n));
-    QMap = QMap * G.transpose();
+    Map<MatrixXd, 0, OuterStride<>> QMap(Q.data(), n, 2, OuterStride<>(j * n));
+    // Accumulate orthogonal transformations in a dense matrix; just done for
+    // demonstration purposes! See \cref{rem:storeQ}
+    QMap = QMap * G;
   }
 }
 /* SAM_LISTING_END_0 */
