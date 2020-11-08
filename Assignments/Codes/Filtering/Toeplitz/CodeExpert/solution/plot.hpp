@@ -39,7 +39,7 @@ void plot(std::vector<double> &vec_size, std::vector<double> &elap_time1,
   plt::loglog(vec_size, vec_size_lin, "k--",
               {{"label", "O(n)"}, {"color", "grey"}});
   plt::loglog(vec_size, vec_size_pow2, "-",
-              {{"label", "0(n²)"}, {"color", "dimgrey"}});
+              {{"label", "0(n²)"}, {"color", "black"}});
   plt::legend("best");
 
   plt::xlabel("Vector size (n)");

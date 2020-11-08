@@ -242,9 +242,9 @@ void runtime_toeplitz() {
 
     /* DO NOT CHANGE */
     // create plot
-    plot(vec_size, elap_time_mult, elap_time_matmult, "./cx_out/fig1.eps",
+    plot(vec_size, elap_time_mult, elap_time_matmult, "./cx_out/fig1.png",
          "toepmult", "toepmatmult");
-    plot(vec_size, elap_time_ttrec, elap_time_ttmat, "./cx_out/fig2.eps",
+    plot(vec_size, elap_time_ttrec, elap_time_ttmat, "./cx_out/fig2.png",
          "ttrecsolve", "ttmatsolve");
   }
 }

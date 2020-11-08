@@ -210,8 +210,8 @@ void runtime_toeplitz() {
   elap_time_matmult.push_back(tm_matmult.min());
   elap_time_mult.push_back(tm_mult.min());
   // save elapsed time for plot: ttmatsove vs ttrecsolve
-  elap_time_ttmat.push_back(tm_matmult.min());
-  elap_time_ttrec.push_back(tm_mult.min());
+  elap_time_ttmat.push_back(tm_ttmat.min());
+  elap_time_ttrec.push_back(tm_ttrec.min());
   /* DO NOT CHANGE */
   // create plot
   plot(vec_size, elap_time_mult, elap_time_matmult, "./cx_out/fig1.png",
