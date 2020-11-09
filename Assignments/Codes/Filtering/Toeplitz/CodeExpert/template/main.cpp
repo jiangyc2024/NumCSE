@@ -15,7 +15,6 @@ int main() {
   VectorXd c(n), r(n), x(n);
   c << 1, 2, 3;
   r << 1, 4, 5;
-
   // Test toeplitz
   std::cout << "T = " << std::endl;
   std::cout << toeplitz(c, r) << std::endl;
@@ -47,4 +46,19 @@ int main() {
 
   // call runtime computation
   runtime_toeplitz();
+
+  // Test ttsolve
+  std::cout << "Testing ttsolve:" << std::endl;
+  VectorXd k(5), l(5), sol(5);
+  k << 1, 2, 3, 4, 5;
+  l << 6, 7, 8, 9, 10;
+  sol << 6, -5, 0, 0, 0;
+
+  x = ttsolve(k,l);
+  std::cout << "x =" << std::endl;
+  std::cout << x << std::endl;
+  if(x.size() == sol.size() && (x-sol).norm() < 1e-9 )
+    std::cout << "Test for ttsolve passed!" << std::endl;
+  else
+    std::cout << "Test for ttsolve failed!" << std::endl;
 }
