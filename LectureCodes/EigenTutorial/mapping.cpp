@@ -11,8 +11,7 @@ using namespace std;
 double g(double x) { return x * x; }
 
 // Takes a matrix m and a functor f to apply to all entries of m
-template <class Functor>
-void applyMap(MatrixXd &m, Functor &&f) {
+template <class Functor> void applyMap(MatrixXd &m, Functor &&f) {
   m = m.unaryExpr(f);
 }
 
@@ -55,4 +54,5 @@ int main() {
 
   cout << "mapping(m1, m2)" << endl << endl;
   mapping(m1, m2);
+  return 0;
 }
