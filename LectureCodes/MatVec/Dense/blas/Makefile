@@ -10,8 +10,8 @@ CC=g++
 flags=-O3 -D_LINUX -lblas
 
 #FLAGS for FEDORA (tested w/ Fedora 33):
-#Get the BLAS package with: dnf install atlas-devel
-# flags=-O3 -D_LINUX -L /usr/lib64/atlas -lsatlas
+#Get the BLAS package with: dnf install openblas-devel
+# flags=-O3 -D_LINUX -lopenblas
 
 # FLAGS for REDHAT (Student PC Machines):
 # flags=-O3 -D_LINUX -lcblas -lblas -lg2c -L /usr/lib/atlas -latlas
