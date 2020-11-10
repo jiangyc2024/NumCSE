@@ -19,6 +19,7 @@ namespace plt = matplotlibcpp;
 */
 /* SAM_LISTING_BEGIN_0 */
 std::pair<VectorXd, VectorXd> increments(const VectorXd &t) {
+  VectorXd dt, ddt;
   // TO DO (6-6.g) : compute the increments t_j - t_{j-1}
   // for j = 0,...,n+1 and t_{j+1} - t_{j-1} for j = 0,...,n
   // Assume that t is sorted and that t does not include the endpoints.
@@ -30,8 +31,8 @@ std::pair<VectorXd, VectorXd> increments(const VectorXd &t) {
   VectorXd ext_t(n + 3);
   ext_t << t(n - 2) - 1, 0, t, 1, 1 + t(0);
   // Increments in t
-  VectorXd dt = ext_t.tail(n + 2).array() - ext_t.head(n + 2).array();
-  VectorXd ddt = ext_t.tail(n + 1).array() - ext_t.head(n + 1).array();
+  dt = ext_t.tail(n + 2).array() - ext_t.head(n + 2).array();
+  ddt = ext_t.tail(n + 1).array() - ext_t.head(n + 1).array();
   // END
 
   return std::make_pair(dt, ddt);
@@ -93,7 +94,7 @@ VectorXd compute_c(const VectorXd &t, const VectorXd &y) {
 VectorXd compute_d(const VectorXd &c, const VectorXd &t) {
   const unsigned int n = c.size();  // number of intervals
   VectorXd d_ext(n + 1);
-  // TO DO (): compute coefficients d_j for j = 0...n
+  // TO DO (6-6.h): compute coefficients d_j for j = 0...n
   // Hint: periodic conditions give d_0 = d_n
   // START
   std::pair<VectorXd, VectorXd> p = increments(t);
@@ -124,7 +125,7 @@ VectorXd compute_d(const VectorXd &c, const VectorXd &t) {
 VectorXd quadspline(const VectorXd &t, const VectorXd &y, const VectorXd &x) {
   VectorXd fval(x.size());
 
-  // TO DO (6-6.h): evaluate the spline at the points defined in x.
+  // TO DO (6-6.i): evaluate the spline at the points defined in x.
   // Assume that x is sorted.
   assert(x.minCoeff() >= 0 && x.maxCoeff() <= 1 &&
          "evaluation samples out of range");
@@ -169,11 +170,12 @@ VectorXd quadspline(const VectorXd &t, const VectorXd &y, const VectorXd &x) {
 void plotquadspline(const std::string &filename) {
   VectorXd mesh = VectorXd::LinSpaced(9, .1, .9);
   auto f = [](VectorXd t) { return (2 * M_PI * t).array().sin().exp(); };
-  // TO DO (6-6.i) : plot the quadratic spline for the function f based on
+
+  plt::figure();
+  // TO DO (6-6.j) : plot the quadratic spline for the function f based on
   // the intervals defined in t. Plot also the data (interpolation) points.
 
   // START
-  plt::figure();
   // The interpolation points are the midpoints of the intervals
   VectorXd t = VectorXd::LinSpaced(10, .05, .95);
   VectorXd y = f(t);
@@ -186,12 +188,12 @@ void plotquadspline(const std::string &filename) {
   // std::cout << spline_val <<std::endl;
 
   plt::plot(x, spline_val, {{"label", "spline"}});
+  plt::legend();
   plt::title("Quadratic spline");
   plt::xlabel("t");
   plt::ylabel("s(t)");
-
-  plt::savefig("./cx_out/" + filename + ".png");
   // END
+  plt::savefig("./cx_out/" + filename + ".png");
 }
 /* SAM_LISTING_END_3 */
 
@@ -201,20 +203,20 @@ void plotquadspline(const std::string &filename) {
 /* SAM_LISTING_BEGIN_4 */
 std::vector<double> qsp_error(unsigned int q) {
   std::vector<double> Err;
-  unsigned int N = 10000;
+  constexpr unsigned int N = 10000;
   VectorXd x = VectorXd::LinSpaced(N, 0, 1);
   auto f = [](VectorXd t) { return (2 * M_PI * t).array().sin().exp(); };
-  // TO DO (6-6.j) : compute L^infty errors for all n = 2, 4, ..., 2^q
+  // TO DO (6-6.k) : compute L^infty errors for all n = 2, 4, ..., 2^q
   // START
-  unsigned int n_max = std::pow(2, q);
+  const unsigned int n_max = std::pow(2, q);
+  VectorXd f_exact = f(x);
 
-  for (unsigned int n = 2; n <= n_max; n *= 2) {
+  for (unsigned int n = 2; n <= n_max; n <<= 1) {
     VectorXd t = VectorXd::LinSpaced(n - 1, 1.0 / n, 1.0 - 1.0 / n);
     // The interpolation points are the midpoints of the intervals
     VectorXd interp = VectorXd::LinSpaced(n, .5 / n, 1.0 - .5 / n);
     VectorXd y = f(interp);
     VectorXd f_spline = quadspline(t, y, x);
-    VectorXd f_exact = f(x);
     // compute max error
     Err.push_back((f_spline - f_exact).cwiseAbs().maxCoeff());
   }

@@ -33,9 +33,9 @@ TEST_SUITE("QuadraticSplines") {
     CHECK(samesize);
     if (samesize) {
       CHECK((sol.first - stud.first).norm() ==
-            doctest::Approx(0.).epsilon(1e-6));
+            doctest::Approx(0.).epsilon(1e-8));
       CHECK((sol.second - stud.second).norm() ==
-            doctest::Approx(0.).epsilon(1e-6));
+            doctest::Approx(0.).epsilon(1e-8));
     }
   }
 
@@ -43,7 +43,7 @@ TEST_SUITE("QuadraticSplines") {
     VectorXd sol = compute_c(data.t, data.y);
     VectorXd stud = compute_c_TEST(data.t, data.y);
 
-    CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+    CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-8));
   }
 
   TEST_CASE("VectorXd compute_d" * doctest::description("compute_d")) {
@@ -52,14 +52,14 @@ TEST_SUITE("QuadraticSplines") {
     VectorXd sol = compute_d(c, data.t);
     VectorXd stud = compute_d_TEST(c, data.t);
 
-    CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+    CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-8));
   }
 
   TEST_CASE("VectorXd quadspline" * doctest::description("fval")) {
     VectorXd sol = quadspline(data.t, data.y, data.x);
     VectorXd stud = quadspline_TEST(data.t, data.y, data.x);
 
-    CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+    CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-8));
   }
 
   TEST_CASE("void plotquadspline" *
