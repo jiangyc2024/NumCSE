@@ -151,20 +151,20 @@ VectorXd ttsolve(const VectorXd &h, const VectorXd &y) {
 
   // TODO: wrap 'ttrecsolve' for any size $n$
   // START
-  int l = std::ceil(std::log(n));
+  int l = std::ceil(std::log2(n));
   int m = std::pow(2, l);
 
   VectorXd h_tmp = h;
   h_tmp.conservativeResize(m);
-
+  h_tmp.bottomRows(m-n).setZero();
+  
   VectorXd y_tmp = y;
   y_tmp.conservativeResize(m);
+  y_tmp.bottomRows(m-n).setZero();
 
   x = ttrecsolve(h_tmp, y_tmp, l);
   x.conservativeResize(n);
-  x.bottomRows(n - m).setZero();
   // END
-
   return x;
 }
 /* SAM_LISTING_END_4 */
@@ -237,16 +237,15 @@ void runtime_toeplitz() {
     elap_time_matmult.push_back(tm_matmult.min());
     elap_time_mult.push_back(tm_mult.min());
     // save elapsed time for plot: ttmatsove vs ttrecsolve
-    elap_time_ttmat.push_back(tm_matmult.min());
-    elap_time_ttrec.push_back(tm_mult.min());
-
-    /* DO NOT CHANGE */
-    // create plot
-    plot(vec_size, elap_time_mult, elap_time_matmult, "./cx_out/fig1.png",
-         "toepmult", "toepmatmult");
-    plot(vec_size, elap_time_ttrec, elap_time_ttmat, "./cx_out/fig2.png",
-         "ttrecsolve", "ttmatsolve");
+    elap_time_ttmat.push_back(tm_ttmat.min());
+    elap_time_ttrec.push_back(tm_ttrec.min());
   }
+  /* DO NOT CHANGE */
+  // create plot
+  plot(vec_size, elap_time_mult, elap_time_matmult, "./cx_out/fig1.png",
+       "toepmult", "toepmatmult");
+  plot(vec_size, elap_time_ttrec, elap_time_ttmat, "./cx_out/fig2.png",
+       "ttrecsolve", "ttmatsolve");
 }
 /* SAM_LISTING_END_6 */
 

@@ -20,26 +20,30 @@ void plot(std::vector<double> &vec_size, std::vector<double> &elap_time1,
   unsigned int n = vec_size.size();
   // lines for the comparison of convergenz order
   std::vector<double> vec_size_lin(vec_size);
+  std::vector<double> vec_size_pow2(vec_size);
   std::vector<double> vec_size_pow3(vec_size);
 
   for (unsigned int i = 0; i < n; i++) {
-    vec_size_lin[i] = vec_size[i] / vec_size[0] * elap_time1[0] / 100.0;
+    vec_size_lin[i] = vec_size[i] / vec_size[0] * elap_time2[0] / 100.0;
+    vec_size_pow2[i] = 
+	pow(vec_size[i], 2) / pow(vec_size[0], 2) * elap_time2[0] / 100.0;
     vec_size_pow3[i] =
-        pow(vec_size[i], 2) / pow(vec_size[0], 2) * elap_time2[0] / 100.0;
+        pow(vec_size[i], 3) / pow(vec_size[0], 3) * elap_time2[0] / 100.0;
   }
 
   // make sure the sizes match
   assert(vec_size.size() == elap_time1.size() &&
          "vector sizes must be the same.");
-
   plt::figure();
   // Multiplication with ten to shift the plots
   plt::loglog(vec_size, elap_time1, "+", {{"label", label1}});
   plt::loglog(vec_size, elap_time2, "+", {{"label", label2}});
   plt::loglog(vec_size, vec_size_lin, "k--",
               {{"label", "O(n)"}, {"color", "grey"}});
+  plt::loglog(vec_size, vec_size_pow2, "-",
+              {{"label", "O(n²)"}, {"color", "dimgrey"}});
   plt::loglog(vec_size, vec_size_pow3, "-",
-              {{"label", "0(n²)"}, {"color", "black"}});
+              {{"label", "O(n³)"}, {"color", "black"}});
   plt::legend("best");
 
   plt::xlabel("Vector size (n)");
