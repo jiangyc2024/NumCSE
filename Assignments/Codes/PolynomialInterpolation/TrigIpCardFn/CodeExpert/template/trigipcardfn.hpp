@@ -10,12 +10,15 @@
 
 using namespace Eigen;
 
-// Efficient FFT-based computation of coefficients in expansion
-// \eqref{eq:trigpreal} for a trigonometric interpolation polynomial in
-// equidistant points \Blue{$(\frac{j}{2n+1},y_j)$}, \Blue{$j=0,\ldots,2n$}. IN
-// : \texttt{y} has to be a row vector of odd length, return values are column
-// vectors
-//      \texttt{a}, \texttt{b} will be used to save the expansion coefficients
+/*
+ * @brief Efficient FFT-based computation of coefficients in expansion
+ *  \eqref{eq:trigpreal} for a trigonometric interpolation polynomial in
+ * equidistant points \Blue{$(\frac{j}{2n+1},y_j)$}, \Blue{$j=0,\ldots,2n$}. IN
+ *  : \texttt{y} has to be a row vector of odd length, return values are column
+ *  vectors
+ *      \texttt{a}, \texttt{b} will be used to save the expansion coefficients
+ */
+
 void trigipequid(const VectorXd& y, VectorXcd& a, VectorXcd& b) {
   const unsigned N = y.size();
   if (N % 2 != 1) {
@@ -52,11 +55,13 @@ void trigipequid(const VectorXd& y, VectorXcd& a, VectorXcd& b) {
   b /= N;
 }
 
-// Evaluation of trigonometric interpolation polynomial through
-// \Blue{$(\frac{j}{2n+1},y_j)$}, \Blue{$j=0,\ldots,2n$} in equidistant points
-// \Blue{$\frac{k}{N}$}, \Blue{$k=0,N-1$} IN : \texttt{y} = vector of values to
-// be interpolated
-//      \texttt{q} (COMPLEX!) will be used to save the return values
+/*
+* @brief Evaluation of trigonometric interpolation polynomial through
+* \Blue{$(\frac{j}{2n+1},y_j)$}, \Blue{$j=0,\ldots,2n$} in equidistant points
+* \Blue{$\frac{k}{N}$}, \Blue{$k=0,N-1$} IN : \texttt{y} = vector of values to
+* be interpolated
+*      \texttt{q} (COMPLEX!) will be used to save the return values
+*/
 void trigpolyvalequid(const VectorXd y, const int M, VectorXd& q) {
   const int N = y.size();
   if (N % 2 == 0) {
@@ -95,13 +100,15 @@ void trigpolyvalequid(const VectorXd y, const int M, VectorXd& q) {
 }
 
 /*!
- * \brief trigIpL Compute $\lambda(n)$.
+ * @brief trigIpL Compute $\lambda(n)$.
  *
- * \param[in] n $2*n+1$ will be the number of basis polynomials.
- * \return Value $\lambda(n)$.
+ * @param[in] n $2*n+1$ will be the number of basis polynomials.
+ * @param[out] Value $\lambda(n)$.
  */
 /* SAM_LISTING_BEGIN_1 */
 double trigIpL(std::size_t n) {
+  
+  // TO DO: write a function that approximatly computes the Lebesgue constant $\lambda(n)$ for n = 2$^k$, k = 2,3, ..6
   // START
 
   // END
