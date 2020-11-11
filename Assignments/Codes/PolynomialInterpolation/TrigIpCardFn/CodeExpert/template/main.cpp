@@ -24,7 +24,7 @@ int main() {
 
   // memory allocation for plot
   std::vector<float> lambda;
-  std::vector<unsigned int> points;
+  std::vector<int> points;
   VectorXd lam(max_pt);
   VectorXd n(max_pt);
 

@@ -51,7 +51,7 @@ void plot_basis(int n) {
  * @param[in] lambda are the Lebesgue constants.
  */
 
-void plot_lam(std::vector<unsigned int> &points, std::vector<float> &lambda) {
+void plot_lam(std::vector<int> &points, std::vector<float> &lambda) {
   // plot using matplotlibcpp
   plt::figure();
   plt::title(" Lebesgue constant for trigonomatric interpolation ");
