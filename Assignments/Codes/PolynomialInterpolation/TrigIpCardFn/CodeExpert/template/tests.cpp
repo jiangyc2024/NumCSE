@@ -22,10 +22,7 @@ TEST_SUITE("TrigIpCardFn") {
     MESSAGE("This function wasn't tested. Run the program to see its output.");
   }
 
-  TEST_CASE(
-      "void trigipequid" *
-      doctest::description(
-          "efficient fft-based computation of coefficients in expansion")) {
+  TEST_CASE("void trigipequid" * doctest::description("efficient fft-based computation of coefficients in expansion")) {
     MESSAGE("This function wasn't tested. Run the program to see its output.");
   }
 
