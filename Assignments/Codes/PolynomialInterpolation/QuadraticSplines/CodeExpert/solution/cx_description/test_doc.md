@@ -1,7 +1,6 @@
-
-
 # Tests of quadsplines.hpp
 
+> Note that you can use functions from subproblems that you did not implement correctly. The tests will call these from the solution. However, every function will be tested.
 
 > `std::pair<VectorXd, VectorXd> increments(const VectorXd &t)`: We test this function on the values $t = (.1,.2,.5)$  (computations are pointless for equispaced nodes) and the result should be
 ```
