@@ -13,12 +13,12 @@ struct TestData {
 TestData data;
 
 TEST_SUITE("TrigIpCardFn") {
+
   TEST_CASE("void plot_basis" * doctest::description("plot basis functions")) {
     MESSAGE("This function wasn't tested. Run the program to see its output.");
   }
 
-  TEST_CASE("void plot_lam" *
-            doctest::description("plot lebesgur coefficients")) {
+  TEST_CASE("void plot_lam" * doctest::description("plot lebesgur coefficients")) {
     MESSAGE("This function wasn't tested. Run the program to see its output.");
   }
 
@@ -26,14 +26,11 @@ TEST_SUITE("TrigIpCardFn") {
     MESSAGE("This function wasn't tested. Run the program to see its output.");
   }
 
-  TEST_CASE("void trigpolyvalequid" *
-            doctest::description("evaluation of trigonometric interpolation "
-                                 "polynomial in equidistant points")) {
+  TEST_CASE("void trigpolyvalequid" * doctest::description("evaluation of trigonometric interpolation polynomial in equidistant points")) {
     MESSAGE("This function wasn't tested. Run the program to see its output.");
   }
 
-  TEST_CASE("double trigIpL" *
-            doctest::description("calculate the lebesgue constants")) {
+  TEST_CASE("double trigIpL" * doctest::description("calculate the lebesgue constants")) {
     for (unsigned int i = 1 << 2; i < (1 << data.max_pt); i = i << 1) {
       double sol = trigIpL(i);
       double stud = trigIpL_TEST(i);

@@ -1,12 +1,11 @@
 
+#include "trigipcardfn.hpp"
+
 #include <algorithm>
 #include <cassert>
 #include <iomanip>
 #include <iostream>
 #include <vector>
-
-#include "plot.hpp"
-#include "trigipcardfn.hpp"
 
 using namespace Eigen;
 

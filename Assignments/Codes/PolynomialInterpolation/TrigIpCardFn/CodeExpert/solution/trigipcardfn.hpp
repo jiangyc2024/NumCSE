@@ -7,8 +7,10 @@
 #include <iostream>
 
 #include <unsupported/Eigen/FFT>
+#include "matplotlibcpp.h"
 
 using namespace Eigen;
+namespace plt = matplotlibcpp;
 
 /*
  * @brief Efficient FFT-based computation of coefficients in expansion
@@ -55,12 +57,12 @@ void trigipequid(const VectorXd& y, VectorXcd& a, VectorXcd& b) {
 }
 
 /*
-* @brief Evaluation of trigonometric interpolation polynomial through
-* \Blue{$(\frac{j}{2n+1},y_j)$}, \Blue{$j=0,\ldots,2n$} in equidistant points
-* \Blue{$\frac{k}{N}$}, \Blue{$k=0,N-1$} IN : \texttt{y} = vector of values to
-* be interpolated
-*      \texttt{q} (COMPLEX!) will be used to save the return values
-*/
+ * @brief Evaluation of trigonometric interpolation polynomial through
+ * \Blue{$(\frac{j}{2n+1},y_j)$}, \Blue{$j=0,\ldots,2n$} in equidistant points
+ * \Blue{$\frac{k}{N}$}, \Blue{$k=0,N-1$} IN : \texttt{y} = vector of values to
+ * be interpolated
+ *      \texttt{q} (COMPLEX!) will be used to save the return values
+ */
 void trigpolyvalequid(const VectorXd y, const int M, VectorXd& q) {
   const int N = y.size();
   if (N % 2 == 0) {
@@ -106,9 +108,8 @@ void trigpolyvalequid(const VectorXd y, const int M, VectorXd& q) {
  */
 /* SAM_LISTING_BEGIN_1 */
 double trigIpL(std::size_t n) {
-
-  // TO DO: write a function that approximatly computes the Lebesgue constant $\lambda(n)$ for n = 2$^k$, k = 2,3, ..6
-  // START
+  // TO DO (subtask 6-5.h): write a function that approximatly computes the
+  // Lebesgue constant $\lambda(n)$ for n = 2$^k$, k = 2,3, ..6 START
 
   // Nodes where to evaluate
   ArrayXd t = ArrayXd::LinSpaced(1e4, 0, 1);
@@ -116,19 +117,77 @@ double trigIpL(std::size_t n) {
   ArrayXd s = ArrayXd::Zero(t.size());
   // Sum over all basis functions
   for (unsigned int k = 0; k <= 2 * n; ++k) {
-    // Compute sum of cosines
-    ArrayXd b = ArrayXd::Constant(t.size(), 0.5);
-    for (unsigned int j = 1; j <= n; ++j) {
-      double tk = (k + 0.5) / (2 * n + 1.);
-      b += cos(2 * M_PI * j * (t - tk));
-    }
+    // Compute the $b_k$ using formula (6.5.8)
+    ArrayXd b = ArrayXd::Zero(t.size());
+    double tk = (k + 0.5) / (2 * n + 1.);
+    b = sin(M_PI * (2 * n + 1) * (t - tk)) / sin(M_PI * (t - tk));
+
     s += b.cwiseAbs();
   }
   // Find max and rescale
-  return s.maxCoeff() / (n + 1 / 2.);
+  return s.maxCoeff() / (2 * n + 1);
 
   // END
 }
 /* SAM_LISTING_END_1 */
+
+/*!
+ * @brief plot_basis Plot the shifted basis polynomials.
+ * @param[in] n $2*n+1$ will be the number of basis polynomials.
+ */
+/* SAM_LISTING_BEGIN_0 */
+
+void plot_basis(int n) {
+  // mesh size
+  const int M = 1e3;
+
+  // TO DO (subtask 6-5.c): use the function trigpolyvalequid from
+  // trigipcardfn.hpp to plot the cardinal basis function $b_0(t)$ in function
+  // of $t$ for n = 5 START
+
+  // basis vector $e_1$
+  ArrayXd e = ArrayXd::Zero(2 * n + 1);
+  e(0) = 1;
+  VectorXd y;
+  trigpolyvalequid(e, M, y);
+
+  ArrayXd t = ArrayXd::LinSpaced(M, 0, 1);
+  ArrayXd zer = ArrayXd::Zero(t.size());
+
+  // Shift function right a bit
+  ArrayXd y_shift(M);
+  unsigned int h = M / (2 * n + 1);
+  y_shift << y.tail(h), y.head(M - h);
+
+  // plotting functions using matplotlib
+  plt::figure();
+  plt::title("b_0(t)");
+  plt::xlabel("t");
+  plt::ylabel("y");
+  plt::plot(t, y_shift, "r", {{"label", "b_0(t)"}});
+  plt::plot(t, zer, "--");
+  plt::legend();
+  plt::savefig("cx_out/basis_funtion.png");
+
+  // END
+}
+
+/* SAM_LISTING_END_0 */
+
+/*!
+ * @brief plot_lam Plot the Lebesgue constant $\lambda(n)$ in function of n.
+ * @param[in] points are $n = 2^k$, for k = 2,3,...,8
+ * @param[in] lambda are the Lebesgue constants.
+ */
+
+void plot_lam(std::vector<int>& points, std::vector<float>& lambda) {
+  // plot using matplotlibcpp
+  plt::figure();
+  plt::title(" Lebesgue constant for trigonomatric interpolation ");
+  plt::xlabel("n");
+  plt::ylabel("λ(n)");
+  plt::plot(points, lambda);
+  plt::savefig("cx_out/lebesgue.png");
+}
 
 #endif

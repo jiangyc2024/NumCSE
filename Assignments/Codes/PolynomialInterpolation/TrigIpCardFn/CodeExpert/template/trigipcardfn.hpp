@@ -7,8 +7,10 @@
 #include <iostream>
 
 #include <unsupported/Eigen/FFT>
+#include "matplotlibcpp.h"
 
 using namespace Eigen;
+namespace plt = matplotlibcpp;
 
 /*
  * @brief Efficient FFT-based computation of coefficients in expansion
@@ -18,7 +20,6 @@ using namespace Eigen;
  *  vectors
  *      \texttt{a}, \texttt{b} will be used to save the expansion coefficients
  */
-
 void trigipequid(const VectorXd& y, VectorXcd& a, VectorXcd& b) {
   const unsigned N = y.size();
   if (N % 2 != 1) {
@@ -56,12 +57,12 @@ void trigipequid(const VectorXd& y, VectorXcd& a, VectorXcd& b) {
 }
 
 /*
-* @brief Evaluation of trigonometric interpolation polynomial through
-* \Blue{$(\frac{j}{2n+1},y_j)$}, \Blue{$j=0,\ldots,2n$} in equidistant points
-* \Blue{$\frac{k}{N}$}, \Blue{$k=0,N-1$} IN : \texttt{y} = vector of values to
-* be interpolated
-*      \texttt{q} (COMPLEX!) will be used to save the return values
-*/
+ * @brief Evaluation of trigonometric interpolation polynomial through
+ * \Blue{$(\frac{j}{2n+1},y_j)$}, \Blue{$j=0,\ldots,2n$} in equidistant points
+ * \Blue{$\frac{k}{N}$}, \Blue{$k=0,N-1$} IN : \texttt{y} = vector of values to
+ * be interpolated
+ *      \texttt{q} (COMPLEX!) will be used to save the return values
+ */
 void trigpolyvalequid(const VectorXd y, const int M, VectorXd& q) {
   const int N = y.size();
   if (N % 2 == 0) {
@@ -107,12 +108,46 @@ void trigpolyvalequid(const VectorXd y, const int M, VectorXd& q) {
  */
 /* SAM_LISTING_BEGIN_1 */
 double trigIpL(std::size_t n) {
-  
-  // TO DO: write a function that approximatly computes the Lebesgue constant $\lambda(n)$ for n = 2$^k$, k = 2,3, ..6
-  // START
+  // TO DO (subtask 6-5.h): write a function that approximatly computes the
+  // Lebesgue constant $\lambda(n)$ for n = 2$^k$, k = 2,3, ..6 START
 
   // END
 }
 /* SAM_LISTING_END_1 */
+
+/*!
+ * @brief plot_basis Plot the shifted basis polynomials.
+ * @param[in] n $2*n+1$ will be the number of basis polynomials.
+ */
+/* SAM_LISTING_BEGIN_0 */
+
+void plot_basis(int n) {
+  // mesh size
+  const int M = 1e3;
+
+  // TO DO (subtask 6-5.c): use the function trigpolyvalequid from
+  // trigipcardfn.hpp to plot the cardinal basis function $b_0(t)$ in function
+  // of $t$ for n = 5 START
+
+  // END
+}
+
+/* SAM_LISTING_END_0 */
+
+/*!
+ * @brief plot_lam Plot the Lebesgue constant $\lambda(n)$ in function of n.
+ * @param[in] points are $n = 2^k$, for k = 2,3,...,8
+ * @param[in] lambda are the Lebesgue constants.
+ */
+
+void plot_lam(std::vector<int>& points, std::vector<float>& lambda) {
+  // plot using matplotlibcpp
+  plt::figure();
+  plt::title(" Lebesgue constant for trigonomatric interpolation ");
+  plt::xlabel("n");
+  plt::ylabel("λ(n)");
+  plt::plot(points, lambda);
+  plt::savefig("cx_out/lebesgue.png");
+}
 
 #endif
