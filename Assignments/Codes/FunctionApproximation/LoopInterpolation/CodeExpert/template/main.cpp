@@ -107,10 +107,10 @@ int main() {
   std::vector <Vector2d> wwtest;
   
   wwtest.push_back ({1.66667, 0}); 
-  wwtest.push_back ({-0.606359, 0.887649}); 
-  wwtest.push_back ({-0.536815, -1.49041}); 
-  wwtest.push_back ({  1.17951, -0.765405}); 
-  wwtest.push_back ({1.66667, 0});
+  wwtest.push_back ({-0.606359, 0.88769}); 
+  wwtest.push_back ({-0.536755, -1.49042}); 
+  wwtest.push_back ({  1.17946, -0.765441}); 
+  wwtest.push_back ({1.66667, -3.67761e-16});
        
   if (wwtest.size() == (p.first).size()) {
     double err = 0;

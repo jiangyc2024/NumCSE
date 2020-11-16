@@ -137,19 +137,19 @@ std::pair<std::vector<Vector2d>, std::vector<Vector2d>> adaptedHermiteInterpolan
     // set current number of points
     unsigned int n = t.size() - 1;
     dev.resize(n);
-    Sigma.resize(n);
+    Sigma.resize(n + 1);
     // evaluate Sigma for arc-length points t_i
-    for (unsigned int i = 0; i < n; ++i) {
+    for (unsigned int i = 0; i <= n; ++i) {
       Sigma[i] = c(t(i));
     }
     // define variables delta_1,...,delta_n and lambda_0,...lambda_n
-    std::vector<double> lambda(n + 1);
+    VectorXd lambda(n + 1);
 
     VectorXd midpt(n);
     lambda[0] = 0.0;
     for (unsigned int i = 0; i < n; ++i) {
-      lambda[i + 1] = lambda[i] + (Sigma[i + 1] - Sigma[i]).norm();
-      midpt(i) = (lambda[i + 1] + lambda[i]) * 0.5;
+      lambda(i + 1) = lambda(i) + (Sigma[i + 1] - Sigma[i]).norm();
+      midpt(i) = (lambda(i + 1) + lambda(i)) * 0.5;
     }
     // compute linear and cubic interpolant
     std::vector<Vector2d> v =
@@ -164,9 +164,11 @@ std::pair<std::vector<Vector2d>, std::vector<Vector2d>> adaptedHermiteInterpolan
     double alpha = dev.mean();
     // append new arc-length values
     std::vector<double> t_temp;
+    int num = 0;
     for (unsigned int j = 0; j < n; ++j) {
       if (dev(j) > 0.9 * alpha) {
         t_temp.push_back((t(j) + t(j + 1)) * 0.5);
+	num++;
       }
     }
     t.conservativeResize(n + 1 + t_temp.size());
@@ -174,7 +176,6 @@ std::pair<std::vector<Vector2d>, std::vector<Vector2d>> adaptedHermiteInterpolan
     t.tail(t_temp.size()) = VectorXd::Map(t_temp.data(), t_temp.size());
     // sort vector of arc-length values
     std::sort(t.data(), t.data() + t.size());
-    std::cout<<dev.maxCoeff()<<std::endl;
   } while (dev.maxCoeff() > tol);
 
   eval = closedHermiteInterpolant(Sigma, x);
