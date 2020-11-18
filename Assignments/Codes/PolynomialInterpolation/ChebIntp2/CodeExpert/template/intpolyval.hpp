@@ -5,6 +5,8 @@
 /// Repository: https://gitlab.math.ethz.ch/NumCSE/NumCSE/
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
+#ifndef INTPOLYVAL_HPP
+#define INTPOLYVAL_HPP
 
 #include <Eigen/Dense>
 
@@ -47,3 +49,5 @@ VectorXd intpolyval(const VectorXd& t, const VectorXd& y, const VectorXd& x) {
   return p;
 }
 /* SAM_LISTING_END_0 */
+
+#endif

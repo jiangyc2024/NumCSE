@@ -1,9 +1,8 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "doctest.h"
+#include <Eigen/Dense>
 
 #include "copy.hpp"
-
-#include <Eigen/Dense>
+#include "doctest.h"
 
 struct TestData {
   TestData() {
@@ -24,6 +23,7 @@ struct TestData {
 };
 
 TestData data;
+
 TEST_SUITE("AdaptivePolyIntp") {
   TEST_CASE("VectorXd adaptivepolyintp" * doctest::description("Nodes")) {
     Eigen::VectorXd sol_vec =
@@ -31,15 +31,15 @@ TEST_SUITE("AdaptivePolyIntp") {
     Eigen::VectorXd stud_vec =
         adaptivepolyintp_TEST(data.f, data.a, data.b, data.tol, data.N);
 
-    bool samesize = sol_vec.size() == stud_vec.size();
+    const bool samesize = (sol_vec.size() == stud_vec.size());
     CHECK(samesize);
 
     if (samesize) {
-      for (int i = 0; i < sol_vec.size(); i++) {
-        double sol = sol_vec[i];
-        double stud = stud_vec[i];
+      for (std::size_t i = 0; i < sol_vec.size(); i++) {
+        const double sol = sol_vec[i];
+        const double stud = stud_vec[i];
 
-        CHECK(std::abs(sol - stud) == doctest::Approx(0.).epsilon(1e-6));
+        CHECK(std::abs(sol - stud) == doctest::Approx(0.).epsilon(1e-9));
       }
     }
   }

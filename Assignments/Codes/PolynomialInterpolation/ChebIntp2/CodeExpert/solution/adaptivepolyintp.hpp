@@ -5,6 +5,7 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
+
 #include "intpolyval.hpp"
 #include "matplotlibcpp.h"
 
@@ -24,22 +25,23 @@ namespace plt = matplotlibcpp;
 template <class Function>
 VectorXd adaptivepolyintp(Function&& f, double a, double b, double tol, int N,
                           std::vector<double>* errortab = nullptr) {
-  // TO DO (7-3.a) : implement the greedy algorithm for adaptive interpolation.
+  // TODO: (7-3.a) implement the greedy algorithm for adaptive interpolation.
   // Ignore the errortab part of this function for now.
+  // TODO: (7-3.b) save the error in errortab
 
   // Generate sampling points and evaluate $f$ there
   VectorXd sampling_points = VectorXd::LinSpaced(N, a, b),
            fvals_at_sampling_points = sampling_points.unaryExpr(f);
   // START
   // Approximate $\max |f(x)|$
-  double maxf = fvals_at_sampling_points.cwiseAbs().maxCoeff();
+  const double maxf = fvals_at_sampling_points.cwiseAbs().maxCoeff();
 
   // Adaptive mesh (initial node)
   std::vector<double> t{(a + b) / 2.},          // Set of interpolation nodes
       y{static_cast<double>(f((a + b) / 2.))},  // Values at nodes
       errors;                                   // Error at nodes
 
-  for (int i = 0; i < N; ++i) {
+  for (std::size_t i = 0; i < N; ++i) {
     // *** Step 1: interpolate with current nodes
     //   need to convert std::vector to
     //   Eigen::VectorXd to use the function intpolyval
@@ -54,9 +56,8 @@ VectorXd adaptivepolyintp(Function&& f, double a, double b, double tol, int N,
     // We use an Eigen "Visitor"
     // https://eigen.tuxfamily.org/dox/group__TutorialReductionsVisitorsBroadcasting.html
 
-    double max = 0;
     int idx = 0;
-    max = err.maxCoeff(&idx);
+    const double max = err.maxCoeff(&idx);
 
     // Step 3: check termination criteria
     if (max < tol * maxf) {
@@ -65,7 +66,7 @@ VectorXd adaptivepolyintp(Function&& f, double a, double b, double tol, int N,
     // Step 4: add this node to our set of nodes
     t.push_back(sampling_points(idx));
     y.push_back(fvals_at_sampling_points(idx));
-    // TO DO (7-3.b): save error
+    // (7-3.b): save error
     if (errortab != nullptr) {
       errortab->push_back(max);
     }
@@ -77,18 +78,18 @@ VectorXd adaptivepolyintp(Function&& f, double a, double b, double tol, int N,
 /* SAM_LISTING_END_1 */
 
 /* SAM_LISTING_BEGIN_2 */
-void plotInterpolationError(void) {
+void plotInterpolationError() {
   // Declare test functions
   auto f1 = [](double t) { return std::sin(std::exp(2 * t)); };
   auto f2 = [](double t) { return std::sqrt(t) / (1 + 16 * t * t); };
-  // TO DO (7-3.c): generate the plots of error vs number of nodes for f1, f2
 
+  // TODO: (7-3.c) generate the plots of error vs number of nodes for f1, f2
   // START
   // Test interval
-  const double a = 0, b = 1;
+  constexpr double a = 0, b = 1;
   // Get interpolation nodes
-  const unsigned N = 1000;  // no. of sampling points
-  const double tol = 1e-6;  // tolerance
+  constexpr unsigned int N = 1000;  // no. of sampling points
+  constexpr double tol = 1e-6;      // tolerance
 
   VectorXd tf1, tf2;             // nodes for f1 resp. f2
   std::vector<double> ef1, ef2;  // errors for f1 resp. f2
@@ -101,7 +102,7 @@ void plotInterpolationError(void) {
   plt::figure();
   plt::title("Error VS step");
   plt::xlabel("No. of interpolation nodes");
-  plt::ylabel("max |f(t) - I_Tf(t)|");
+  plt::ylabel("$max |f(t) - I_Tf(t)|$");
   plt::semilogy(n1, ef1, "ro", {{"label", "$f_1(t) = sin(e^{2t})$"}});
   plt::semilogy(n2, ef2, "bo", {{"label", "$f_2(t) = \\sqrt{t}/(1 + 16t^2)$"}});
   plt::legend();

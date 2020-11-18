@@ -5,6 +5,7 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
+
 #include "intpolyval.hpp"
 #include "matplotlibcpp.h"
 
@@ -24,8 +25,9 @@ namespace plt = matplotlibcpp;
 template <class Function>
 VectorXd adaptivepolyintp(Function&& f, double a, double b, double tol, int N,
                           std::vector<double>* errortab = nullptr) {
-  // TO DO (7-3.a) : implement the greedy algorithm for adaptive interpolation.
+  // TODO: (7-3.a) implement the greedy algorithm for adaptive interpolation.
   // Ignore the errortab part of this function for now.
+  // TODO: (7-3.b) save the error in errortab
 
   // Generate sampling points and evaluate $f$ there
   VectorXd sampling_points = VectorXd::LinSpaced(N, a, b),
@@ -38,12 +40,12 @@ VectorXd adaptivepolyintp(Function&& f, double a, double b, double tol, int N,
 /* SAM_LISTING_END_1 */
 
 /* SAM_LISTING_BEGIN_2 */
-void plotInterpolationError(void) {
+void plotInterpolationError() {
   // Declare test functions
   auto f1 = [](double t) { return std::sin(std::exp(2 * t)); };
   auto f2 = [](double t) { return std::sqrt(t) / (1 + 16 * t * t); };
-  // TO DO (7-3.c): generate the plots of error vs number of nodes for f1, f2
 
+  // TODO: (7-3.c) generate the plots of error vs number of nodes for f1, f2
   // START
 
   // END

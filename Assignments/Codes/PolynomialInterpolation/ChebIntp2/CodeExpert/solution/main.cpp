@@ -1,18 +1,18 @@
+#include "adaptivepolyintp.hpp"
+
 #include <Eigen/Dense>
 #include <iomanip>
 #include <iostream>
-
-#include "adaptivepolyintp.hpp"
 
 int main() {
   auto f = [](double t) { return std::sin(std::exp(2 * t)); };
 
   // Test interval
-  const double a = 0, b = 1;
+  constexpr double a = 0, b = 1;
 
   // Get interpolation nodes and print runtimes
-  const unsigned N = 100;   // no. of sampling points
-  const double tol = 1e-4;  // tolerance
+  constexpr unsigned int N = 100;  // no. of sampling points
+  constexpr double tol = 1e-4;     // tolerance
 
   Eigen::VectorXd tf;  // nodes for interpolation of f
   tf = adaptivepolyintp(f, a, b, tol, N);
