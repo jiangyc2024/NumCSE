@@ -75,3 +75,4 @@ TEST_SUITE("adaptiveintp") {
   }
   TEST_CASE("void plotKite" * doctest::description("skipped") * doctest::skip()){}
 }
+

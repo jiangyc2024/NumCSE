@@ -48,8 +48,7 @@ std::vector<Vector2d> closedPolygonalInterpolant(std::vector<Vector2d> Sigma,
       res[j] = coord;
       ++j;
     }
-    if (j == x.size())
-      break;
+    if (j == x.size()) break;
   }
   // END
   return res;
@@ -89,8 +88,7 @@ std::vector<Vector2d> closedHermiteInterpolant(std::vector<Vector2d> Sigma,
       (delta[n - 1] + delta[0]);
   slopes[0] = s / s.norm();
   for (unsigned int i = 1; i < n; ++i) {
-    s = (delta[i] / delta[i - 1] * d[i - 1] +
-         +delta[i - 1] / delta[i] * d[i]) /
+    s = (delta[i] / delta[i - 1] * d[i - 1] + +delta[i - 1] / delta[i] * d[i]) /
         (delta[i] + delta[i - 1]);
     slopes[i] = s / s.norm();
   }
@@ -113,8 +111,7 @@ std::vector<Vector2d> closedHermiteInterpolant(std::vector<Vector2d> Sigma,
       res[j] = {coordx, coordy};
       ++j;
     }
-    if (j == x.size())
-      break;
+    if (j == x.size()) break;
   }
   // END
   return res;
@@ -127,7 +124,7 @@ std::pair<std::vector<Vector2d>, std::vector<Vector2d>> adaptedHermiteInterpolan
   // Note: we assume that x is sorted
   assert(x.minCoeff() >= 0 && x.maxCoeff() <= 1 && "x out of range");
   // will contain the result
-  std::vector<Vector2d> eval; 
+  std::vector<Vector2d> eval;
   std::vector<Vector2d> Sigma;
 
   VectorXd t = VectorXd::LinSpaced(nmin + 1, 0, 1);
@@ -170,7 +167,7 @@ std::pair<std::vector<Vector2d>, std::vector<Vector2d>> adaptedHermiteInterpolan
     for (unsigned int j = 0; j < n; ++j) {
       if (dev(j) > 0.9 * alpha) {
         t_temp.push_back((t(j) + t(j + 1)) * 0.5);
-	num++;
+        num++;
       }
     }
     t.conservativeResize(n + 1 + t_temp.size());
@@ -182,28 +179,28 @@ std::pair<std::vector<Vector2d>, std::vector<Vector2d>> adaptedHermiteInterpolan
 
   eval = closedHermiteInterpolant(Sigma, x);
   // END
-  return std::make_pair(eval,Sigma);
+  return std::make_pair(eval, Sigma);
 }
 /* SAM_LISTING_END_2 */
 
 /* SAM_LISTING_BEGIN_3 */
-void plotKite (const char *filename, double tol = 1.0e-3){
+void plotKite(const char *filename, double tol = 1.0e-3) {
   // TODO (6-10.d)
   // START
   // preparing call to adaptedHermiteInterpolant
-  auto c = [] (double t) -> Vector2d {
+  auto c = [](double t) -> Vector2d {
     Vector2d ct;
-    ct << std::cos(2*M_PI*t) + 2./3. * std::cos(4 * M_PI* t), 
-          3./2. * std::sin(2*M_PI*t);
+    ct << std::cos(2 * M_PI * t) + 2. / 3. * std::cos(4 * M_PI * t),
+        3. / 2. * std::sin(2 * M_PI * t);
     return ct;
   };
   unsigned int nmin = 6;
   unsigned int N = 1e5;
   // initializing x, dsicarding the 1 at the end
-  VectorXd x = VectorXd::LinSpaced(N+1,0,1).head(N);
+  VectorXd x = VectorXd::LinSpaced(N + 1, 0, 1).head(N);
 
-  std::pair<std::vector<Vector2d>, std::vector<Vector2d>> vec = 
-	                adaptedHermiteInterpolant(c,nmin,x,tol);
+  std::pair<std::vector<Vector2d>, std::vector<Vector2d>> vec =
+      adaptedHermiteInterpolant(c, nmin, x, tol);
 
   std::vector<Vector2d> eval = vec.first;
   std::vector<Vector2d> Sigma = vec.second;
@@ -213,25 +210,25 @@ void plotKite (const char *filename, double tol = 1.0e-3){
   VectorXd x_poly(M);
   VectorXd y_poly(M);
   // assembling x and y of Hermite Interpolation
-  for(unsigned int i = 0; i<N; i++){
+  for (unsigned int i = 0; i < N; i++) {
     x_hermite(i) = eval.at(i)(0);
     y_hermite(i) = eval.at(i)(1);
-  } 
+  }
   // assembling x and y of Polygonal Interpolation
   // We do not need to call ClosedPolygonalInterpolate
-  // as matplotlibcpp will already connect the points 
+  // as matplotlibcpp will already connect the points
   // with straight lines for us.
-  for(unsigned int i = 0;i < M; i++){
+  for (unsigned int i = 0; i < M; i++) {
     x_poly(i) = Sigma.at(i)(0);
     y_poly(i) = Sigma.at(i)(1);
   }
   // making the plot
   plt::figure();
-  plt::title("Adapted Interpolation with tol="+std::to_string(tol));
+  plt::title("Adapted Interpolation with tol=" + std::to_string(tol));
   plt::xlabel("x");
   plt::ylabel("y");
-  plt::plot(x_poly, y_poly,"r", {{"label", "Polygonal Interpolant"}});
-  plt::plot(x_hermite,y_hermite,{{"label","Hermite Interpolation"}});
+  plt::plot(x_poly, y_poly, "r", {{"label", "Polygonal Interpolant"}});
+  plt::plot(x_hermite, y_hermite, {{"label", "Hermite Interpolation"}});
   plt::legend();
   plt::savefig(filename);
   // END
