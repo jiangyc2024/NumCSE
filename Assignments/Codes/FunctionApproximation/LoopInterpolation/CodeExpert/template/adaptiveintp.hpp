@@ -7,8 +7,10 @@
 #include <vector>
 
 #include "hermloceval.hpp"
+#include "matplotlibcpp.h"
 
 using namespace Eigen;
+namespace plt = matplotlibcpp;
 
 /* SAM_LISTING_BEGIN_0 */
 std::vector<Vector2d> closedPolygonalInterpolant(std::vector<Vector2d> Sigma,
@@ -32,7 +34,7 @@ std::vector<Vector2d> closedPolygonalInterpolant(std::vector<Vector2d> Sigma,
     delta[i] = (d[i]).norm();
     lambda[i + 1] = lambda[i] + delta[i];
   }
-  // TO DO (0-3.a)
+  // TO DO (6-10.a)
   // START
 
   // END
@@ -66,9 +68,9 @@ std::vector<Vector2d> closedHermiteInterpolant(std::vector<Vector2d> Sigma,
   // define the slopes as in the definition of the interpolating
   // closed cubic Hermite curve
   std::vector<Vector2d> slopes(n + 1);
-  // TO DO (0-3.b)
+  // TO DO (6-10.b)
   // START
-  
+
   // END
   return res;
 }
@@ -84,10 +86,20 @@ std::pair<std::vector<Vector2d>, std::vector<Vector2d>> adaptedHermiteInterpolan
   std::vector<Vector2d> Sigma;
 
   VectorXd t = VectorXd::LinSpaced(nmin + 1, 0, 1);
-  // TO DO (0-3.c)
+  // TO DO (6-10.c)
   // START
 
   // END
   return std::make_pair(eval,Sigma);
 }
 /* SAM_LISTING_END_2 */
+
+/* SAM_LISTING_BEGIN_3 */
+void plotKite (const char *filename, double tol = 1.0e-3){
+  // TODO (6-10.d)
+  // START
+
+  // END
+  return;
+}
+/* SAM_LISTING_END_3 */

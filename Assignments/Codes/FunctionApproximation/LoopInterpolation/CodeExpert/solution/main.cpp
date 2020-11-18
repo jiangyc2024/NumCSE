@@ -125,6 +125,10 @@ int main() {
   else
     std::cout << "Test for adaptedHermiteInterpolant failed: wrong size.\n\n";
   /*
+   *  test of plotKite
    */
+  plotKite("./cx_out/fig1.png", 1.0e-1);
+  plotKite("./cx_out/fig2.png", 1.0e-2);
+  plotKite("./cx_out/fig3.png", 1.0e-3);
 }
 

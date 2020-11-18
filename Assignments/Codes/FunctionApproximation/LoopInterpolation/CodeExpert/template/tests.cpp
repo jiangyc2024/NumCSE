@@ -73,4 +73,5 @@ TEST_SUITE("adaptiveintp") {
     }
     CHECK(err == doctest::Approx(0.).epsilon(1e-9));
   }
+  TEST_CASE("void plotKite" * doctest::description("skipped") * doctest::skip()){}
 }

@@ -12,3 +12,6 @@
 ***
 
 > `std::pair<std::vector<Vector2d>, std::vector<Vector2d>> adaptedHermiteInterpolant(CurveFunctor &&c, unsigned int nmin, const VectorXd &x, double tol = 1.0e-3)`: Here in the test we use for `c` the function fiven in (6.10.1), $5$ for `nmin` and `x` being the same as in the previous testcases.
+
+***
+> `void plotKite()`: This function is not tested.
