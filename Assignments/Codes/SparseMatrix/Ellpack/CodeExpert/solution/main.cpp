@@ -28,11 +28,13 @@ int main(int, char**) {
     // Fill in some triplets
     triplets.push_back(Triplet_new(1,2,4));
     triplets.push_back(Triplet_new(0,0,5));
-    triplets.push_back(Triplet_new(1,2,6));
+    triplets.push_back(Triplet_new(1,2,6));  //repeated index
     triplets.push_back(Triplet_new(2,5,7));
     triplets.push_back(Triplet_new(0,4,8));
+    triplets.push_back(Triplet_new(0,0,1));  //repeated index
     triplets.push_back(Triplet_new(1,3,9));
     triplets.push_back(Triplet_new(2,2,10));
+    triplets.push_back(Triplet_new(1,3,2));  //repeated index
     triplets.push_back(Triplet_new(2,1,11));
     triplets.push_back(Triplet_new(1,0,12));
 
@@ -47,8 +49,7 @@ int main(int, char**) {
       }
       std::cout << std::endl;
     }
-    
-  
+
 
     std::cout << " ------------- Test of y = E*x --------------- " << std::endl;
     Vector x(6);

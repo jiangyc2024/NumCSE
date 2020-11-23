@@ -15,7 +15,8 @@ using namespace Eigen;
 namespace plt = matplotlibcpp;
 
 /* @brief Build an "arrow matrix" and compute A*A*y
- * Given vectors $a$ and $d$, returns A*A*x in $y$, where A is built from a, d
+ * Given ve[conf.yml](/cx_project_file/sXBQr9N7BqZNQ356r?download=true)ctors $a$
+ * and $d$, returns A*A*x in $y$, where A is built from a, d
  * @param[in] d An n-dimensional vector
  * @param[in] a An n-dimensional vector
  * @param[in] x An n-dimensional vector
@@ -64,6 +65,13 @@ void efficient_arrow_matrix_2_times_x(const VectorXd &d, const VectorXd &a,
          "Vector size must be the same!");
   int n = d.size();
 
+  // TO DO: (2-1.c) Implement an efficient version of
+  // arrow\_matrix\_2\_times\_x. Hint: Notice that performing two matrix vector
+  // multiplications is less expensive than a matrix-matrix multiplication.
+  // Therefore, as first step, we need a way to efficiently compute A*x
+
+  // START
+
   // Notice that we can compute (A*A)*x more efficiently using
   // A*(A*x). This is, in fact, performing two matrix vector
   // multiplications
@@ -102,6 +110,8 @@ void efficient_arrow_matrix_2_times_x(const VectorXd &d, const VectorXd &a,
 
   // <=> y = A*(A*x)
   y = A_times_x(A_times_x(x));
+
+  // END
 }
 /* SAM_LISTING_END_1 */
 
@@ -110,9 +120,8 @@ void efficient_arrow_matrix_2_times_x(const VectorXd &d, const VectorXd &a,
  * amongst all times. Test both the inefficient and the efficient
  * versions.
  */
+/* SAM_LISTING_BEGIN_3 */
 void runtime_arrow_matrix() {
-  /* SAM_LISTING_BEGIN_3 */
-
   // Memory allocation for plot
   std::vector<double> vec_size;
   std::vector<double> elap_time, elap_time_eff;
@@ -137,15 +146,17 @@ void runtime_arrow_matrix() {
                       d = Eigen::VectorXd::Random(n),
                       x = Eigen::VectorXd::Random(n), y;
 
-      // Compute times
+      // Compute times for original implementation
       timer.start();
       arrow_matrix_2_times_x(d, a, x, y);
       timer.stop();
 
-      // Compute times for efficient implementation
+      // TO DO: (2-1.e) Compute times for efficient implementation
+      // START
       timer_eff.start();
       efficient_arrow_matrix_2_times_x(d, a, x, y);
       timer_eff.stop();
+      // END
     }
 
     // Print results (for grading): inefficient
@@ -161,9 +172,8 @@ void runtime_arrow_matrix() {
   /* DO NOT CHANGE */
   // create plot
   plot(vec_size, elap_time, elap_time_eff, "./cx_out/text.png");
-
-  /* SAM_LISTING_END_3 */
 }
+/* SAM_LISTING_END_3 */
 
 // Additional
 
@@ -212,8 +222,8 @@ void runtime_arrow_matrix_with_chrono() {
             << std::setw(15) << "original" << std::setw(15) << "efficient"
             << std::endl;
 
-  // Run from $2^5$ to $2^11$ with powers of two
-  for (unsigned int n = (1 << 5); n < (1 << 12); n = n << 1) {
+  // Run from $2^3$ to $2^7$ with powers of two
+  for (unsigned int n = (1 << 3); n < (1 << 7); n = n << 1) {
     // Create random vectors
     VectorXd d = VectorXd::Random(n);
     VectorXd a = VectorXd::Random(n);

@@ -7,7 +7,7 @@ using namespace std;
 using namespace std::chrono;
 
 /**
- * @brief time an action by minimum of N repetitions
+ * @brief time an action by minimum execution time of N repetitions
  * @param a action (lambda) to time
  * @param N number of repetitions
  * @return minimum execution time in microseconds
@@ -30,28 +30,54 @@ size_t time(Action&& a, size_t const N) {
  * @brief print a table of all actions timed over all parameters
  * @param params vector of parameters
  * @param actions vector of actions
- * @param init initialization function depending on parameter
+ * @param init initialization function depending on parameter, called once for
+ * each parameter
+ * @param post post processing/cleanup function, called once after each timed
+ * action
  * @param N number of repetitions
+ * @param w column width
  * @param header (optional) table column names
  */
-template <class Param>
-void timeTable( const vector<Param>& params, const vector<function<void()>>& actions, void (&init)(Param), const size_t N, const size_t w, const vector<string> & header = {}) {
-  
-  if( header.size( )) {
-    for( auto h : header ) cout << setw(w) << h;
+template <class ParamVector, class InitF, class PostF>
+void timeTable(const ParamVector& params,
+               const vector<function<void()>>& actions, InitF&& init,
+               PostF&& post, const size_t N, const size_t w,
+               const vector<string>& header = {}) {
+  if (header.size()) {
+    for (auto h : header) cout << setw(w) << h;
     cout << endl;
   }
 
-  for (auto p : params) {
-    cout << setw(w) << p;
-    init(p);
-    for (auto a : actions) cout << setw(w) << time(a, N);
+  for (size_t i(0); i < params.size(); ++i) {
+    init(params[i]);
+    cout << setw(w) << params[i];
+    for (auto a : actions) {
+      cout << setw(w) << time(a, N);
+    }
     cout << endl;
+    post();
   }
 }
 
-template <class Param>
-void timeTable( const vector<Param>& params, const vector<function<void()>>& actions, void (&init)(Param), const vector<string> & header = {} ) {
-  timeTable( params, actions, init, 5, 10, header );
+template <class ParamVector, class InitF>
+void timeTable(const ParamVector& params,
+               const vector<function<void()>>& actions, InitF&& init,
+               const vector<string>& header = {}) {
+  timeTable(
+      params, actions, init, [] {}, 5, 10, header);
 }
 
+template <class ParamVector, class InitF, class PostF>
+void timeTable(const ParamVector& params,
+               const vector<function<void()>>& actions, InitF&& init,
+               PostF&& post, const vector<string>& header = {}) {
+  timeTable(params, actions, init, post, 5, 10, header);
+}
+
+template <class ParamVector, class InitF>
+void timeTable(const ParamVector& params,
+               const vector<function<void()>>& actions, InitF&& init,
+               const size_t N, const size_t w,
+               const vector<string>& header = {}) {
+  timeTable( params, actions, init, [] {}, N, w, header );
+}

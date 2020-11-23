@@ -3,7 +3,6 @@ import sys
 
 #
 # CURRENT ISSUES:
-#   - probably more issues
 #
 
 def parseWriteChange(student_sol, copy, tests):
@@ -16,7 +15,7 @@ def parseWriteChange(student_sol, copy, tests):
 	# get all function signatures to be tested from the test file
 	function_signatures = []
 	for line in tests:
-		parse = re.match('\s*TEST_CASE\("([\S\s]*)"\s\*\sdoctest::description.*', line)
+		parse = re.match('\s*TEST_CASE\("([\S\s]*)"\s\*.*', line)
 		if parse and keyword not in parse.group(1):
 			function_signatures.append(parse)
 	classes = []
@@ -28,6 +27,7 @@ def parseWriteChange(student_sol, copy, tests):
 			next(file)
 		elif file.readline().startswith("#pragma once"):
 			next(file)
+		enum_helper = False
 		for line in file:
 			write = True
 			parse_class = re.match("\s*(class|struct)(\s*)(\S*)(\s*)({|\s*)", line)
@@ -36,15 +36,24 @@ def parseWriteChange(student_sol, copy, tests):
 				classes.append(parse_class.group(3))
 				write = False
 			for el in function_signatures:
-				parse = re.match("(\s*)" + re.escape(el.group(1)) + "(\s*\(.*)", line)
+				parse = re.match("(\s*)" + "(Eigen::|std::)?" + re.escape(el.group(1)) + "(\s*\(.*)", line)
 				if parse:
-					parse2 = re.search("(<.*>)$", re.escape(el.group(1)))
+					# parse2 = re.search("(<.*>)$", re.escape(el.group(1)))
+					parse2 = re.search("(<.*>)$", el.group(1))
 					if parse2:
-						copy.write(parse.group(1) + el.group(1).replace(parse2.group(1), "") + suffix + parse2.group(1) + parse.group(2) + "\n")
+						copy.write(parse.group(1) + el.group(1).replace(parse2.group(1), "") + suffix + parse2.group(1) + parse.group(3) + "\n")
 					else:
-						copy.write(parse.group(1) + el.group(1) + suffix + parse.group(2) + "\n")
+						copy.write(parse.group(1) + el.group(1) + suffix + parse.group(3) + "\n")
 					write = False
-			if write and not line.startswith("#endif") and not line.startswith("#include"):
+			# look for enums and skip the whole enum scope
+			if line.startswith("enum") or enum_helper:
+				write = False
+				enum_helper = True
+				if "}" in line:
+					enum_helper = False
+					continue
+			# write the new tweaked line but skip endifs and include statements with signature #include "..."
+			if write and not line.startswith("#endif") and not line.startswith('#include "'):
 				new_line = line
 				# replace all class occurences with its test version
 				for el in classes:

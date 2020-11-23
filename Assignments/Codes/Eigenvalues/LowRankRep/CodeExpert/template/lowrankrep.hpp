@@ -1,19 +1,18 @@
 #ifndef LOWRANKREP_HPP
 #define LOWRANKREP_HPP
 
-//// 
+////
 //// Copyright (C) 2016 SAM (D-MATH) @ ETH Zurich
-//// Author(s): lfilippo <filippo.leonardi@sam.math.ethz.ch> 
+//// Author(s): lfilippo <filippo.leonardi@sam.math.ethz.ch>
 //// Contributors: tille, jgacon, dcasati
 //// This file is part of the NumCSE repository.
 ////
-#include <iostream>
 #include <Eigen/Dense>
 #include <Eigen/QR>
 #include <Eigen/SVD>
+#include <iostream>
 
 using namespace Eigen;
-
 
 /* @brief Factorize matrix $X$ into $X = AB'$
  * @param[in] X An $m \times n$ matrix of rank at most $k$
@@ -22,20 +21,20 @@ using namespace Eigen;
  * @param[out] B The $n \times k$ matrix from the decomposition of $X$
  */
 /* SAM_LISTING_BEGIN_0 */
-std::pair<MatrixXd,MatrixXd> factorize_X_AB(const MatrixXd& X,const unsigned int k) {
+std::pair<MatrixXd, MatrixXd> factorize_X_AB(const MatrixXd &X,
+                                             const unsigned int k) {
   size_t m = X.rows(), n = X.cols();
-  
-  double tol = 1e-6; // Tolerance for numerical rank: \lref{ex:svdrank}
-  //TO DO (4-8.b) Define A,B with k columns such that X = A*B^T 
-  //Hint: warnings can be displayed with std::cerr, error messages with assert
-  //START
-  MatrixXd A,B;
-  //END
-  return std::make_pair(A,B);
+
+  double tol = 1e-6;  // Tolerance for numerical rank: \lref{ex:svdrank}
+  // TO DO (4-8.b) Define A,B with k columns such that X = A*B^T
+  // Hint: warnings can be displayed with std::cerr, error messages with assert
+  // START
+  assert(k <= std::min(m, n) && "Rank k cannot be larger than dimensions of X");
+  MatrixXd A, B;
+  // END
+  return std::make_pair(A, B);
 }
 /* SAM_LISTING_END_0 */
-
-
 
 /* @brief Compute the SVD of $AB'$
  * @param[in] A An $m \times k$ matrix
@@ -45,25 +44,24 @@ std::pair<MatrixXd,MatrixXd> factorize_X_AB(const MatrixXd& X,const unsigned int
  * @param[out] V The $n \times k$ matrix from the SVD of $AB'$
  */
 /* SAM_LISTING_BEGIN_1 */
-std::tuple<MatrixXd, MatrixXd, MatrixXd> svd_AB(const MatrixXd& A, const MatrixXd& B) {
-  
-  assert(A.cols() == B.cols()
-           && "Matrices A and B should have the same column number");
+std::tuple<MatrixXd, MatrixXd, MatrixXd> svd_AB(const MatrixXd &A,
+                                                const MatrixXd &B) {
+  assert(A.cols() == B.cols() &&
+         "Matrices A and B should have the same column number");
+  assert(A.cols() < A.rows() && A.cols() < B.rows() &&
+         "Matrices A and B should have less columns than rows");
   size_t m = A.rows();
   size_t n = B.rows();
   size_t k = A.cols();
-  //TO DO (4-8.d): Define the tuple of 
-  //matrices U,S,V of the svd decomposition of A*B^T
-  //Hint: You can define a tuple of objects using std::make_tuple
-  //START
-  // replace the dummies
-  MatrixXd U, S, V;
+  // TO DO (4-8.d): Define the tuple of
+  // matrices U,S,V of the svd decomposition of A*B^T
+  // Hint: You can define a tuple of objects using std::make_tuple
+  // START
+  MatrixXd U, V, S;
   return std::make_tuple(U, S, V);
-  //END
+  // END
 }
 /* SAM_LISTING_END_1 */
-
-
 
 /* @brief Find $Az$ and $Bz$ such that
  * $Z = Az*Bz'$ is the best approximation of $AxBx'+AyBy'$ with rank $k$
@@ -75,22 +73,27 @@ std::tuple<MatrixXd, MatrixXd, MatrixXd> svd_AB(const MatrixXd& A, const MatrixX
  * @param[out] Bz The $n \times k$ matrix to form $Az*Bz'$
  */
 /* SAM_LISTING_BEGIN_2 */
-std::pair<MatrixXd,MatrixXd> rank_k_approx(const MatrixXd & Ax,const MatrixXd & Ay, 
-                    const MatrixXd & Bx,const MatrixXd & By) {
-  
-  assert(Ax.rows() == Ay.rows() && Ax.cols() == Ay.cols()
-           && "Matrices Ax and Ay should have the same dimensions");
-  assert(Bx.rows() == By.rows() && Bx.cols() == By.cols()
-           && "Matrices Bx and By should have the same dimensions");
-  //TO DO (4-8.h): Use the function svd_AB with the appropriate A,B and
+std::pair<MatrixXd, MatrixXd> rank_k_approx(const MatrixXd &Ax,
+                                            const MatrixXd &Ay,
+                                            const MatrixXd &Bx,
+                                            const MatrixXd &By) {
+  assert(Ax.rows() == Ay.rows() && Ax.cols() == Ay.cols() &&
+         "Matrices Ax and Ay should have the same dimensions");
+  assert(Bx.rows() == By.rows() && Bx.cols() == By.cols() &&
+         "Matrices Bx and By should have the same dimensions");
+  assert(Ax.cols() == Bx.cols() &&
+         "Matrices Ax, Ay, Bx and By should have the same amount of columns");
+  assert(Ax.cols() * 2 < Ax.rows() && Bx.cols() * 2 < Bx.rows() &&
+         "2*k should not be bigger equal min(m, n)");
+  // TO DO (4-8.h): Use the function svd_AB with the appropriate A,B and
   // return the pair Az, Bz of matrices of rank k with Z = Az*Bz
-  //Hint: you can define pairs of objects using std::make_pair
-  //Hint: use std::get<i>(my_tuple) to extract the i-th element of a tuple
-  //START
-  // replace the dummies
+  // Hint: you can define pairs of objects using std::make_pair
+  // Hint: use std::get<i>(my_tuple) to extract the i-th element of a tuple
+  // START
   MatrixXd Az, Bz;
+
   return std::make_pair(Az, Bz);
-  //END
+  // END
 }
 /* SAM_LISTING_END_2 */
 

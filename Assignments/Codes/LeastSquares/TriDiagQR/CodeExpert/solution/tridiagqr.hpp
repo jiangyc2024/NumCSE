@@ -3,15 +3,15 @@
 
 /* SAM_LISTING_BEGIN_0 */
 struct TriDiagonalMatrix {
-  Eigen::Index n;    // Matrix size $n\times n$
-  Eigen::VectorXd d; // $n$-vector of diagonal entries
-  Eigen::VectorXd l; // $n-1$-vector, entries of first lower diagonal
-  Eigen::VectorXd u; // $n-1$-vector, entries of first upper diagonal
+  Eigen::Index n;     // Matrix size $n\times n$
+  Eigen::VectorXd d;  // $n$-vector of diagonal entries
+  Eigen::VectorXd l;  // $n-1$-vector, entries of first lower diagonal
+  Eigen::VectorXd u;  // $n-1$-vector, entries of first upper diagonal
 
   TriDiagonalMatrix(const Eigen::VectorXd &d, const Eigen::VectorXd &l,
                     const Eigen::VectorXd &u)
-      : d(d), l(l), u(u), n(d.size()) {
-    assert((n - 1) == l.size() && (n - 1) == l.size());
+      : n(d.size()), d(d), l(l), u(u) {
+    assert((n - 1) == l.size() && (n - 1) == u.size());
   }
 };
 /* SAM_LISTING_END_0 */
@@ -27,7 +27,10 @@ inline double sign(double x) {
 
 // An alternative:
 // https://stackoverflow.com/questions/1903954/is-there-a-standard-sign-function-signum-sgn-in-c-c
-template <typename T> int sgn(T val) { return (T(0) < val) - (val < T(0)); }
+template <typename T>
+int sgn(T val) {
+  return (T(0) < val) - (val < T(0));
+}
 
 /* @brief Calculates the rotation matrix corresponding to rho.
  */
@@ -35,14 +38,14 @@ template <typename T> int sgn(T val) { return (T(0) < val) - (val < T(0)); }
 inline Eigen::Matrix2d Givens(double rho) {
   double gamma, sigma;
   if (std::abs(rho) < 1.0) {
-    sigma = 2.0 * rho;
+    sigma = 0.5 * std::sqrt(2.0) * rho;
     gamma = std::sqrt(1.0 - sigma * sigma);
   } else if (std::abs(rho) > 1.0) {
-    gamma = 2.0 / rho;
+    gamma = 0.5 * std::sqrt(2.0) / rho;
     sigma = std::sqrt(1 - gamma * gamma);
   } else {
-    gamma = 0;
-    sigma = rho;
+    gamma = 0.0;
+    sigma = sign(rho);
   }
   Eigen::Matrix2d G;
   G << gamma, sigma, -sigma, gamma;
@@ -67,8 +70,8 @@ std::tuple<double, double, double> compGivensRotation(Eigen::Vector2d a) {
       t = -a(0) / a(1);
       sigma = 1.0 / std::sqrt(1.0 + t * t);
       gamma = sigma * t;
-    } else {            // Then abs(a(0)) >= abs(a(1)) > 0
-      t = -a(1) / a(0); // a(0) != 0
+    } else {             // Then abs(a(0)) >= abs(a(1)) > 0
+      t = -a(1) / a(0);  // a(0) != 0
       gamma = 1.0 / std::sqrt(1.0 + t * t);
       sigma = gamma * t;
     }
@@ -81,9 +84,9 @@ std::tuple<double, double, double> compGivensRotation(Eigen::Vector2d a) {
   if (gamma == 0.0)
     rho = sign(sigma);
   else if (std::abs(gamma) > std::abs(sigma))
-    rho = 0.5 * sign(gamma) * sigma;
+    rho = std::sqrt(2.0) * sign(gamma) * sigma;
   else
-    rho = 2.0 * sign(sigma) / gamma;
+    rho = 0.5 * std::sqrt(2.0) * sign(sigma) / gamma;
   // END
   return std::make_tuple(rho, gamma, sigma);
 }
@@ -91,17 +94,20 @@ std::tuple<double, double, double> compGivensRotation(Eigen::Vector2d a) {
 
 /* SAM_LISTING_BEGIN_2 */
 class TriDiagonalQR {
-public:
+ public:
   explicit TriDiagonalQR(const TriDiagonalMatrix &A);
 
-  template <typename VecType> Eigen::VectorXd applyQT(const VecType &x) const;
-  template <typename VecType> Eigen::VectorXd solve(const VecType &b) const;
-  void getDense(Eigen::MatrixXd &Q, Eigen::MatrixXd &R);
+  template <typename VecType>
+  Eigen::VectorXd applyQT(const VecType &x) const;
+  template <typename VecType>
+  Eigen::VectorXd solve(const VecType &b) const;
+  // For debugging purposes: extract factors as dense matrices
+  std::pair<Eigen::MatrixXd, Eigen::MatrixXd> getQRFactors(void) const;
 
-private:
-  Eigen::Index n;      // size of the square matrix
-  Eigen::MatrixXd B;   // Three non-zero upper diagonals of R
-  Eigen::VectorXd rho; // Encoded Givens rotations
+ private:
+  Eigen::Index n;       // size of the square matrix
+  Eigen::MatrixXd B;    // Three non-zero upper diagonals of R
+  Eigen::VectorXd rho;  // Encoded Givens rotations
 };
 /* SAM_LISTING_END_2 */
 
@@ -127,14 +133,14 @@ TriDiagonalQR::TriDiagonalQR(const TriDiagonalMatrix &A) : n(A.n) {
     // START
     std::tuple<double, double, double> params =
         compGivensRotation(Ablock.col(0));
-    rho[k] = std::get<0>(params); // Store rotation parameter
+    rho[k] = std::get<0>(params);  // Store rotation parameter
     gamma = std::get<1>(params);
     sigma = std::get<2>(params);
 
     // Update B
     Eigen::Matrix2d G;
     G << gamma, -sigma, sigma, gamma;
-    Ablock = G * Ablock; // Rotate to eliminate Ablock(1,0)
+    Ablock = G * Ablock;  // Rotate to eliminate Ablock(1,0)
     B.row(k) = Ablock.row(0);
     B(k + 1, 0) = Ablock(1, 1);
     B(k + 1, 2) = Ablock(1, 2);
@@ -201,11 +207,12 @@ Eigen::VectorXd TriDiagonalQR::solve(const VecType &b) const {
 
 /* @brief Computes Q and R as dense matrices.
  */
-void TriDiagonalQR::getDense(Eigen::MatrixXd &Q, Eigen::MatrixXd &R) {
+std::pair<Eigen::MatrixXd, Eigen::MatrixXd> TriDiagonalQR::getQRFactors()
+    const {
   // This function is only for demonstration purposes,
   // and is not in any way optimal.
-  Q = Eigen::MatrixXd::Identity(n, n);
-  R = Eigen::MatrixXd::Zero(n, n);
+  Eigen::MatrixXd Q = Eigen::MatrixXd::Identity(n, n);
+  Eigen::MatrixXd R = Eigen::MatrixXd::Zero(n, n);
   R.diagonal() = B.col(0);
   R.diagonal(1) = B.col(1).head(n - 1);
   R.diagonal(2) = B.col(2).head(n - 2);
@@ -215,6 +222,8 @@ void TriDiagonalQR::getDense(Eigen::MatrixXd &Q, Eigen::MatrixXd &R) {
     G.block(k, k, 2, 2) = Givens(rho[k]);
     Q = Q * G;
   }
+
+  return std::make_pair(Q, R);
 }
 
 /* SAM_LISTING_BEGIN_6 */
@@ -236,8 +245,8 @@ unsigned int invit(const MatrixType &A, Eigen::VectorXd &x, double TOL = 1E-6,
 /* SAM_LISTING_BEGIN_7 */
 template <>
 unsigned int invit<TriDiagonalMatrix>(const TriDiagonalMatrix &A,
-                                  Eigen::VectorXd &x, double TOL,
-                                  unsigned int maxit) {
+                                      Eigen::VectorXd &x, double TOL,
+                                      unsigned int maxit) {
   int it = 0;
   // TO DO (4-4.g): Specialize (efficiently) the template function invit()
   // for the TriDiagonalMatrix class.

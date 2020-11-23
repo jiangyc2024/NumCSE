@@ -26,7 +26,8 @@ MatrixXd zero_row_col(const MatrixXd &A, int p, int q) {
 
   // TO DO: Set the entries of row number p and column number q to zero.
   // Hint: We can access rows and columns of A by A.row() and A.col().
-  // The setZero() is useful here. START
+  // The method setZero() is useful here.
+  // START
   Anew.row(p).setZero();
   Anew.col(q).setZero();
   // END
@@ -54,7 +55,8 @@ MatrixXd swap_left_right_blocks(const MatrixXd &A, int p) {
   B = A.block(0, 0, A.rows(), p);
 
   // TO DO: Use A.block() to define C as the matrix containing the last q
-  // columns of A. START
+  // columns of A.
+  // START
   C = A.block(0, p, A.rows(), q);
   // END
 
@@ -65,7 +67,8 @@ MatrixXd swap_left_right_blocks(const MatrixXd &A, int p) {
   Anew.leftCols(q) = C;
 
   // TO DO: Use A.rightCols() to fill in the remaining columns of the new matrix
-  // A. START
+  // A.
+  // START
   Anew.rightCols(p) = B;
   // END
 
@@ -97,7 +100,8 @@ MatrixXd tridiagonal(int n, double a, double b, double c) {
   // TO DO: Fill the matrix A with zeros. Then fill the subdiagonal with the
   // value a, the diagonal with b and the superdiagonal with c. Hint: You can
   // get the diagonal of A by A.diagonal(). Moreover, you can get the super- and
-  // subdiagonals by passing +1 or -1 as arguments to A.diagonal(). START
+  // subdiagonals by passing +1 or -1 as arguments to A.diagonal().
+  // START
   A = MatrixXd::Zero(n, n);
   A.diagonal(-1) = VectorXd::Constant(n - 1, a);
   A.diagonal() = VectorXd::Constant(n, b);

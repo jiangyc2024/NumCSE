@@ -51,7 +51,6 @@ Eigen::MatrixXd constantTriangular(int n, double val) {
   // To get a triangular matrix, we must set the values above the diagonal to
   // val. This we can do by a nested for-loop.
   for (int row = 0; row < n; row++) {
-
     // TO DO: Write the inner for-loop.
     // Hint: We can access and change the entries of A using parentheses, i.e.
     // A(row,col) = val; Note that indexing starts at the value 0 (as usual),
@@ -81,9 +80,9 @@ double casting() {
 
   // Vectors are just a special type of matrices that have only one column.
   // Thus, VectorXi is a shorthand for Eigen::Matrix< int, Eigen::Dynamic, 1 >.
-  // Constant(2,1) creates a vector of size 2 and initializes the entries with
-  // the value 1.
-  Eigen::VectorXi u = Eigen::VectorXi::Constant(2, 1);
+  // Constant(n,x) creates a vector of size n and initializes the entries with
+  // the value x.
+  Eigen::VectorXi u = Eigen::VectorXi::Constant(2, 2);
 
   // std::complex is a template class for complex numbers.
   // Here we declare two complex numbers, with real and imaginary parts
@@ -95,7 +94,7 @@ double casting() {
   v(0) = z0;
   v(1) = z1;
 
-  double x;
+  double x = 0.0;
   // TO DO: Calculate the inner product of u and v, and store the result in x.
   // Hint: The inner product of two vectors is given by u.dot(v), but
   // first we need to cast the "int" vector u to a "std::complex<double>"
@@ -131,8 +130,8 @@ Eigen::VectorXcd arithmetics(int n) {
   // Declare the n by n matrix B.
   Eigen::MatrixXcd B(n, n);
 
-  // TO DO: Fill in the matrix B such that B(k,l) = (k+l*i)/(k-l*i),
-  // where i is the imaginary unity, i^2 = -1.
+  // TO DO: Fill in the matrix B such that B(k-1,l-1) = (k+l*i)/(k-l*i),
+  // where i is the imaginary unity, i^2 = -1 and k,l=1,...,n.
   // START
   for (int k = 0; k < n; k++) {
     for (int l = 0; l < n; l++) {
@@ -157,7 +156,7 @@ Eigen::VectorXcd arithmetics(int n) {
   // TO DO: Initialize the entries of u as the integers from 1 to n,
   // multiply u by the matrix C, and store the result in v.
   // START
-  u = Eigen::VectorXcd::LinSpaced(n, 1, n); // Or use a for-loop.
+  u = Eigen::VectorXcd::LinSpaced(n, 1, n);  // Or use a for-loop.
   v = C * u;
   // END
 

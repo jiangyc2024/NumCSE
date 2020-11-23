@@ -71,7 +71,8 @@ void loopInit(const size_t size) { N = size; }
 
 int main() {
   // Tabulate measured runtimes
-  timeTable({10, 100, 200, 800, 1000, 1500, 2000},
+  vector<size_t> sizes {10, 100, 200, 800, 1000, 1500, 2000};
+  timeTable( sizes,
             {triplet_init, coefInsert_init1, coefInsert_init2}, loopInit,
             {"size", "triplets", "insert1", "insert2"});
 }

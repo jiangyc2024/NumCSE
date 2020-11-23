@@ -6,74 +6,79 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
-#include <iomanip>
 #include <cmath>
-#include <vector>
-#include <limits>
 
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
-#include <figure/figure.hpp>
 
-#include "timer.h"
 #include "spdiags.hpp"
+#include "spy.hpp"
+#include "timetable.hpp"
 
 using namespace std;
 using namespace Eigen;
 
-int main () {
-/* SAM_LISTING_BEGIN_0 */
-RowVectorXd diag_el(3);		diag_el << -1, 2, 5;
-auto sparseM = [&](double n){	// lambda function for
-	VectorXi diag_no(3);		// generation of matrix
-	diag_no << -n/2, 0, n/2;
-	MatrixXd B = diag_el.replicate(n,1);
-	return spdiags(B, diag_no, n,n);
-};
-mgl::Figure fig1;
-fig1.spy(sparseM(16));	fig1.setFontSize(5);
-fig1.title("Pattern for matrix {\\bf A} for n = 16");
-fig1.save("spdiagsmatspy_cpp");
-// Timing
-int nruns = 3; int min_i = 1, max_i = 20;
-MatrixXd times(max_i-min_i+1,3); 
-Timer t1,t2;	// timer class
-double tmp = 0; // prevent optimization
-for(int i = min_i; i <= max_i ; ++i){
-	int n = std::pow(2,i), m = n/2;
-	SparseMatrix<double> A = sparseM(n);
-	RowVectorXd v1(n); VectorXd v2(n); v1.setZero(); v2.setZero();
-	for(int k = 0; k < nruns; ++k){
-		t1.start();
-		for(int j = 1; j <= 5; ++j)
-			v1 += A.row(m);
-		t1.stop();
-		t2.start();
-		for(int j = 1; j <= 5; ++j)
-			v2 += A.col(m);
-		t2.stop();
-	}
-	times(i-min_i,0) = n; times(i-min_i,1) = t1.min();
-	times(i-min_i,2) = t2.min(); t1.reset(); t2.reset();
-	tmp += v1*v2; // prevent optimization
-}
-// plotting ...
-/* SAM_LISTING_END_0 */
-	
-	
-	std::cout << tmp << std::endl;
-	std::cout << std::scientific << std::setprecision(3) << times << std::endl;
-	mgl::Figure fig2;
-	fig2.setlog(true,true);
-	fig2.setFontSize(5);
-	fig2.plot(times.col(0), times.col(1), " +r-").label("row access");
-	fig2.plot(times.col(0), times.col(2), " *b-").label("column access");
-	fig2.plot(times.col(0), times(0,1)*times.col(0)/times(0,0), " k-")
-												.label("O(n)");
-	fig2.xlabel("size n of sparse quadratic matrix");
-	fig2.ylabel("access time [s]");
-	fig2.legend(0.05,0.95);
-	fig2.save("sparseaccess_cpp");
-	return 0;
+// compressed row storage
+SparseMatrix<double, RowMajor> ACrs;
+
+// compressed column storage (default in Eigen)
+SparseMatrix<double, ColMajor> ACcs;
+
+double tmp;  // prevent optimization
+RowVectorXd v1;
+VectorXd v2;
+size_t n;
+
+int main() {
+  /* SAM_LISTING_BEGIN_0 */
+  // Lambda, generates a sparse n x n matrix
+  auto sparseM = [](const size_t n) {
+    RowVectorXd diag_el(3);
+    diag_el << -1, 2, 5;
+    VectorXi diag_no(3);
+    diag_no << -n / 2, 0, n / 2;
+    MatrixXd B = diag_el.replicate(n, 1);
+    // Place the columns of B along the diagonals specified by diag_no
+    return spdiags(B, diag_no, n, n);
+  };
+
+  // Lambda, initializes environment for measurement with parameter i
+  auto init = [sparseM](const size_t i) {
+    n = std::pow(2, i);
+    ACrs = ACcs = sparseM(n);
+    v1 = RowVectorXd::Zero(n);
+    v2 = VectorXd::Zero(n);
+  };
+
+  auto post = [] {
+    tmp += v1 * v2;
+  };  // use result of v1 and v2 after timing to prevent optimization
+
+  auto rowAccessCcs = [] {
+    for (int j = 1; j <= 5; ++j) v1 += (RowVectorXd)ACcs.row(n / 2);
+  };
+
+  auto colAccessCcs = [] {
+    for (int j = 1; j <= 5; ++j) v2 += (VectorXd)ACcs.col(n / 2);
+  };
+
+  auto rowAccessCrs = [] {
+    for (int j = 1; j <= 5; ++j) v1 += (RowVectorXd)ACrs.row(n / 2);
+  };
+
+  auto colAccessCrs = [] {
+    for (int j = 1; j <= 5; ++j) v2 += (VectorXd)ACrs.col(n / 2);
+  };
+
+  spy(sparseM(16), "Pattern of sparse matrix for n=16",
+      "spdiagsmatspy_cpp.eps");
+
+  // tabulate access times for sparse matrix in CCS and CRS
+  timeTable(VectorXi::LinSpaced(20, 1, 20),
+            {rowAccessCcs, colAccessCcs, rowAccessCrs, colAccessCrs}, init,
+            post, {"log(size)", "row CCS", "col CCS", "row CRS", "col CRS"});
+
+  // plotting ...
+  /* SAM_LISTING_END_0 */
+  cout << tmp << endl;
 }

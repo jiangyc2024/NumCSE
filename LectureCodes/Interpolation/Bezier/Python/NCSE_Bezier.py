@@ -1,3 +1,7 @@
+# Pyhton script for generating visuals for the section on "Algorithms for Curve Design" of the
+# Course "Numerical methods for CSE"
+# Author: Ralf Hiptmair, SAM, D-MATH
+# Date: September 2020
 import sys
 import math
 import numpy as np
