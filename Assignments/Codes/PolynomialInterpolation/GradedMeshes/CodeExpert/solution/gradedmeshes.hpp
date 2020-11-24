@@ -4,7 +4,6 @@
 
 #include "matplotlibcpp.h"
 
-
 using namespace Eigen;
 namespace plt = matplotlibcpp;
 
@@ -46,9 +45,8 @@ VectorXd polyfit(const VectorXd &x, const VectorXd &y, size_t order) {
 /* SAM_LISTING_BEGIN_0 */
 template <typename FUNCTION>
 double pwlintpMaxError(FUNCTION &&f, const Eigen::VectorXd &t) {
-  int n = t.size() - 1;
-  int N = 1e5;         // Sampling resolution for approximating L-infinty norm.
-  double maxerr = 0.0; // L-infinity error so far.
+  int N = 1e5;          // Sampling resolution for approximating L-infinty norm.
+  double maxerr = 0.0;  // L-infinity error so far.
 
   // TO DO (7-1.c): Approximate the maximum norm of (f - If) on [0,1],
   // where If is the piecewise linear interpolation of f on the mesh t.
@@ -64,7 +62,7 @@ double pwlintpMaxError(FUNCTION &&f, const Eigen::VectorXd &t) {
     double x = (1.0 * i) / N;
     // If x is outside the current mesh interval,
     // then find the interval containing x.
-    while (x > tj1) { // x >= tj always satisfied.
+    while (x > tj1) {  // x >= tj always satisfied.
       tj = tj1;
       fj = fj1;
       j++;
@@ -85,7 +83,6 @@ double pwlintpMaxError(FUNCTION &&f, const Eigen::VectorXd &t) {
   return maxerr;
 }
 /* SAM_LISTING_END_0 */
-
 
 /* @brief Plots error norms of piecewise linear interpolation of
  * $f(t)=t^\alpha$ using equidistant meshes on [0,1].
@@ -108,7 +105,7 @@ void cvgplotEquidistantMesh(const Eigen::VectorXd &alpha) {
   // using a mesh M with #M = N(i)+1.
   MatrixXd Errors(n_meshes, n_alphas);
   for (int i = 0; i < n_meshes; i++) {
-    int n = N(i); // The mesh has #M = (n+1) = (N(i)+1) nodes.
+    int n = N(i);  // The mesh has #M = (n+1) = (N(i)+1) nodes.
     VectorXd mesh = VectorXd::LinSpaced(n + 1, 0.0, 1.0);
     for (int j = 0; j < n_alphas; j++) {
       // Compute L-infinity error for f_j(t) = t^alpha(j).
@@ -117,7 +114,7 @@ void cvgplotEquidistantMesh(const Eigen::VectorXd &alpha) {
       Errors(i, j) = pwlintpMaxError<std::function<double(double)>>(fj, mesh);
     }
   }
-  
+
   // Define a few line-styles to distinguish plots.
   // Colours change automatically.
   int n_styles = 4;
@@ -128,9 +125,9 @@ void cvgplotEquidistantMesh(const Eigen::VectorXd &alpha) {
   style.push_back("D-");
   // Plot errors
   for (int j = 0; j < n_alphas; j++) {
-    char lab [20];
-    sprintf(lab,"alpha = %.2f",alpha(j));
-    plt::loglog(N, Errors.col(j), style[j%n_styles], {{"label", lab}});
+    char lab[20];
+    sprintf(lab, "alpha = %.2f", alpha(j));
+    plt::loglog(N, Errors.col(j), style[j % n_styles], {{"label", lab}});
   }
   plt::title("Error of pw. lin. intp. of f(t)=t^alpha on uniform meshes");
   plt::ylabel("Error");
@@ -166,7 +163,7 @@ Eigen::VectorXd cvgrateEquidistantMesh(const Eigen::VectorXd &alpha) {
   // using a mesh M with #M = N(i)+1.
   MatrixXd Errors(n_meshes, n_alphas);
   for (int i = 0; i < n_meshes; i++) {
-    int n = N(i); // The mesh has #M = (n+1) = (N(i)+1) nodes.
+    int n = N(i);  // The mesh has #M = (n+1) = (N(i)+1) nodes.
     VectorXd mesh = VectorXd::LinSpaced(n + 1, 0.0, 1.0);
     for (int j = 0; j < n_alphas; j++) {
       // Compute L-infinity error for f_j(t) = t^alpha(j).
@@ -225,7 +222,8 @@ void testcvgEquidistantMesh(void) {
  * linear interpolation of t^alpha[j] using a beta[k]-graded mesh on [0,1].
  */
 /* SAM_LISTING_BEGIN_3 */
-Eigen::MatrixXd cvgrateGradedMesh(const Eigen::VectorXd &alpha, const Eigen::VectorXd &beta) {
+Eigen::MatrixXd cvgrateGradedMesh(const Eigen::VectorXd &alpha,
+                                  const Eigen::VectorXd &beta) {
   int n_alphas = alpha.size();
   int n_betas = beta.size();
   MatrixXd Rates(n_betas, n_alphas);
@@ -241,7 +239,7 @@ Eigen::MatrixXd cvgrateGradedMesh(const Eigen::VectorXd &alpha, const Eigen::Vec
   // using a mesh M with #M = N(i)+1 and grading parameter beta(k).
   MatrixXd Errors(n_meshes, n_alphas * n_betas);
   for (int i = 0; i < n_meshes; i++) {
-    int n = N(i); // The mesh has #M = (n+1) = (N(i)+1) nodes.
+    int n = N(i);  // The mesh has #M = (n+1) = (N(i)+1) nodes.
     VectorXd mesh = VectorXd::LinSpaced(n + 1, 0.0, 1.0);
     for (int k = 0; k < n_betas; k++) {
       // Transform the mesh using the grading parameter beta.
@@ -291,17 +289,17 @@ void testcvgGradedMesh(void) {
   VectorXd alpha = VectorXd::LinSpaced(n_alphas, 0.05, 2.95);
   int n_betas = 20;
   VectorXd beta = VectorXd::LinSpaced(n_betas, 0.1, 2.0);
-  
+
   // ConvRates(i,j) = convergence rate using beta(i) and alpha(j).
   MatrixXd ConvRates = cvgrateGradedMesh(alpha, beta);
   // Create meshgrid of alpha and beta values for plotting,
   // such that alphaGrid(i,j) = alpha(j)
   // and betaGrid(i,j) = beta(i).
-  MatrixXd alphaGrid = alpha.replicate(1,n_betas).transpose();
-  MatrixXd betaGrid = beta.replicate(1,n_alphas);
-  
+  MatrixXd alphaGrid = alpha.replicate(1, n_betas).transpose();
+  MatrixXd betaGrid = beta.replicate(1, n_alphas);
+
   plt::figure();
-  plt::plot_surface(alphaGrid,betaGrid,ConvRates);
+  plt::plot_surface(alphaGrid, betaGrid, ConvRates);
   plt::xlabel("alpha");
   plt::ylabel("beta");
   plt::title("Cvg. rates of pw. lin. intp. of f(t)=t^alpha on graded meshes");

@@ -4,7 +4,6 @@
 
 #include "matplotlibcpp.h"
 
-
 using namespace Eigen;
 namespace plt = matplotlibcpp;
 
@@ -47,18 +46,17 @@ VectorXd polyfit(const VectorXd &x, const VectorXd &y, size_t order) {
 template <typename FUNCTION>
 double pwlintpMaxError(FUNCTION &&f, const Eigen::VectorXd &t) {
   int n = t.size() - 1;
-  int N = 1e5;         // Sampling resolution for approximating L-infinty norm.
-  double maxerr = 0.0; // L-infinity error so far.
+  int N = 1e5;          // Sampling resolution for approximating L-infinty norm.
+  double maxerr = 0.0;  // L-infinity error so far.
 
   // TO DO (7-1.c): Approximate the maximum norm of (f - If) on [0,1],
   // where If is the piecewise linear interpolation of f on the mesh t.
   // START
-  
+
   // END
   return maxerr;
 }
 /* SAM_LISTING_END_0 */
-
 
 /* @brief Plots error norms of piecewise linear interpolation of
  * $f(t)=t^\alpha$ using equidistant meshes on [0,1].
@@ -72,7 +70,7 @@ void cvgplotEquidistantMesh(const Eigen::VectorXd &alpha) {
   // errors (obtained by pwlintMaxError()) with
   // number of mesh intervals 32, 64, ..., 4096.
   // START
-  
+
   // END
   plt::savefig("./cx_out/cvgplotEquidistant.png");
 }
@@ -94,7 +92,7 @@ Eigen::VectorXd cvgrateEquidistantMesh(const Eigen::VectorXd &alpha) {
   // rates of the maximum norm (obtained by pwlintMaxError()) with
   // number of mesh intervals 32, 64, ..., 4096.
   // START
-  
+
   // END
   return Rates;
 }
@@ -109,7 +107,7 @@ void testcvgEquidistantMesh(void) {
   // lin. intp. of $t^\alpha$ using equidistant meshes on [0,1],
   // for alpha = 0.05, 0.15, 0.25 ..., 2.95.
   // START
-  
+
   // END
 }
 /* SAM_LISTING_END_2 */
@@ -122,14 +120,15 @@ void testcvgEquidistantMesh(void) {
  * linear interpolation of t^alpha[j] using a beta[k]-graded mesh on [0,1].
  */
 /* SAM_LISTING_BEGIN_3 */
-Eigen::MatrixXd cvgrateGradedMesh(const Eigen::VectorXd &alpha, const Eigen::VectorXd &beta) {
+Eigen::MatrixXd cvgrateGradedMesh(const Eigen::VectorXd &alpha,
+                                  const Eigen::VectorXd &beta) {
   int n_alphas = alpha.size();
   int n_betas = beta.size();
   MatrixXd Rates(n_betas, n_alphas);
 
   // TO DO (7-1.i): Fill in the entries of Rates.
   // START
-  
+
   // END
   return Rates;
 }
@@ -150,7 +149,7 @@ void testcvgGradedMesh(void) {
   // You can use x.replicate() to create X and Y
   // for an appropriate vector x.
   // START
-  
+
   // END
 }
 /* SAM_LISTING_END_4 */
