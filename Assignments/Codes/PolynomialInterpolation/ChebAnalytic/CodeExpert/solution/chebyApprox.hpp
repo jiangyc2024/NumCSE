@@ -102,7 +102,7 @@ std::pair<std::vector<double>,std::vector<double>> compareErrorAndBound(unsigned
   const unsigned N = 10000;
   auto [m, rho] = bestBound();
 
-  // Test for degrees 4 to n_max
+  // Test for degrees 4 to $n_max$
   VectorXd degrees = VectorXd::LinSpaced(n_max-3, 4, n_max);
   std::vector<double> upperBound;
 
