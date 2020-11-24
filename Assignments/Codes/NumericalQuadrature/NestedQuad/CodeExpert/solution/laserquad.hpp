@@ -69,9 +69,10 @@ double gaussquadtriangle(const Function &f, const unsigned N) {
 }
 /* SAM_LISTING_END_2 */
 
-/* EQUIVALENT: Loop based, copy-and-paste implementation
+// EQUIVALENT: Loop based, copy-and-paste implementation
+/* SAM_LISTING_BEGIN_9 */
 template <class Function>
-double gaussquadtriangle(const Function& f, const unsigned N) {
+double gaussquadtriangle_loop(const Function& f, const unsigned N) {
   // Get nodes/weights for integral over dx and dy
   QuadRule Q;
   gaussquad(N, Q);
@@ -89,7 +90,7 @@ double gaussquadtriangle(const Function& f, const unsigned N) {
   // Rescale interval
   return I * (b - a) / 2.;
 }
-*/
+/* SAM_LISTING_END_9 */
 
 /* SAM_LISTING_BEGIN_3 */
 void convtest2DQuad(unsigned int nmax = 20) {

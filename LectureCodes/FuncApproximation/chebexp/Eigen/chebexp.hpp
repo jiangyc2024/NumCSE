@@ -5,6 +5,7 @@
 /// Repository: https://gitlab.math.ethz.ch/NumCSE/NumCSE/
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
+# include <cassert>
 # include <cmath>
 # include <vector>
 # include <complex> // needed to use complex std::vectors!
@@ -44,3 +45,30 @@ VectorXd chebexp(const VectorXd& y) {
   return alpha;
 }
 /* SAM_LISTING_END_0 */
+
+// Conversion from Chebychev basis to monomial basis
+// Argument a provides coefficients in Chebychev basis
+// returns vector of monomial coefficients 
+Eigen::VectorXd chebexpToMonom(const Eigen::VectorXd &a) {
+  const int n = a.size() -1; // degree of polynomial
+  assert(n >= 0); 
+  // vector for returning monomial coefficients of polynomials
+  Eigen::VectorXd r{ Eigen::VectorXd::Zero(n+1) };
+  r[0] = a[0];
+  if (n > 0) {
+    r[1] = a[1];
+    if (n > 1) {
+      // monomial coefficients of Chebychev polynomials 
+      std::array<Eigen::VectorXd, 2> c { Eigen::VectorXd::Zero(n+1), Eigen::VectorXd::Zero(n+1)};
+      c[0][0] = 1.0; // Lowest-degree Chebychev polynomial is constant = 1
+      c[1][1] = 1.0; // First-degree Chebychev polynomial is t -> t
+      for (int j=2; j<=n; ++j) {
+	c[j%2][0] *= -1.0;
+	for (int k=1; k <= j; ++k) 
+	  c[j%2][k] = 2*c[(j+1)%2][k-1] - c[j%2][k];
+        r += a[j]*c[j%2];
+      }
+    }
+  }
+  return r;
+}
