@@ -4,7 +4,6 @@
 
 #include "matplotlibcpp.h"
 
-
 using namespace Eigen;
 namespace plt = matplotlibcpp;
 
@@ -46,9 +45,8 @@ VectorXd polyfit(const VectorXd &x, const VectorXd &y, size_t order) {
 /* SAM_LISTING_BEGIN_0 */
 template <typename FUNCTION>
 double pwlintpMaxError(FUNCTION &&f, const Eigen::VectorXd &t) {
-  int n = t.size() - 1;
-  int N = 1e5;         // Sampling resolution for approximating L-infinty norm.
-  double maxerr = 0.0; // L-infinity error so far.
+  constexpr unsigned int N = 1e5;  // Sampling resolution for approximating L-infinty norm.
+  double maxerr = 0.0;  // L-infinity error so far.
 
   // TO DO (7-1.c): Approximate the maximum norm of (f - If) on [0,1],
   // where If is the piecewise linear interpolation of f on the mesh t.
@@ -59,14 +57,13 @@ double pwlintpMaxError(FUNCTION &&f, const Eigen::VectorXd &t) {
 }
 /* SAM_LISTING_END_0 */
 
-
 /* @brief Plots error norms of piecewise linear interpolation of
  * $f(t)=t^\alpha$ using equidistant meshes on [0,1].
  * @param[in] alpha, a vector of positive values not equal to 0 or 1.
  */
 /* SAM_LISTING_BEGIN_5 */
 void cvgplotEquidistantMesh(const Eigen::VectorXd &alpha) {
-  int n_alphas = alpha.size();
+  const unsigned int n_alphas = alpha.size();
   plt::figure();
   // TO DO (7-1.d): Create log-log plots of the maximum norm
   // errors (obtained by pwlintMaxError()) with
@@ -86,7 +83,7 @@ void cvgplotEquidistantMesh(const Eigen::VectorXd &alpha) {
  */
 /* SAM_LISTING_BEGIN_1 */
 Eigen::VectorXd cvgrateEquidistantMesh(const Eigen::VectorXd &alpha) {
-  int n_alphas = alpha.size();
+  const unsigned int n_alphas = alpha.size();
   VectorXd Rates(n_alphas);
 
   // TO DO (7-1.e): Fill in the entries of Rates.
@@ -105,12 +102,14 @@ Eigen::VectorXd cvgrateEquidistantMesh(const Eigen::VectorXd &alpha) {
  */
 /* SAM_LISTING_BEGIN_2 */
 void testcvgEquidistantMesh(void) {
+  plt::figure();
   // TO DO (7-1.f): Plot and tabulate the convergence rates of pw.
   // lin. intp. of $t^\alpha$ using equidistant meshes on [0,1],
   // for alpha = 0.05, 0.15, 0.25 ..., 2.95.
   // START
   
   // END
+  plt::savefig("./cx_out/cvgrateEquidistant.png");
 }
 /* SAM_LISTING_END_2 */
 
@@ -122,9 +121,10 @@ void testcvgEquidistantMesh(void) {
  * linear interpolation of t^alpha[j] using a beta[k]-graded mesh on [0,1].
  */
 /* SAM_LISTING_BEGIN_3 */
-Eigen::MatrixXd cvgrateGradedMesh(const Eigen::VectorXd &alpha, const Eigen::VectorXd &beta) {
-  int n_alphas = alpha.size();
-  int n_betas = beta.size();
+Eigen::MatrixXd cvgrateGradedMesh(const Eigen::VectorXd &alpha,
+                                  const Eigen::VectorXd &beta) {
+  const unsigned int n_alphas = alpha.size();
+  const unsigned int n_betas = beta.size();
   MatrixXd Rates(n_betas, n_alphas);
 
   // TO DO (7-1.i): Fill in the entries of Rates.
@@ -140,6 +140,7 @@ Eigen::MatrixXd cvgrateGradedMesh(const Eigen::VectorXd &alpha, const Eigen::Vec
  */
 /* SAM_LISTING_BEGIN_4 */
 void testcvgGradedMesh(void) {
+  plt::figure();
   // TO DO (7-1.j): Plot the convergence rates from
   // cvgrateGradedMesh() using alpha = 0.05, 0.15, ..., 2.95
   // and beta = 0.1, 0.2, ..., 2.0.
@@ -152,5 +153,6 @@ void testcvgGradedMesh(void) {
   // START
   
   // END
+  plt::savefig("./cx_out/alphabeta.png");
 }
 /* SAM_LISTING_END_4 */
