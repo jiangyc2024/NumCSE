@@ -27,14 +27,14 @@ TestData data;
 TEST_SUITE("GradedMeshes") {
   TEST_CASE("double pwlintpMaxError" *
             doctest::description("pwlintpMaxError()")) {
-    double sol_sqrt = pwlintpMaxError(data.sqrt, data.Mesh);
-    double stud_sqrt = pwlintpMaxError_TEST(data.sqrt, data.Mesh);
+    const double sol_sqrt = pwlintpMaxError(data.sqrt, data.Mesh);
+    const double stud_sqrt = pwlintpMaxError_TEST(data.sqrt, data.Mesh);
 
-    double sol_sin = pwlintpMaxError(data.sin, data.Mesh);
-    double stud_sin = pwlintpMaxError_TEST(data.sin, data.Mesh);
+    const double sol_sin = pwlintpMaxError(data.sin, data.Mesh);
+    const double stud_sin = pwlintpMaxError_TEST(data.sin, data.Mesh);
 
-    CHECK(std::abs(sol_sqrt - stud_sqrt) == doctest::Approx(0.).epsilon(1e-6));
-    CHECK(std::abs(sol_sin - stud_sin) == doctest::Approx(0.).epsilon(1e-6));
+    CHECK(std::abs(sol_sqrt - stud_sqrt) == doctest::Approx(0.).epsilon(1e-9));
+    CHECK(std::abs(sol_sin - stud_sin) == doctest::Approx(0.).epsilon(1e-9));
   }
 
   TEST_CASE("VectorXd polyfit" * doctest::description("polyfit helper")) {

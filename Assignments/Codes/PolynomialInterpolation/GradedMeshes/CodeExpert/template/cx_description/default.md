@@ -1,12 +1,9 @@
 # Problem 7-1: Piecewise linear approximation on graded meshes
 
-> For the task description of this exercise, please refer to [NCSE19_Problems.pdf](
-https://www.sam.math.ethz.ch/~grsam/NCSE19/HOMEWORK/NCSE19_Problems.pdf). 
+> For the task description of this exercise, please refer to [NCSE20_Problems.pdf](
+https://www.sam.math.ethz.ch/~grsam/NCSE20/HOMEWORK/NCSE20_Problems.pdf). 
 
 > Open `gradedmeshes.hpp` and fill in the missing code in between the delimiters `// START` and `// END` according to the instructions preceded by `// TO DO:`.
-
-
-> The testing function of CodeExpert is only meant to be indicative. False negatives and false positives may occur.
 
 > To view plots, click the "Files" button on the toolbar at the bottom of the page.
 
