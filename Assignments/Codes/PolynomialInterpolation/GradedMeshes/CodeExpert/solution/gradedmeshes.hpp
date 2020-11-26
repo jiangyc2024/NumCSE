@@ -45,7 +45,7 @@ VectorXd polyfit(const VectorXd &x, const VectorXd &y, size_t order) {
 /* SAM_LISTING_BEGIN_0 */
 template <typename FUNCTION>
 double pwlintpMaxError(FUNCTION &&f, const Eigen::VectorXd &t) {
-  int N = 1e5;          // Sampling resolution for approximating L-infinty norm.
+  constexpr unsigned int N = 1e5;  // Sampling resolution for approximating L-infinty norm.
   double maxerr = 0.0;  // L-infinity error so far.
 
   // TO DO (7-1.c): Approximate the maximum norm of (f - If) on [0,1],
@@ -54,10 +54,10 @@ double pwlintpMaxError(FUNCTION &&f, const Eigen::VectorXd &t) {
   // We iterate over the sampling points x = 0, 1/N, 2/N, ... 1.
   // For each x we need to interpolate f in the correct mesh interval.
   // We are currently in the interval [tj, tj1] = [0,t(1)].
-  int j = 0;
+  unsigned int j = 0;
   double tj = t[j], tj1 = t[j + 1];
   double fj = f(tj), fj1 = f(tj1);
-  for (int i = 0; i <= N; i++) {
+  for (unsigned int i = 0; i <= N; i++) {
     // We are currently in the mesh interval [tj, tj1].
     double x = (1.0 * i) / N;
     // If x is outside the current mesh interval,
@@ -90,26 +90,26 @@ double pwlintpMaxError(FUNCTION &&f, const Eigen::VectorXd &t) {
  */
 /* SAM_LISTING_BEGIN_5 */
 void cvgplotEquidistantMesh(const Eigen::VectorXd &alpha) {
-  int n_alphas = alpha.size();
+  const unsigned int n_alphas = alpha.size();
   plt::figure();
   // TO DO (7-1.d): Create log-log plots of the maximum norm
   // errors (obtained by pwlintMaxError()) with
   // number of mesh intervals 32, 64, ..., 4096.
   // START
-  int kmin = 5, kmax = 12;
-  int n_meshes = kmax - kmin + 1;
+  constexpr unsigned int kmin = 5, kmax = 12;
+  const unsigned int n_meshes = kmax - kmin + 1;
   // n=2^kmin, 2^(kmin+1), ..., 2^kmax.
   ArrayXd N = Eigen::pow(2, ArrayXd::LinSpaced(n_meshes, kmin, kmax));
 
   // Errors(i,j) = L-infinity error of interpolation of t^alpha(j)
   // using a mesh M with #M = N(i)+1.
   MatrixXd Errors(n_meshes, n_alphas);
-  for (int i = 0; i < n_meshes; i++) {
-    int n = N(i);  // The mesh has #M = (n+1) = (N(i)+1) nodes.
+  for (unsigned int i = 0; i < n_meshes; i++) {
+    const unsigned int n = N(i);  // The mesh has #M = (n+1) = (N(i)+1) nodes.
     VectorXd mesh = VectorXd::LinSpaced(n + 1, 0.0, 1.0);
-    for (int j = 0; j < n_alphas; j++) {
+    for (unsigned int j = 0; j < n_alphas; j++) {
       // Compute L-infinity error for f_j(t) = t^alpha(j).
-      double alphaj = alpha(j);
+      const double alphaj = alpha(j);
       auto fj = [alphaj](double t) { return std::pow(t, alphaj); };
       Errors(i, j) = pwlintpMaxError<std::function<double(double)>>(fj, mesh);
     }
@@ -117,14 +117,14 @@ void cvgplotEquidistantMesh(const Eigen::VectorXd &alpha) {
 
   // Define a few line-styles to distinguish plots.
   // Colours change automatically.
-  int n_styles = 4;
+  constexpr unsigned int n_styles = 4;
   std::vector<std::string> style;
   style.push_back("o--");
   style.push_back("v-.");
   style.push_back("s:");
   style.push_back("D-");
   // Plot errors
-  for (int j = 0; j < n_alphas; j++) {
+  for (unsigned int j = 0; j < n_alphas; j++) {
     char lab[20];
     sprintf(lab, "alpha = %.2f", alpha(j));
     plt::loglog(N, Errors.col(j), style[j % n_styles], {{"label", lab}});
@@ -146,7 +146,7 @@ void cvgplotEquidistantMesh(const Eigen::VectorXd &alpha) {
  */
 /* SAM_LISTING_BEGIN_1 */
 Eigen::VectorXd cvgrateEquidistantMesh(const Eigen::VectorXd &alpha) {
-  int n_alphas = alpha.size();
+  const unsigned int n_alphas = alpha.size();
   VectorXd Rates(n_alphas);
 
   // TO DO (7-1.e): Fill in the entries of Rates.
@@ -154,26 +154,26 @@ Eigen::VectorXd cvgrateEquidistantMesh(const Eigen::VectorXd &alpha) {
   // rates of the maximum norm (obtained by pwlintMaxError()) with
   // number of mesh intervals 32, 64, ..., 4096.
   // START
-  int kmin = 5, kmax = 12;
-  int n_meshes = kmax - kmin + 1;
+  constexpr unsigned int kmin = 5, kmax = 12;
+  const unsigned int n_meshes = kmax - kmin + 1;
   // n=2^kmin, 2^(kmin+1), ..., 2^kmax.
   ArrayXd N = Eigen::pow(2, ArrayXd::LinSpaced(n_meshes, kmin, kmax));
 
   // Errors(i,j) = L-infinity error of interpolation of t^alpha(j)
   // using a mesh M with #M = N(i)+1.
   MatrixXd Errors(n_meshes, n_alphas);
-  for (int i = 0; i < n_meshes; i++) {
-    int n = N(i);  // The mesh has #M = (n+1) = (N(i)+1) nodes.
+  for (unsigned int i = 0; i < n_meshes; i++) {
+    const unsigned int n = N(i);  // The mesh has #M = (n+1) = (N(i)+1) nodes.
     VectorXd mesh = VectorXd::LinSpaced(n + 1, 0.0, 1.0);
-    for (int j = 0; j < n_alphas; j++) {
+    for (unsigned int j = 0; j < n_alphas; j++) {
       // Compute L-infinity error for f_j(t) = t^alpha(j).
-      double alphaj = alpha(j);
+      const double alphaj = alpha(j);
       auto fj = [alphaj](double t) { return std::pow(t, alphaj); };
       Errors(i, j) = pwlintpMaxError<std::function<double(double)>>(fj, mesh);
     }
   }
 
-  for (int j = 0; j < n_alphas; j++) {
+  for (unsigned int j = 0; j < n_alphas; j++) {
     // Estimate convergence rate for f_j(t) = t^alpha(j) by the slope
     // of line fitted through the errors on a log-log scale.
     VectorXd coeff = polyfit(N.array().log(), Errors.col(j).array().log(), 1);
@@ -189,28 +189,28 @@ Eigen::VectorXd cvgrateEquidistantMesh(const Eigen::VectorXd &alpha) {
  */
 /* SAM_LISTING_BEGIN_2 */
 void testcvgEquidistantMesh(void) {
+  plt::figure();
   // TO DO (7-1.f): Plot and tabulate the convergence rates of pw.
   // lin. intp. of $t^\alpha$ using equidistant meshes on [0,1],
   // for alpha = 0.05, 0.15, 0.25 ..., 2.95.
   // START
-  int n_alphas = 30;
+  constexpr unsigned int n_alphas = 30;
   VectorXd alpha = VectorXd::LinSpaced(n_alphas, 0.05, 2.95);
 
   VectorXd ConvRates = cvgrateEquidistantMesh(alpha);
   std::cout << std::setw(10) << "alpha" << std::setw(20) << "Convergence rate"
             << std::endl;
-  for (int j = 0; j < n_alphas; j++) {
+  for (unsigned int j = 0; j < n_alphas; j++) {
     std::cout << std::setw(10) << alpha(j) << std::setw(20) << ConvRates(j)
               << std::endl;
   }
 
-  plt::figure();
   plt::plot(alpha, ConvRates);
   plt::xlabel("alpha");
   plt::ylabel("conv. rate");
   plt::title("Cvg. rates of pw. lin. intp. of f(t)=t^alpha on uniform meshes");
-  plt::savefig("./cx_out/cvgrateEquidistant.png");
   // END
+  plt::savefig("./cx_out/cvgrateEquidistant.png");
 }
 /* SAM_LISTING_END_2 */
 
@@ -224,42 +224,42 @@ void testcvgEquidistantMesh(void) {
 /* SAM_LISTING_BEGIN_3 */
 Eigen::MatrixXd cvgrateGradedMesh(const Eigen::VectorXd &alpha,
                                   const Eigen::VectorXd &beta) {
-  int n_alphas = alpha.size();
-  int n_betas = beta.size();
+  const unsigned int n_alphas = alpha.size();
+  const unsigned int n_betas = beta.size();
   MatrixXd Rates(n_betas, n_alphas);
 
   // TO DO (7-1.i): Fill in the entries of Rates.
   // START
-  int kmin = 5, kmax = 12;
-  int n_meshes = kmax - kmin + 1;
+  constexpr unsigned int kmin = 5, kmax = 12;
+  const unsigned int n_meshes = kmax - kmin + 1;
   // n=2^kmin, 2^(kmin+1), ..., 2^kmax.
   ArrayXd N = Eigen::pow(2, ArrayXd::LinSpaced(n_meshes, kmin, kmax));
 
   // Errors(i,k*n_alphas+j) = L-infinity error of interpolation of t^alpha(j)
   // using a mesh M with #M = N(i)+1 and grading parameter beta(k).
   MatrixXd Errors(n_meshes, n_alphas * n_betas);
-  for (int i = 0; i < n_meshes; i++) {
-    int n = N(i);  // The mesh has #M = (n+1) = (N(i)+1) nodes.
+  for (unsigned int i = 0; i < n_meshes; i++) {
+    const unsigned int n = N(i);  // The mesh has #M = (n+1) = (N(i)+1) nodes.
     VectorXd mesh = VectorXd::LinSpaced(n + 1, 0.0, 1.0);
-    for (int k = 0; k < n_betas; k++) {
+    for (unsigned int k = 0; k < n_betas; k++) {
       // Transform the mesh using the grading parameter beta.
       VectorXd gradedMesh = pow(mesh.array(), beta(k)).matrix();
-      for (int j = 0; j < n_alphas; j++) {
+      for (unsigned int j = 0; j < n_alphas; j++) {
         // Compute L-infinity error for f_j(t) = t^alpha(j).
-        double alphaj = alpha(j);
+        const double alphaj = alpha(j);
         auto fj = [alphaj](double t) { return std::pow(t, alphaj); };
-        int ind = k * n_alphas + j;
+        const unsigned int ind = k * n_alphas + j;
         Errors(i, ind) =
             pwlintpMaxError<std::function<double(double)>>(fj, gradedMesh);
       }
     }
   }
 
-  for (int k = 0; k < n_betas; k++) {
-    for (int j = 0; j < n_alphas; j++) {
+  for (unsigned int k = 0; k < n_betas; k++) {
+    for (unsigned int j = 0; j < n_alphas; j++) {
       // Estimate convergence rate for f_j(t) = t^alpha(j) by the slope
       // of line fitted through the errors on a log-log scale.
-      int ind = k * n_alphas + j;
+      const unsigned int ind = k * n_alphas + j;
       VectorXd coeff =
           polyfit(N.array().log(), Errors.col(ind).array().log(), 1);
       Rates(k, j) = -coeff[1];
@@ -275,6 +275,7 @@ Eigen::MatrixXd cvgrateGradedMesh(const Eigen::VectorXd &alpha,
  */
 /* SAM_LISTING_BEGIN_4 */
 void testcvgGradedMesh(void) {
+  plt::figure();
   // TO DO (7-1.j): Plot the convergence rates from
   // cvgrateGradedMesh() using alpha = 0.05, 0.15, ..., 2.95
   // and beta = 0.1, 0.2, ..., 2.0.
@@ -285,9 +286,9 @@ void testcvgGradedMesh(void) {
   // You can use x.replicate() to create X and Y
   // for an appropriate vector x.
   // START
-  int n_alphas = 30;
+  constexpr unsigned int n_alphas = 30;
   VectorXd alpha = VectorXd::LinSpaced(n_alphas, 0.05, 2.95);
-  int n_betas = 20;
+  constexpr unsigned int n_betas = 20;
   VectorXd beta = VectorXd::LinSpaced(n_betas, 0.1, 2.0);
 
   // ConvRates(i,j) = convergence rate using beta(i) and alpha(j).
@@ -298,12 +299,11 @@ void testcvgGradedMesh(void) {
   MatrixXd alphaGrid = alpha.replicate(1, n_betas).transpose();
   MatrixXd betaGrid = beta.replicate(1, n_alphas);
 
-  plt::figure();
   plt::plot_surface(alphaGrid, betaGrid, ConvRates);
   plt::xlabel("alpha");
   plt::ylabel("beta");
   plt::title("Cvg. rates of pw. lin. intp. of f(t)=t^alpha on graded meshes");
-  plt::savefig("./cx_out/alphabeta.png");
   // END
+  plt::savefig("./cx_out/alphabeta.png");
 }
 /* SAM_LISTING_END_4 */

@@ -84,7 +84,7 @@ double gaussquadtriangle_loop(const Function& f, const unsigned N) {
     double y = (Q.nodes(i) + 1) * (b - a) / 2 + a;
     // Define $f_y(x)$ (y is fixed and f\_y is a function of x)
     auto f_y = [&f, &y] (double x) { return f(x,y); };
-    // Compute g(y) as \int_0^{1-y} I(x,y) dx
+    // Compute g(y) as $\int_0^{1-y} I(x,y) dx$
     I += evalquad(0, 1-y, f_y, Q) * Q.weights(i);
   }
   // Rescale interval
