@@ -1,5 +1,5 @@
-#include "chebyApprox.hpp"
 #include <iomanip>
+#include "chebyApprox.hpp"
 #define WIDTH 15
 
 int main() {

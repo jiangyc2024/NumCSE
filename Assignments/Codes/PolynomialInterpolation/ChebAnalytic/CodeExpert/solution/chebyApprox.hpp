@@ -2,8 +2,8 @@
 #include <cmath>
 #include <complex>
 #include <iostream>
-#include <vector>
 #include <limits>
+#include <vector>
 #include "intpolyval.hpp"
 
 using Eigen::VectorXcd;
@@ -24,17 +24,32 @@ double lengthEllipse(double rho, unsigned int N) {
   // equidistant points (in $\theta$)
   double length = 0.0;
   // START
-  // $f=|\gamma_p'(\theta)|$
-  auto f = [rho](long double theta) {
+  const complex i(0, 1);  // imaginary unit
+  // Define $\gamma_p$
+  auto f = [rho, i](double theta) { return cos(theta - i * log(rho)); };
+  VectorXd eval_points = VectorXd::LinSpaced(N + 1, 0, 2 * M_PI);
+  // Calculating distance between last and current point on ellipse for all
+  // points
+  complex last = f(eval_points(0));
+  for (unsigned int i = 0; i < N; i++) {
+    complex current = f(eval_points(i + 1));
+    length += std::abs(current - last);
+    last = current;
+  }
+  // Alternative method using an approximation over the integral of the length
+  // of $\gamma_p'$.
+  // $df=|\gamma_p'(\theta)|$
+  double length_alt = 0.0;
+  auto df = [rho](long double theta) {
     return 0.5 * sqrt(rho * rho + 1 / (rho * rho) - 2 * cos(2 * theta));
   };
   double dtheta = 2 * M_PI / N;
   double theta_i = 0;
   for (unsigned int i = 0; i < N; i++) {
-    length += f(theta_i);
+    length_alt += df(theta_i);
     theta_i += dtheta;
   }
-  length *= dtheta;
+  length_alt *= dtheta;
   // END
   return length;
 }
@@ -61,7 +76,7 @@ std::pair<double, double> bestBound() {
 
   double m = std::numeric_limits<double>::max();  // save min in here
   // discretize rhos and remove first (open interval!)
-  VectorXd rhos = VectorXd::LinSpaced(N+1, 1, maxRho).head(N);
+  VectorXd rhos = VectorXd::LinSpaced(N + 1, 1, maxRho).head(N);
   double r = rhos(0);  // save argmin here
 
   // discretize the ellipse
