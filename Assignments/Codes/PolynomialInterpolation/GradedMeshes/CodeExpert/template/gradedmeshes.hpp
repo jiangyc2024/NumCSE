@@ -51,7 +51,7 @@ double pwlintpMaxError(FUNCTION &&f, const Eigen::VectorXd &t) {
   // TO DO (7-1.c): Approximate the maximum norm of (f - If) on [0,1],
   // where If is the piecewise linear interpolation of f on the mesh t.
   // START
-
+  
   // END
   return maxerr;
 }
@@ -69,7 +69,7 @@ void cvgplotEquidistantMesh(const Eigen::VectorXd &alpha) {
   // errors (obtained by pwlintMaxError()) with
   // number of mesh intervals 32, 64, ..., 4096.
   // START
-
+  
   // END
   plt::savefig("./cx_out/cvgplotEquidistant.png");
 }
@@ -91,7 +91,7 @@ Eigen::VectorXd cvgrateEquidistantMesh(const Eigen::VectorXd &alpha) {
   // rates of the maximum norm (obtained by pwlintMaxError()) with
   // number of mesh intervals 32, 64, ..., 4096.
   // START
-
+  
   // END
   return Rates;
 }
@@ -107,7 +107,7 @@ void testcvgEquidistantMesh(void) {
   // lin. intp. of $t^\alpha$ using equidistant meshes on [0,1],
   // for alpha = 0.05, 0.15, 0.25 ..., 2.95.
   // START
-
+  
   // END
   plt::savefig("./cx_out/cvgrateEquidistant.png");
 }
@@ -129,7 +129,7 @@ Eigen::MatrixXd cvgrateGradedMesh(const Eigen::VectorXd &alpha,
 
   // TO DO (7-1.i): Fill in the entries of Rates.
   // START
-
+  
   // END
   return Rates;
 }
@@ -151,7 +151,7 @@ void testcvgGradedMesh(void) {
   // You can use x.replicate() to create X and Y
   // for an appropriate vector x.
   // START
-
+  
   // END
   plt::savefig("./cx_out/alphabeta.png");
 }
