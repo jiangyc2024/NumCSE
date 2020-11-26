@@ -14,7 +14,7 @@ int main() {
   err_zero = fppchipConvergence();
   err_reconstr = rspchipConververgence();
 
-  for (int i = 0; i < h.size(); ++i) {
+  for (unsigned int i = 0; i < h.size(); ++i) {
     std::cout << N_nodes[i] << " " << err_zero[i] << " " << err_reconstr[i]
               << std::endl;
   }
