@@ -3,20 +3,21 @@
 
 #include "copy.hpp"
 #include "doctest.h"
-// #include "pchi.hpp"
 
 auto f = [](double x) { return 1. / (1. + x * x); };
 VectorXd t = VectorXd::Random(10);
 CubicHermiteInterpolant s_zero(f, t, Slope::Zero);
 CubicHermiteInterpolant s_reconstr(f, t, Slope::Reconstructed);
+CubicHermiteInterpolant_TEST s_zero_TEST(f, t, Slope::Zero);
+CubicHermiteInterpolant_TEST s_reconstr_TEST(f, t, Slope::Reconstructed);
 
 TEST_SUITE("PCHI") {
-  TEST_CASE("eval" * doctest::description("evaluation function")) {
+  TEST_CASE("VectorXd CubicHermiteInterpolant::eval const " * doctest::description("evaluation function")) {
     VectorXd x = VectorXd::Random(10);
     VectorXd sol = s_zero.eval(x);
-    // VectorXd stud = s_zero_TEST.eval(x);
+    VectorXd stud = s_zero_TEST.eval(x);
 
-    CHECK((sol - sol).lpNorm<Infinity>() == doctest::Approx(0.).epsilon(1e-6));
+    CHECK((stud - sol).lpNorm<Infinity>() == doctest::Approx(0.).epsilon(1e-6));
   }
 
   TEST_CASE("Eigen::VectorXd fppchip" * doctest::description("...") *
