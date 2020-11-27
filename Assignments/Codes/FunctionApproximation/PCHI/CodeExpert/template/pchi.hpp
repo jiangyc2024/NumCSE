@@ -10,9 +10,6 @@ namespace plt = matplotlibcpp;
 
 using namespace Eigen;
 
-// Flag for slope reconstruction type
-enum class Slope { Zero, Reconstructed };
-
 /* SAM_LISTING_BEGIN_0 */
 /*!
  * \brief Implements a piecewise cubic Hermite interpolation.
@@ -30,7 +27,7 @@ class CubicHermiteInterpolant {
    *zero.
    */
   template <typename Function>
-  CubicHermiteInterpolant(Function &&f, const VectorXd &t, Slope s);
+  CubicHermiteInterpolant(Function &&f, const VectorXd &t);
   virtual ~CubicHermiteInterpolant(void) = default;
 
   /*!
@@ -53,9 +50,10 @@ class CubicHermiteInterpolant {
 };
 /* SAM_LISTING_END_0 */
 
+/* SAM_LISTING_BEGIN_1 */
 template <typename Function>
 CubicHermiteInterpolant::CubicHermiteInterpolant(Function &&f,
-                                                 const VectorXd &t, Slope s)
+                                                 const VectorXd &t)
     : t_(t), y_(t.unaryExpr(f)), c_(t.size()) {
   // Sanity check
   n_ = t_.size();
@@ -64,27 +62,15 @@ CubicHermiteInterpolant::CubicHermiteInterpolant(Function &&f,
   h_ = t_(1) - t_(0);
 
   //// Reconstruction of the slope,
-  switch (s) {
-    /* SAM_LISTING_BEGIN_1 */
-    case Slope::Zero:
-      // TO DO: CASE: assuming $s'(x_j) = 0$ (error: $O(1)$).
-      // START
+  /* SAM_LISTING_BEGIN_2 */
+  // TO DO: implement reconstruction of slopes.
+  // START
 
-      // END
-      break;
-      /* SAM_LISTING_END_1 */
-      /* SAM_LISTING_BEGIN_2 */
-    case Slope::Reconstructed:
-    default:
-      // TO DO: CASE: second order finite differences (error: $O(h^2)$).
-      // START
+  // END
 
-      // END
-
-      break;
-      /* SAM_LISTING_END_2 */
-  }
+  /* SAM_LISTING_END_2 */
 }
+/* SAM_LISTING_END_1 */
 
 /* SAM_LISTING_BEGIN_3 */
 VectorXd CubicHermiteInterpolant::eval(const VectorXd &x) const {
@@ -130,7 +116,6 @@ std::vector<double> fppchipConvergence(void) {
 
   // TO DO: compute err\_zero.
   // START
-
 
   // END
 

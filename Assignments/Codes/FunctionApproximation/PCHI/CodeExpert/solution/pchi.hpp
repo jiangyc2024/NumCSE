@@ -10,9 +10,6 @@ namespace plt = matplotlibcpp;
 
 using namespace Eigen;
 
-// Flag for slope reconstruction type
-enum class Slope { Zero, Reconstructed };
-
 /* SAM_LISTING_BEGIN_0 */
 /*!
  * \brief Implements a piecewise cubic Hermite interpolation.
@@ -30,7 +27,7 @@ class CubicHermiteInterpolant {
    *zero.
    */
   template <typename Function>
-  CubicHermiteInterpolant(Function &&f, const VectorXd &t, Slope s);
+  CubicHermiteInterpolant(Function &&f, const VectorXd &t);
   virtual ~CubicHermiteInterpolant(void) = default;
 
   /*!
@@ -53,9 +50,10 @@ class CubicHermiteInterpolant {
 };
 /* SAM_LISTING_END_0 */
 
+/* SAM_LISTING_BEGIN_1 */
 template <typename Function>
 CubicHermiteInterpolant::CubicHermiteInterpolant(Function &&f,
-                                                 const VectorXd &t, Slope s)
+                                                 const VectorXd &t)
     : t_(t), y_(t.unaryExpr(f)), c_(t.size()) {
   // Sanity check
   n_ = t_.size();
@@ -64,34 +62,22 @@ CubicHermiteInterpolant::CubicHermiteInterpolant(Function &&f,
   h_ = t_(1) - t_(0);
 
   //// Reconstruction of the slope,
-  switch (s) {
-    /* SAM_LISTING_BEGIN_1 */
-    case Slope::Zero:
-      // TO DO: CASE: assuming $s'(x_j) = 0$ (error: $O(1)$).
-      // START
-      c_ = VectorXd::Zero(n_);
-      // END
-      break;
-      /* SAM_LISTING_END_1 */
-      /* SAM_LISTING_BEGIN_2 */
-    case Slope::Reconstructed:
-    default:
-      // TO DO: CASE: second order finite differences (error: $O(h^2)$).
-      // START
-      // First order alternative:
-      c_(0) = (-1 * y_(2) + 4 * y_(1) - 3 * y_(0)) / 2 / h_;
-      for (int i = 1; i < n_ - 1; ++i) {
-        c_(i) = (y_(i + 1) - y_(i - 1)) / 2 / h_;
-      }
-
-      // First order alternative:
-      c_(n_ - 1) = (3 * y_(n_ - 1) - 4 * y_(n_ - 2) + 1 * y_(n_ - 3)) / 2 / h_;
-      // END
-
-      break;
-      /* SAM_LISTING_END_2 */
+  /* SAM_LISTING_BEGIN_2 */
+  // TO DO: implement reconstruction of slopes.
+  // START
+  // First order alternative:
+  c_(0) = (-1 * y_(2) + 4 * y_(1) - 3 * y_(0)) / 2 / h_;
+  for (int i = 1; i < n_ - 1; ++i) {
+    c_(i) = (y_(i + 1) - y_(i - 1)) / 2 / h_;
   }
+
+  // First order alternative:
+  c_(n_ - 1) = (3 * y_(n_ - 1) - 4 * y_(n_ - 2) + 1 * y_(n_ - 3)) / 2 / h_;
+  // END
+
+  /* SAM_LISTING_END_2 */
 }
+/* SAM_LISTING_END_1 */
 
 /* SAM_LISTING_BEGIN_3 */
 VectorXd CubicHermiteInterpolant::eval(const VectorXd &x) const {
@@ -110,7 +96,7 @@ VectorXd CubicHermiteInterpolant::eval(const VectorXd &x) const {
     if (t_(i_star) <= x(j) && x(j) <= t_(i_star + 1)) {
       t1 = t_(i_star);
       t2 = t_(i_star + 1);
-      h_tmp = t2 - t1;  // h\_tmp = h\_ for equidistant grid
+      h_tmp = t2 - t1;  // h_tmp = h_ for equidistant grid
       y1 = y_(i_star);
       y2 = y_(i_star + 1);
       c1 = c_(i_star);
@@ -147,8 +133,38 @@ Eigen::VectorXd fppchip(Function &&f, const Eigen::VectorXd &t,
   // TO DO: compute ret.
   // START
 
-  CubicHermiteInterpolant pchi(t, t.unaryExpr(f), Slope::Zero);
-  ret = pchi.eval(x);
+  int n = x.size();
+  VectorXd y = t.unaryExpr(f);
+  int i_star = 0;
+  double tmp, h_tmp, t1, t2, y1, y2, a1, a2, a3;
+  for (int j = 0; j < x.size();) {
+    // Stores the current interval index and some temporary variable
+    // Find the interval for $x_j$
+    // while assuming that $x$ values are sorted and within
+    // $[t_{\min},t_{\max}]$
+    if (t(i_star) <= x(j) && x(j) <= t(i_star + 1)) {
+      t1 = t(i_star);
+      t2 = t(i_star + 1);
+      h_tmp = t2 - t1;  // h\_tmp = h\_ for equidistant grid
+      y1 = y(i_star);
+      y2 = y(i_star + 1);
+      a1 = y2 - y1;
+      a2 = a1;
+      a3 = -a1 - a2;
+
+      // Compute $s(x(j))$
+      tmp = (x(j) - t1) / h_tmp;
+      ret(j) = y1 + (a1 + (a2 + a3 * tmp) * (tmp - 1.)) * tmp;
+
+      ++j;
+    } else {
+      // Otherwise, go to next interval
+      ++i_star;
+      // Terminate if outside any interval
+      if (i_star >= t.size() - 1) break;
+      continue;
+    }
+  }
 
   // END
 
@@ -178,11 +194,8 @@ std::vector<double> fppchipConvergence(void) {
     // Define subintervals and evaluate f there (find pairs (t,y))
     VectorXd t = VectorXd::LinSpaced(i, -a, a);
 
-    // Construct PCHI with zero and reconstructed slopes
-    CubicHermiteInterpolant s_zero(f, t, Slope::Zero);
-
-    // Evaluate interpolant
-    VectorXd s_zero_x = s_zero.eval(x);
+    // compute reconstructed slopes
+    VectorXd s_zero_x = fppchip(f, t, x);
 
     // Compute infinity norm of error
     err_zero.push_back((s_zero_x - fx).lpNorm<Infinity>());
@@ -229,7 +242,7 @@ std::vector<double> rspchipConververgence(void) {
     VectorXd t = VectorXd::LinSpaced(i, -a, a);
 
     // Construct PCHI with zero and reconstructed slopes
-    CubicHermiteInterpolant s_reconstr(f, t, Slope::Reconstructed);
+    CubicHermiteInterpolant s_reconstr(f, t);
 
     // Evaluate interpolant
     VectorXd s_reconstr_x = s_reconstr.eval(x);
