@@ -53,6 +53,7 @@ class CubicHermiteInterpolant {
 };
 /* SAM_LISTING_END_0 */
 
+/* SAM_LISTING_BEGIN_7 */
 template <typename Function>
 CubicHermiteInterpolant::CubicHermiteInterpolant(Function &&f,
                                                  const VectorXd &t, Slope s)
@@ -92,6 +93,7 @@ CubicHermiteInterpolant::CubicHermiteInterpolant(Function &&f,
       /* SAM_LISTING_END_2 */
   }
 }
+/* SAM_LISTING_END_7 */
 
 /* SAM_LISTING_BEGIN_3 */
 VectorXd CubicHermiteInterpolant::eval(const VectorXd &x) const {
