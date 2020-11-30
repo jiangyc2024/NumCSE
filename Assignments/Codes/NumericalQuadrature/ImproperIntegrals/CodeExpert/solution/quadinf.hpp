@@ -11,15 +11,6 @@
 
 namespace plt = matplotlibcpp;
 
-// TO DO (8-3.e): define the function quadinf that integrates the input
-// lambda f over the real axis. First, trasform the integrand with a change
-// of variables and then use an n point Gauss quadrature.
-// Hint 1: lambda functions can take parameters inside the [] brackets
-// Hint 2: you may write an auxiliary function to compute the quadrature over
-//         a bounded interval.
-
-// START
-
 //! @brief Compute $\int_a^b f(x) dx \approx \sum w_i f(x_i)$ (with scaling of
 //! $w$ and $x$)
 //! @tparam Function template type for function handle f (e.g.\ lambda function)
@@ -32,12 +23,16 @@ namespace plt = matplotlibcpp;
 
 /* SAM_LISTING_BEGIN_1 */
 template <class Function>
-double quad(Function &&f, const Eigen::VectorXd &w, const Eigen::VectorXd &x, double a, double b) {
+double quad(Function &&f, const Eigen::VectorXd &w, const Eigen::VectorXd &x,
+            double a, double b) {
+  // TO DO (8-3.e): implement transformation of quadrature rule
+  // START
   double I = 0;
   for (int i = 0; i < w.size(); ++i) {
     I += f((x(i) + 1) * (b - a) / 2 + a) * w(i);
   }
   return I * (b - a) / 2.;
+  // END
 }
 /* SAM_LISTING_END_1 */
 
@@ -51,6 +46,14 @@ double quad(Function &&f, const Eigen::VectorXd &w, const Eigen::VectorXd &x, do
 /* SAM_LISTING_BEGIN_2 */
 template <class Function>
 double quadinf(const int n, Function &&f) {
+  // TO DO (8-3.e): define the function quadinf that integrates the input
+  // lambda f over the real axis. First, trasform the integrand with a change
+  // of variables and then use an n point Gauss quadrature.
+  // Hint 1: lambda functions can take parameters inside the [] brackets
+  // Hint 2: you may write an auxiliary function to compute the quadrature over
+  //         a bounded interval.
+
+  // START
   Eigen::VectorXd w, x;
   // Compute nodes and weights of Gauss quadrature rule
   // using Golub-Welsh algorithm
@@ -65,10 +68,9 @@ double quadinf(const int n, Function &&f) {
   /* auto ftilde = [&f] (double x) { double cot = std::tan(PI_HALF - x); return
    * f(cot) * (1. + pow(cot,2)); }; */
   return quad(ftilde, w, x, 0, PI);
+  // END
 }
 /* SAM_LISTING_END_2 */
-
-// END
 
 //! @brief perform convergence test for h(t) := exp(-(t-1)^2) and plot error
 
