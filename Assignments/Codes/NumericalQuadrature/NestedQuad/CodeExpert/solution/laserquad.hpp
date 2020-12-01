@@ -1,3 +1,5 @@
+#ifndef LASERQUAD_HPP
+#define LASERQUAD_HPP
 ////
 //// Copyright (C) 2016 SAM (D-MATH) @ ETH Zurich
 //// Author(s): lfilippo <filippo.leonardi@sam.math.ethz.ch>
@@ -23,13 +25,12 @@ namespace plt = matplotlibcpp;
 /* SAM_LISTING_BEGIN_1 */
 template <class Function>
 double evalquad(const double a, const double b, Function &&f, const QuadRule &Q) {
-  double I;
+  double I = 0.;
   // TO DO: (8-4.b) Use Q to approximate the integral of f over [a,b]
   // START
-  I = 0;
   // Loop over all nodes/weights pairs
-  for (int i = 0; i < Q.weights.size(); ++i) {
-    I += f((Q.nodes(i) + 1) * (b - a) / 2 + a) * Q.weights(i);
+  for (unsigned int i = 0; i < Q.weights.size(); ++i) {
+    I += f((Q.nodes(i) + 1.) * (b - a) / 2. + a) * Q.weights(i);
   }
   I = I * (b - a) / 2.;
   // END
@@ -47,7 +48,7 @@ double evalquad(const double a, const double b, Function &&f, const QuadRule &Q)
 /* SAM_LISTING_BEGIN_2 */
 template <class Function>
 double gaussquadtriangle(const Function &f, const unsigned N) {
-  double I;
+  double I = 0.;
   // TO DO: (8-4.c) Use N-node gaussquad() to integrate f over
   // the triangle 0<=x,y, x+y<=1.
   // START
@@ -79,13 +80,13 @@ double gaussquadtriangle_loop(const Function& f, const unsigned N) {
   // Integration over y from 0 to 1 of $g(y) := \int_0^{1-y} I(x,y) dx$
   double I = 0;
   double a = 0., b  = 1.;
-  for(int i = 0; i < Q.weights.size(); ++i) {
+  for(unsigned int i = 0; i < Q.weights.size(); ++i) {
     // Find out the y at which we are
-    double y = (Q.nodes(i) + 1) * (b - a) / 2 + a;
+    double y = (Q.nodes(i) + 1.) * (b - a) / 2. + a;
     // Define $f_y(x)$ (y is fixed and f\_y is a function of x)
     auto f_y = [&f, &y] (double x) { return f(x,y); };
     // Compute g(y) as $\int_0^{1-y} I(x,y) dx$
-    I += evalquad(0, 1-y, f_y, Q) * Q.weights(i);
+    I += evalquad(0, 1 - y, f_y, Q) * Q.weights(i);
   }
   // Rescale interval
   return I * (b - a) / 2.;
@@ -95,12 +96,13 @@ double gaussquadtriangle_loop(const Function& f, const unsigned N) {
 /* SAM_LISTING_BEGIN_3 */
 void convtest2DQuad(unsigned int nmax = 20) {
   // "Exact" integral
-  const double I_ex = 0.366046550000405;
+  constexpr double I_ex = 0.366046550000405;
+  plt::figure();
   // TO DO: (8-4.d) Tabulate the error of gaussquadtriangle() for
   // a laser beam intensity, using n=1,2,3,...,nmax nodes.
   // START
   // Parameters
-  const double alpha = 1, p = 0, q = 0;
+  constexpr double alpha = 1., p = 0., q = 0.;
   // Laser beam intensity
   auto I = [alpha, p, q](double x, double y) {
     return std::exp(-alpha * ((x - p) * (x - p) + (y - q) * (y - q)));
@@ -112,8 +114,8 @@ void convtest2DQuad(unsigned int nmax = 20) {
 
   std::cout << std::setw(3) << "N" << std::setw(15) << "I_approx"
             << std::setw(15) << "error" << std::endl;
-  for (unsigned n = 1; n <= nmax; n++) {
-    double I_approx = gaussquadtriangle(I, n);
+  for (unsigned int n = 1; n <= nmax; n++) {
+    const double I_approx = gaussquadtriangle(I, n);
 
     err[n-1] = std::abs(I_ex - I_approx);
     num_pts[n-1] = n;
@@ -122,7 +124,6 @@ void convtest2DQuad(unsigned int nmax = 20) {
               << err[n-1] << std::endl;
   }
   // Error plot rendered by matplotlibcpp
-  plt::figure();
   plt::semilogy(num_pts, err, "^", {{"label", "error"}});
   plt::xlim(0.5,nmax+0.5);
   plt::xticks(num_pts);
@@ -130,7 +131,9 @@ void convtest2DQuad(unsigned int nmax = 20) {
   plt::ylabel("|Error|");
   plt::title("Convergence of laserquad");
   plt::grid("True");
-  plt::savefig("./cx_out/convergence.png");
   // END
+  plt::savefig("./cx_out/convergence.png");
 }
 /* SAM_LISTING_END_3 */
+
+#endif

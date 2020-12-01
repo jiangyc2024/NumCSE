@@ -20,36 +20,36 @@ struct TestData {
 		Q.weights.resize(5);
 		Q.weights << 0.1, 49./90., 32./45., 49./90., 0.1;
 		
-		a = -2;
-		b = 3;
+		a = -2.;
+		b = 3.;
 		N = 5;
 	}
 	
 	std::function<double (double)> f;
 	std::function<double (double, double)> g;
 	
-    QuadRule Q;
-    
-    double a;
-    double b;
-    int N;
+  QuadRule Q;
+  
+  double a;
+  double b;
+  unsigned int N;
 };
 
 TestData data;
 
 TEST_SUITE("NestedQuad") {
 	TEST_CASE("double evalquad" * doctest::description("evalquad()")) {
-		double sol = evalquad(data.a, data.b, data.f, data.Q);
-		double stud = evalquad_TEST(data.a, data.b, data.f, data.Q);
+		const double sol = evalquad(data.a, data.b, data.f, data.Q);
+		const double stud = evalquad_TEST(data.a, data.b, data.f, data.Q);
 		
-		CHECK(std::abs(sol - stud) == doctest::Approx(0.).epsilon(1e-6));
+		CHECK(std::abs(sol - stud) == doctest::Approx(0.).epsilon(1e-8));
 	}
 	
 	TEST_CASE("double gaussquadtriangle" * doctest::description("evalquad()")) {
-		double sol = gaussquadtriangle(data.g, data.N);
-		double stud = gaussquadtriangle_TEST(data.g, data.N);
+		const double sol = gaussquadtriangle(data.g, data.N);
+		const double stud = gaussquadtriangle_TEST(data.g, data.N);
 		
-		CHECK(std::abs(sol - stud) == doctest::Approx(0.).epsilon(1e-6));
+		CHECK(std::abs(sol - stud) == doctest::Approx(0.).epsilon(1e-4));
 	}
 	
 	TEST_CASE("void convtest2DQuad" * doctest::description("convtest2DQuad() for 2 nodes")) {
