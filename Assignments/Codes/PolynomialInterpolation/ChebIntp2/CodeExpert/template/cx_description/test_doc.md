@@ -1,5 +1,3 @@
-
-
 # Tests of adaptivepolyintp.hpp
 
 ***

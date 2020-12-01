@@ -27,6 +27,6 @@ http://stackoverflow.com/questions/31549398/c-eigen-initialize-static-matrix  st
     return tmp;
 }();
   */
-
+};
 
 /* SAM_LISTING_END_0 */
