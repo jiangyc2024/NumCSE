@@ -24,7 +24,8 @@ namespace plt = matplotlibcpp;
 //! @return Approximation of integral $\int_a^b f(x) dx$
 /* SAM_LISTING_BEGIN_1 */
 template <class Function>
-double evalquad(const double a, const double b, Function &&f, const QuadRule &Q) {
+double evalquad(const double a, const double b, Function &&f,
+                const QuadRule &Q) {
   double I = 0.;
   // TO DO: (8-4.b) Use Q to approximate the integral of f over [a,b]
   // START
@@ -73,18 +74,18 @@ double gaussquadtriangle(const Function &f, const unsigned N) {
 // EQUIVALENT: Loop based, copy-and-paste implementation
 /* SAM_LISTING_BEGIN_9 */
 template <class Function>
-double gaussquadtriangle_loop(const Function& f, const unsigned N) {
+double gaussquadtriangle_loop(const Function &f, const unsigned N) {
   // Get nodes/weights for integral over dx and dy
   QuadRule Q;
   gaussquad(N, Q);
   // Integration over y from 0 to 1 of $g(y) := \int_0^{1-y} I(x,y) dx$
   double I = 0;
-  double a = 0., b  = 1.;
-  for(unsigned int i = 0; i < Q.weights.size(); ++i) {
+  double a = 0., b = 1.;
+  for (unsigned int i = 0; i < Q.weights.size(); ++i) {
     // Find out the y at which we are
     double y = (Q.nodes(i) + 1.) * (b - a) / 2. + a;
     // Define $f_y(x)$ (y is fixed and f\_y is a function of x)
-    auto f_y = [&f, &y] (double x) { return f(x,y); };
+    auto f_y = [&f, &y](double x) { return f(x, y); };
     // Compute g(y) as $\int_0^{1-y} I(x,y) dx$
     I += evalquad(0, 1 - y, f_y, Q) * Q.weights(i);
   }
@@ -117,15 +118,15 @@ void convtest2DQuad(unsigned int nmax = 20) {
   for (unsigned int n = 1; n <= nmax; n++) {
     const double I_approx = gaussquadtriangle(I, n);
 
-    err[n-1] = std::abs(I_ex - I_approx);
-    num_pts[n-1] = n;
+    err[n - 1] = std::abs(I_ex - I_approx);
+    num_pts[n - 1] = n;
 
     std::cout << std::setw(3) << n << std::setw(15) << I_approx << std::setw(15)
-              << err[n-1] << std::endl;
+              << err[n - 1] << std::endl;
   }
   // Error plot rendered by matplotlibcpp
   plt::semilogy(num_pts, err, "^", {{"label", "error"}});
-  plt::xlim(0.5,nmax+0.5);
+  plt::xlim(0.5, nmax + 0.5);
   plt::xticks(num_pts);
   plt::xlabel("No. of quadrature nodes");
   plt::ylabel("|Error|");

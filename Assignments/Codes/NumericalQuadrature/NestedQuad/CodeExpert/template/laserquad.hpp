@@ -24,11 +24,12 @@ namespace plt = matplotlibcpp;
 //! @return Approximation of integral $\int_a^b f(x) dx$
 /* SAM_LISTING_BEGIN_1 */
 template <class Function>
-double evalquad(const double a, const double b, Function &&f, const QuadRule &Q) {
+double evalquad(const double a, const double b, Function &&f,
+                const QuadRule &Q) {
   double I = 0.;
   // TO DO: (8-4.b) Use Q to approximate the integral of f over [a,b]
   // START
-  
+
   // END
   return I;
 }
@@ -48,11 +49,34 @@ double gaussquadtriangle(const Function &f, const unsigned N) {
   // TO DO: (8-4.c) Use N-node gaussquad() to integrate f over
   // the triangle 0<=x,y, x+y<=1.
   // START
-  
+
   // END
   return I;
 }
 /* SAM_LISTING_END_2 */
+
+// EQUIVALENT: Loop based, copy-and-paste implementation
+/* SAM_LISTING_BEGIN_9 */
+template <class Function>
+double gaussquadtriangle_loop(const Function &f, const unsigned N) {
+  // Get nodes/weights for integral over dx and dy
+  QuadRule Q;
+  gaussquad(N, Q);
+  // Integration over y from 0 to 1 of $g(y) := \int_0^{1-y} I(x,y) dx$
+  double I = 0;
+  double a = 0., b = 1.;
+  for (unsigned int i = 0; i < Q.weights.size(); ++i) {
+    // Find out the y at which we are
+    double y = (Q.nodes(i) + 1.) * (b - a) / 2. + a;
+    // Define $f_y(x)$ (y is fixed and f\_y is a function of x)
+    auto f_y = [&f, &y](double x) { return f(x, y); };
+    // Compute g(y) as $\int_0^{1-y} I(x,y) dx$
+    I += evalquad(0, 1 - y, f_y, Q) * Q.weights(i);
+  }
+  // Rescale interval
+  return I * (b - a) / 2.;
+}
+/* SAM_LISTING_END_9 */
 
 /* SAM_LISTING_BEGIN_3 */
 void convtest2DQuad(unsigned int nmax = 20) {
@@ -62,7 +86,7 @@ void convtest2DQuad(unsigned int nmax = 20) {
   // TO DO: (8-4.d) Tabulate the error of gaussquadtriangle() for
   // a laser beam intensity, using n=1,2,3,...,nmax nodes.
   // START
-  
+
   // END
   plt::savefig("./cx_out/convergence.png");
 }
