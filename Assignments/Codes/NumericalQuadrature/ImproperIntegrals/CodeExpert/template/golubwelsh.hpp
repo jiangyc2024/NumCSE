@@ -7,7 +7,7 @@
 //! @param[out] w weights
 //! @param[out] x nodes for interval $[-1,1]$
 template <class vector>
-inline void golubwelsh(const int n, vector& w, vector& x) {
+inline void golubwelsh(const int n, vector &w, vector &x) {
   w.resize(n);
   x.resize(n);
   if (n == 0) {
