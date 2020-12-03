@@ -10,7 +10,7 @@ CubicHermiteInterpolant s_reconstr(f, t);
 CubicHermiteInterpolant_TEST s_reconstr_TEST(f, t);
 
 TEST_SUITE("PCHI") {
-  TEST_CASE("eval" * doctest::description("evaluation function")) {
+  TEST_CASE("VectorXd CubicHermiteInterpolant::eval const " * doctest::description("evaluation function")) {
     VectorXd x = VectorXd::Random(10);
     VectorXd sol_reconstr = s_reconstr.eval(x);
     VectorXd stud_reconstr = s_reconstr_TEST.eval(x);
