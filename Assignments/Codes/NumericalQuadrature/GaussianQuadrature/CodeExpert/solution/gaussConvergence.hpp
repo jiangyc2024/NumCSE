@@ -77,7 +77,7 @@ double gaussConv(const Function& fh, const double I_ex, const unsigned N) {
   plt::ylabel("|Error|");
   plt::legend("best");
   plt::savefig("./cx_out/GaussConv.png");
-  // plt::savefig("./cx_out/GaussConv.eps");
+  plt::savefig("./cx_out/GaussConv.eps");
 
   // END
 
@@ -144,7 +144,7 @@ double gaussConvCV(const Function& f, const double I_ex, const unsigned N) {
   plt::ylabel("|Error|");
   plt::legend("best");
   plt::savefig("./cx_out/GaussConvCV.png");
-  // plt::savefig("./cx_out/GaussConvCV.eps");
+  plt::savefig("./cx_out/GaussConvCV.eps");
 
   // END
 
