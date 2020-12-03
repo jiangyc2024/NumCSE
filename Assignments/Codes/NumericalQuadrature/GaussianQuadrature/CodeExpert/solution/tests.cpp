@@ -35,9 +35,6 @@ TEST_SUITE("GaussionQuadrature") {
     CHECK(sol == doctest::Approx(stud).epsilon(1e-8));
   }
 
-  TEST_CASE("void gaussquad" *
-            doctest::description("Optional helper function") *
-            doctest::skip()) {}
   TEST_CASE("double integrate" *
             doctest::description("Optional helper function") *
             doctest::skip()) {}
