@@ -7,8 +7,8 @@
 double myfunction(double x) {
     double log2=0.693147180559945;
     double y=0;
-    while(x>std::sqrt(2)){x/=2; y+=log2;} // \Label[line]{cq:1}
-    while(x<1./std::sqrt(2)){x*=2; y-=log2;} // \Label[line]{cq:2}
+    while(x>2*std::sqrt(2)){x/=2; y+=log2;} // \Label[line]{cq:1}
+    while(x<std::sqrt(2)){x*=2; y-=log2;} // \Label[line]{cq:2}
     double z=x-1; // \Label[line]{cq:3}
     double dz=x*std::exp(-z)-1.0;
     while(std::abs(dz/z)>std::numeric_limits<double>::epsilon()) {
@@ -22,8 +22,8 @@ double myfunction(double x) {
 double myfunction_modified(double x) {
     double log2 = 0.693147180559945;
     double y = 0;
-    while(x > std::sqrt(2)) { x/=2; y+=log2; }
-    while(x < 1./std::sqrt(2)) { x*=2; y-=log2; }
+    while(x > 2*std::sqrt(2)) { x/=2; y+=log2; }
+    while(x < std::sqrt(2)) { x*=2; y-=log2; }
     double z=x-1;
     double dz=x*std::exp(-z)-1.;
     // TODO: modify myfunction to perform a fixed number of iterations
