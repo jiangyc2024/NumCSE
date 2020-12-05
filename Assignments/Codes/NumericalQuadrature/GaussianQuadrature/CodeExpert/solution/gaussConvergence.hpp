@@ -23,6 +23,8 @@ namespace plt = matplotlibcpp;
 template <class Function>
 double integrate(const QuadRule& qr, const Function& f) {
   double I = 0;
+  // Compute weighted sum of function values according to
+  // the concept of a generic quadrature formula 
   for (unsigned i = 0; i < qr.weights_.size(); ++i) {
     I += qr.weights_(i) * f(qr.nodes_(i));
   }
@@ -109,7 +111,7 @@ double gaussConvCV(const Function& f, const double I_ex, const unsigned N) {
   //                using matplotlibcpp and returns the best approximation
   // START
 
-  // Transform integrand
+  // Lambda function providing \cor{transformed integrand}
   auto g = [f](double x) { return x * f(std::sin(x)) * std::cos(x); };
 
   double I;
@@ -127,11 +129,11 @@ double gaussConvCV(const Function& f, const double I_ex, const unsigned N) {
     // Same as $I = \sum_{i=1}^n w_i g(c_i)$
     I = w.dot(gc);
 
-    evals.push_back(n);                   // Save no. of quadrature nodes
+    evals.push_back(n);                 // Save no. of quadrature nodes
     error.push_back(std::abs(I - I_ex));  // Save error
   }
   
-  // save best approx. of integral
+  // save approximation of integral computed with highest-order rule
   I_N = I;
 
   // Create convergence plots
