@@ -28,10 +28,10 @@ double myfunction(double x) {
   // Initial guess:
   double z = x - 1.;  // \Label[line]{cq:3}
   // The update is $dz = -f(z)/f'(z)$
-  double dz = x * std::exp(-z) - 1.0;
+  double dz = x * std::exp(-z) - 1.;
   while (std::abs(dz / z) > std::numeric_limits<double>::epsilon()) {
     z += dz;
-    dz = x * std::exp(-z) - 1.0;
+    dz = x * std::exp(-z) - 1.;
   }
   return y + z + dz;  // \Label[line]{cq:4}
 }
@@ -57,7 +57,7 @@ double myfunction_modified(double x) {
   // START
   double e_max = 2. * std::sqrt(2.) - 1. - std::log(2. * std::sqrt(2.));
   double eps = std::numeric_limits<double>::epsilon();
-  double k = (std::log(-0.5 * std::log(2. * eps)) -
+  double k = (std::log(-std::log(0.5 * std::log(2.) * eps)) -
               std::log(-std::log(0.5 * std::abs(e_max)))) /
              std::log(2.);
   for (int i = 1; i < k; ++i) {
