@@ -12,21 +12,24 @@
 
 #include "lufak.hpp"
 
+/* SAM_LISTING_BEGIN_1 */
 std::pair<Eigen::MatrixXd, Eigen::MatrixXd>
 lufak_eigen(const Eigen::MatrixXd &A) {
   // Compute LU decomposition 
   auto ludec = A.lu();
-  // The LU-factors are computed by in-situ LU-decomposition, ss \cref{rem:insitulu}
-  // and are stored in a dense matrix of the same size as A 
+  // The LU-factors are computed by in-situ LU-decomposition,
+  // see \cref{rem:insitulu}, and are stored in a dense matrix of
+  // the same size as A 
   MatrixXd L { ludec.matrixLU().triangularView<Eigen::UnitLower>() };
   MatrixXd U { ludec.matrixLU().triangularView<Eigen::Upper>() };
-  // \eigen employs partial pivoting, see \cref{alg:GEp}, which can be viewed as a 
-  // prior permutation of the rows of A. We apply the inverse of this permutation
-  // to the L-factor in order to achieve \cob{$\VA=\VL\VU$}. 
+  // \eigen employs partial pivoting, see \cref{alg:GEp}, which can be viewed
+  // as a prior permutation of the rows of A. We apply the inverse of this
+  // permutation to the L-factor in order to achieve \cob{$\VA=\VL\VU$}. 
   L.applyOnTheLeft(ludec.permutationP().inverse());
-  // Return KU-factors a members of a 2-tuple. 
+  // Return LU-factors as members of a 2-tuple. 
   return { L , U }; 
 }
+/* SAM_LISTING_END_1 */
 
 int main() {
   int n = 3;
