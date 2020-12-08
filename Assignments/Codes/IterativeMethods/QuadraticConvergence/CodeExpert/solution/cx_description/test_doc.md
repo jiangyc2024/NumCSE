@@ -1,7 +1,9 @@
 
-
 # Tests of quadraticconvergence.hpp
 
+> The test button only tests `steffensen`, for the other functions run the program.
+
+> main.cpp calls the functions in the following way:
 ***
 > `double steffensen(Function &&f, double x0)` is tested by calling `testSteffensen()`: the student should input the function $f(x) = xe^{x} - 1$  
 and a suitable initial guess (e.g. $x_0 = 1$). The result should be
