@@ -53,7 +53,7 @@ double steffensen(Function &&f, double x0) {
   double upd = 1;
   constexpr double eps = std::numeric_limits<double>::epsilon();
   // Iterate until machine precision is reached
-  while (std::abs(upd) > eps) {
+  while (std::abs(upd) > eps*x) {
     const double fx = f(x); // Only 2 evaluations of $f$ at each step
     if (fx != 0) {
       upd = fx * fx / (f(x + fx) - fx);
@@ -100,7 +100,7 @@ double steffensen_log(Function &&f, double x0, Logger<double> *logger_p = nullpt
   double upd = 1;
   constexpr double eps = std::numeric_limits<double>::epsilon();
   // Iterate until machine precision is reached
-  while (std::abs(upd) > eps) {
+  while (std::abs(upd) > eps*x) {
     const double fx = f(x); // Only 2 evaluations of $f$ at each step
     if (fx != 0) {
       upd = fx * fx / (f(x + fx) - fx);
