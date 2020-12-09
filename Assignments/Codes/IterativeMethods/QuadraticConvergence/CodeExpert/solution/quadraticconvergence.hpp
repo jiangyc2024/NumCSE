@@ -53,7 +53,7 @@ double steffensen(Function &&f, double x0) {
   double upd = 1;
   constexpr double eps = std::numeric_limits<double>::epsilon();
   // Iterate until machine precision is reached
-  while (std::abs(upd) > eps * std::abs(x)) {
+  while (std::abs(upd) > eps) {
     const double fx = f(x); // Only 2 evaluations of $f$ at each step
     if (fx != 0) {
       upd = fx * fx / (f(x + fx) - fx);
