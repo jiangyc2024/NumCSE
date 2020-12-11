@@ -1,9 +1,6 @@
-<<<<<<< HEAD
-=======
 #ifndef GAUSSCONVERGENCE_HPP
 #define GAUSSCONVERGENCE_HPP
 
->>>>>>> 123d30b5ac1dd657f5c96a30f3c96cffde3f9fa0
 #include <Eigen/Dense>
 #include <cmath>
 #include <vector>
@@ -96,3 +93,4 @@ double gaussConvCV(const Function& f, const double I_ex, const unsigned N) {
 /* SAM_LISTING_END_2 */
 
 #endif
+

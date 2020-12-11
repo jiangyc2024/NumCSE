@@ -21,12 +21,6 @@ QuadRule gaussquad(unsigned n) {
   // (use method for symmetric matrices, exploiting the structure)
   Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eig(M);
 
-<<<<<<< HEAD
-  qr.nodes = eig.eigenvalues();
-  qr.weights =
-      2 * eig.eigenvectors().topRows<1>().array().pow(2);  // \Label[line]{gw:4}
-}
-/* SAM_LISTING_END_0 */
   QuadRule qr;
   qr.nodes_ = eig.eigenvalues();
   qr.weights_ =
@@ -37,3 +31,4 @@ QuadRule gaussquad(unsigned n) {
 /* SAM_LISTING_END_0 */
 
 #endif
+

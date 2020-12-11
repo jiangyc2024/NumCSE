@@ -151,3 +151,4 @@ double gaussConvCV(const Function& f, const double I_ex, const unsigned N) {
 /* SAM_LISTING_END_2 */
 
 #endif
+
