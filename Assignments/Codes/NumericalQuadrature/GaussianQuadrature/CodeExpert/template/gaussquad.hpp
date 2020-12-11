@@ -31,3 +31,4 @@ QuadRule gaussquad(unsigned n) {
 /* SAM_LISTING_END_0 */
 
 #endif
+
