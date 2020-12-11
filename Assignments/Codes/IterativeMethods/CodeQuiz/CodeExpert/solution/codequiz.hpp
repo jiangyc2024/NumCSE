@@ -11,17 +11,17 @@ double myfunction(double x) {
   // with integer $n$ and $r\in[ 0.5, 1.5 ]$.
   // Set $y = n\log(2)$ and $z=\log(x_{new})$,
   // then $\log(x) = y + z$.
-  double log2 = 0.693147180559945;
+  double dy = 0.693147180559945;  // dy = std::log(2)
   double y = 0.;
   // If x $x=2^{n+r}$ with positive $n$:
   while (x > 2. * std::sqrt(2.)) {
     x /= 2.;
-    y += log2;
+    y += dy;
   }  // \Label[line]{cq:1}
   // If x $x=2^{n+r}$ with negative $n$:
   while (x < std::sqrt(2.)) {
     x *= 2.;
-    y -= log2;
+    y -= dy;
   }  // \Label[line]{cq:2}
   // Now, we have found $y$, and we use Newton iteration for the
   // function $f(z) = \exp(z) - x_{new}$ to find $z = \log(x_{new})$.
@@ -39,15 +39,15 @@ double myfunction(double x) {
 
 /* SAM_LISTING_BEGIN_2 */
 double myfunction_modified(double x) {
-  double log2 = 0.693147180559945;
+  double dy = 0.693147180559945;  // dy = std::log(2)
   double y = 0.;
   while (x > 2. * std::sqrt(2.)) {
     x /= 2.;
-    y += log2;
+    y += dy;
   }
   while (x < std::sqrt(2.)) {
     x *= 2.;
-    y -= log2;
+    y -= dy;
   }
   double z = x - 1.;
   double dz = x * std::exp(-z) - 1.;
@@ -57,10 +57,11 @@ double myfunction_modified(double x) {
   // START
   double e_max = 2. * std::sqrt(2.) - 1. - std::log(2. * std::sqrt(2.));
   double eps = std::numeric_limits<double>::epsilon();
-  double k = (std::log(-std::log(0.5 * std::log(2.) * eps)) -
-              std::log(-std::log(0.5 * std::abs(e_max)))) /
-             std::log(2.);
-  for (int i = 1; i < k; ++i) {
+
+  int k_min = std::ceil(log2((-std::log(0.5 * std::log(2.) * eps)) /
+                                (-std::log(0.5 * std::abs(e_max)))));
+
+  for (int i = 1; i < k_min; ++i) {
     z = z + dz;
     dz = x * std::exp(-z) - 1.;
   }
