@@ -5,7 +5,7 @@ using namespace Eigen;
 namespace plt = matplotlibcpp;
 
 /* SAM_LISTING_BEGIN_0 */
-Vector2d F_vector(const Vector2d &z) {
+Vector2d F(const Vector2d &z) {
   Vector2d Fz;
   // TO DO: Implement the function $F:R^2\to R^2$ such that F(z)=0 is
   // equivalent to z^3 = 1 (interpreting z as a complex number).
@@ -18,7 +18,7 @@ Vector2d F_vector(const Vector2d &z) {
 /* SAM_LISTING_END_0 */
 
 /* SAM_LISTING_BEGIN_1 */
-Matrix2d DF_matrix(const Vector2d &z) {
+Matrix2d DF(const Vector2d &z) {
   Matrix2d DFz;
   // TO DO: Implement the Jacobian of F at z.
   // START
@@ -67,7 +67,7 @@ void julia(void) {
       double y = -2 + 4.0 * j / (res - 1);
       Vector2d z(x, y);
       for (int k = 0; k < N_it; k++) {
-        z -= DF_matrix(z).lu().solve(F_vector(z));
+        z -= DF(z).lu().solve(F(z));
         // Check if we are sufficiently close to any of the three roots:
         if ((z - z1).norm() < tol) {
           C(i, j) = 1.0 - 1.0 * k / N_it;
