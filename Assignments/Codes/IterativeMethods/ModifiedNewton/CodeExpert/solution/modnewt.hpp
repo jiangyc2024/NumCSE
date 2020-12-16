@@ -25,7 +25,8 @@ template <typename Scalar, class Function, class Jacobian>
 Scalar mod_newt_step_scalar(const Scalar& x, Function&& f, Jacobian&& df) {
   double return_value = 0.;
   // TODO: (9-9.b) Compute a step of the modified Newton method for a scalar
-  // function START
+  // function 
+  // START
   Scalar y = x + f(x) / df(x);
   return_value = y - f(y) / df(x);
   // END
@@ -49,11 +50,12 @@ Scalar mod_newt_step_scalar(const Scalar& x, Function&& f, Jacobian&& df) {
 template <class StepFunction, class Vector, class ErrorFunction>
 bool sample_nonlinear_solver(const StepFunction& step, Vector& x,
                              const ErrorFunction& errf, double eps = 1e-8,
-                             int max_itr = 100) {
+                             unsigned int max_itr = 100) {
   // TODO: (9-9.c,f) Implement this generic function that iteratively solves a
   // nonlinear equation. The function should return whether the iteration
-  // converged in the maximum number of iterations. START Temporary where to
-  // store new step
+  // converged in the maximum number of iterations 
+  // START.
+  // Temporary where to store new step
   Vector x_new = x;
   double r = 1;
 
@@ -100,7 +102,8 @@ void mod_newt_ord(void) {
   // TODO: (9-9.c) Generate suitable terminal output to determine the order of
   // convergence of the modified Newton method applied to the scalar equation
   // that is given by $f = 0$. You may want to implement the templated function
-  // sample\_nonlinear\_solver for the iterations. START
+  // sample\_nonlinear\_solver for the iterations. 
+  // START
   auto df = [](double x) { return 1. / (x * x + 1.); };  // Its derivative
 
   const double x_ex = tan(a);  // Exact solution
@@ -172,7 +175,8 @@ template <typename Vector, class Function, class Jacobian>
 Vector mod_newt_step_system(const Vector& x, Function&& f, Jacobian& df) {
   Vector return_value = x;  // this is just a dummy, you should overwrite it
   // TODO: (9-9.d) Efficiently perform one step of the modified Newton method
-  // for a system of equations. START
+  // for a system of equations. 
+  // START
   auto lu = df(x).lu();
   // Reusing LU decomposition
   Vector y = x + lu.solve(f(x));
@@ -197,7 +201,8 @@ Eigen::VectorXd mod_newt_sys(const Eigen::MatrixXd& A, const Eigen::VectorXd& c,
 
   // TODO: (9-9.f) Solve the non-linear system of equations (9.9.6) using the
   // modified Newton method. You may want to use your implementation of
-  // sample\_nonlinear\_solver. START
+  // sample\_nonlinear\_solver. 
+  // START
 
   // Handler for function and jacobian in standard format. Must see matrix $\VA$
   // and vector $\Vc$.
@@ -254,8 +259,10 @@ void mod_newt_sys_test(void) {
   c << 1., 2., 3., 4.;
 
   // TODO: (9-9.g) Determine the order of convergence from suitable tabulated
-  // values. START determine a reference solution with very low tolerance
+  // values. 
+  // determine a reference solution with very low tolerance
   // (machine precision)
+  // START  
   constexpr double reference_tol = std::numeric_limits<double>::epsilon();
   Eigen::VectorXd reference_sol = mod_newt_sys(A, c, reference_tol);
 

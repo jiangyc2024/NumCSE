@@ -25,7 +25,8 @@ template <typename Scalar, class Function, class Jacobian>
 Scalar mod_newt_step_scalar(const Scalar& x, Function&& f, Jacobian&& df) {
   double return_value = 0.;
   // TODO: (9-9.b) Compute a step of the modified Newton method for a scalar
-  // function START
+  // function 
+  // START
 
   // END
   return return_value;
@@ -48,10 +49,11 @@ Scalar mod_newt_step_scalar(const Scalar& x, Function&& f, Jacobian&& df) {
 template <class StepFunction, class Vector, class ErrorFunction>
 bool sample_nonlinear_solver(const StepFunction& step, Vector& x,
                              const ErrorFunction& errf, double eps = 1e-8,
-                             int max_itr = 100) {
+                             unsigned int max_itr = 100) {
   // TODO: (9-9.c,f) Implement this generic function that iteratively solves a
   // nonlinear equation. The function should return whether the iteration
-  // converged in the maximum number of iterations. START
+  // converged in the maximum number of iterations. 
+  // START
 
   // END
   return false;
@@ -74,7 +76,8 @@ void mod_newt_ord(void) {
   // TODO: (9-9.c) Generate suitable terminal output to determine the order of
   // convergence of the modified Newton method applied to the scalar equation
   // that is given by $f = 0$. You may want to implement the templated function
-  // sample\_nonlinear\_solver for the iterations. START
+  // sample\_nonlinear\_solver for the iterations. 
+  // START
 
   // END
 }
@@ -94,7 +97,8 @@ template <typename Vector, class Function, class Jacobian>
 Vector mod_newt_step_system(const Vector& x, Function&& f, Jacobian& df) {
   Vector return_value = x;  // this is just a dummy, you should overwrite it
   // TODO: (9-9.d) Efficiently perform one step of the modified Newton method
-  // for a system of equations. START
+  // for a system of equations. 
+  // START
 
   // END
   return return_value;
@@ -116,7 +120,8 @@ Eigen::VectorXd mod_newt_sys(const Eigen::MatrixXd& A, const Eigen::VectorXd& c,
 
   // TODO: (9-9.f) Solve the non-linear system of equations (9.9.6) using the
   // modified Newton method. You may want to use your implementation of
-  // sample\_nonlinear\_solver. START
+  // sample\_nonlinear\_solver. 
+  // START
 
   // END
   return x_system;
@@ -135,7 +140,8 @@ void mod_newt_sys_test(void) {
   c << 1., 2., 3., 4.;
 
   // TODO: (9-9.g) Determine the order of convergence from suitable tabulated
-  // values. START
+  // values. 
+  // START
 
   // END
 }
