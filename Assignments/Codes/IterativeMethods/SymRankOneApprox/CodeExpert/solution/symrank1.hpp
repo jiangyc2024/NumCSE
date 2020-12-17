@@ -11,8 +11,8 @@ VectorXd symRankOneBestApproxSym(const MatrixXd &M) {
   assert(M.cols() == M.rows() && M == M.transpose() && "M is not symmetric");
   // Vector to be used to return result
   VectorXd z(M.cols());
-  // To do: (9-14.a)
-  //  solve equ. (9.14.1) for a symmetric matric with the aid of singular value
+  // TODO: (9-14.a)
+  //  solve equ. (9.14.1) for a symmetric matrix with the aid of singular value
   //  decomposition (SVD)
   // START
   // Compute economical SVD of M
@@ -29,11 +29,11 @@ VectorXd symRankOneBestApproxSym(const MatrixXd &M) {
 
 /* SAM_LISTING_BEGIN_1 */
 VectorXd computeKronProdVecMult(const VectorXd &v, const VectorXd &b) {
-  unsigned int n = v.size();
+  const unsigned int n = v.size();
   assert(b.size() == n * n && "Size mismatch");
   // Vector to be used to return result
   VectorXd res;
-  // To do: (9-14.e)
+  // TODO: (9-14.e)
   //  evaluate the expression (9.14.14) efficiently with the aid of Eigen::map
   // START
   // Raw data array for argument vector b
@@ -58,7 +58,7 @@ VectorXd symmRankOneApprox(const MatrixXd &M, const double rtol = 1e-6,
   Msym.colwise().norm().maxCoeff(&dummy, &j);
   // Set initial guess. This vector is also used to return the result
   VectorXd z{Msym.col(j)};
-  // To do: (9-14.g)
+  // TODO: (9-14.g)
   //  solve equ. (9.14.1) using Gauss-Newton iteration with tolerances rtol and
   //  atol
   // START
@@ -67,8 +67,7 @@ VectorXd symmRankOneApprox(const MatrixXd &M, const double rtol = 1e-6,
   // Direct access to the array storing the entries of M
   const double *dataM = M.data();
 
-  std::cout << " Correction s to current newton step:"
-            << "\n";
+  std::cout << " Correction s to current newton step:\n";
   // Main Gauss-Newton loop with correction-based termination
   do {
     // Compute b = vec(M) - kron(z,z)
@@ -77,15 +76,14 @@ VectorXd symmRankOneApprox(const MatrixXd &M, const double rtol = 1e-6,
     const VectorXd b =
         MatrixXd::Map(dataM, n * n, 1) - MatrixXd::Map(dataz, n * n, 1);
     // Solve normal equations
-    double normalize = 2 * z.squaredNorm();
+    const double normalize = 2 * z.squaredNorm();
     VectorXd kronMult = computeKronProdVecMult(z, b);
     s = (kronMult - z.dot(kronMult) / normalize * z) / normalize;
     // Apply Gauss-Newton update
     z = z + s;
     std::cout << "|s| = " << s.norm() << std::endl;
   } while (s.norm() > std::max(atol, rtol * z.norm()));
-  std::cout << " "
-            << "\n";
+  std::cout << "\n";
   // END
   return z;
 }

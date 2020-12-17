@@ -20,8 +20,7 @@ int main() {
   VectorXd z = symRankOneBestApproxSym(M);
 
   std::cout << "The output of symRankOneBestApproxSym is:\n" << z << "\n";
-  std::cout << " "
-            << "\n";
+  std::cout << "\n";
 
   // Subtask (9-14.f)
   //  efficient function to evaluate (9.14.14)
@@ -36,8 +35,7 @@ int main() {
   VectorXd w = computeKronProdVecMult(v, b);
 
   std::cout << "The output of computeKronProdVecMult is:\n" << w << "\n";
-  std::cout << " "
-            << "\n";
+  std::cout << "\n";
 
   // Subtask (9-14.g)
   //  Gauss-Newton iteration to solve equ. (9.14.4)

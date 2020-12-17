@@ -11,11 +11,11 @@ VectorXd symRankOneBestApproxSym(const MatrixXd &M) {
   assert(M.cols() == M.rows() && M == M.transpose() && "M is not symmetric");
   // Vector to be used to return result
   VectorXd z(M.cols());
-  // To do: (9-14.a)
-  //  solve equ. (9.14.1) for a symmetric matric with the aid of singular value
+  // TODO: (9-14.a)
+  //  solve equ. (9.14.1) for a symmetric matrix with the aid of singular value
   //  decomposition (SVD)
   // START
-
+  
   // END
   return z;
 }
@@ -23,14 +23,14 @@ VectorXd symRankOneBestApproxSym(const MatrixXd &M) {
 
 /* SAM_LISTING_BEGIN_1 */
 VectorXd computeKronProdVecMult(const VectorXd &v, const VectorXd &b) {
-  unsigned int n = v.size();
+  const unsigned int n = v.size();
   assert(b.size() == n * n && "Size mismatch");
   // Vector to be used to return result
   VectorXd res;
-  // To do: (9-14.e)
+  // TODO: (9-14.e)
   //  evaluate the expression (9.14.14) efficiently with the aid of Eigen::map
   // START
-
+  
   // END
   return res;
 }
@@ -49,11 +49,11 @@ VectorXd symmRankOneApprox(const MatrixXd &M, const double rtol = 1e-6,
   Msym.colwise().norm().maxCoeff(&dummy, &j);
   // Set initial guess. This vector is also used to return the result
   VectorXd z{Msym.col(j)};
-  // To do: (9-14.g)
+  // TODO: (9-14.g)
   //  solve equ. (9.14.1) using Gauss-Newton iteration with tolerances rtol and
   //  atol
   // START
-
+  
   // END
   return z;
 }
