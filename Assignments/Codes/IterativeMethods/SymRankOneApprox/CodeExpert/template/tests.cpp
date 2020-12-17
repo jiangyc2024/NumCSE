@@ -26,7 +26,7 @@ TEST_SUITE("SymRankOneApprox") {
     VectorXd b(9);
     b << 1, 2, 3, 2, 3, 4, 3, 4, 5;
     VectorXd w_kronProd(3);
-    w_kronProd << 10, 16, 12;
+    w_kronProd << 10, 16, 22;
 
     VectorXd stud = computeKronProdVecMult_TEST(v, b);
 
