@@ -17,20 +17,22 @@ struct TestData {
 TestData data;
 
 TEST_SUITE("JuliaSet") {
-	TEST_CASE("Vector2d F_vector" * doctest::description("Test F")) {
-		Eigen::Vector2d sol = F_vector(data.z);
-		Eigen::Vector2d stud = F_vector_TEST(data.z);
+	TEST_CASE("Vector2d juliaF" * doctest::description("Test F")) {
+		Eigen::Vector2d sol = juliaF(data.z);
+		Eigen::Vector2d stud = juliaF_TEST(data.z);
 		
-		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-9));
 	}
 	
-	TEST_CASE("Matrix2d DF_matrix" * doctest::description("Test DF")) {
-		Eigen::Matrix2d sol = DF_matrix(data.z);
-		Eigen::Matrix2d stud = DF_matrix_TEST(data.z);
+	TEST_CASE("Matrix2d juliaDF" * doctest::description("Test DF")) {
+		Eigen::Matrix2d sol = juliaDF(data.z);
+		Eigen::Matrix2d stud = juliaDF_TEST(data.z);
 		
-		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+		CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-9));
 	}
 	
-	TEST_CASE("void julia" * doctest::description("Visualisation") * doctest::skip()) {}
+	TEST_CASE("void julia" * doctest::description("Visualisation")) {
+    MESSAGE("This function wasn't tested. Run the program to see its output.");
+  }
 }
 
