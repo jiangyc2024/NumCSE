@@ -44,8 +44,8 @@ TEST_SUITE("adaptiveintp") {
   }
 
   TEST_CASE("std::vector<Vector2d> closedHermiteInterpolant" * doctest::description("closedHermiteInterpolant()")) {
-    std::vector<Vector2d> sol = closedPolygonalInterpolant(data.Sigma, data.x);
-    std::vector<Vector2d> stud = closedPolygonalInterpolant_TEST(data.Sigma, data.x);
+    std::vector<Vector2d> sol = closedHermiteInterpolant(data.Sigma, data.x);
+    std::vector<Vector2d> stud = closedHermiteInterpolant_TEST(data.Sigma, data.x);
     REQUIRE(sol.size() == stud.size());
     double err = 0;
     for(unsigned int i = 0; i < sol.size(); i++){
