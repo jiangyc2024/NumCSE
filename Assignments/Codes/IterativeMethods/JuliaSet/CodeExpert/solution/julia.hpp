@@ -5,9 +5,9 @@ using namespace Eigen;
 namespace plt = matplotlibcpp;
 
 /* SAM_LISTING_BEGIN_0 */
-Vector2d F(const Vector2d &z) {
-  Vector2d Fz;
-  // TO DO: Implement the function $F:R^2\to R^2$ such that F(z)=0 is
+Vector2d juliaF(const Vector2d &z) {
+  Vector2d Fz = Vector2d::Zero();
+  // TODO: (9-8.c) Implement the function $F:R^2\to R^2$ such that F(z)=0 is
   // equivalent to z^3 = 1 (interpreting z as a complex number).
   // START
   Fz << z(0) * z(0) * z(0) - 3.0 * z(0) * z(1) * z(1) - 1.0,
@@ -18,12 +18,12 @@ Vector2d F(const Vector2d &z) {
 /* SAM_LISTING_END_0 */
 
 /* SAM_LISTING_BEGIN_1 */
-Matrix2d DF(const Vector2d &z) {
-  Matrix2d DFz;
-  // TO DO: Implement the Jacobian of F at z.
+Matrix2d juliaDF(const Vector2d &z) {
+  Matrix2d DFz = Matrix2d::Zero();
+  // TODO: (9-8.c) Implement the Jacobian of F at z.
   // START
-  double a = 3.0 * (z(0) * z(0) - z(1) * z(1));
-  double b = 6.0 * z(0) * z(1);
+  const double a = 3.0 * (z(0) * z(0) - z(1) * z(1));
+  const double b = 6.0 * z(0) * z(1);
   DFz << a, -b, b, a;
   // END
   return DFz;
@@ -40,18 +40,18 @@ void julia(void) {
   z3 << -0.5, -0.5 * std::sqrt(3);
 
   // Tolerance and maximum number of iterations for Newton's method.
-  double tol = 1e-4;
-  int N_it = 20;
+  constexpr double tol = 1e-4;
+  constexpr unsigned int N_it = 20;
 
   // The image will have a resolution of res*res.
-  int res = 780;
+  constexpr unsigned int res = 780;
   // We imagine that we have a res*res grid Z on the square [-2,2] with
   // Z(0,0)=(-2,-2),    Z(0,res-1)=(-2,2),
   // Z(res-1,0)=(2,-2), Z(res-1,res-1)=(2,2), etc.
   // C(i,j) is the color assigned to the (i,j)-th point on the grid.
   MatrixXd C(res, res);
 
-  // TO DO: Fill C with real numbers, such that each entry C(i,j) corresponds to
+  // TODO: (9-8.d) Fill C with real numbers, such that each entry C(i,j) corresponds to
   // which of the roots (z1, z2, or z3) Newton's method converges
   // (if it converges), when using Z(i,j) as a starting point.
   // The values in C will be interpreted as colors below.
@@ -60,14 +60,14 @@ void julia(void) {
   // Hint: To speed up runtimes, start with a low value for the parameter res.
   // START
   C.setZero();
-  for (int i = 0; i < res; i++) {
-    for (int j = 0; j < res; j++) {
+  for (unsigned int i = 0; i < res; i++) {
+    for (unsigned int j = 0; j < res; j++) {
       // Newton iteration starting at Z(i,j)=z=(x,y).
-      double x = -2 + 4.0 * i / (res - 1);
-      double y = -2 + 4.0 * j / (res - 1);
+      const double x = -2 + 4.0 * i / (res - 1);
+      const double y = -2 + 4.0 * j / (res - 1);
       Vector2d z(x, y);
-      for (int k = 0; k < N_it; k++) {
-        z -= DF(z).lu().solve(F(z));
+      for (unsigned int k = 0; k < N_it; k++) {
+        z -= juliaDF(z).lu().solve(juliaF(z));
         // Check if we are sufficiently close to any of the three roots:
         if ((z - z1).norm() < tol) {
           C(i, j) = 1.0 - 1.0 * k / N_it;
@@ -87,7 +87,7 @@ void julia(void) {
   // END
   // Axis labels
   std::vector<double> ticks(5);
-  for (int i = 0; i < 5; ++i) {
+  for (unsigned int i = 0; i < 5; ++i) {
     ticks[i] = i * (res - 1) / 4;
   }
   std::vector<std::string> labels{"-2", "-1", "0", "1", "2"};
