@@ -15,7 +15,7 @@ VectorXd symRankOneBestApproxSym(const MatrixXd &M) {
   //  solve equ. (9.14.1) for a symmetric matrix with the aid of singular value
   //  decomposition (SVD)
   // START
-  
+
   // END
   return z;
 }
@@ -30,7 +30,7 @@ VectorXd computeKronProdVecMult(const VectorXd &v, const VectorXd &b) {
   // TODO: (9-14.e)
   //  evaluate the expression (9.14.14) efficiently with the aid of Eigen::map
   // START
-  
+
   // END
   return res;
 }
@@ -53,7 +53,7 @@ VectorXd symmRankOneApprox(const MatrixXd &M, const double rtol = 1e-6,
   //  solve equ. (9.14.1) using Gauss-Newton iteration with tolerances rtol and
   //  atol
   // START
-  
+
   // END
   return z;
 }

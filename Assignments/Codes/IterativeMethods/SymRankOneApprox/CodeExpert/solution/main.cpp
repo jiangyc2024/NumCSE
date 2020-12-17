@@ -1,10 +1,10 @@
 
-#include "symrank1.hpp"
-
 #include <Eigen/Dense>
 #include <iomanip>
 #include <iostream>
 #include <vector>
+
+#include "symrank1.hpp"
 
 using namespace Eigen;
 
