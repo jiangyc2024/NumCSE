@@ -4,24 +4,20 @@
 // Co-Author: Baranidharan Mohan                        //
 //////////////////////////////////////////////////////////
 
-# ifndef MGL_PLOT_HPP
-# define MGL_PLOT_HPP
+#ifndef MGL_PLOT_HPP
+#define MGL_PLOT_HPP
 
 // system includes
-# include <iostream>
+#include <iostream>
 
 // MathGL include
-# include <mgl2/mgl.h>
+#include <mgl2/mgl.h>
 
 namespace mgl {
 
 class MglPlot {
-public:
-
-  MglPlot(const std::string& style)
-    : style_(style),
-      legend_("")
-  {}
+ public:
+  MglPlot(const std::string& style) : style_(style), legend_("") {}
 
   virtual void plot(mglGraph* gr) = 0;
   virtual bool is_3d() = 0;
@@ -38,115 +34,88 @@ public:
 
   MglPlot& width(int w) {
     w = w < 0 ? 0 : (w > 9 ? 9 : w);
-    if(style_.size() == 3)
-      style_[3] = char( '0' + w );
+    if (style_.size() == 3)
+      style_[3] = char('0' + w);
     else
-      style_ += {char( '0' + w )};
+      style_ += {char('0' + w)};
     return *this;
   }
 
-protected:
+ protected:
   std::string style_;
   std::string legend_;
 };
 
-
 class MglPlot2d : public MglPlot {
-public:
-
+ public:
   MglPlot2d(const mglData& xd, const mglData& yd, const std::string& style)
-    : MglPlot(style),
-      xd_(xd),
-      yd_(yd)
-  {}
+      : MglPlot(style), xd_(xd), yd_(yd) {}
 
   void plot(mglGraph* gr) {
     gr->Plot(xd_, yd_, style_.c_str());
     // only add the legend-entry if there is one, otherwise we might end up
     // with a legend-entry containing the line style but no description
-    if (legend_.size() > 0) { 
+    if (legend_.size() > 0) {
       gr->AddLegend(legend_.c_str(), style_.c_str());
     }
   }
 
-  bool is_3d() {
-    return false;
-  }
+  bool is_3d() { return false; }
 
-private:
+ private:
   mglData xd_;
   mglData yd_;
 };
 
-
 class MglPlot3d : public MglPlot {
-public:
-
-  MglPlot3d(const mglData& xd, const mglData& yd, const mglData& zd, const std::string& style)
-    : MglPlot(style),
-      xd_(xd),
-      yd_(yd),
-      zd_(zd)
-  {}
+ public:
+  MglPlot3d(const mglData& xd, const mglData& yd, const mglData& zd,
+            const std::string& style)
+      : MglPlot(style), xd_(xd), yd_(yd), zd_(zd) {}
 
   void plot(mglGraph* gr) {
     gr->Plot(xd_, yd_, zd_, style_.c_str());
     // only add the legend-entry if there is one, otherwise we might end up
     // with a legend-entry containing the line style but no description
-    if (legend_.size() > 0) { 
+    if (legend_.size() > 0) {
       gr->AddLegend(legend_.c_str(), style_.c_str());
     }
   }
 
-  bool is_3d() {
-    return true;
-  }
+  bool is_3d() { return true; }
 
-private:
+ private:
   mglData xd_;
   mglData yd_;
   mglData zd_;
 };
 
-
 class MglFPlot : public MglPlot {
-public:
-
+ public:
   MglFPlot(const std::string& fplot_str, const std::string& style)
-    : MglPlot(style),
-      fplot_str_(fplot_str)
-  {}
+      : MglPlot(style), fplot_str_(fplot_str) {}
 
   void plot(mglGraph* gr) {
     gr->FPlot(fplot_str_.c_str(), style_.c_str());
     // only add the legend-entry if there is one, otherwise we might end up
     // with a legend-entry containing the line style but no description
-    if (legend_.size() > 0) { 
+    if (legend_.size() > 0) {
       gr->AddLegend(legend_.c_str(), style_.c_str());
     }
   }
 
-  bool is_3d() {
-    return false;
-  }
+  bool is_3d() { return false; }
 
-private:
+ private:
   std::string fplot_str_;
 };
 
-
 class MglSpy : public MglPlot {
-public:
+ public:
+  MglSpy(const mglData& xd, const mglData& yd, const std::string& style)
+      : MglPlot(style), xd_(xd), yd_(yd) {}
 
-  MglSpy(const mglData& xd, const mglData& yd, const std::string& style) 
-    : MglPlot(style),
-      xd_(xd),
-      yd_(yd)
-  {}
-
-  bool is_3d() {
-    return false;
-  }
+  bool is_3d() { return false; }
 
   void plot(mglGraph* gr) {
     mglData zd(xd_);
@@ -154,52 +123,43 @@ public:
     gr->Dots(xd_, yd_, zd, style_.c_str());
   }
 
-private:
+ private:
   mglData xd_;
   mglData yd_;
 };
 
-
 class MglBarPlot : public MglPlot {
-public:
-  MglBarPlot(const mglData& xd, const mglData& yd, const std::string& style) 
-    : MglPlot(style),
-      xd_(xd),
-      yd_(yd)
-  {}
+ public:
+  MglBarPlot(const mglData& xd, const mglData& yd, const std::string& style)
+      : MglPlot(style), xd_(xd), yd_(yd) {}
 
-  bool is_3d() {
-    return false;
-  }
+  bool is_3d() { return false; }
 
   void plot(mglGraph* gr) {
     gr->Bars(xd_, yd_, style_.c_str());
     // only add the legend-entry if there is one, otherwise we might end up
     // with a legend-entry containing the line style but no description
-    if (legend_.size() > 0) { 
+    if (legend_.size() > 0) {
       gr->AddLegend(legend_.c_str(), style_.c_str());
     }
   }
 
-private:
+ private:
   mglData xd_;
   mglData yd_;
 };
 
-
 class MglTriPlot : public MglPlot {
-public:
-  MglTriPlot(const mglData& Td, const mglData& xd, const mglData& yd, const std::string& style, const bool draw_numbers) 
-    : MglPlot(style),
-      Td_(Td),
-      xd_(xd),
-      yd_(yd),
-      draw_numbers_(draw_numbers)
-  {}
+ public:
+  MglTriPlot(const mglData& Td, const mglData& xd, const mglData& yd,
+             const std::string& style, const bool draw_numbers)
+      : MglPlot(style),
+        Td_(Td),
+        xd_(xd),
+        yd_(yd),
+        draw_numbers_(draw_numbers) {}
 
-  bool is_3d() {
-    return false;
-  }
+  bool is_3d() { return false; }
 
   void plot(mglGraph* gr) {
     gr->TriPlot(Td_, xd_, yd_, style_.c_str());
@@ -211,14 +171,13 @@ public:
     }
   }
 
-private:
+ private:
   mglData Td_;
   mglData xd_;
   mglData yd_;
   bool draw_numbers_;
 };
 
+}  // namespace mgl
 
-} // end namespace
-
-# endif // MGL_PLOT_HPP
+#endif  // MGL_PLOT_HPP

@@ -11,8 +11,10 @@
 
 #include <Eigen/Dense>
 
-VectorXd cg(std::function<VectorXd(VectorXd)> evalA,
-            VectorXd b, VectorXd x, double tol, unsigned int maxit) {
+template <
+
+// VectorXd cg(std::function<VectorXd(VectorXd)> evalA,
+//            VectorXd b, VectorXd x, double tol, unsigned int maxit) {
     // x supplies the initial guess,
     // maxit the maximal number of CG steps.
     // evalA must pass a handle to a function realising A*x

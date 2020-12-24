@@ -16,7 +16,7 @@ VectorXd symRankOneBestApproxSym(const MatrixXd &M) {
   VectorXd z(M.cols());
   // To do: (0-3.a)
   // START
-  
+
   // END
   return z;
 }
@@ -30,7 +30,7 @@ VectorXd computeKronProdVecMult(const VectorXd &v, const VectorXd &b) {
   VectorXd res;
   // To do: (0-3.d)
   // START
-  
+
   // END
   return res;
 }
@@ -51,7 +51,7 @@ VectorXd symmRankOneApprox(const MatrixXd &M, double rtol = 1e-6,
   VectorXd z{Msym.col(j)};
   // To do: (0-3.e)
   // START
-  
+
   // END
   return z;
 }

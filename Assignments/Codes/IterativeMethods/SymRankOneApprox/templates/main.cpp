@@ -1,7 +1,6 @@
 #include "symrank1.hpp"
 
 int main() {
-
   MatrixXd M(3, 3);
   double eps = 1e-4;
   M << 1 + eps, 2, 1, 2, 1 + eps, 1, 1, 1, 1 + eps;
@@ -16,7 +15,7 @@ int main() {
    * test of symRankOneBestApproxSym
    */
 
-  Vector3d ztest = { 1.21315, 1.21315,0.888086};
+  Vector3d ztest = {1.21315, 1.21315, 0.888086};
 
   if (ztest.size() == z.size()) {
     if ((ztest - z).norm() < eps)
@@ -65,7 +64,7 @@ int main() {
    * test of symmRankOneApprox
    */
 
-  Vector3d zztest = { 1.16657,0.441537,0.859084};
+  Vector3d zztest = {1.16657, 0.441537, 0.859084};
 
   if (zztest.size() == zz.size()) {
     if ((zztest - zz).norm() < eps)
