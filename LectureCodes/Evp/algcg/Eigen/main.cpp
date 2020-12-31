@@ -7,7 +7,7 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 
-#include "algcg.cpp"
+#include "algcg.hpp"
 
 #include <Eigen/Dense>
 #include <iostream>
