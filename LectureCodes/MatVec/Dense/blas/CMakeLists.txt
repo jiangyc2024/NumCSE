@@ -9,7 +9,12 @@ if(BLAS_FOUND)
 	
 	set(Sources BlasTimings.cpp ColumnMajorMatrix.cpp ColumnMajorMatrix_Multiplication_dot.cpp ColumnMajorMatrix_Multiplication_gemm.cpp ColumnMajorMatrix_Multiplication_gemv.cpp ColumnMajorMatrix_Multiplication_noblas.cpp)
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${BLAS_LINKER_FLAGS}")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -D_MAC_OS")
+	string(APPEND CMAKE_CXX_FLAGS " -O3")
+	if(APPLE)
+		string(APPEND CMAKE_CXX_FLAGS " -D_MAC_OS")
+	else()
+		string(APPEND CMAKE_CXX_FLAGS " -D_LINUX")
+	endif()
 	
 	add_executable_numcse(mult_g++O3 ${Sources})
 	get_target_name_numcse(mult_g++O3 target_name)
