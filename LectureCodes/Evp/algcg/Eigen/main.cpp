@@ -31,37 +31,39 @@ int main() {
   // randome access of sparse matrix is expensive 
   // -> first build list of triplets, then convert to sparse matrix 
   std::vector<Trip> tripletList;
-  tripletList.reserve(estm_entries); 
+  tripletList.reserve(estm_entries);
+  // filling matrix with diagonals=2, off-diagonals=1 
   for(unsigned int i=0; i<n; ++i){
     for(unsigned int j=0; j<n; ++j){
         // diagonals
         if(i==j){ tripletList.push_back(Trip(i,j,2));}
         // off-diagonals
-        if((i-j)==1){ tripletList.push_back(Trip(i,j,1));}  //when internet, figure out why abs(i-j)==1 isn't working
-        if((j-i)==1){ tripletList.push_back(Trip(i,j,1));}  //when internet, figure out why abs(i-j)==1 isn't working
+        // convert to 'int' to use abs()
+        int dd = i-j;
+        if(abs(dd)==1){ tripletList.push_back(Trip(i,j,1));}  
     }
   }
   A.setFromTriplets(tripletList.begin(), tripletList.end());
-
-  std::cout << A;
 
   VectorXd b(n);
   VectorXd x(n);
   double tol = 1e-6;
   unsigned int maxit;
 
-
   auto evalA = [A](VectorXd x) { return A * x; };
 
-  // let's try randome values for b,x 
+  // randome assignment of values for b,x 
   for(unsigned int i=0; i<n; ++i){
-    b[i] = i;
-    x[i] = n-i;
+    b[i] = i%2;
+    x[i] = i%3;
   }
-
-  maxit = 5;
-
-  VectorXd x_approx = cg(evalA, b, x, tol, maxit);
-
-  std::cout << x_approx << "\n";
+  // why 5 interations? -> useful maxit? 
+  // maxit = 5;
+  // calculating and printing the solution
+  for(int maxit = 0; maxit < 10; ++maxit){
+      VectorXd x_approx = cg(evalA, b, x, tol, maxit);
+      std::cout << maxit << "\n";
+      std::cout << x_approx << "\n";
+      std::cout << " " << "\n";
+  }
 }
