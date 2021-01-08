@@ -8,6 +8,7 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include <Eigen/Dense>
+#include <iostream>
 
 template <class Function, class Vector>
 Vector cg(Function &&evalA, Vector b, Vector x, double tol,
@@ -20,7 +21,7 @@ Vector cg(Function &&evalA, Vector b, Vector x, double tol,
   double n0 = r.norm();
   Vector p;
 
-  for (unsigned int i = 0; i < maxit; i++) {
+  for (unsigned int i = 0; i <= maxit; i++) {
     double rho_old = rho;
     rho = r.transpose() * r;
     if (i == 0) {
@@ -35,11 +36,8 @@ Vector cg(Function &&evalA, Vector b, Vector x, double tol,
     double alpha = rho / (p.transpose() * q);
     x += alpha * p;  // Update approximate solution
     // Termination, see Rem. cgterm
-    if ((b - evalA(x)).norm() <= tol * n0) {
-      // ^ MAYBE the A * x should be evalA(x)? Since
-      // evalA(x) should "realise A * x"?
-      break;
-    }
+    // if ((b - evalA(x)).norm() <= tol * n0) {
+    if(r.norm() <= tol * n0) { std::cout << "Iteration stopped. Termination criteria met. " << "\n"; break; }  // relative tolerance (see see Rem.~\ref{rem:cgterm}) 
     r -= alpha * q;  // update of residual
   }
   return x;

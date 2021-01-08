@@ -52,18 +52,16 @@ int main() {
 
   auto evalA = [A](VectorXd x) { return A * x; };
 
-  // randome assignment of values for b,x 
+  // randome assignment of values for b,x
+  // find smart, better initial guess x 
   for(unsigned int i=0; i<n; ++i){
     b[i] = i%2;
     x[i] = i%3;
   }
-  // why 5 interations? -> useful maxit? 
-  // maxit = 5;
+  // in theory the CG algorithm converges after n steps, where n=size of matrix (in case for squared matrix) 
+  //   otherwise,  
+  maxit = 22;
   // calculating and printing the solution
-  for(int maxit = 0; maxit < 10; ++maxit){
-      VectorXd x_approx = cg(evalA, b, x, tol, maxit);
-      std::cout << maxit << "\n";
-      std::cout << x_approx << "\n";
-      std::cout << " " << "\n";
-  }
+  VectorXd x_approx = cg(evalA, b, x, tol, maxit);
+  std::cout << x_approx << "\n";
 }
