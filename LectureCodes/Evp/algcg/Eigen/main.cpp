@@ -50,6 +50,8 @@ int main() {
   double tol = 1e-6;
   unsigned int maxit;
 
+  // !!  OPEN QUESTION !! 
+  // regarding: "..should just be operator(), no more evalA.."
   auto evalA = [A](VectorXd x) { return A * x; };
 
   // randome assignment of values for b,x
