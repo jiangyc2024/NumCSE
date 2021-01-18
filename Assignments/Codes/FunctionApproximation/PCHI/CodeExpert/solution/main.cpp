@@ -6,16 +6,22 @@ using namespace Eigen;
 
 int main() {
   std::vector<double> N_nodes, h, err_reconstr, err_zero;
-
-  for (unsigned int i = 4; i <= 512; i = i << 1) {
-    N_nodes.push_back(i);
-    h.push_back(10. / i);
-  }
+  
   err_zero = fppchipConvergence();
   err_reconstr = rspchipConververgence();
-
+  
+  int table_size = err_zero.size();
+  int N = 4;
+  
+  for (int i = 0; i < table_size; i++) {
+    N_nodes.push_back(N);
+    h.push_back(10. / N);
+    N *= 2;
+  }
+  
+  std::cout << "N_nodes" << "\t" << "err_zero" << "\t" << "err_reconstr\n";
   for (unsigned int i = 0; i < h.size(); ++i) {
-    std::cout << N_nodes[i] << " " << err_zero[i] << " " << err_reconstr[i]
+    std::cout << N_nodes[i] << "\t" << err_zero[i] << "\t" << err_reconstr[i]
               << std::endl;
   }
 
