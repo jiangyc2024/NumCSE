@@ -119,7 +119,8 @@ return x;
 void orderSteffensen(void) {
   auto f = [](double x) { return x * std::exp(x) - 1; };
   constexpr double x_star = 0.567143290409784; // use as exact value
-  // TO DO (9-4.c): tabulate values of
+  // TO DO (9-4.c): tabulate values from which you can read the
+  // order of Steffensen's method.
   // Hint: to approximate the convergence rate, use the formula
   // $(\log(e_i) - \log(e_{i-1}))/ (\log(e_{i-1}) - \log(e_{i-2}))$
   // START
