@@ -6,7 +6,7 @@ using Eigen::VectorXd;
 
 /* SAM_LISTING_BEGIN_0 */
 // Computation of \Hyperlink{LEBESGUE}{Lebesgue constant} of polynomial interpolation 
-// with knots \Blue{$t_i$} passed in the vector \texttt{t} based on \eqref{eq:IPN1}. 
+// with nodes \Blue{$t_i$} passed in the vector \texttt{t} based on \eqref{eq:IPN1}. 
 // \texttt{N} specifies the number of sampling points for the approximate 
 // computation of the maximum norm of the Lagrange polynimial
 // on the interval \Blue{$[-1,1]$}.
