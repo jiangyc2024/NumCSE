@@ -27,7 +27,7 @@ VectorXd computeKronProdVecMult(const VectorXd &v, const VectorXd &b) {
   assert(b.size() == n * n && "Size mismatch");
   // Vector to be used to return result
   VectorXd res;
-  // TODO: (9-14.e)
+  // TODO: (9-14.f)
   //  evaluate the expression (9.14.14) efficiently with the aid of Eigen::map
   // START
 

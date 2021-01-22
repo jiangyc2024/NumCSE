@@ -11,7 +11,7 @@
 #include <cassert>
 
 /**
- * Functor behaving like an unset function pointer (nullptr) with 
+ * Functor behaving like an unset function pointer (nullptr) with
  * arbitrary number of arguments.
  *
  * Usage:
@@ -29,11 +29,13 @@
  * ```
  */
 struct void_cb {
-    constexpr void_cb(void* = nullptr) {}
+  explicit constexpr void_cb(void* dummy = nullptr) {}
 
-    template <typename... T>
-    void operator()(T...) { assert(false); };
+  template <typename... T>
+  void operator()(T...) {
+    assert(false);
+  }
 
-    constexpr operator void*() const { return nullptr; }
+  explicit constexpr operator void*() const { return nullptr; }
 };
 #endif

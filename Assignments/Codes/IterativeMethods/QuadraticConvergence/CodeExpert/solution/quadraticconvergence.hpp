@@ -11,8 +11,7 @@
 using namespace Eigen;
 
 /* SAM_LISTING_BEGIN_2 */
-template <class T>
-class Logger {
+template <class T> class Logger {
   std::vector<T> info;
 
 public:
@@ -45,19 +44,20 @@ public:
  *! @param[out] x Final estimation returned by the Steffensen's method
  */
 /* SAM_LISTING_BEGIN_0 */
-template <class Function>
-double steffensen(Function &&f, double x0) {
+template <class Function> double steffensen(Function &&f, double x0) {
+  double x_old = x0;
   double x = x0;
   // TO DO (9-4.a): implement the Steffensen's method for a function f
   // START
   double upd = 1;
   constexpr double eps = std::numeric_limits<double>::epsilon();
   // Iterate until machine precision is reached
-  while (std::abs(upd) > eps*x) {
+  while (std::abs(upd) > eps * std::abs(x_old)) {
+    x_old = x;              // Storing the old iterate
     const double fx = f(x); // Only 2 evaluations of $f$ at each step
     if (fx != 0) {
       upd = fx * fx / (f(x + fx) - fx);
-      x -= upd;
+      x -= upd; // New iterate
     } else {
       upd = 0;
     }
@@ -72,7 +72,8 @@ void testSteffensen(void) {
   // TO DO (9-4.b): write a test of your implementation, that prints
   // an estimate of the zero of $f(x) = xe^x - 1$
   // START
-  const double x = steffensen([](double x) { return x * std::exp(x) - 1; }, 1.0);
+  const double x =
+      steffensen([](double x) { return x * std::exp(x) - 1; }, 1.0);
   std::cout << "The iterative method converges to " << x << std::endl;
   // END
 }
@@ -86,7 +87,8 @@ void testSteffensen(void) {
 
 /* SAM_LISTING_BEGIN_3 */
 template <class Function>
-double steffensen_log(Function &&f, double x0, Logger<double> *logger_p = nullptr) {
+double steffensen_log(Function &&f, double x0,
+                      Logger<double> *logger_p = nullptr) {
 
   double x = x0;
   // TO DO (9-4.c): Modify the function steffensen: use the class Logger to
@@ -100,18 +102,20 @@ double steffensen_log(Function &&f, double x0, Logger<double> *logger_p = nullpt
   double upd = 1;
   constexpr double eps = std::numeric_limits<double>::epsilon();
   // Iterate until machine precision is reached
-  while (std::abs(upd) > eps*x) {
+  while (std::abs(upd) > eps * x) {
     const double fx = f(x); // Only 2 evaluations of $f$ at each step
     if (fx != 0) {
       upd = fx * fx / (f(x + fx) - fx);
       x -= upd;
-      if (log_enabled) { (*logger_p)(x); }
+      if (log_enabled) {
+        (*logger_p)(x);
+      }
     } else {
       upd = 0;
     }
   }
-// END
-return x;
+  // END
+  return x;
 }
 /* SAM_LISTING_END_3 */
 
@@ -119,7 +123,8 @@ return x;
 void orderSteffensen(void) {
   auto f = [](double x) { return x * std::exp(x) - 1; };
   constexpr double x_star = 0.567143290409784; // use as exact value
-  // TO DO (9-4.c): tabulate values of
+  // TO DO (9-4.c): tabulate values from which you can read the
+  // order of Steffensen's method.
   // Hint: to approximate the convergence rate, use the formula
   // $(\log(e_i) - \log(e_{i-1}))/ (\log(e_{i-1}) - \log(e_{i-2}))$
   // START

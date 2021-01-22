@@ -7,7 +7,7 @@
 
 struct TestData {
   TestData() {
-    n = 50;
+    n = 10;
 
     l_A = Eigen::VectorXd::LinSpaced(n - 1, 1, n - 1);
     d_A = Eigen::VectorXd::LinSpaced(n, n, 2 * n - 1);
