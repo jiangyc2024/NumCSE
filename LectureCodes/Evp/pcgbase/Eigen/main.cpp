@@ -7,12 +7,13 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 
+#include "pcgbase.hpp"
+
 #include <Eigen/Dense>
 #include <iostream>
 #include <vector>
 
-#include "pcgbase.hpp"
-
+// still TODO fix the: this is suppose to be just an operator thing,    
 int main() {
     // NOTE: C++ implementation returns quite different values than MATLAB. 
     //       Likely rounding/cancellation errors.

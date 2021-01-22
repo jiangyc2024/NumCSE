@@ -25,6 +25,7 @@ int main() {
   // matrix
   //    with diagonal=2, both of diagonals=1
   //    sparse matrix format
+  // because we need cond_2(A) << 1
   unsigned int n = 20;
   // estimated entries for matrix
   unsigned int estm_entries =

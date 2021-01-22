@@ -13,9 +13,11 @@
 #include <vector>
 
 std::tuple<VectorXd, std::vector<double>, std::vector<VectorXd>> pcgbase(
+
     std::function<VectorXd(VectorXd)> evalA,
     VectorXd b, double tol, unsigned int maxit,
     std::function<VectorXd(VectorXd)> invB, VectorXd x) {
+
     // EvalA must pass a handle implementing A*x
     // invB is to be a handle to a function providing the action of the
     // preconditioning on a vector. The other arguments like for MATLAB's

@@ -25,6 +25,7 @@ int main() {
   // CG requires s.p.d matrix -> use 20x20 tridiagonal matrix with diagonal=2,
   //    both of diagonals=1
   //    sparse matrix format
+  // because we need cond_2(A) << 1
   unsigned int n = 20;
   unsigned int estm_entries =
       3 * n - 2;  // diagonal size n, off-diagonal size n-1
