@@ -9,8 +9,7 @@
 #define BROYD_HPP
 
 #include <Eigen/Dense>
-
-#include "void_cb.hpp"
+#include <functional>
 
 // convenience typedef
 template <typename T, int N>
@@ -25,17 +24,28 @@ using Vector = Eigen::Matrix<T, N, 1>;
  * \param tol tolerance for termination
  * \param callback to be run in every iteration step
  */
-template <typename FuncType, typename JacType, typename Scalar,
-          int N = Eigen::Dynamic, typename CB = void_cb>
-Vector<Scalar, N> broyd(FuncType&& F, Vector<Scalar, N> x, JacType J,
-                        const Scalar tol, const unsigned maxit = 20,
-                        CB callback = nullptr) {
+/* SAM_LISTING_BEGIN_2 */
+template <typename FUNCTION, typename JACOBIAN, typename SCALAR,
+          int N = Eigen::Dynamic,
+          typename MONITOR =
+              std::function<void(unsigned int, Vector<SCALAR, N>,
+                                 Vector<SCALAR, N>, Vector<SCALAR, N>)>>
+Vector<SCALAR, N> broyd(
+    FUNCTION &&F, Vector<SCALAR, N> x, JACOBIAN &&J, SCALAR reltol,
+    SCALAR abstol, unsigned int maxit = 20,
+    MONITOR &&monitor = [](unsigned int /*itnum*/,
+                           const Vector<SCALAR, N> & /*x*/,
+                           const Vector<SCALAR, N> & /*fx*/,
+                           const Vector<SCALAR, N> & /*dx*/) {}) {
   // Compute first quasi-Newton update
-  Vector<Scalar, N> s = -J.lu().solve(F(x));
+  Vector<SCALAR, N> s = -J.lu().solve(F(x));
   // Compute $\Vx^{(1)}$
   x += s;
   auto f = F(x);
-  for (unsigned int k = 1; ((s.norm() > tol * x.norm()) && (k < maxit)); ++k) {
+  monitor(0, x, f, s);
+  for (unsigned int k = 1;
+       ((s.norm() >= reltol * x.norm()) && (s.norm() >= abstol) && (k < maxit));
+       ++k) {
     // Rank-1 update of Jacobian \eqref{eq:broydenqn}
     J += f * s.transpose() / s.squaredNorm();
     // Next quasi-Newton correction
@@ -44,60 +54,66 @@ Vector<Scalar, N> broyd(FuncType&& F, Vector<Scalar, N> x, JacType J,
     x += s;
     // Evaluate F at next iterate
     f = F(x);
-    // Optional output 
-    if (callback != nullptr) {
-      callback(k, x, f, s);
-    }
+    // Optional output
+    monitor(k, x, f, s);
   }
   return x;
 }
+/* SAM_LISTING_END_2 */
 
 /* SAM_LISTING_BEGIN_1 */
-template <typename FuncType, typename JacType, typename Scalar = double,
-          int N = Eigen::Dynamic, typename CB = void_cb>
-Vector<Scalar, N> upbroyd(const FuncType &F, Vector<Scalar, N> x, JacType J,
-                          const Scalar tol, const unsigned maxit = 20,
-                          CB callback = nullptr) {
-  // Calculate LU factorization of initial Jacobian once
+template <typename FUNCTION, typename JACOBIAN, typename SCALAR,
+          int N = Eigen::Dynamic,
+          typename MONITOR =
+              std::function<void(unsigned int, Vector<SCALAR, N>,
+                                 Vector<SCALAR, N>, Vector<SCALAR, N>)>>
+Vector<SCALAR, N> upbroyd(
+    FUNCTION &&F, Vector<SCALAR, N> x, JACOBIAN &&J, SCALAR reltol,
+    SCALAR abstol, unsigned int maxit = 20,
+    MONITOR &&monitor = [](unsigned int /*itnum*/,
+                           const Vector<SCALAR, N> & /*x*/,
+                           const Vector<SCALAR, N> & /*fx*/,
+                           const Vector<SCALAR, N> & /*dx*/) {}) {
+  // Calculate LU factorization of initial Jacobian once, cf. \cref{rem:seqsolvelse}
   auto fac = J.lu();
   // First quasi-Newton correction $\cob{\Delta\Vx^{(0)} := -\VJ_0^{-1}F(\Vx^{(0)})}$
-  Vector<Scalar, N> s = -fac.solve(F(x));
+  Vector<SCALAR, N> s = -fac.solve(F(x));
   // Store the first quasi-Newton correction $\cob{\Delta\Vx^{(0)}}$
-  std::vector<Vector<Scalar, N>> dx{s};
-  // First update of iterates: $\cob{\Vx^{(1)} := \Vx^{(0)} + \Delta\Vx^{(0)}}$
+  std::vector<Vector<SCALAR, N>> dx{s};
+  // First update of iterate: $\cob{\Vx^{(1)} := \Vx^{(0)} + \Delta\Vx^{(0)}}$
   x += s;
-  auto f = F(x); // Here $\cob{ = F(\Vx^{(1)}}$
-  // Empty sequence of simplified quasi-Newton corrections 
-  std::vector<Vector<Scalar, N>> dxs{};
-  // Store denominators $\cob{\N{\Vx^{(\ell)}}^{2}+(\Delta\Vx^{(\ell)})^{\top}\cop{\Delta\overline{\Vx}^{(\ell+1)}}}$
-  std::vector<Scalar> den{};
-  // callback once before we start the algorithm
-  callback(0, x, f, s);
-  for (unsigned int k = 1; ((s.norm() > tol * x.norm()) && (k < maxit)); ++k) {
-    // Compute $\cob{\VJ_{0}^{-1}F(\Vx^{(k)})}$
+  auto f = F(x);  // Here $\cob{ = F(\Vx^{(1)})}$
+  // Array storing simplified quasi-Newton corrections $\cob{\Delta\overline{\Vx}^{(\ell)}}$
+  std::vector<Vector<SCALAR, N>> dxs{};
+  // Array of denominators $\cob{\N{\Vx^{(\ell)}}^{2}+(\Delta\Vx^{(\ell)})^{\top}{\Delta\overline{\Vx}^{(\ell+1)}}}$
+  std::vector<SCALAR> den{};
+  monitor(0, x, f, s); // Record start of iteration 
+  // Main loop with correction based termination control
+  for (unsigned int k = 1;
+       ((s.norm() >= reltol * x.norm()) && (s.norm() >= abstol) && (k < maxit));
+       ++k) {
+    // Compute $\cob{\VJ_{0}^{-1}F(\Vx^{(k)})}$, needed for both recursions
     s = fac.solve(f);
-    // Compute next simplified quasi-Newton correction recursively 
-    Vector<Scalar, N> ss = s;
+    // \eqref{eq:qncrec}: compute next simplified quasi-Newton correction recursively
+    Vector<SCALAR, N> ss = s;
     for (unsigned int l = 1; l < k; ++l) {
-      ss -= dxs[l-1] * (dx[l - 1].dot(ss)) / den[l - 1];
+      ss -= dxs[l - 1] * (dx[l - 1].dot(ss)) / den[l - 1];
     }
-    // Store next denominator
+    // Store next denominator $\cob{\N{\Vx^{(k-1)}}^{2}+(\Delta\Vx^{(k-1)})^{\top}{\Delta\overline{\Vx}^{(k)}}}$
     den.push_back(dx[k - 1].squaredNorm() + dx[k - 1].dot(ss));
-    // Store current simplified quasi-Newton correction
+    // Store current simplified quasi-Newton correction $\cob{\Delta\overline{\Vx}^{(k)}}$
     dxs.push_back(ss);
-    // Compute next quasi-Newton correction recursively 
+    // \eqref{eq:broyrec}: Compute next quasi-Newton correction recursively
     for (unsigned int l = 0; l < k; ++l) {
       s -= dxs[l] * (dx[l].dot(s)) / den[l];
     }
-    s *= (-1.0);
+    s *= (-1.0); // Comply with sign convention
     dx.push_back(s);
-    // Compute next iterate
+    // Compute next iterate $\cob{\Vx^{(k+1)}}$
     x += s;
     // Evaluation F at next iterate
     f = F(x);
-    if (callback != nullptr) { // NOLINT
-      callback(k, x, f, s);
-    }
+    monitor(k, x, f, s); // Record progress
   }
   return x;
 }
