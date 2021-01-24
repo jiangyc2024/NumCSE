@@ -31,7 +31,7 @@ template <typename FUNCTION, typename JACOBIAN, typename SCALAR,
               std::function<void(unsigned int, Vector<SCALAR, N>,
                                  Vector<SCALAR, N>, Vector<SCALAR, N>)>>
 Vector<SCALAR, N> broyd(
-    FUNCTION &&F, Vector<SCALAR, N> x, JACOBIAN &&J, SCALAR reltol,
+    FUNCTION &&F, Vector<SCALAR, N> x, JACOBIAN J, SCALAR reltol,
     SCALAR abstol, unsigned int maxit = 20,
     MONITOR &&monitor = [](unsigned int /*itnum*/,
                            const Vector<SCALAR, N> & /*x*/,
@@ -80,12 +80,11 @@ Vector<SCALAR, N> upbroyd(
   Vector<SCALAR, N> s = -fac.solve(F(x));
   // Store the first quasi-Newton correction $\cob{\Delta\Vx^{(0)}}$
   std::vector<Vector<SCALAR, N>> dx{s};
-  // First update of iterate: $\cob{\Vx^{(1)} := \Vx^{(0)} + \Delta\Vx^{(0)}}$
-  x += s;
-  auto f = F(x);  // Here $\cob{ = F(\Vx^{(1)})}$
+  x += s; // $\cob{\Vx^{(1)} := \Vx^{(0)} + \Delta\Vx^{(0)}}$
+  auto f = F(x); // Here $\cob{ = F(\Vx^{(1)})}$
   // Array storing simplified quasi-Newton corrections $\cob{\Delta\overline{\Vx}^{(\ell)}}$
   std::vector<Vector<SCALAR, N>> dxs{};
-  // Array of denominators $\cob{\N{\Vx^{(\ell)}}^{2}+(\Delta\Vx^{(\ell)})^{\top}{\Delta\overline{\Vx}^{(\ell+1)}}}$
+  // Array of denominators $\cob{\N{\Vx^{(\ell)}}_2^{2}+(\Delta\Vx^{(\ell)})^{\top}{\Delta\overline{\Vx}^{(\ell+1)}}}$
   std::vector<SCALAR> den{};
   monitor(0, x, f, s); // Record start of iteration 
   // Main loop with correction based termination control
@@ -94,12 +93,12 @@ Vector<SCALAR, N> upbroyd(
        ++k) {
     // Compute $\cob{\VJ_{0}^{-1}F(\Vx^{(k)})}$, needed for both recursions
     s = fac.solve(f);
-    // \eqref{eq:qncrec}: compute next simplified quasi-Newton correction recursively
+    // \eqref{eq:qncrec}: recursion for next simplified quasi-Newton correction 
     Vector<SCALAR, N> ss = s;
     for (unsigned int l = 1; l < k; ++l) {
       ss -= dxs[l - 1] * (dx[l - 1].dot(ss)) / den[l - 1];
     }
-    // Store next denominator $\cob{\N{\Vx^{(k-1)}}^{2}+(\Delta\Vx^{(k-1)})^{\top}{\Delta\overline{\Vx}^{(k)}}}$
+    // Store next denominator $\cob{\N{\Vx^{(k-1)}}_{2}^{2}+(\Delta\Vx^{(k-1)})^{\top}{\Delta\overline{\Vx}^{(k)}}}$
     den.push_back(dx[k - 1].squaredNorm() + dx[k - 1].dot(ss));
     // Store current simplified quasi-Newton correction $\cob{\Delta\overline{\Vx}^{(k)}}$
     dxs.push_back(ss);
@@ -109,9 +108,8 @@ Vector<SCALAR, N> upbroyd(
     }
     s *= (-1.0); // Comply with sign convention
     dx.push_back(s);
-    // Compute next iterate $\cob{\Vx^{(k+1)}}$
+    // Compute next iterate $\cob{\Vx^{(k+1)}}$ and $\cob{F(\Vx^{(k+1)})}$
     x += s;
-    // Evaluation F at next iterate
     f = F(x);
     monitor(k, x, f, s); // Record progress
   }
