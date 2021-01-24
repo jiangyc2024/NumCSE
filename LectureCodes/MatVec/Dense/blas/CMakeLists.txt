@@ -9,7 +9,7 @@ if(BLAS_FOUND)
 	
 	set(Sources BlasTimings.cpp ColumnMajorMatrix.cpp ColumnMajorMatrix_Multiplication_dot.cpp ColumnMajorMatrix_Multiplication_gemm.cpp ColumnMajorMatrix_Multiplication_gemv.cpp ColumnMajorMatrix_Multiplication_noblas.cpp)
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${BLAS_LINKER_FLAGS}")
-	string(APPEND CMAKE_CXX_FLAGS " -O3")
+#	string(APPEND CMAKE_CXX_FLAGS " -O2")
 	if(APPLE)
 		string(APPEND CMAKE_CXX_FLAGS " -D_MAC_OS")
 	else()
