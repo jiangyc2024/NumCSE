@@ -5,12 +5,14 @@
 
 #include "ColumnMajorMatrix.hpp"
 #include "simpleTimer.hpp"
+
 /* Main Routine for the timing of different
  * Matrix Matrix Multiplication implementations */
 int main(int argc, char* const argv[]) {
+  std::cout << "NumCSE timing code for BLAS routines" << std::endl;
   double T0(1e20), T1(1e20), T2(1e20), T3(1e20);
   simpleTimer watch;
-  int rep(1), n(5);
+  int rep(5), n(500);
   if (argc > 1) n = atoi(argv[1]);
   if (argc > 2) rep = atoi(argv[2]);
   // Declare Input Data
