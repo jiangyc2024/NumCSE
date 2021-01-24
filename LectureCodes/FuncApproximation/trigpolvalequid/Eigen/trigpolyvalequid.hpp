@@ -7,7 +7,7 @@ using Eigen::VectorXd;
 
 /* SAM_LISTING_BEGIN_0 */
 // Evaluation of trigonometric interpolation polynomial through \Blue{$(\frac{j}{2n+1},y_j)$}, \Blue{$j=0,\ldots,2n$}
-// in equidistant points \Blue{$\frac{k}{N}$}, \Blue{$k=0,N-1$}
+// in equidistant points \Blue{$\frac{k}{M}$}, \Blue{$k=0,M-1$}
 // IN : \texttt{y} = vector of values to be interpolated
 //      \texttt{q} (COMPLEX!) will be used to save the return values
 void trigpolyvalequid(const VectorXd y, const int M, VectorXd& q) {

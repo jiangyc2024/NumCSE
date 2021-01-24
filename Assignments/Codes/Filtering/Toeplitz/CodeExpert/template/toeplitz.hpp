@@ -20,22 +20,15 @@ using namespace Eigen;
  * @param[out] T The $m \times n$ Toeplitz matrix from $\Vc$ and $\Vr$
  */
 /* SAM_LISTING_BEGIN_5 */
-MatrixXd toeplitz(const VectorXd& c, const VectorXd& r) {
-  if (c(0) != r(0)) {
-    std::cerr << "First entries of c and r are different!" << std::endl
-              << "We assign the first entry of c to the diagonal" << std::endl;
-  }
-
-  // Initialization
-  int m = c.size();
-  int n = r.size();
+MatrixXd toeplitz(const VectorXd &c, const VectorXd &r) {
+  // Find size of Toeplitz matrix
+  const int m = c.size();
+  const int n = r.size();
   MatrixXd T(m, n);
-
   // TODO: build Toeplitz matrix $\VT$
   // START
 
   // END
-
   return T;
 }
 /* SAM_LISTING_END_5 */
@@ -47,15 +40,10 @@ MatrixXd toeplitz(const VectorXd& c, const VectorXd& r) {
  * @param[out] y An $n$-dimensional vector
  */
 /* SAM_LISTING_BEGIN_0 */
-VectorXd toepmatmult(const VectorXd& c, const VectorXd& r, const VectorXd& x) {
+VectorXd toepmatmult(const VectorXd &c, const VectorXd &r, const VectorXd &x) {
   assert(c.size() == r.size() && c.size() == x.size() &&
          "c, r, x have different lengths!");
-
-  MatrixXd T = toeplitz(c, r);
-
-  VectorXd y = T * x;
-
-  return y;
+  return toeplitz(c, r) * x;
 }
 /* SAM_LISTING_END_0 */
 
@@ -66,23 +54,23 @@ VectorXd toepmatmult(const VectorXd& c, const VectorXd& r, const VectorXd& x) {
  * @param[out] y An $n$-dimensional vector
  */
 /* SAM_LISTING_BEGIN_1 */
-VectorXd toepmult(const VectorXd& c, const VectorXd& r, const VectorXd& x) {
+VectorXd toepmult(const VectorXd &c, const VectorXd &r, const VectorXd &x) {
   assert(c.size() == r.size() && c.size() == x.size() &&
          "c, r, x have different lengths!");
   int n = c.size();
-
+  // Complex arithmetic required here
   VectorXcd cr_tmp = c.cast<std::complex<double>>();
+  VectorXcd x_tmp = x.cast<std::complex<double>>();
+  // Prepare vector encoding circulant matrix $\VC$
   cr_tmp.conservativeResize(2 * n);
   cr_tmp.tail(n) = VectorXcd::Zero(n);
   cr_tmp.tail(n - 1).real() = r.tail(n - 1).reverse();
-
-  VectorXcd x_tmp = x.cast<std::complex<double>>();
+  // Zero padding
   x_tmp.conservativeResize(2 * n);
   x_tmp.tail(n) = VectorXcd::Zero(n);
-
+  // Periodic discrete convolution from \lref{cpp:pconvfft}
   VectorXd y = pconvfft(cr_tmp, x_tmp).real();
   y.conservativeResize(n);
-
   return y;
 }
 /* SAM_LISTING_END_1 */
@@ -93,7 +81,7 @@ VectorXd toepmult(const VectorXd& c, const VectorXd& r, const VectorXd& x) {
  * @param[out] x An $n$-dimensional vector
  */
 /* SAM_LISTING_BEGIN_2 */
-VectorXd ttmatsolve(const VectorXd& h, const VectorXd& y) {
+VectorXd ttmatsolve(const VectorXd &h, const VectorXd &y) {
   assert(h.size() == y.size() && "h and y have different lengths!");
   int n = h.size();
 
@@ -115,18 +103,18 @@ VectorXd ttmatsolve(const VectorXd& h, const VectorXd& y) {
  * @param[out] x An $n$-dimensional vector
  */
 /* SAM_LISTING_BEGIN_3 */
-VectorXd ttrecsolve(const VectorXd& h, const VectorXd& y, int l) {
+VectorXd ttrecsolve(const VectorXd &h, const VectorXd &y, int l) {
   assert(h.size() == y.size() && "h and y have different lengths!");
-
+  // Result vector
   VectorXd x;
-
+  // Trivial case of asn 1x1 LSE
   if (l == 0) {
     x.resize(1);
     x(0) = y(0) / h(0);
   } else {
     int n = std::pow(2, l);
     int m = n / 2;
-
+    // Check matching length of vectors
     assert(h.size() == n && y.size() == n &&
            "h and y have length different from 2^l!");
 
@@ -150,7 +138,7 @@ VectorXd ttrecsolve(const VectorXd& h, const VectorXd& y, int l) {
  * @param[out] x An $n$-dimensional vector
  */
 /* SAM_LISTING_BEGIN_4 */
-VectorXd ttsolve(const VectorXd& h, const VectorXd& y) {
+VectorXd ttsolve(const VectorXd &h, const VectorXd &y) {
   assert(h.size() == y.size() && "h and y have different lengths!");
   int n = h.size();
 
@@ -160,7 +148,6 @@ VectorXd ttsolve(const VectorXd& h, const VectorXd& y) {
   // START
 
   // END
-
   return x;
 }
 /* SAM_LISTING_END_4 */
@@ -181,37 +168,34 @@ void runtime_toeplitz() {
             << std::setw(15) << "toepmult" << std::setw(20) << "ttmatsolve"
             << std::setw(15) << "ttrecsolve" << std::endl;
 
-  // vector size
-  unsigned int n;
-  Timer tm_matmult, tm_mult, tm_ttmat, tm_ttrec;
   for (unsigned int l = 3; l <= 9; l += 1) {
     // vector size
-    n = std::pow(2, l);
+    unsigned int n = std::pow(2, l);
     // save vector size n
     vec_size.push_back(n);
 
     // number of repetitions
     unsigned int repeats = 3;
-
-    // TODO: (5-4.g)  Perform a runtme comparison by repeating time computation
+    Timer tm_matmult, tm_mult, tm_ttmat, tm_ttrec;
+    // TODO: (5-4.g) Perform a runtime comparison by repeating time computation
     // 'repeats' times
     // START
-
+    
     // END
+
+    // print the results: toepmult vs toepmatmult
+    std::cout << std::setw(8) << n << std::scientific << std::setprecision(3)
+              << std::setw(15) << tm_matmult.min() << std::setw(15)
+              << tm_mult.min() << std::setw(20) << tm_ttmat.min()
+              << std::setw(15) << tm_ttrec.min() << std::endl;
+
+    // save elapsed time for plot: toepmatmult vs toepmult
+    elap_time_matmult.push_back(tm_matmult.min());
+    elap_time_mult.push_back(tm_mult.min());
+    // save elapsed time for plot: ttmatsove vs ttrecsolve
+    elap_time_ttmat.push_back(tm_ttmat.min());
+    elap_time_ttrec.push_back(tm_ttrec.min());
   }
-
-  // print the results: toepmult vs toepmatmult
-  std::cout << std::setw(8) << n << std::scientific << std::setprecision(3)
-            << std::setw(15) << tm_mult.min() << std::setw(15)
-            << tm_matmult.min() << std::setw(20) << tm_ttmat.min()
-            << std::setw(15) << tm_ttrec.min() << std::endl;
-
-  // save elapsed time for plot: toepmatmult vs toepmult
-  elap_time_matmult.push_back(tm_matmult.min());
-  elap_time_mult.push_back(tm_mult.min());
-  // save elapsed time for plot: ttmatsove vs ttrecsolve
-  elap_time_ttmat.push_back(tm_matmult.min());
-  elap_time_ttrec.push_back(tm_mult.min());
   /* DO NOT CHANGE */
   // create plot
   plot(vec_size, elap_time_mult, elap_time_matmult, "./cx_out/fig1.png",

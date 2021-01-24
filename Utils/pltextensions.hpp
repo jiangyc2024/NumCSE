@@ -91,8 +91,6 @@ bool triplot(const Vector &x, const Vector &y, const Matrix &T,
 template <typename Numeric>
 void text(Numeric x, Numeric y, const std::string &s,
           const Keywords_t &keywords = {}) {
-  // Triggers compilation error: no size() method fo4r 'double'
-  // assert(x.size() == y.size());
 
   auto args = PyTuple_New(3);
   PyTuple_SetItem(args, 0, PyFloat_FromDouble(x));

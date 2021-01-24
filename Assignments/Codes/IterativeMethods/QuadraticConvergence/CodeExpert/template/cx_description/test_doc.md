@@ -1,7 +1,9 @@
 
-
 # Tests of quadraticconvergence.hpp
 
+> The test button only tests `steffensen`, for the other functions run the program.
+
+> main.cpp calls the functions in the following way:
 ***
 > `double steffensen(Function &&f, double x0)` is tested by calling `testSteffensen()`: the student should input the function $f(x) = xe^{x} - 1$  
 and a suitable initial guess (e.g. $x_0 = 1$). The result should be
@@ -24,7 +26,7 @@ results in the vector  $[2.7, 2, 2.5]^T$
 
 ***
 
-> `double steffensen_log(Function &&f, double x0, Logger<double> *logger_p = nullptr)`: this is tested by calling the function `orderSteffensen ()`. The test is passed if the sequence of approximate rates
+> `double steffensen_log(Function &&f, double x0, Logger<double> *logger_p = nullptr)`: this is tested by calling the function `orderSteffensen ()`. The following table should be printed
 ```
 1.542345498
 1.650553642
@@ -35,5 +37,5 @@ results in the vector  $[2.7, 2, 2.5]^T$
 1.999927866
 0.741551601
 ```
-is printed in a table. The student can format the table freely: the test does not check the presence of other columns.
+The student can format the table freely and add additional columns where wanted.
 

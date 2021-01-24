@@ -1,3 +1,5 @@
+#ifndef LASERQUAD_HPP
+#define LASERQUAD_HPP
 ////
 //// Copyright (C) 2016 SAM (D-MATH) @ ETH Zurich
 //// Author(s): lfilippo <filippo.leonardi@sam.math.ethz.ch>
@@ -22,11 +24,12 @@ namespace plt = matplotlibcpp;
 //! @return Approximation of integral $\int_a^b f(x) dx$
 /* SAM_LISTING_BEGIN_1 */
 template <class Function>
-double evalquad(const double a, const double b, Function &&f, const QuadRule &Q) {
-  double I;
+double evalquad(const double a, const double b, Function &&f,
+                const QuadRule &Q) {
+  double I = 0.;
   // TO DO: (8-4.b) Use Q to approximate the integral of f over [a,b]
   // START
-  
+
   // END
   return I;
 }
@@ -42,11 +45,11 @@ double evalquad(const double a, const double b, Function &&f, const QuadRule &Q)
 /* SAM_LISTING_BEGIN_2 */
 template <class Function>
 double gaussquadtriangle(const Function &f, const unsigned N) {
-  double I;
+  double I = 0.;
   // TO DO: (8-4.c) Use N-node gaussquad() to integrate f over
   // the triangle 0<=x,y, x+y<=1.
   // START
-  
+
   // END
   return I;
 }
@@ -55,12 +58,15 @@ double gaussquadtriangle(const Function &f, const unsigned N) {
 /* SAM_LISTING_BEGIN_3 */
 void convtest2DQuad(unsigned int nmax = 20) {
   // "Exact" integral
-  const double I_ex = 0.366046550000405;
-
+  constexpr double I_ex = 0.366046550000405;
+  plt::figure();
   // TO DO: (8-4.d) Tabulate the error of gaussquadtriangle() for
   // a laser beam intensity, using n=1,2,3,...,nmax nodes.
   // START
-  
+
   // END
+  plt::savefig("./cx_out/convergence.png");
 }
 /* SAM_LISTING_END_3 */
+
+#endif

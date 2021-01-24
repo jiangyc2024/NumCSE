@@ -92,10 +92,10 @@ VectorXd find_c(const VectorXd &d, unsigned int m) {
   // Computing DFT of d
   VectorXcd fourier = fft.fwd(d);
   // Gathering what is important for the rhs.
-  rhs = fourier.real().head(m);
+  rhs = fourier.real().head(m + 1);
   // Solving normal equation by inverting diagonal matrix
   rhs /= n;
-  rhs.tail(m - 1) *= 2;
+  rhs.tail(m) *= 2;
   // END
   return rhs;
 }

@@ -1,13 +1,13 @@
-# include <Eigen/Dense>
-# include "matplotlibcpp.h"
+#include <Eigen/Dense>
+#include "matplotlibcpp.h"
 
 using namespace Eigen;
-namespace plt = matplotlibcpp; 
+namespace plt = matplotlibcpp;
 
 /* SAM_LISTING_BEGIN_0 */
-Vector2d F_vector(const Vector2d& z) {
-  Vector2d Fz;
-  // TO DO: Implement the function $F:R^2\to R^2$ such that F(z)=0 is
+Vector2d juliaF(const Vector2d &z) {
+  Vector2d Fz = Vector2d::Zero();
+  // TODO: (9-8.c) Implement the function $F:R^2\to R^2$ such that F(z)=0 is
   // equivalent to z^3 = 1 (interpreting z as a complex number).
   // START
   
@@ -17,9 +17,9 @@ Vector2d F_vector(const Vector2d& z) {
 /* SAM_LISTING_END_0 */
 
 /* SAM_LISTING_BEGIN_1 */
-Matrix2d DF_matrix(const Vector2d& z) {
-  Matrix2d DFz;
-  // TO DO: Implement the Jacobian of F at z.
+Matrix2d juliaDF(const Vector2d &z) {
+  Matrix2d DFz = Matrix2d::Zero();
+  // TODO: (9-8.c) Implement the Jacobian of F at z.
   // START
   
   // END
@@ -33,22 +33,22 @@ void julia(void) {
   // Use 2-dimensional real vectors to represent complex numbers.
   Vector2d z1, z2, z3;
   z1 << 1, 0;
-  z2 << -0.5, 0.5*std::sqrt(3);
-  z3 << -0.5, -0.5*std::sqrt(3);
-  
+  z2 << -0.5, 0.5 * std::sqrt(3);
+  z3 << -0.5, -0.5 * std::sqrt(3);
+
   // Tolerance and maximum number of iterations for Newton's method.
-  double tol = 1e-4;
-  int N_it = 20;
-  
+  constexpr double tol = 1e-4;
+  constexpr unsigned int N_it = 20;
+
   // The image will have a resolution of res*res.
-  int res = 780;
+  constexpr unsigned int res = 780;
   // We imagine that we have a res*res grid Z on the square [-2,2] with
   // Z(0,0)=(-2,-2),    Z(0,res-1)=(-2,2),
   // Z(res-1,0)=(2,-2), Z(res-1,res-1)=(2,2), etc.
   // C(i,j) is the color assigned to the (i,j)-th point on the grid.
-  MatrixXd C(res,res);
-  
-  // TO DO: Fill C with real numbers, such that each entry C(i,j) corresponds to
+  MatrixXd C(res, res);
+
+  // TODO: (9-8.d) Fill C with real numbers, such that each entry C(i,j) corresponds to
   // which of the roots (z1, z2, or z3) Newton's method converges
   // (if it converges), when using Z(i,j) as a starting point.
   // The values in C will be interpreted as colors below.
@@ -58,20 +58,19 @@ void julia(void) {
   // START
   
   // END
-  
   // Axis labels
   std::vector<double> ticks(5);
-  for(int i = 0; i < 5; ++i){
-    ticks[i] = i*(res-1)/4;
+  for (unsigned int i = 0; i < 5; ++i) {
+    ticks[i] = i * (res - 1) / 4;
   }
-  std::vector<std::string> labels{ "-2", "-1", "0", "1", "2"};
-  
+  std::vector<std::string> labels{"-2", "-1", "0", "1", "2"};
+
   plt::figure();
   // Need to transpose C because plt::imshow() uses
   // first index for y axis and second index for x axis.
   // Different colormaps can be found at
   // https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html
-  plt::imshow(C.transpose(),{{"cmap","viridis"},{"origin","lower"}});
+  plt::imshow(C.transpose(), {{"cmap", "viridis"}, {"origin", "lower"}});
   plt::colorbar();
   plt::xticks(ticks, labels);
   plt::yticks(ticks, labels);

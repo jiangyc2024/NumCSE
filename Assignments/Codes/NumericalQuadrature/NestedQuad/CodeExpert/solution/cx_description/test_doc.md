@@ -1,5 +1,6 @@
-
 # Tests of laserquad.hpp
+
+> Please note that tests in this problem are independent, i.e. you can have an incorrect implementation of a function from a subproblem, call it in another function that depends on it and the tests will pass when your implementation of this particular subproblem is correct.
 
 > Test `evalquad(-2,3,f,Q)` for $f(x) = x^3 \mathrm{log}(|x|+1)$ and 
 ```
@@ -16,4 +17,4 @@ The output should be $-0.0585825$.
 
 ***
 
-> To test `convtest2DQuad()`, we only check if the correct error is printed for N=2. I.e. if the number $0.00129915$ is on the screen.
+>Run the program to test  `convtest2DQuad()`

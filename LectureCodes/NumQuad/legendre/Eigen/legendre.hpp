@@ -18,8 +18,8 @@ void legendre(const unsigned n, const VectorXd& x, MatrixXd& L) {
   L.col(1) = x;            // \Blue{$p_1(x) = x$}
   for (unsigned j = 1; j < n - 1; ++j) {
     // \Blue{$p_{j+1}(x) = \frac{2j + 1}{j + 1} x p_{j}(x) - \frac{j}{j + 1} p_{j - 1}(x)$} \cref{eq:Legpol}
-    V.col(j+1) = (2.*j+1)/(j+1.)*V.col(j-1).cwiseProduct(x)
-      -j/(j+1.)*V.col(j-1);
+    L.col(j+1) = (2.*j+1)/(j+1.)*L.col(j-1).cwiseProduct(x)
+      -j/(j+1.)*L.col(j-1);
   }
 }
 /* SAM_LISTING_END_0 */
