@@ -10,17 +10,25 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 
-#include "header.hpp"
+#include "pcgbase.hpp"
 
 #include <iostream>
 #include <Eigen/Dense> 
 #include <Eigen/Sparse>
+#include <Eigen/Core>
+
+using namespace Eigen;
+typedef SparseMatrix<double> SpMat;  // declares column-major (default) sparse matrix
+typedef Triplet<double> Trip;
+typedef std::tuple<VectorXd, VectorXd> tuple2;
 
 /* Example 10.3.0.11 for LSE with tridiagonal preconditioning */
 int main() { 
     // input values 
     // matrix size
     unsigned int n = 20; // has to be even number if example of script is used 
+    double tol = 1e-4;
+    unsigned int maxit = 1000;
     // pcgbase method requires s.p.d matrix, suitable for preconditioning   
     unsigned int estm_entries = n + 2 * (n - 1) + 2*(n/2) ;  // diagonal size n, 2 times off-diagonal size n-1, 2 times diagonal at n/2
     SpMat A(n, n);
@@ -35,7 +43,7 @@ int main() {
       for (unsigned int j = 0; j < n; ++j) {
         // diagonals
         if (i == j) {
-          tripletList.push_back(Trip(i, j, 2+2/n));
+          tripletList.push_back(Trip(i, j, 2+2/float(n) ));
           }
         // off-diagonals
         // convert to 'int' to use abs()
@@ -44,11 +52,20 @@ int main() {
            tripletList.push_back(Trip(i, j, -1));
            }
         if (abs(dd) == n/2) {
-           tripletList.push_back(Trip(i, j, 1/n));
+           tripletList.push_back(Trip(i, j, 1/float(n) ));
            }
         }
     }
     A.setFromTriplets(tripletList.begin(), tripletList.end());
-
-    std::cout << A << "\n";
+    // according to example
+    b = x0 = VectorXd::Ones(n);
+    // !!  OPEN QUESTION !!
+    // regarding: "..should just be operator(), no more evalA.."
+    auto evalA = [A](VectorXd x) { return A * x; };
+    auto invB = [](VectorXd x) { return x; };
+    // solution vectors
+    VectorXd r; //residual
+    VectorXd x; //approximate solution 
+    tuple2 sol = std::make_tuple(x, r);
+    sol  = pcgbase<tuple2> (evalA, invB, b, x0, tol, maxit);
 }

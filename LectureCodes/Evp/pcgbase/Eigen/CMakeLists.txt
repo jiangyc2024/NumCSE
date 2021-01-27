@@ -1,6 +1,3 @@
-#find out why I can not add multiple executable to one file here.
 
-project(pcgbase)
-cmake_minimum_required(VERSION 2.8)
-
-add_executable_numcse(main pcgbase.cpp main.cpp)
+add_subdirectory(main)
+add_subdirectory(LSE_for_ex)

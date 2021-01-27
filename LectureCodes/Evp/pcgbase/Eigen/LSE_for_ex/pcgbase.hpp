@@ -9,6 +9,7 @@
 
 #include <Eigen/Dense>
 #include <vector>
+#include <iostream>
 
 using namespace Eigen;
 
@@ -17,7 +18,7 @@ using namespace Eigen;
  *        the transformed matrix is small
  * @param[in] evalA Function type returns  
  */
-template <class Function, typename Tuple, typename Vector>
+template <class Function, class Tuple, typename Vector>
 Tuple pcgbase(Function  &&evalA, Function &&invB, Vector b, Vector x, double tol, unsigned int maxit){
     // initial residual
     Vector r = b - evalA(x);
@@ -36,7 +37,7 @@ Tuple pcgbase(Function  &&evalA, Function &&invB, Vector b, Vector x, double tol
         // update residual
         r -= alpha * h;
         q = invB(r); beta = rq / beta;
-        if(std::abs(rq) <= tol * tol) { std::cout << "Termination criteria met. Iteration stopped at ", maxit, " steps." << "\n"; break; }
+        if(std::abs(rq) <= tol * tol) { std::cout << "Termination criteria met. Iteration stopped at steps." << "\n"; break; }
         p = q + beta * p;
     }
     // returns approximate solution and corresponding residual
