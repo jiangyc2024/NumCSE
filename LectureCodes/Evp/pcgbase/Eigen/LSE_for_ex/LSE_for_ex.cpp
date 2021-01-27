@@ -66,6 +66,8 @@ int main() {
     // solution vectors
     VectorXd r; //residual
     VectorXd x; //approximate solution 
-    tuple2 sol = std::make_tuple(x, r);
-    sol  = pcgbase<tuple2> (evalA, invB, b, x0, tol, maxit);
+    std::pair<VectorXd, VectorXd> sol = std::make_pair(x, r) ;
+    
+    sol  = pcgbase<std::pair<VectorXd, VectorXd>> (evalA, invB, b, x0, tol, maxit);
+    std::cout << std::get<0>(sol) << "\n";
 }

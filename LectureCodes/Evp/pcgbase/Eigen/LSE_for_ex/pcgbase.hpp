@@ -18,8 +18,8 @@ using namespace Eigen;
  *        the transformed matrix is small
  * @param[in] evalA Function type returns  
  */
-template <class Function, class Tuple, typename Vector>
-Tuple pcgbase(Function  &&evalA, Function &&invB, Vector b, Vector x, double tol, unsigned int maxit){
+template <class Function, typename Vector>
+std::pair<Vector, Vector> pcgbase(Function  &&evalA, Function &&invB, Vector b, Vector x, double tol, unsigned int maxit){
     // initial residual
     Vector r = b - evalA(x);
     Vector q = invB(r);
@@ -41,5 +41,6 @@ Tuple pcgbase(Function  &&evalA, Function &&invB, Vector b, Vector x, double tol
         p = q + beta * p;
     }
     // returns approximate solution and corresponding residual
-    return std::make_tuple(x, r);
+    std::pair<Vector, Vector> sol = std::make_tuple(x, r);
+    return sol;
 }
