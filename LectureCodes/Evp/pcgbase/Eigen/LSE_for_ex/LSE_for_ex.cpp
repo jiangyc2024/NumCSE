@@ -26,21 +26,22 @@ typedef std::tuple<VectorXd, VectorXd> tuple2;
 int main() { 
     // input values 
     // matrix size
-    unsigned int n = 20; // has to be even number if example of script is used 
+    int n = 20; // has to be even number if example of script is used 
     double tol = 1e-4;
     unsigned int maxit = 1000;
     // pcgbase method requires s.p.d matrix, suitable for preconditioning   
     unsigned int estm_entries = n + 2 * (n - 1) + 2*(n/2) ;  // diagonal size n, 2 times off-diagonal size n-1, 2 times diagonal at n/2
     SpMat A(n, n);
+    SpMat B(n, n);
     VectorXd b(n); // r.h.s.
     VectorXd x0(n); // initial guess
     // randome access of sparse matrix is expensive
     // -> first build list of triplets, then convert to sparse matrix
     std::vector<Trip> tripletList;
     tripletList.reserve(estm_entries);
-    // filling matrix with diagonals=2, off-diagonals=1
-    for (unsigned int i = 0; i < n; ++i) {
-      for (unsigned int j = 0; j < n; ++j) {
+    // filling matrix with diagonals=2+2/n, off-diagonals=-1
+    for (int i = 0; i < n; ++i) {
+      for (int j = 0; j < n; ++j) {
         // diagonals
         if (i == j) {
           tripletList.push_back(Trip(i, j, 2+2/float(n) ));
@@ -51,6 +52,13 @@ int main() {
         if (abs(dd) == 1) {
            tripletList.push_back(Trip(i, j, -1));
            }
+        }
+    }
+    B.setFromTriplets(tripletList.begin(), tripletList.end());
+    // middle off-diagonals=1/n
+    for (int i = 0; i < n; ++i) {
+      for (int j = 0; j < n; ++j) { 
+        int dd = i - j;
         if (abs(dd) == n/2) {
            tripletList.push_back(Trip(i, j, 1/float(n) ));
            }
@@ -62,12 +70,17 @@ int main() {
     // !!  OPEN QUESTION !!
     // regarding: "..should just be operator(), no more evalA.."
     auto evalA = [A](VectorXd x) { return A * x; };
-    auto invB = [](VectorXd x) { return x; };
+    auto idB = [](VectorXd x) { return x; };
+    auto tridiagB = [B](VectorXd x) { return B * x; };
     // solution vectors
     VectorXd r; //residual
     VectorXd x; //approximate solution 
-    std::pair<VectorXd, VectorXd> sol = std::make_pair(x, r) ;
-    
-    sol  = pcgbase<std::pair<VectorXd, VectorXd>> (evalA, invB, b, x0, tol, maxit);
-    std::cout << std::get<0>(sol) << "\n";
+    std::pair<VectorXd, VectorXd> sol_nop, sol_tridiagp;
+    sol_nop = sol_tridiagp = std::make_pair(x, r) ;
+    // call CG method with no pre-conditioning 
+    sol_nop  = pcgbase(evalA, idB, b, x0, tol, maxit);
+    // call CG method with tridiagnal pre-conditioning
+    sol_tridiagp = pcgbase(evalA, tridiagB, b, x0, tol, maxit);
+    std::cout << "Approximated solution with no pre-conditioning x = " << "\n" << std::get<0>(sol_nop) << "\n";
+    std::cout << "Approximated solution with tridiagonal pre-conditioning x = " << "\n" << std::get<0>(sol_tridiagp) << "\n";
 }
