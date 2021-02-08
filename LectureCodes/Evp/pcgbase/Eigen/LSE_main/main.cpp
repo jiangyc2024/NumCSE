@@ -1,11 +1,8 @@
-// this is the c++ equivalent code of example LSE for Ex. 10.3.0.11 on page 630
-// MATLAB translated code 
-
 ///////////////////////////////////////////////////////////////////////////
 /// Demonstration code for lecture "Numerical Methods for CSE" @ ETH Zurich
 /// Porting pcgbase.m to C++/Eigen.
 /// (C) 2020 SAM, D-MATH
-/// Author(s): Vivienne Langen
+/// Author(s): William Andersson, Vivienne Langen
 /// Repository: https://gitlab.math.ethz.ch/NumCSE/NumCSE/
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
@@ -22,56 +19,56 @@ typedef SparseMatrix<double> SpMat;  // declares column-major (default) sparse m
 typedef Triplet<double> Trip;
 typedef std::tuple<VectorXd, VectorXd> tuple2;
 
-/* Example 10.3.0.11 for LSE with tridiagonal preconditioning */
+/* Standard example */
 int main() { 
     // input values 
     // matrix size
-    int n = 20; // has to be even number if example of script is used 
+    unsigned int n = 20; // has to be even number if example of script is used 
     double tol = 1e-4;
-    unsigned int maxit = 1000;
+    int maxit = 1000;
     // pcgbase method requires s.p.d matrix, suitable for preconditioning   
-    unsigned int estm_entries = n + 2 * (n - 1) + 2*(n/2) ;  // diagonal size n, 2 times off-diagonal size n-1, 2 times diagonal at n/2
+    unsigned int estm_entriesA = n + 2 * (n - 1) ;  // diagonal size n, 2 times off-diagonal size n-1
+    unsigned int estm_entriesB = n ;  // diagonal size n
     SpMat A(n, n);
     SpMat B(n, n);
     VectorXd b(n); // r.h.s.
     VectorXd x0(n); // initial guess
     // randome access of sparse matrix is expensive
     // -> first build list of triplets, then convert to sparse matrix
-    std::vector<Trip> tripletList;
-    tripletList.reserve(estm_entries);
-    // filling matrix with diagonals=2+2/n, off-diagonals=-1
-    for (int i = 0; i < n; ++i) {
-      for (int j = 0; j < n; ++j) {
+    std::vector<Trip> tripletListA;
+    std::vector<Trip> tripletListB;
+    tripletListA.reserve(estm_entriesA);
+    tripletListB.reserve(estm_entriesB);
+    // filling matrix A with diagonals=1,2,3,4,..,n ,off-diagonals=1
+    for (unsigned int i = 0; i < n; ++i) {
+      for (unsigned int j = 0; j < n; ++j) {
         // diagonals
         if (i == j) {
-          tripletList.push_back(Trip(i, j, 2+2/float(n) ));
-          }
+          tripletListA.push_back(Trip(i, j, i+1));
+        }
         // off-diagonals
         // convert to 'int' to use abs()
         int dd = i - j;
         if (abs(dd) == 1) {
-           tripletList.push_back(Trip(i, j, -1));
-           }
+           tripletListA.push_back(Trip(i, j, 1));
         }
+      }
+    } 
+    // matrix B is the inverse of the diagonal matrix with diag=1,2,3,4,..,n
+    for (unsigned int i = 0; i < n; ++i) {
+      // diagonals
+      tripletListB.push_back(Trip(i, i, 1/float(i+1)));
     }
-    B.setFromTriplets(tripletList.begin(), tripletList.end());
-    // middle off-diagonals=1/n
-    for (int i = 0; i < n; ++i) {
-      for (int j = 0; j < n; ++j) { 
-        int dd = i - j;
-        if (abs(dd) == n/2) {
-           tripletList.push_back(Trip(i, j, 1/float(n) ));
-           }
-        }
-    }
-    A.setFromTriplets(tripletList.begin(), tripletList.end());
-    // according to example
+    A.setFromTriplets(tripletListA.begin(), tripletListA.end());
+    B.setFromTriplets(tripletListB.begin(), tripletListB.end());
+    // according to script example 
     b = x0 = VectorXd::Ones(n);
     // !!  OPEN QUESTION !!
     // regarding: "..should just be operator(), no more evalA.."
     auto evalA = [A](VectorXd x) { return A * x; };
     auto idB = [](VectorXd x) { return x; };
-    auto tridiagB = [B](VectorXd x) { return B / x; };
+    // matrix for tridiagonal preconditioning
+    auto tridiagB = [B](VectorXd x) { return B * x; };
     // solution vectors
     VectorXd r; //residual
     VectorXd x; //approximate solution 
