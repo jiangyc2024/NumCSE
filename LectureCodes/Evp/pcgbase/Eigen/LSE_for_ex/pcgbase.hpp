@@ -18,12 +18,13 @@ using namespace Eigen;
  *        the transformed matrix is small
  * @param[in] evalA Function, returns  A * x
  * @param[in] invB Function, performs transformation with preconditioner matrix
- * @param[in] b, r.h.s. of LSE
- * @param[in] x, Initial guess
- * @param[in] tol, Absolute tolerance for termination criteria
+ * @param[in] b R.h.s. of LSE
+ * @param[in] x Initial guess
+ * @param[in] tol Absolute tolerance for termination criteria
  * @param[in] maxit
  * @param[out] x, r Approximated solution, corresponding residual 
  */ 
+/* Example 10.3.0.11, script for LSE with tridiagonal preconditioning */
 template <class FunctionA, class FunctionB, typename Vector>
 std::pair<Vector, Vector> pcgbase(FunctionA  &&evalA, FunctionB &&invB, Vector b, Vector x, double tol, unsigned int maxit){
     // initial residual

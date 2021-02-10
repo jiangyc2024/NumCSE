@@ -13,11 +13,11 @@
 #include <Eigen/Dense> 
 #include <Eigen/Sparse>
 #include <Eigen/Core>
+#include <cmath>
 
 using namespace Eigen;
 typedef SparseMatrix<double> SpMat;  // declares column-major (default) sparse matrix
 typedef Triplet<double> Trip;
-typedef std::tuple<VectorXd, VectorXd> tuple2;
 
 /* Standard example */
 int main() { 
@@ -80,4 +80,8 @@ int main() {
     sol_tridiagp = pcgbase(evalA, tridiagB, b, x0, tol, maxit);
     std::cout << "Approximated solution with no pre-conditioning x = " << "\n" << std::get<0>(sol_nop) << "\n";
     std::cout << "Approximated solution with tridiagonal pre-conditioning x = " << "\n" << std::get<0>(sol_tridiagp) << "\n";
+    std::cout << "Residual, no pre-conditioning r = " << "\n" << std::get<1>(sol_nop) << "\n"
+              << "||r|| = " << std::get<1>(sol_nop).squaredNorm() << "\n";
+    std::cout << "Residual, pre-conditioning r = " << "\n" << std::get<1>(sol_tridiagp) << "\n"
+              << "||r|| = " << std::get<1>(sol_tridiagp).squaredNorm() << "\n";
 }

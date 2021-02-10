@@ -15,7 +15,12 @@ using namespace Eigen;
 /* @brief Preconditioned conjugate gradient method 
  *        CG algorithm applied to transformed LSE such that cond_2 of 
  *        the transformed matrix is small
- * @param[in] evalA Function type returns  
+ * @param[in] evalA Function, returns A*x, A LVS matrix
+ * @param[in] invB Function, returns B*x, B pre-cond. matrix
+ * @param[in] b R.h.s.
+ * @param[in] x Initial guess
+ * @param[in] tol, maxit 
+ * @param[out] (x, r) Approx. solution. residual
  */
 template <class FunctionA, class FunctionB, typename Vector>
 std::pair<Vector, Vector> pcgbase(FunctionA  &&evalA, FunctionB &&invB, Vector b, Vector x, double tol, int maxit){
