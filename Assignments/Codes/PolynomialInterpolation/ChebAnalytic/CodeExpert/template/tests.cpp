@@ -45,9 +45,7 @@ TEST_SUITE("ChebAnalytic") {
     CHECK(abs(sol_rho - stud_rho) == doctest::Approx(0.).epsilon(1e-6));
   }
 
-  TEST_CASE(
-      "std::pair<std::vector<double>, std::vector<double>> "
-      "compareErrorAndBound" *
+  TEST_CASE("std::pair<std::vector<double>, std::vector<double>> compareErrorAndBound" *
       doctest::description("Tabulate the estimated upperbound and actual error "
                            "for Chebychev interpolation")) {
     auto n_max = 20;
