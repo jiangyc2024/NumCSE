@@ -3,6 +3,8 @@
 - When done, `Codes` should be renamed to `Legacy` and `PolishedCodes` renamed to `Codes`.
 - Make sure that everything compiles.
 - For now, both subdirectories remain in the CMake hierarchy until everything is in `PolishedCodes`.
+- Run clang-format and clang-tidy.
+- Make sure Latex works.
 
 # Legacy README
 ## How to navigate this folder:
