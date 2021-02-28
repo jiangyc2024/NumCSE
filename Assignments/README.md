@@ -1,4 +1,11 @@
-# How to navigate this folder:
+# WIP
+- Look over codes in `Codes`, polish and comment them and then copy them as a CodeExpert version to `PolishedCodes`
+- When done, `Codes` should be renamed to `Legacy` and `PolishedCodes` renamed to `Codes`.
+- Make sure that everything compiles.
+- For now, both subdirectories remain in the CMake hierarchy until everything is in `PolishedCodes`.
+
+# Legacy README
+## How to navigate this folder:
 
 All codes used for exercises are in the subfolder `Codes`.
 
