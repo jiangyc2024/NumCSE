@@ -9,12 +9,13 @@
 #include <iostream>
 
 /* SAM_LISTING_BEGIN_R */
-template <class Matrix> void sumEntries(Eigen::MatrixBase<Matrix> &M) {
+template <class Matrix>
+void sumEntries(Eigen::MatrixBase<Matrix> &M) {
   using Scalar = typename Eigen::MatrixBase<Matrix>::Scalar;
   // Compute sum  of all entries
   const Scalar s = M.sum();
   // Row-wise and column-wise sum of entries: results are vectors
-  Eigen::Matrix<Scalar, 1, Eigen::Dynamic> colsums{M.colwise().sum()};
+  Eigen::Matrix<Scalar, 1, Eigen::Dynamic> colsums{M.rowwise().sum()};
   Eigen::Matrix<Scalar, Eigen::Dynamic, 1> rowsums{M.colwise().sum()};
   std::cout << M.rows() << 'x' << M.cols() << "-matrix: " << colsums.sum()
             << " = " << rowsums.sum() << " = " << s << std::endl;
@@ -26,4 +27,3 @@ int main(int /*argc*/, char ** /*argv*/) {
   sumEntries(Eigen::MatrixXd(3, 4).setOnes());
   return 0;
 }
-

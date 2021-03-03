@@ -5,13 +5,14 @@
 #include "doctest.h"
 
 auto f = [](double x) { return 1. / (1. + x * x); };
-VectorXd t = VectorXd::Random(10);
+VectorXd t = VectorXd::LinSpaced(10,-1,6);
 CubicHermiteInterpolant s_reconstr(f, t);
 CubicHermiteInterpolant_TEST s_reconstr_TEST(f, t);
 
 TEST_SUITE("PCHI") {
-  TEST_CASE("VectorXd CubicHermiteInterpolant::eval const " * doctest::description("evaluation function")) {
-    VectorXd x = VectorXd::Random(10);
+  TEST_CASE("eval" * doctest::description("evaluation function")) {
+    VectorXd x = Eigen::VectorXd::LinSpaced(23, -1, 6);
+    
     VectorXd sol_reconstr = s_reconstr.eval(x);
     VectorXd stud_reconstr = s_reconstr_TEST.eval(x);
 
