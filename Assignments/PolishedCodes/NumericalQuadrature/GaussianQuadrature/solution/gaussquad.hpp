@@ -25,7 +25,7 @@ QuadRule gaussquad(const unsigned n) {
   qr.nodes_ = eig.eigenvalues();
   qr.weights_ =
       2 * eig.eigenvectors().topRows<1>().array().pow(2);  // \Label[line]{gw:4}
-  
+
   return qr;
 }
 /* SAM_LISTING_END_0 */

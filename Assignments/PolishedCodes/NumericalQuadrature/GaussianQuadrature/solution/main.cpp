@@ -1,7 +1,7 @@
-#include "gaussConvergence.hpp"
-
-#include <iostream>
 #include <iomanip>
+#include <iostream>
+
+#include "gaussConvergence.hpp"
 
 int main() {
   // Max. number of nodes
@@ -12,14 +12,16 @@ int main() {
 
   // $f(x) = \sinh x$
   std::function<double(double)> f = [](double x) { return std::sinh(x); };
-  
-  std::cout << "Exact value of integral: " << std::setprecision(10) << I_ex << std::endl;
+
+  std::cout << "Exact value of integral: " << std::setprecision(10) << I_ex
+            << std::endl;
 
   // PART 1
   const double I = gaussConv(f, I_ex, N);
 
   std::cout << "Approximated integral for " << N
-  << " nodes with Gauss-Legendre: " << std::setprecision(10) << I << std::endl;
+            << " nodes with Gauss-Legendre: " << std::setprecision(10) << I
+            << std::endl;
 
   // PART 2
   const double I_cv = gaussConvCV(f, I_ex, N);

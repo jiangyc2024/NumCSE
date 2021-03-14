@@ -1,6 +1,6 @@
 include_directories(../../../Utils)
 
-file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/bin/Assignments/Codes/NumericalQuadrature/GaussianQuadrature/CodeExpert/cx_out)
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/bin/Assignments/PolishedCodes/NumericalQuadrature/GaussianQuadrature/cx_out)
 
 add_executable_numcse(solution solution/main.cpp)
 get_target_name_numcse(solution SOLUTION)

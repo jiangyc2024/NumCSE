@@ -6,7 +6,6 @@
 #include <vector>
 
 #include "gaussquad.hpp"
-
 #include "matplotlibcpp.h"
 namespace plt = matplotlibcpp;
 
@@ -23,10 +22,10 @@ namespace plt = matplotlibcpp;
 template <class Function>
 double integrate(const QuadRule& qr, const Function& f) {
   double I = 0;
-  
+
   // TODO: (8-1.a) optional: compute the integral with this helper function
   // START
-    
+
   // END
   return I;
 }
@@ -55,7 +54,7 @@ double gaussConv(const Function& fh, const double I_ex, const unsigned N) {
   // START
 
   // END
-  
+
   plt::savefig("./cx_out/GaussConv.png");
   // return the best approximation
   return I_N;
@@ -95,4 +94,3 @@ double gaussConvCV(const Function& f, const double I_ex, const unsigned N) {
 /* SAM_LISTING_END_2 */
 
 #endif
-

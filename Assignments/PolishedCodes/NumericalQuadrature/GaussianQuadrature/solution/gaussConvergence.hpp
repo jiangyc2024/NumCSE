@@ -6,7 +6,6 @@
 #include <vector>
 
 #include "gaussquad.hpp"
-
 #include "matplotlibcpp.h"
 namespace plt = matplotlibcpp;
 
@@ -23,16 +22,16 @@ namespace plt = matplotlibcpp;
 template <class Function>
 double integrate(const QuadRule& qr, const Function& f) {
   double I = 0;
-  
+
   // TODO: (8-1.a) optional: compute the integral with this helper function
   // START
-  
+
   // Compute weighted sum of function values according to
-  // the concept of a generic quadrature formula 
+  // the concept of a generic quadrature formula
   for (unsigned i = 0; i < qr.weights_.size(); ++i) {
     I += qr.weights_(i) * f(qr.nodes_(i));
   }
-  
+
   // END
   return I;
 }
@@ -62,7 +61,7 @@ double gaussConv(const Function& fh, const double I_ex, const unsigned N) {
 
   // Build integrand
   auto f = [fh](double x) { return std::asin(x) * fh(x); };
-  
+
   double I;
   for (unsigned n = 1; n <= N; ++n) {
     QuadRule qr = gaussquad(n);  // Create quadrature rule
@@ -86,7 +85,7 @@ double gaussConv(const Function& fh, const double I_ex, const unsigned N) {
   plt::ylabel("|Error|");
   plt::legend("best");
   // END
-  
+
   plt::savefig("./cx_out/GaussConv.png");
   // return the best approximation
   return I_N;
@@ -135,16 +134,18 @@ double gaussConvCV(const Function& f, const double I_ex, const unsigned N) {
     // Same as $I = \sum_{i=1}^n w_i g(c_i)$
     I = w.dot(gc);
 
-    evals.push_back(n);                 // Save no. of quadrature nodes
+    evals.push_back(n);                   // Save no. of quadrature nodes
     error.push_back(std::abs(I - I_ex));  // Save error
   }
-  
+
   // save approximation of integral computed with highest-order rule
   I_N = I;
 
   // Create convergence plots
   plt::title("Gauss quadrature convergence");
-  plt::semilogy(evals, error, " +r", {{"label", "Error"}});  // plot error as lin-log plot to see convergence
+  plt::semilogy(
+      evals, error, " +r",
+      {{"label", "Error"}});  // plot error as lin-log plot to see convergence
   plt::xlabel("No. of quadrature nodes");
   plt::ylabel("|Error|");
   plt::legend("best");
@@ -157,4 +158,3 @@ double gaussConvCV(const Function& f, const double I_ex, const unsigned N) {
 /* SAM_LISTING_END_2 */
 
 #endif
-
