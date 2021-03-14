@@ -19,14 +19,13 @@
 /// IN THE SOFTWARE.
 #pragma once
 
+#include <Eigen/Dense>
 #include <algorithm>
 #include <exception>
 #include <iostream>
 #include <limits>
 #include <utility>
 #include <vector>
-
-#include <Eigen/Dense>
 
 //! \file ode45.hpp Contains header only class for adaptive 4-5 Runge Kutta
 //! integration.
@@ -110,14 +109,15 @@ class termination_error : public std::exception {
 template <class StateType,
           class RhsType = std::function<StateType(const StateType &)>>
 class ode45 {
-public:
+ public:
   //! \brief Initialize the class by providing a r.h.s.
   //! RhsType is automatically deduced by the constructor at
   //! construction time.
   //! Copy of r.h.s (of \f$ y'(t) = rhs((y(t)) \f$) is stored internally.
   //! \param[in] f function for the computation of r.h.s.
   //! (e.g. a lambda function).
-  ode45(const RhsType &rhs) : f(rhs) { /* EMPTY */ }
+  ode45(const RhsType &rhs) : f(rhs) { /* EMPTY */
+  }
 
   //! \brief Performs solutions of IVP up to specified final time.
   //! Evolves ODE with initial data \f$y0\f$, up to time \f$T\f$ or
@@ -129,8 +129,8 @@ public:
   //! _norm is not defined, i.e. we use a custom vector type).
   //! \return vector of pairs \f$ (y(t), t) \f$ at snapshot times.
   template <class NormFunc = decltype(_norm<StateType>)>
-  std::vector<std::pair<StateType, double>>
-  solve(const StateType &y0, double T, const NormFunc &norm = _norm<StateType>);
+  std::vector<std::pair<StateType, double>> solve(
+      const StateType &y0, double T, const NormFunc &norm = _norm<StateType>);
 
   //! \brief Print statistics and options of this class instance.
   void print();
@@ -182,7 +182,7 @@ public:
     unsigned int funcalls = 0;
   } statistics;
 
-private:
+ private:
   // A copy of rhs stored during initialization
   RhsType f;
   // Current time
@@ -206,8 +206,10 @@ private:
 #endif
   // Matrix \Blue{$\FA$} from the Butcher scheme
   static Eigen::MatrixXd _mA;
-  // Quadrature weight vectors, non autonomous ODEs c coefficients
-  static Eigen::VectorXd _vb4, _vb5, _vc;
+  // Quadrature weights b_i
+  static Eigen::VectorXd _vb4, _vb5;
+  // Coefficients c_i relevant for non-autonomous ODEs
+  static Eigen::VectorXd _vc;
 };
 
 // Matrix \Blue{$\FA$} in Butcher scheme \eqref{eq:BSexpl}
@@ -261,21 +263,20 @@ Eigen::VectorXd ode45<StateType, RhsType>::_vb5 =
         .finished();
 
 // The coefficients \Blue{$c_i$}, relevant for non-autonomous ODEs.
-// Can be computed via rown sums of \Blue{$FA$}
+// Can be computed via row sums of \Blue{$FA$}
 template <class StateType, class RhsType>
 Eigen::VectorXd ode45<StateType, RhsType>::_vc =
     ode45<StateType, RhsType>::_mA.rowwise().sum();
 
-// Order of the RK scheme
+// Stage number of the RK scheme
 template <class StateType, class RhsType>
 const unsigned int ode45<StateType, RhsType>::_s;
 
 // solve(): main timestepping method, for autonomous ODEs only
 template <class StateType, class RhsType>
 template <class NormFunc>
-std::vector<std::pair<StateType, double>>
-ode45<StateType, RhsType>::solve(const StateType &y0, double T,
-                                 const NormFunc &norm) {
+std::vector<std::pair<StateType, double>> ode45<StateType, RhsType>::solve(
+    const StateType &y0, double T, const NormFunc &norm) {
   const double epsilon = std::numeric_limits<double>::epsilon();
   // Setup step size default values if not provided by user
   t = options.start_time;
@@ -303,12 +304,15 @@ ode45<StateType, RhsType>::solve(const StateType &y0, double T,
   }
 
   // Push initial data
-  if (options.save_init)
+  if (options.save_init) {
     snapshots.push_back(std::make_pair(y0, t));
+  }
 
   // Temporary containers
-  StateType ytemp0 = y0, ytemp1 = y0, ytemp2 = y0;
-  // Pointers forswapping of temporary containers
+  StateType ytemp0 = y0;
+  StateType ytemp1 = y0;
+  StateType ytemp2 = y0;
+  // Pointers for swapping of temporary containers
   StateType *yprev = &ytemp0, *y4 = &ytemp1, *y5 = &ytemp2;
 
   // Increments \Blue{$\Vk_i$}
@@ -316,7 +320,7 @@ ode45<StateType, RhsType>::solve(const StateType &y0, double T,
   mK.resize(_s);
 
   // Usage statistics
-  unsigned int iterations = 0; // Iterations for current step
+  unsigned int iterations = 0;  // Iterations for current step
 
   // Main loop, exit if dt too small or final time reached
   while (t < T && dt >= options.min_dt) {
@@ -344,8 +348,9 @@ ode45<StateType, RhsType>::solve(const StateType &y0, double T,
 
     double tau = 2., delta = 1.;
     // Calculate the absolute local truncation error and the acceptable  error
-    if (!options.fixed_stepsize) { // if (!fixed_stepsize)
-      delta = norm(*y5 - *y4); // estimated 1-step error \Blue{$\mathtt{EST}_k$}
+    if (!options.fixed_stepsize) {  // if (!fixed_stepsize)
+      delta =
+          norm(*y5 - *y4);  // estimated 1-step error \Blue{$\mathtt{EST}_k$}
       tau = std::max(options.rtol * norm(*yprev), options.atol);
     }
 
@@ -364,11 +369,11 @@ ode45<StateType, RhsType>::solve(const StateType &y0, double T,
       if (delta <= std::numeric_limits<double>::epsilon()) {
         dt *= 2;
       } else {
-	// Apply formula \eqref{eq:ssc}
+        // Apply formula \eqref{eq:ssc}
         dt *= 0.8 * std::pow(tau / delta, _pow);
       }
       dt = std::min(options.max_dt, dt);
-    } 
+    }
     ++iterations;
     ++statistics.cycles;
 
@@ -435,8 +440,7 @@ void ode45<StateType, RhsType>::print(void) {
             << std::endl;
   std::cout << "    - use fixed stepsize:                 "
             << options.fixed_stepsize << std::endl;
-  if (!options.do_statistics)
-    return;
+  if (!options.do_statistics) return;
   std::cout << " + Statistics:" << std::endl;
   std::cout << "    - number of steps:                    " << statistics.steps
             << std::endl;

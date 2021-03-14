@@ -8,6 +8,7 @@
 # include <cassert>
 # include <cmath>
 # include <vector>
+# include <array>
 # include <complex> // needed to use complex std::vectors!
 # include <Eigen/Dense>
 # include <unsupported/Eigen/FFT> // contains Eigen::FFT
