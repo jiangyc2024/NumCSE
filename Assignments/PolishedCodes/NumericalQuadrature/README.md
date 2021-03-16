@@ -6,3 +6,7 @@
 
 ## ImproperIntegrals (8-3)
 - small comment changes
+
+## NestedQuad (8-4)
+- small comment changes
+- made some variables const/constexpr
