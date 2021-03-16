@@ -9,21 +9,14 @@
 #define UPBROYD_HPP
 
 #include <Eigen/Dense>
-#include <vector>
 #include <iostream>
 #include <tuple>
 #include <utility>
-
-using namespace Eigen;
+#include <vector>
 
 // convenience typedef
 template <typename T, int N>
 using Vector = Eigen::Matrix<T, N, 1>;
-
-template <typename Scalar, int N>
-using upbroyd_void_cb_t = void(*)(unsigned, Vector<Scalar, N>, 
-    Vector<Scalar, N>, Scalar, Vector<Scalar, N>, std::vector<Scalar>);
-
 
 /**
  * \brief Good Broyden rank-1-update quasi-Newton method
@@ -33,42 +26,5 @@ using upbroyd_void_cb_t = void(*)(unsigned, Vector<Scalar, N>,
  * \param J initial guess for Jacobi matrix at x0
  * \param tol tolerance for termination
  */
-template <typename FuncType, typename JacType, typename Scalar=double,
-         int N=Dynamic, typename CB=upbroyd_void_cb_t<Scalar, N>>
-Vector<Scalar, N> upbroyd(const FuncType &F, Vector<Scalar, N> x, JacType J, 
-                          const Scalar tol, const unsigned maxit=20, CB callback=nullptr)
-{
-    // calculate LU factorization
-    auto fac = J.lu();
-
-    unsigned k = 1;
-    Vector2d s = fac.solve(F(x));
-    x -= s;
-    auto sn = s.squaredNorm();
-
-    // update vector
-    std::vector<VectorXd> dx = {s};
-    std::vector<Scalar> dxn = {sn};
-
-    // callback once before we start the algorithm
-    callback(k, x, F(x), s, Vector<Scalar, N>::Zero(), dxn);
-
-    while ((sn > tol*tol) && (k < maxit)) {
-        Vector<Scalar, N> w = fac.solve(F(x));
-        for (unsigned l=1; l<k; ++l) {
-            w = w + dx[l]*(dx[l-1].dot(w))/dxn[l-1];
-        }
-        auto z = s.dot(w);
-        s = (1+z/(sn-z))*w;
-        sn = s.squaredNorm();
-        dx.push_back(s);
-        dxn.push_back(sn);
-        x -= s;
-        if (callback != nullptr)
-            callback(k, x, F(x), s, w, dxn);
-        ++k;
-    }
-    return x;
-}
 
 #endif

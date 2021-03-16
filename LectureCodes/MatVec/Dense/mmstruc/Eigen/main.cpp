@@ -26,7 +26,7 @@ int main() {
   MatrixXd A(n, n), B(n, n);
   A.setZero();
   B.setZero();
-  // Initialize matrices, see \cref{mmstrruc3} 
+  // Initialize matrices, see \cref{mmstruc3} 
   A.diagonal() = VectorXd::LinSpaced(n, 1, n);
   A.col(n - 1) = VectorXd::LinSpaced(n, 1, n);
   A.row(n - 1) = RowVectorXd::LinSpaced(n, 1, n);

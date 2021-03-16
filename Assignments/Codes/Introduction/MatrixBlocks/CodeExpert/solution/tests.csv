@@ -1,4 +1,0 @@
-// "testname", "input", "expected output", "points", "execution time limit (ms)"
-"zero_row_col", "(any input)", " 0  0  0\n-1  0 -1\n-1  0 -1",  "1", "5000",
-"swap_left_right_blocks", "(any input)", "0 1 0\n0 0 1\n1 0 0\n0 0 0",  "1", "5000",
-"tridiagonal", "(any input)", " 2 -1  0  0\n-1  2 -1  0\n 0 -1  2 -1\n 0  0 -1  2",  "1", "5000",

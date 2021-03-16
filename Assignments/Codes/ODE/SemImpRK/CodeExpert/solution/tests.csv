@@ -1,0 +1,3 @@
+// "testname", "input", "expected output", "points", "execution time limit (ms)"
+"solveRosenbrock()", "(any input)", "9.96045 6.18377e-08 -84.2368",  "1", "500000",
+"Convergence rate", "(any input)", "2.0",  "1", "500000",

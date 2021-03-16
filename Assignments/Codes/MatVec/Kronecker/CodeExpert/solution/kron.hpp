@@ -1,7 +1,6 @@
 #ifndef KRON_HPP
 #define KRON_HPP
 
-
 #include <iomanip>
 #include <iostream>
 
@@ -56,14 +55,14 @@ void kron_mult(const MatrixXd &A, const MatrixXd &B, const VectorXd &x,
 
   // Allocate space for output
   y = VectorXd::Zero(n * n);
-  
+
   // TO DO: (2-3.d) Fill in the entires of y.
   // Hint: Use a nested for-loop, x.segment(), and y.segment().
   // In the outer loop, you can perform a computation based on
   // B and x, and save the result in a variable that is reused in
   // each iteration of the inner loop.
   // START
-  
+
   // Note: this is like doing a matrix-vector multiplication
   // where the entries of the matrix are smaller matrices
   // and entries of the vector are smaller vectors
@@ -96,7 +95,7 @@ void kron_reshape(const MatrixXd &A, const MatrixXd &B, const VectorXd &x,
   assert(A.rows() == A.cols() && A.rows() == B.rows() && B.rows() == B.cols() &&
          "Matrices A and B must be square matrices with same size!");
   unsigned int n = A.rows();
-  
+
   // TO DO: (2-3.e) Fill in the entires of y.
   // Hint: Use MatrixXd::Map() to reshape x into a n by n matrix.
   // Then y is obtained by simple matrix multiplications and
@@ -108,10 +107,9 @@ void kron_reshape(const MatrixXd &A, const MatrixXd &B, const VectorXd &x,
 }
 /* SAM_LISTING_END_3 */
 
-
 /* SAM_LISTING_BEGIN_4 */
 void kron_runtime() {
-  
+
   MatrixXd A, B, C;
   VectorXd x, y;
   // We repeat each runtime measurement 10 times
@@ -130,8 +128,7 @@ void kron_runtime() {
       A = MatrixXd::Random(M, M);
       B = MatrixXd::Random(M, M);
       x = VectorXd::Random(M * M);
-      
-      
+
       // Do not want to use kron for large values of M
       if (M < (1 << 6)) {
         // Kron using direct implementation
@@ -140,7 +137,7 @@ void kron_runtime() {
         y = C * x;
         tm_kron.stop();
       }
-      
+
       // TO DO: (2-3.f) Measure the runtime of kron_mult()
       // and kron_reshape().
       // START
@@ -154,7 +151,7 @@ void kron_runtime() {
       tm_kron_map.start();
       kron_reshape(A, B, x, y);
       tm_kron_map.stop();
-      
+
       // END
     }
 

@@ -1,5 +1,0 @@
-// "testname", "input", "expected output", "points", "execution time limit (ms)"
-"average", "(any input)", "0.333333",  "1", "5000",
-"percent_zero", "(any input)", "66.6667",  "1", "5000",
-"has_zero_column", "(any input)", "1 0",  "1", "5000",
-"columns_sum_to_zero", "(any input)", "-0.721194  0.160061  0.561133\n0.0929355 -0.989846  0.896911\n 1.98551  0.159289   -2.1448",  "1", "5000",

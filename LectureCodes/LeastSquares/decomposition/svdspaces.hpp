@@ -55,7 +55,7 @@ MatrixXd rangespace(const MatrixXd &A, double tol = EPS) {
   Eigen::JacobiSVD<MatrixXd> svd(A,Eigen::ComputeFullV);
   index_t r = svd.setThreshold(tol).rank();
   // r left columns of \Blue{$\VU$} provide ONB of \Blue{$\Range(\VA)$}
-  return svd.matrixV().leftCols(r); 
+  return svd.matrixU().leftCols(r); 
 }
 /* SAM_LISTING_END_3 */
 

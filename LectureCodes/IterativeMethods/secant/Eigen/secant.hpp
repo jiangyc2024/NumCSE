@@ -12,19 +12,19 @@ using namespace std;
 // Secand method for solving \Blue{$F(x)=0$} for \Blue{$F:D\subset\bbR\to\bbR$},
 // initial guesses \Blue{$x_0,x_1$},
 // tolerances \texttt{atol} (absolute), \texttt{rtol} (relative)
-template<typename Func>
-double secant(double x0, double x1, Func&& F,
-	      double rtol, double atol, unsigned int maxIt)
-{
+template <typename Func>
+double secant(double x0, double x1, Func &&F, double rtol, double atol,
+              unsigned int maxIt) {
   double fo = F(x0);
-  for (unsigned int i=0; i<maxIt; ++i) {
-      double fn = F(x1);
-      double s = fn*(x1-x0)/(fn-fo); // secant correction
-      x0 = x1; x1 = x1-s;
-      // correction based termination (relative and absolute)
-      if (abs(s) < max(atol,rtol*min(abs(x0),abs(x1))))
-	return x1;
-      fo = fn; 
+  for (unsigned int i = 0; i < maxIt; ++i) {
+    double fn = F(x1);
+    double s = fn * (x1 - x0) / (fn - fo); // secant correction
+    x0 = x1;
+    x1 = x1 - s;
+    // correction based termination (relative and absolute)
+    if (abs(s) < max(atol, rtol * min(abs(x0), abs(x1))))
+      return x1;
+    fo = fn;
   }
   return x1;
 }

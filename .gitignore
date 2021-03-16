@@ -8,6 +8,8 @@ install_manifest.txt
 build
 third_party
 octave-workspace
+cmake_debug
+cmake_release
 
 # Compiled Object files
 *.slo
@@ -58,3 +60,9 @@ main
 /CMakeLists.txt.user
 /.kdev4/
 /NumCSE.kdev4
+
+# independent testing
+copy.hpp
+
+# macos
+.DS_Store

@@ -51,7 +51,6 @@ Eigen::MatrixXd constantTriangular(int n, double val) {
   // To get a triangular matrix, we must set the values above the diagonal to
   // val. This we can do by a nested for-loop.
   for (int row = 0; row < n; row++) {
-
     // TO DO: Write the inner for-loop.
     // Hint: We can access and change the entries of A using parentheses, i.e.
     // A(row,col) = val; Note that indexing starts at the value 0 (as usual),
@@ -76,13 +75,14 @@ double casting() {
 
   // Because the syntax Eigen::Matrix< type, n_rows, n_cols > is very
   // cumbersome, Eigen provides convenience classes that work as shorthands.
-  // For example, Eigen::Matrix2d is shorthand for Eigen::Matrix< double, 2, 2 >.
-  
+  // For example, Eigen::Matrix2d is shorthand for Eigen::Matrix< double, 2, 2
+  // >.
+
   // Vectors are just a special type of matrices that have only one column.
-  // Thus, VectorXi is a shorthand for Eigen::Matrix< int, Eigen::Dynamic, 1 >.  
-  // Constant(2,1) creates a vector of size 2 and initializes the entries with
-  // the value 1.
-  Eigen::VectorXi u = Eigen::VectorXi::Constant(2, 1);
+  // Thus, VectorXi is a shorthand for Eigen::Matrix< int, Eigen::Dynamic, 1 >.
+  // Constant(n,x) creates a vector of size n and initializes the entries with
+  // the value x.
+  Eigen::VectorXi u = Eigen::VectorXi::Constant(2, 2);
 
   // std::complex is a template class for complex numbers.
   // Here we declare two complex numbers, with real and imaginary parts
@@ -94,22 +94,19 @@ double casting() {
   v(0) = z0;
   v(1) = z1;
 
-  double x;
+  double x = 0.0;
   // TO DO: Calculate the inner product of u and v, and store the result in x.
   // Hint: The inner product of two vectors is given by u.dot(v), but
-  // first we need to cast the "int" vector u to a "std::complex<double>" vector.
-  // Use u.cast< NEW TYPE >() to achieve this.
-  // The result of the inner product will be 1*(1-i) + 1*(5+i) = 6 + 0i,
-  // a real number. You can get the real part of an std::complex<double>
-  // using the method "real()".
-  // START
-  std::complex<double> z = u.cast<std::complex<double>>().dot( v );
+  // first we need to cast the "int" vector u to a "std::complex<double>"
+  // vector. Use u.cast< NEW TYPE >() to achieve this. The result of the inner
+  // product will be 1*(1-i) + 1*(5+i) = 6 + 0i, a real number. You can get the
+  // real part of an std::complex<double> using the method "real()". START
+  std::complex<double> z = u.cast<std::complex<double>>().dot(v);
   x = z.real();
   // END
   return x;
 }
 /* SAM_LISTING_END_2 */
-
 
 /* SAM_LISTING_BEGIN_3 */
 Eigen::VectorXcd arithmetics(int n) {
@@ -129,17 +126,17 @@ Eigen::VectorXcd arithmetics(int n) {
   A = constantTriangular(n, 5.0).transpose().cast<std::complex<double>>();
   // The n by n identity matrix,
   I = Eigen::MatrixXcd::Identity(n, n);
-  
+
   // Declare the n by n matrix B.
-  Eigen::MatrixXcd B(n,n);
-  
-  // TO DO: Fill in the matrix B such that B(k,l) = (k+l*i)/(k-l*i),
-  // where i is the imaginary unity, i^2 = -1.
+  Eigen::MatrixXcd B(n, n);
+
+  // TO DO: Fill in the matrix B such that B(k-1,l-1) = (k+l*i)/(k-l*i),
+  // where i is the imaginary unity, i^2 = -1 and k,l=1,...,n.
   // START
-  for(int k=0; k<n; k++) {
-    for(int l=0; l<n; l++) {
-      std::complex<double> tmp(k+1,l+1);
-      B(k,l) = tmp/std::conj(tmp);
+  for (int k = 0; k < n; k++) {
+    for (int l = 0; l < n; l++) {
+      std::complex<double> tmp(k + 1, l + 1);
+      B(k, l) = tmp / std::conj(tmp);
     }
   }
   // END
@@ -159,13 +156,12 @@ Eigen::VectorXcd arithmetics(int n) {
   // TO DO: Initialize the entries of u as the integers from 1 to n,
   // multiply u by the matrix C, and store the result in v.
   // START
-  u = Eigen::VectorXcd::LinSpaced(n, 1, n); // Or use a for-loop.
+  u = Eigen::VectorXcd::LinSpaced(n, 1, n);  // Or use a for-loop.
   v = C * u;
   // END
 
   return v;
 }
 /* SAM_LISTING_END_3 */
-
 
 #endif

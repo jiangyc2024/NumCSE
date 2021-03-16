@@ -35,7 +35,7 @@ std::pair<MatrixXd,MatrixXd> qr_decomp_eco(const MatrixXd& A) {
 /* SAM_LISTING_END_0 */
 
 /* SAM_LISTING_BEGIN_1 */
-# include <Eigen/SVD>
+#include <Eigen/SVD>
 
 // Computation of (full) SVD \Blue{$\VA=\VU\Sigmabf\VV^\herm$} $\to$ \cref{thm:svd}
 // SVD factors are returned as dense matrices in natural order
@@ -54,8 +54,8 @@ std::tuple<MatrixXd,MatrixXd,MatrixXd> svd_full(const MatrixXd& A) {
 // SVD factors are returned as dense matrices in natural order
 std::tuple<MatrixXd,MatrixXd,MatrixXd> svd_eco(const MatrixXd& A) {
   Eigen::JacobiSVD<MatrixXd> svd(A, Eigen::ComputeThinU | Eigen::ComputeThinV);
-  MatrixXd U = svd.matrixU(); // get unitary (square) matrix \Blue{$\VU$} 
-  MatrixXd V = svd.matrixV(); // get unitary (square) matrix \Blue{$\VV$} 
+  MatrixXd U = svd.matrixU(); // get matrix \Blue{$\VU$} with orthonormal columns
+  MatrixXd V = svd.matrixV(); // get  matrix \Blue{$\VV$}  with orthonormal columns
   VectorXd sv = svd.singularValues(); // get singular values as vector
   MatrixXd Sigma = sv.asDiagonal(); // build diagonal matrix \Blue{$\Sigmabf$}
   return std::tuple<MatrixXd,MatrixXd,MatrixXd>(U,Sigma,V);

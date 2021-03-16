@@ -7,10 +7,9 @@
 //////////////////////////////////////////////////////////////////////////
 
 /* SAM_LISTING_BEGIN_0 */
-template <typename FuncType,typename JacType,typename VecType>
-void newton_stc(const FuncType &F,const JacType &DF,
-	        VecType &x,double rtol,double atol)
-{
+template <typename FuncType, typename JacType, typename VecType>
+void newton_stc(const FuncType &F, const JacType &DF, VecType &x, double rtol,
+                double atol) {
   using scalar_t = typename VecType::Scalar;
   scalar_t sn;
   do {
@@ -20,6 +19,6 @@ void newton_stc(const FuncType &F,const JacType &DF,
     sn = jacfac.solve(F(x)).norm();
   }
   // Termination based on simplified Newton correction
-  while ((sn > rtol*x.norm()) && (sn > atol));
+  while ((sn > rtol * x.norm()) && (sn > atol));
 }
 /* SAM_LISTING_END_0 */

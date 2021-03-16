@@ -37,12 +37,12 @@ int main () {
 
   for (unsigned n = 2; n <= 1000; n *= 2) {
     Eigen::VectorXd c = Eigen::VectorXd::Random(n);
-    Eigen::VectorXd ys, yh;
+    Eigen::VectorXd ys;
     auto t = high_resolution_clock::now();
     simple_eval(c, x, ys);
     const double ts = duration_cast(high_resolution_clock::now() - t).count()/1e9;
     t = high_resolution_clock::now();
-    horner(c, x, yh);
+    Eigen::VectorXd yh = horner(c, x);
     const double th = duration_cast(high_resolution_clock::now() - t).count()/1e9;
 
     std::cout << std::setw(4) << n << std::setw(20) << ts << std::setw(20) << th << std::setw(25) << (yh - ys).cwiseAbs().sum() << "\n";
@@ -54,12 +54,12 @@ int main () {
   Eigen::VectorXd c = Eigen::VectorXd::Random(20);
   for (unsigned n = 10; n <= 5000; n *= 2) {
     Eigen::VectorXd x = Eigen::VectorXd::LinSpaced(n, 0, 1);
-    Eigen::VectorXd ys, yh;
+    Eigen::VectorXd ys;
     auto t = high_resolution_clock::now();
     simple_eval(c, x, ys);
     const double ts = duration_cast(high_resolution_clock::now() - t).count()/1e9;
     t = high_resolution_clock::now();
-    horner(c, x, yh);
+    Eigen::VectorXd yh = horner(c, x);
     const double th = duration_cast(high_resolution_clock::now() - t).count()/1e9;
 
     std::cout << std::setw(4) << n << std::setw(20) << ts << std::setw(20) << th << std::setw(25) << (yh - ys).cwiseAbs().sum() << "\n";

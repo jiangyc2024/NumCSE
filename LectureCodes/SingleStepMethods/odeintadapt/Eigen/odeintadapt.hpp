@@ -23,25 +23,25 @@ double _norm(const State &y) { return y.norm(); }
 
 template <class DiscEvolOp, class State, class NormFunc = decltype(_norm<State>)>
 std::vector<std::pair<double, State> >
-odeintadapt(DiscEvolOp &Psilow, DiscEvolOp &Psihigh,
-           State& y0,double T, double h0,
+odeintadapt(DiscEvolOp &&Psilow, DiscEvolOp &&Psihigh,
+           const State &y0,double T, double h0,
            double reltol, double abstol, double hmin,
            NormFunc &norm = _norm<State>) {
-  double t = 0; // initial time \Label[line]{odeintadapt:1}
-  State y = y0; // initial state
+  double t = 0; // initial time $\cob{t_0=0}$\Label[line]{odeintadapt:1}
+  State y = y0; // current state
   double h = h0; // timestep to start with
-  std::vector<std::pair<double,State>> states; // for output
-  states.push_back({t, y});
+  std::vector<std::pair<double,State>> states; // vector of times/computed states: $\cob{\left(t_k,\Vy_k\right)_k}$
+  states.push_back({t, y}); // initial time and state
 
   while ((states.back().first < T) && (h >= hmin))  { // \Label[line]{odeintadapt:2}
-    State yh = Psihigh(h, y0); // high order discrete evolution \Blue{$\widetilde{\Psibf}^h$} \Label[line]{odeintadapt:3}
-    State yH = Psilow(h, y0); // low order discrete evolution \Blue{${\Psibf}^h$} \Label[line]{odeintadapt:4}
+    State yh = Psihigh(h, y); // high order discrete evolution \Blue{$\widetilde{\Psibf}^h$} \Label[line]{odeintadapt:3}
+    State yH = Psilow(h, y); // low order discrete evolution \Blue{${\Psibf}^h$} \Label[line]{odeintadapt:4}
     double est = norm(yH-yh); // local error estimate \Blue{$\mathrm{EST}_k$}\Label[line]{odeintadapt:5}
     
-    if (est < max(reltol*norm(y0), abstol)) { // step \Magenta{accepted} \Label[line]{odeintadapt:6}
-      y0 = yh; // use high order approximation
+    if (est < max(reltol*norm(y), abstol)) { // step \Magenta{accepted} \Label[line]{odeintadapt:6}
+      y = yh; // use high order approximation
       t = t+min(T-t,h); // next time \Blue{$t_k$}
-      states.push_back({t,y0}); // \Label[line]{odeintadapt:7}
+      states.push_back({t,y}); // \Label[line]{odeintadapt:7}
       h = 1.1*h;  // try with increased stepsize \Label[line]{odeintadapt:8}
     }
     else // step \Magenta{rejected}

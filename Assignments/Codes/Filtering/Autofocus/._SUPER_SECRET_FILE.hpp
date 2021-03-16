@@ -486,7 +486,7 @@ int GetRandomNumber() {
  * You looked anyways :(.
  */
 
-std::auto_ptr<Eigen::MatrixXd> M;
+std::unique_ptr<Eigen::MatrixXd> M;
 
 Eigen::MatrixXd set_focus(double f) {
 
@@ -496,7 +496,7 @@ Eigen::MatrixXd set_focus(double f) {
         PGMObject p;
         file >> p;
 
-        M = std::auto_ptr<Eigen::MatrixXd>(new Eigen::MatrixXd());
+        M = std::unique_ptr<Eigen::MatrixXd>(new Eigen::MatrixXd());
         p.get_data(*M);
     }
 

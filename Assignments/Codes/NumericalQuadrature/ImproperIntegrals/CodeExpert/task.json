@@ -1,0 +1,783 @@
+{
+  "_id": "zYQ4YygHBPQ4hnSCs",
+  "name": "ImproperIntegrals",
+  "xp": 1,
+  "kind": "code",
+  "grading": true,
+  "xpMode": "binary",
+  "maximumPoints": 1,
+  "lti": true,
+  "cxIde": true,
+  "masterSolutionId": "C7RbBD2wXh2mX7SFH",
+  "studentTemplateId": "CQqbd9LkFnny6bwLk",
+  "copiedFromId": "dkCcakSYfPzbxKtM2",
+  "solution": {
+    "_id": "C7RbBD2wXh2mX7SFH",
+    "name": "ImproperIntegrals - Master Solution",
+    "envVars": {},
+    "useCase": "masterSolution",
+    "rootDirKey": "SLkxPKpH6YFvwG8K5",
+    "taskId": "zYQ4YygHBPQ4hnSCs",
+    "lastUpdate": "2019-11-11T16:07:27.271Z",
+    "defaultSelectionKey": "BPvay9XZstTbeHbop",
+    "env": {
+      "slug": "generic"
+    }
+  },
+  "template": {
+    "_id": "CQqbd9LkFnny6bwLk",
+    "name": "ImproperIntegrals - Student Template",
+    "envVars": {},
+    "useCase": "studentTemplate",
+    "rootDirKey": "FygKGEYXpSRGvdCG3",
+    "taskId": "zYQ4YygHBPQ4hnSCs",
+    "lastUpdate": "2019-11-08T21:33:15.666Z",
+    "env": {
+      "slug": "generic"
+    }
+  },
+  "solutionFiles": [
+    {
+      "_id": "xmbBftqLuARTAGKk3",
+      "fileId": "PvR6qQCPsNsqM7oEj",
+      "size": 370,
+      "name": "compile.sh",
+      "type": "application/x-sh",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant"
+        ],
+        "write": [
+          "admin"
+        ]
+      },
+      "makeSymlink": true,
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "C7RbBD2wXh2mX7SFH",
+      "version": 1,
+      "key": "xmbBftqLuARTAGKk3",
+      "current": true,
+      "createdAt": "2019-11-11T12:07:44.098Z",
+      "originKey": "zJ9LkDdr2b9pbwEMg",
+      "originVersion": 8
+    },
+    {
+      "_id": "GPrniSD6m65x39b8q",
+      "type": "application/x-sh",
+      "makeSymlink": true,
+      "name": "submit.sh",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant"
+        ],
+        "write": [
+          "admin"
+        ]
+      },
+      "fileId": "6DcKeZFkYcChxuZn4",
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "C7RbBD2wXh2mX7SFH",
+      "version": 1,
+      "key": "GPrniSD6m65x39b8q",
+      "current": true,
+      "createdAt": "2019-11-11T12:07:44.098Z",
+      "originKey": "RHgqfrvbqBPwqkAL3",
+      "originVersion": 4
+    },
+    {
+      "_id": "nkh24obyo5hZxCjhD",
+      "key": "zejrq3JB8jxs3Zeoi",
+      "type": "text/x-c",
+      "originKey": "jw5d5ZMQLc7uMr7Dp",
+      "makeSymlink": true,
+      "originVersion": 4,
+      "version": 4,
+      "current": true,
+      "name": "main.cpp",
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "C7RbBD2wXh2mX7SFH",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant",
+          "student",
+          "everyone"
+        ],
+        "write": [
+          "admin"
+        ]
+      },
+      "createdAt": "2019-11-11T16:07:04.359Z",
+      "fileId": "x9FP3jdeQZRacttAs"
+    },
+    {
+      "_id": "WzQKM8YKoCiozHxko",
+      "fileId": "LcW3AapsybayWeu3f",
+      "size": 741,
+      "name": "default.md",
+      "type": "text/markdown",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant"
+        ],
+        "write": [
+          "admin"
+        ]
+      },
+      "makeSymlink": true,
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "C7RbBD2wXh2mX7SFH",
+      "version": 1,
+      "key": "WzQKM8YKoCiozHxko",
+      "current": true,
+      "createdAt": "2019-11-11T12:07:44.098Z",
+      "originKey": "Aw3iM4girCrvNJ9RT",
+      "originVersion": 2
+    },
+    {
+      "_id": "5vkv4YTZ8H5ZuYxkw",
+      "fileId": "W8zEuzqEXAvJjXqwQ",
+      "size": 57733,
+      "name": "matplotlibcpp.h",
+      "type": "text/x-c",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant"
+        ],
+        "write": [
+          "admin"
+        ]
+      },
+      "makeSymlink": true,
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "C7RbBD2wXh2mX7SFH",
+      "version": 1,
+      "key": "5vkv4YTZ8H5ZuYxkw",
+      "current": true,
+      "createdAt": "2019-11-11T12:07:44.098Z"
+    },
+    {
+      "_id": "JwwJDnN2YgKviqinQ",
+      "key": "BPvay9XZstTbeHbop",
+      "type": "text/plain",
+      "version": 4,
+      "current": true,
+      "name": "quadinf.hpp",
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "C7RbBD2wXh2mX7SFH",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant",
+          "student",
+          "everyone"
+        ],
+        "write": [
+          "admin",
+          "assistant",
+          "student",
+          "everyone"
+        ]
+      },
+      "createdAt": "2019-11-11T16:07:23.049Z",
+      "fileId": "ikeGp83JwzuGBTcKL"
+    },
+    {
+      "_id": "4fqYzXunHWaLgrHPd",
+      "type": "inode/directory",
+      "makeSymlink": true,
+      "name": "cx_description",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant"
+        ],
+        "write": [
+          "admin"
+        ]
+      },
+      "children": [
+        "KjTRoFAahqnHjoTcf",
+        "WzQKM8YKoCiozHxko",
+        "nG7YYhsFS88rKrezm"
+      ],
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "C7RbBD2wXh2mX7SFH",
+      "version": 1,
+      "key": "4fqYzXunHWaLgrHPd",
+      "current": true,
+      "createdAt": "2019-11-11T12:07:44.098Z",
+      "originKey": "kSjrmadCy9Me3x2jw",
+      "originVersion": 2
+    },
+    {
+      "_id": "2GL8LDmbdNLnAGjrk",
+      "type": "text/x-c",
+      "makeSymlink": true,
+      "name": "zzzzz_test_runner.cpp",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant"
+        ],
+        "write": [
+          "admin"
+        ]
+      },
+      "fileId": "2G7Ln264JsTu7pooY",
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "C7RbBD2wXh2mX7SFH",
+      "version": 1,
+      "key": "2GL8LDmbdNLnAGjrk",
+      "current": true,
+      "createdAt": "2019-11-11T12:07:44.098Z",
+      "originKey": "eNsWpfLjLXGHPzqLh",
+      "originVersion": 2
+    },
+    {
+      "_id": "7E8aRuWYJCywhH9ps",
+      "type": "application/x-sh",
+      "makeSymlink": true,
+      "name": "test.sh",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant"
+        ],
+        "write": [
+          "admin"
+        ]
+      },
+      "fileId": "EncSftZapTNKwPCYo",
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "C7RbBD2wXh2mX7SFH",
+      "version": 1,
+      "key": "7E8aRuWYJCywhH9ps",
+      "current": true,
+      "createdAt": "2019-11-11T12:07:44.098Z",
+      "originKey": "JiMk5T2eqaeRzaSi3",
+      "originVersion": 5
+    },
+    {
+      "_id": "SLkxPKpH6YFvwG8K5",
+      "type": "inode/directory",
+      "name": ".",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant",
+          "student",
+          "everyone"
+        ],
+        "write": [
+          "admin",
+          "assistant",
+          "student",
+          "everyone"
+        ]
+      },
+      "children": [
+        "fn9aj67Yoi3NbxdeD",
+        "zejrq3JB8jxs3Zeoi",
+        "q9Cr5C6Hs3eBSaSbR",
+        "2GL8LDmbdNLnAGjrk",
+        "4fqYzXunHWaLgrHPd",
+        "vLARBwSQ2MJKJSKkw",
+        "vA5mnT2eLihaapqH5",
+        "5vkv4YTZ8H5ZuYxkw",
+        "sQNkhxDLP7keAPFZq",
+        "BPvay9XZstTbeHbop"
+      ],
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "C7RbBD2wXh2mX7SFH",
+      "version": 1,
+      "key": "SLkxPKpH6YFvwG8K5",
+      "current": true,
+      "createdAt": "2019-11-11T12:07:44.098Z",
+      "originKey": "nC39pk3ChFp68oomi",
+      "originVersion": 9
+    },
+    {
+      "_id": "fn9aj67Yoi3NbxdeD",
+      "type": "text/yaml",
+      "makeSymlink": true,
+      "name": "conf.yml",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant"
+        ],
+        "write": [
+          "admin"
+        ]
+      },
+      "fileId": "BmFNySdwhTuhREaMm",
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "C7RbBD2wXh2mX7SFH",
+      "version": 1,
+      "key": "fn9aj67Yoi3NbxdeD",
+      "current": true,
+      "createdAt": "2019-11-11T12:07:44.098Z",
+      "originKey": "9x8LwftZL536tSNgM",
+      "originVersion": 20
+    },
+    {
+      "_id": "q9Cr5C6Hs3eBSaSbR",
+      "fileId": "tjvnTCwECztZytKff",
+      "size": 132,
+      "name": "tests.csv",
+      "type": "text/csv",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant"
+        ],
+        "write": [
+          "admin"
+        ]
+      },
+      "makeSymlink": true,
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "C7RbBD2wXh2mX7SFH",
+      "version": 1,
+      "key": "q9Cr5C6Hs3eBSaSbR",
+      "current": true,
+      "createdAt": "2019-11-11T12:07:44.098Z",
+      "originKey": "j2DGvhXKAXTRFPTa5",
+      "originVersion": 2
+    },
+    {
+      "_id": "nwgLYRw5grwTdaJLn",
+      "key": "sQNkhxDLP7keAPFZq",
+      "type": "text/plain",
+      "makeSymlink": true,
+      "version": 2,
+      "current": true,
+      "name": "golubwelsh.hpp",
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "C7RbBD2wXh2mX7SFH",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant",
+          "student",
+          "everyone"
+        ],
+        "write": [
+          "admin"
+        ]
+      },
+      "createdAt": "2019-11-11T16:07:00.354Z",
+      "fileId": "kDtqChbmDD6To3qjZ"
+    },
+    {
+      "_id": "wGKuYxxKbzsfPMYon",
+      "fileId": "xRmmssnJ2bTbDzs6Q",
+      "size": 160,
+      "name": "run.sh",
+      "type": "application/x-sh",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant"
+        ],
+        "write": [
+          "admin"
+        ]
+      },
+      "makeSymlink": true,
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "C7RbBD2wXh2mX7SFH",
+      "version": 1,
+      "key": "wGKuYxxKbzsfPMYon",
+      "current": true,
+      "createdAt": "2019-11-11T12:07:44.098Z",
+      "originKey": "Ck8hMxDSAjRDLP4Ra",
+      "originVersion": 21
+    },
+    {
+      "_id": "nG7YYhsFS88rKrezm",
+      "fileId": "5uDehw4AqnZyxrk8v",
+      "size": 458,
+      "name": "test_doc.md",
+      "type": "text/markdown",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant"
+        ],
+        "write": [
+          "admin"
+        ]
+      },
+      "makeSymlink": true,
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "C7RbBD2wXh2mX7SFH",
+      "version": 1,
+      "key": "nG7YYhsFS88rKrezm",
+      "current": true,
+      "createdAt": "2019-11-11T12:07:44.098Z"
+    },
+    {
+      "_id": "KjTRoFAahqnHjoTcf",
+      "type": "text/yaml",
+      "makeSymlink": true,
+      "name": "conf.yml",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant"
+        ],
+        "write": [
+          "admin"
+        ]
+      },
+      "fileId": "Czwo8LZaL9CSDswXG",
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "C7RbBD2wXh2mX7SFH",
+      "version": 1,
+      "key": "KjTRoFAahqnHjoTcf",
+      "current": true,
+      "createdAt": "2019-11-11T12:07:44.098Z",
+      "originKey": "4wHvR8dDRNcp6tKcz",
+      "originVersion": 2
+    },
+    {
+      "_id": "pxhE7kjcCL75WEEJg",
+      "key": "vA5mnT2eLihaapqH5",
+      "type": "text/markdown",
+      "version": 2,
+      "current": true,
+      "name": "written_solution.md",
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "C7RbBD2wXh2mX7SFH",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant",
+          "student",
+          "everyone"
+        ],
+        "write": [
+          "admin",
+          "assistant",
+          "student",
+          "everyone"
+        ]
+      },
+      "createdAt": "2019-11-11T16:07:27.271Z",
+      "fileId": "67FqMx5oY4nf35joQ"
+    },
+    {
+      "_id": "vLARBwSQ2MJKJSKkw",
+      "type": "inode/directory",
+      "makeSymlink": true,
+      "name": "scripts",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant"
+        ],
+        "write": [
+          "admin"
+        ]
+      },
+      "children": [
+        "wGKuYxxKbzsfPMYon",
+        "7E8aRuWYJCywhH9ps",
+        "GPrniSD6m65x39b8q",
+        "xmbBftqLuARTAGKk3"
+      ],
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "C7RbBD2wXh2mX7SFH",
+      "version": 1,
+      "key": "vLARBwSQ2MJKJSKkw",
+      "current": true,
+      "createdAt": "2019-11-11T12:07:44.098Z",
+      "originKey": "eSpPtrYwzec99nhmf",
+      "originVersion": 7
+    }
+  ],
+  "templateFiles": [
+    {
+      "_id": "roFZuuYjv6wHgcTPy",
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "CQqbd9LkFnny6bwLk",
+      "version": 1,
+      "key": "roFZuuYjv6wHgcTPy",
+      "current": true,
+      "createdAt": "2019-11-11T12:07:44.098Z",
+      "makeSymlink": true,
+      "symlinkKey": "vLARBwSQ2MJKJSKkw",
+      "type": "inode/symlink"
+    },
+    {
+      "_id": "8ubsjMmzniqjfRikj",
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "CQqbd9LkFnny6bwLk",
+      "version": 1,
+      "key": "8ubsjMmzniqjfRikj",
+      "current": true,
+      "createdAt": "2019-11-11T12:07:44.098Z",
+      "makeSymlink": true,
+      "symlinkKey": "sQNkhxDLP7keAPFZq",
+      "type": "inode/symlink"
+    },
+    {
+      "_id": "FygKGEYXpSRGvdCG3",
+      "type": "inode/directory",
+      "name": ".",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant",
+          "student",
+          "everyone"
+        ],
+        "write": [
+          "admin",
+          "assistant",
+          "student",
+          "everyone"
+        ]
+      },
+      "children": [
+        "4yRPsF4vBLrCHc3bA",
+        "kXELkB5h6SrtQ9qhB",
+        "rXpgeNhTryfqFk3qq",
+        "PBSDXAbtu6KS39y3B",
+        "SK38u3X5hg3mGCoeK",
+        "roFZuuYjv6wHgcTPy",
+        "Scg4mnTxbkKNNXqbg",
+        "rE6qHaM4kBaWci5mX",
+        "8ubsjMmzniqjfRikj",
+        "7Sf6JHWSCkNW9kz4E"
+      ],
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "CQqbd9LkFnny6bwLk",
+      "version": 1,
+      "key": "FygKGEYXpSRGvdCG3",
+      "current": true,
+      "createdAt": "2019-11-11T12:07:44.098Z",
+      "originKey": "SLkxPKpH6YFvwG8K5",
+      "originVersion": 1
+    },
+    {
+      "_id": "EBgy3hn2CedhjEM9f",
+      "fileId": "EBgy3hn2CedhjEM9f",
+      "size": 1152,
+      "key": "7Sf6JHWSCkNW9kz4E",
+      "originKey": "BPvay9XZstTbeHbop",
+      "originVersion": 4,
+      "version": 3,
+      "current": true,
+      "name": "quadinf.hpp",
+      "type": "text/plain",
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "CQqbd9LkFnny6bwLk",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant",
+          "student",
+          "everyone"
+        ],
+        "write": [
+          "admin",
+          "assistant",
+          "student",
+          "everyone"
+        ]
+      },
+      "createdAt": "2019-11-11T16:09:01.268Z"
+    },
+    {
+      "_id": "kXELkB5h6SrtQ9qhB",
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "CQqbd9LkFnny6bwLk",
+      "version": 1,
+      "key": "kXELkB5h6SrtQ9qhB",
+      "current": true,
+      "createdAt": "2019-11-11T12:07:44.098Z",
+      "makeSymlink": true,
+      "symlinkKey": "zejrq3JB8jxs3Zeoi",
+      "type": "inode/symlink"
+    },
+    {
+      "_id": "PBSDXAbtu6KS39y3B",
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "CQqbd9LkFnny6bwLk",
+      "version": 1,
+      "key": "PBSDXAbtu6KS39y3B",
+      "current": true,
+      "createdAt": "2019-11-11T12:07:44.098Z",
+      "makeSymlink": true,
+      "symlinkKey": "2GL8LDmbdNLnAGjrk",
+      "type": "inode/symlink"
+    },
+    {
+      "_id": "7nKhQAFrvcxfcjhPd",
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "CQqbd9LkFnny6bwLk",
+      "version": 2,
+      "key": "Scg4mnTxbkKNNXqbg",
+      "createdAt": "2019-11-11T16:07:27.271Z",
+      "current": true,
+      "originKey": "vA5mnT2eLihaapqH5",
+      "originVersion": 2,
+      "type": "text/markdown",
+      "name": "written_solution.md",
+      "permissions": {
+        "phase": [
+          "interactive",
+          "submission"
+        ],
+        "read": [
+          "admin",
+          "assistant",
+          "student",
+          "everyone"
+        ],
+        "write": [
+          "admin",
+          "assistant",
+          "student",
+          "everyone"
+        ]
+      },
+      "fileId": "67FqMx5oY4nf35joQ"
+    },
+    {
+      "_id": "SK38u3X5hg3mGCoeK",
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "CQqbd9LkFnny6bwLk",
+      "version": 1,
+      "key": "SK38u3X5hg3mGCoeK",
+      "current": true,
+      "createdAt": "2019-11-11T12:07:44.098Z",
+      "makeSymlink": true,
+      "symlinkKey": "4fqYzXunHWaLgrHPd",
+      "type": "inode/symlink"
+    },
+    {
+      "_id": "rE6qHaM4kBaWci5mX",
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "CQqbd9LkFnny6bwLk",
+      "version": 1,
+      "key": "rE6qHaM4kBaWci5mX",
+      "current": true,
+      "createdAt": "2019-11-11T12:07:44.098Z",
+      "makeSymlink": true,
+      "symlinkKey": "5vkv4YTZ8H5ZuYxkw",
+      "type": "inode/symlink"
+    },
+    {
+      "_id": "4yRPsF4vBLrCHc3bA",
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "CQqbd9LkFnny6bwLk",
+      "version": 1,
+      "key": "4yRPsF4vBLrCHc3bA",
+      "current": true,
+      "createdAt": "2019-11-11T12:07:44.098Z",
+      "makeSymlink": true,
+      "symlinkKey": "fn9aj67Yoi3NbxdeD",
+      "type": "inode/symlink"
+    },
+    {
+      "_id": "rXpgeNhTryfqFk3qq",
+      "userId": "psziEDxKr9Fu5Druz",
+      "projectId": "CQqbd9LkFnny6bwLk",
+      "version": 1,
+      "key": "rXpgeNhTryfqFk3qq",
+      "current": true,
+      "createdAt": "2019-11-11T12:07:44.098Z",
+      "makeSymlink": true,
+      "symlinkKey": "q9Cr5C6Hs3eBSaSbR",
+      "type": "inode/symlink"
+    }
+  ]
+}

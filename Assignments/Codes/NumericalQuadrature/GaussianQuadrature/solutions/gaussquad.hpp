@@ -2,7 +2,7 @@
 # include <Eigen/Eigenvalues>
 
 /* SAM_LISTING_BEGIN_0 */
-struct QuadRule {
+struct QuandRule {
   Eigen::VectorXd nodes, weights;
 };
 

@@ -1,5 +1,0 @@
-// "testname", "input", "expected output", "points", "execution time limit (ms)"
-// "kron(A,B)", "(any input)", "kron(A,B) = \n 5  6 10 12\n 7  8 14 16\n15 18 20 24\n21 24 28 32",  "1", "10000",
-"kron(A,B)*x", "1", "-7.919\n-10.05\n-23.53\n-30.51",  "1", "15000",
-"kron_mult(A,B)*x", "2", "-7.919\n-10.05\n-23.53\n-30.51",  "1", "15000",
-"kron_reshape(A,B)*x", "3", "-7.919\n-10.05\n-23.53\n-30.51",  "1", "15000",

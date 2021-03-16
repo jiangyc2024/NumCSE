@@ -15,7 +15,6 @@
 /* SAM_LISTING_BEGIN_0 */
 template <typename CoeffVec>
 std::pair<double, double> evaldp (const CoeffVec& c, const double x) {
-  std::pair<double, double> p;
   double px, dpx;
   int s = c.size();
 
@@ -25,14 +24,10 @@ std::pair<double, double> evaldp (const CoeffVec& c, const double x) {
 
   dpx = (s-1)*c[0];
   for (int i = 1; i < s-1; ++i) { dpx = x*dpx+(s-i-1)*c[i]; }
-
-  p.first = px;
-  p.second = dpx;
 #else // TEMPLATE
     // TODO: evaluate a polynomial using Horner scheme
 #endif
-
-  return p;
+  return { px, dpx };
 }
 /* SAM_LISTING_END_0 */
 

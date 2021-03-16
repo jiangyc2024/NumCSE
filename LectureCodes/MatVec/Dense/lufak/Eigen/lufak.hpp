@@ -33,3 +33,4 @@ std::pair<MatrixXd, MatrixXd> lufak(const MatrixXd &A) {
   return { L, U };
 }
 /* SAM_LISTING_END_0 */
+

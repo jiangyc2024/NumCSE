@@ -14,22 +14,22 @@ using namespace std;
 using namespace Eigen;
 
 /* SAM_LISTING_BEGIN_0 */
-//! plane (2D) Givens rotation avoiding cancellation
-// Rotation matrix returned in G, rotated vector in x
+// plane (2D) Givens rotation avoiding cancellation
+// Computes \com{orthogonal} $\cob{\VG\in\bbR^{2,2}}$ with $\cob{\VG^\top\Va = \twovec{r}{0} =: \Vx}$, $\cob{r=\pm \N{\Va}_2}$
 void planerot(const Vector2d& a, Matrix2d& G, Vector2d& x) {
-  if (a(1) != 0.0) {
-    double t,s,c;
-    if (std::abs(a(1)) > std::abs(a(0))) {
-      t = -a(0)/a(1); s = 1.0/std::sqrt(1.0+t*t); c = s*t;
+  int sign{1};
+  if (a[1] != 0.0) {
+    double t, s, c; // s $\leftrightarrow$ $\cob{\sigma}$, c $\leftrightarrow$ $\cob{\gamma}$
+    if (std::abs(a[1]) > std::abs(a[0])) { // Avoid cancellation/overflow
+      t = -a[0]/a[1]; s = 1.0/std::sqrt(1.0+t*t); c = s*t; sign = -1;
     }
     else {
-      t = -a(1)/a(0); c = 1.0/std::sqrt(1+t*t); s = c*t;
+      t = -a[1]/a[0]; c = 1.0/std::sqrt(1+t*t); s = c*t;
     }
-    // Form $2\times 2$ Givens rotation matreix
-    G << c,s,-s,c;
+    G << c,s,-s,c; // Form $2\times 2$ Givens rotation matrix
   }
   else G.setIdentity();
-  x << a.norm(),0.0;
+  x << (sign*a.norm()),0.0;
 }
 /* SAM_LISTING_END_0 */
 

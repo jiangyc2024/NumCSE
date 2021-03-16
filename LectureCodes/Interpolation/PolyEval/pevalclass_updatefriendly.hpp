@@ -7,8 +7,5 @@ public:
   void addPoint(double t, double y); // Add another data point
   // evaluate value of current interpolating polynomial at \Blue{$x$}, 
   double operator() (double x) const;
-private:
-  // Update internal representation, called by \texttt{addPoint()}
-  void divdiff();
 };
 
