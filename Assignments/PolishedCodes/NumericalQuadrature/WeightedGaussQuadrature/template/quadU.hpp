@@ -2,8 +2,8 @@
 #define QUADU_HPP
 
 #include <cmath>
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 #include <vector>
 
 #include "matplotlibcpp.h"
@@ -16,14 +16,14 @@ namespace plt = matplotlibcpp;
  * \return Value of integral
  */
 /* SAM_LISTING_BEGIN_1 */
-template<typename Function>
+template <typename Function>
 double quadU(const Function& f, const unsigned int n) {
   // Value of integral
   double I = 0;
-  
+
   // TODO: (8-6.i) Integrate f using weighted Gauss quadrature
   // START
-  
+
   // END
   return I;
 }
@@ -35,12 +35,12 @@ void testQuadU(unsigned int nmax = 20) {
   constexpr double exact = 0.483296828976607;
   // Integrand
   auto f = [](double t) { return 1. / (2. + std::exp(3. * t)); };
-  
+
   plt::figure();
-  
+
   // TODO: (8-6.j) Tabulate and plot the quadrature error.
   // START
-  
+
   // END
   plt::savefig("./cx_out/convergence.png");
 }

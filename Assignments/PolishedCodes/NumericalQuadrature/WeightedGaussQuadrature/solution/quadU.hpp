@@ -2,8 +2,8 @@
 #define QUADU_HPP
 
 #include <cmath>
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 #include <vector>
 
 #include "matplotlibcpp.h"
@@ -16,22 +16,22 @@ namespace plt = matplotlibcpp;
  * \return Value of integral
  */
 /* SAM_LISTING_BEGIN_1 */
-template<typename Function>
+template <typename Function>
 double quadU(const Function& f, const unsigned int n) {
   // Value of integral
   double I = 0;
-  
+
   // TODO: (8-6.i) Integrate f using weighted Gauss quadrature
   // START
   for (unsigned int j = 0; j < n; ++j) {
-    
     // Weight
-    const double w = M_PI / (n+1) * std::pow(std::sin((j+1) * M_PI / (n+1)), 2);
-    
+    const double w =
+        M_PI / (n + 1) * std::pow(std::sin((j + 1) * M_PI / (n + 1)), 2);
+
     // Node
-    const double xi = std::cos((j+1.) / (n+1) * M_PI);
-    
-    I += w*f(xi);
+    const double xi = std::cos((j + 1.) / (n + 1) * M_PI);
+
+    I += w * f(xi);
   }
   // END
   return I;
@@ -44,31 +44,27 @@ void testQuadU(unsigned int nmax = 20) {
   constexpr double exact = 0.483296828976607;
   // Integrand
   auto f = [](double t) { return 1. / (2. + std::exp(3. * t)); };
-  
+
   plt::figure();
-  
+
   // TODO: (8-6.j) Tabulate and plot the quadrature error.
   // START
   // memory allocation for plot
   std::vector<double> err(nmax);
   std::vector<int> num_pts(nmax);
-  
-  std::cout << std::setw(5) << "n"
-            << std::setw(20) << "Error"
-            << std::setw(20) << "q"
-            << std::endl;
-  
+
+  std::cout << std::setw(5) << "n" << std::setw(20) << "Error" << std::setw(20)
+            << "q" << std::endl;
+
   for (unsigned int n = 1; n <= nmax; ++n) {
     // Compute error
     err[n - 1] = std::abs(quadU(f, n) - exact);
     num_pts[n - 1] = n;
-    
+
     if (n > 1) {
       // Print table
-      std::cout << std::setw(5) << n
-                << std::setw(20) << err[n - 1]
-                << std::setw(20) << err[n - 1] / err[n - 2]
-                << std::endl;
+      std::cout << std::setw(5) << n << std::setw(20) << err[n - 1]
+                << std::setw(20) << err[n - 1] / err[n - 2] << std::endl;
     }
   }
   // Error plot rendered by matplotlibcpp
