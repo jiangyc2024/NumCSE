@@ -10,3 +10,7 @@
 ## NestedQuad (8-4)
 - small comment changes
 - made some variables const/constexpr
+
+## WeightedGaussQuadrature (8-6)
+- ported to CodeExpert and matplotlibcpp
+- there was a small error in how tabulating was done (indexing)

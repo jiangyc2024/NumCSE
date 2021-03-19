@@ -1,6 +1,9 @@
 ///
 /// Minimal runner for all functions to be implemented in 8-4.b,c,d
 ///
+#include <cmath>
+#include <iostream>
+
 #include "laserquad.hpp"
 
 int main() {
