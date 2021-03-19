@@ -1,13 +1,7 @@
 ///
 /// Minimal runner for all functions to be implemented in 8-4.b,c,d
 ///
-
-#include <Eigen/Dense>
-
 #include "laserquad.hpp"
-#include "matplotlibcpp.h"
-
-namespace plt = matplotlibcpp;
 
 int main() {
   auto f = [](double x) { return x * x * x * std::log(std::abs(x) + 1); };
