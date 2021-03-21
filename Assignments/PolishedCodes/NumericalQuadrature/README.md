@@ -14,3 +14,7 @@
 ## WeightedGaussQuadrature (8-6)
 - ported to CodeExpert and matplotlibcpp
 - there was a small error in how tabulating was done (indexing)
+
+## GaussPts (8-8)
+- ported to CodeExpert
+- **Someone should check if recursive formula for p from b is correctly implemented.** In my eyes, there is a minus sign missing in the exponent.
