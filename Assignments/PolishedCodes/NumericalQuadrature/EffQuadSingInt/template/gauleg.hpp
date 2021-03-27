@@ -4,7 +4,8 @@
 #include <Eigen/Eigenvalues>
 #include <cmath>
 
-//! Structure containing a Quadrature rule on [-1,1], comprised of weights and nodes
+//! Structure containing a Quadrature rule on [-1,1], comprised of weights and
+//! nodes
 struct QuadRule {
   Eigen::VectorXd weights;
   Eigen::VectorXd nodes;
@@ -21,20 +22,19 @@ inline QuadRule gauleg(unsigned int n) {
     qr.nodes(0) = 0;
     qr.weights(0) = 2;
   } else {
-    Eigen::VectorXd b(n-1);
-    Eigen::MatrixXd J = Eigen::MatrixXd::Zero(n,n);
-    
-    for(unsigned int i = 1; i < n; ++i) {
+    Eigen::VectorXd b(n - 1);
+    Eigen::MatrixXd J = Eigen::MatrixXd::Zero(n, n);
+
+    for (unsigned int i = 1; i < n; ++i) {
       double d = (i) / sqrt(4. * i * i - 1.);
       J(i, i - 1) = d;
       J(i - 1, i) = d;
     }
     Eigen::EigenSolver<Eigen::MatrixXd> eig(J);
-    
+
     qr.nodes = eig.eigenvalues().real();
     qr.weights = 2 * eig.eigenvectors().real().topRows<1>().cwiseProduct(
-                                                                         eig.eigenvectors().real().topRows<1>()
-                                                                         );
+                         eig.eigenvectors().real().topRows<1>());
   }
   return qr;
 }
