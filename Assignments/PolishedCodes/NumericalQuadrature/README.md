@@ -18,3 +18,8 @@
 ## GaussPts (8-8)
 - ported to CodeExpert
 - **Someone should check if recursive formula for p from b is correctly implemented.** In my eyes, there is a minus sign missing in the exponent.
+
+## EffQuadSingInt (8-9)
+- ported to CodeExpert
+- made more comments
+- subproblem (e) changed to also plot, visual convergence study is better than just observing convergence on a table **CHANGE IN LATEX**
