@@ -23,3 +23,9 @@
 - ported to CodeExpert
 - made more comments
 - subproblem (e) changed to also plot, visual convergence study is better than just observing convergence on a table **CHANGE IN LATEX**
+
+## ZerosLegendre (8-10)
+- ported to CodeExpert
+- Latex needs to be updated.
+- currently implemented for n >= 2, added asserts
+- There was an error in the regula falsi implementation: if statement used no brackets which was wrong because of two preceeding statements.
