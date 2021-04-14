@@ -18,7 +18,7 @@ double newton_arctan(double x0_ = 2) {
   // critical value x0 for F(x) = arctan(x).
   double x0 = x0_;
   // START
-  
+
   // END
   return x0;
 }
