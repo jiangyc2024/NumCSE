@@ -59,7 +59,7 @@ template<typename Function>
 Eigen::VectorXd comp_g_gausspts(Function f, unsigned int n) {
   Eigen::VectorXd g = Eigen::VectorXd::Zero(n);
   
-  // TODO: (8-8.b) Compute (g_n(\xi_l^n))_{l=1}^n with optimal complexity O(n).
+  // TODO: (8-8.b) Compute $(g_n(\xi_l^n))_{l=1}^n$ with optimal complexity $O(n)$.
   // START
   Eigen::VectorXd w(n), xi(n);
   gaussrule(n, w, xi);  // Compute Gauss nodes and weights relative to [-1,1]
@@ -97,7 +97,7 @@ Eigen::VectorXd comp_g_gausspts(Function f, unsigned int n) {
 double testCompGGaussPts() {
   double g_val = 0;
   
-  // TODO: (8-8.c) Compute g(\xi_{11}^{21}) for f(y) = e^{-\abs{0.5 - y}}.
+  // TODO: (8-8.c) Compute $g(\xi_{11}^{21})$ for $f(y) = e^{-\abs{0.5 - y}}$.
   // START
   constexpr unsigned int n = 21;
   auto f =  [](double y){ return std::exp(-std::abs(.5 - y)); };
