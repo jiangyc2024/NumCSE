@@ -8,10 +8,6 @@
 #include <limits>
 #include <vector>
 
-#include "matplotlibcpp.h"
-
-namespace plt = matplotlibcpp;
-
 /* SAM_LISTING_BEGIN_2 */
 template <class T>
 class Logger {
@@ -137,12 +133,6 @@ void orderSteffensen(void) {
   steffensen_log(f, 1.0, &logger);
   std::vector<double> myData = logger.getInfo();
   const unsigned n = myData.size();
-  
-  plt::figure();
-  plt::title("Quadratic convergence");
-  plt::xlabel("ratios");
-  plt::ylabel("iterates");
-  std::vector<double> iterates(n - 2), ratios_(n - 2), two(n - 2);
 
   Eigen::VectorXd errs(n), log_errs(n);
   for (unsigned i = 0; i < n; ++i) {
@@ -153,15 +143,8 @@ void orderSteffensen(void) {
   for (unsigned i = 2; i < n; ++i) {
     ratios(i) =
         (log_errs(i) - log_errs(i - 1)) / (log_errs(i - 1) - log_errs(i - 2));
-    ratios_[i - 2] = ratios(i);
-    iterates[i - 2] = i;
-    two[i - 2] = 2;
   }
   
-  plt::plot(iterates, ratios_, "+r", {{"label", "Steffensen"}});
-  plt::plot(iterates, two, "-", {{"label", "rate = 2"}});
-  plt::legend("best");
-  plt::savefig("QuadraticConvergence.eps");
   // Print output
   std::cout.precision(10);
   std::cout << std::setw(20) << "x" << std::setw(20) << "errors"

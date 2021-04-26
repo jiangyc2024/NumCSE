@@ -21,12 +21,12 @@ public:
   // the member "info".
   void operator()(T val) {
     // START
-    info.push_back(val);
+    
     // END
   }
   // TODO: (9-4.c) Define a member function that fetches the data contained in "info".
   // START
-  std::vector<T> getInfo(void) { return info; }
+  
   // END
 
   void print_log() {
@@ -49,19 +49,7 @@ double steffensen(Function &&f, double x0) {
   double x = x0;
   // TODO: (9-4.a) implement the Steffensen's method for a function f
   // START
-  double upd = 1;
-  constexpr double eps = std::numeric_limits<double>::epsilon();
-  // Iterate until machine precision is reached
-  while (std::abs(upd) > eps * std::abs(x_old)) {
-    x_old = x;              // Storing the old iterate
-    const double fx = f(x); // Only 2 evaluations of $f$ at each step
-    if (fx != 0) {
-      upd = fx * fx / (f(x + fx) - fx);
-      x -= upd; // New iterate
-    } else {
-      upd = 0;
-    }
-  }
+  
   // END
   return x;
 }
@@ -72,9 +60,7 @@ void testSteffensen(void) {
   // TODO: (9-4.b) write a test of your implementation, that prints
   // an estimate of the zero of $f(x) = xe^x - 1$
   // START
-  const double x =
-      steffensen([](double x) { return x * std::exp(x) - 1; }, 1.0);
-  std::cout << "The iterative method converges to " << x << std::endl;
+  
   // END
 }
 /* SAM_LISTING_END_1 */
@@ -93,27 +79,7 @@ double steffensen_log(Function &&f, double x0,
   // TODO: (9-4.c) Modify the function steffensen: use the class Logger to
   // save all the iterations x of the Steffensen's method.
   // START
-  bool log_enabled = false;
-  if (logger_p != nullptr) {
-    log_enabled = true;
-    (*logger_p)(x); // alternative: logger_p->operator()(x)
-  }
-  double upd = 1;
-  constexpr double eps = std::numeric_limits<double>::epsilon();
-  // Iterate until machine precision is reached
-  while (std::abs(upd) > eps * x) {
-    const double fx = f(x); // Only 2 evaluations of $f$ at each step
-    if (fx != 0) {
-      upd = fx * fx / (f(x + fx) - fx);
-      x -= upd;
-      if (log_enabled) {
-        //(*logger_p)(x); // alternative: logger_p->operator()(x)
-        logger_p->operator()(x);
-      }
-    } else {
-      upd = 0;
-    }
-  }
+  
   // END
   return x;
 }
@@ -128,32 +94,7 @@ void orderSteffensen(void) {
   // Hint: to approximate the convergence rate, use the formula
   // $(\log(e_i) - \log(e_{i-1}))/ (\log(e_{i-1}) - \log(e_{i-2}))$
   // START
-  Logger<double> logger;
-
-  steffensen_log(f, 1.0, &logger);
-  std::vector<double> myData = logger.getInfo();
-  const unsigned n = myData.size();
-
-  Eigen::VectorXd errs(n), log_errs(n);
-  for (unsigned i = 0; i < n; ++i) {
-    errs(i) = std::abs(myData[i] - x_star);
-    log_errs(i) = std::log(errs(i));
-  }
-  Eigen::VectorXd ratios = Eigen::VectorXd::Zero(n);
-  for (unsigned i = 2; i < n; ++i) {
-    ratios(i) =
-        (log_errs(i) - log_errs(i - 1)) / (log_errs(i - 1) - log_errs(i - 2));
-  }
-  // Print output
-  std::cout.precision(10);
-  std::cout << std::setw(20) << "x" << std::setw(20) << "errors"
-            << std::setw(20) << "ratios" << std::endl;
-  std::cout << "       -----------------------------------------------------"
-            << std::endl;
-  for (unsigned i = 0; i < n; ++i) {
-    std::cout << std::setw(20) << myData[i] << std::setw(20) << errs(i)
-              << std::setw(20) << ratios(i) << std::endl;
-  }
+  
   // END
 }
 /* SAM_LISTING_END_4 */

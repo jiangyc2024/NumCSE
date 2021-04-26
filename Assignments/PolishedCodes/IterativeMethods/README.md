@@ -7,3 +7,8 @@
 
 ## NewtonArctan (9-3)
 - minimal changes in the test (test only in [1,2])
+
+## QuadraticConvergence (9-4)
+- some small comment changes
+- renewed plot
+- **TODO** problem with testing (testing script replaces a line which in this case is not desirable), i.e. *TESTING IS TURNED OFF FOR THIS PROBLEM*
