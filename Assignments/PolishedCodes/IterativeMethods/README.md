@@ -12,3 +12,8 @@
 - some small comment changes
 - renewed plot
 - **TODO** problem with testing (testing script replaces a line which in this case is not desirable), i.e. *TESTING IS TURNED OFF FOR THIS PROBLEM*
+
+## OrdConvIter (9-5)
+- error in Latex (9-5.c): intervals in linspace must be **OPEN**
+- ported to CodeExpert and matplotlibcpp
+- refactored the code a bit
