@@ -23,3 +23,7 @@
 - changed function signature -> better to have a default upper bound of iterations than to hard-code it -> **ADJUST LATEX, IF OK** otherwise change it back
 - Latex should give a hint on initial guesses
 - fixed error that will give segfault – 10 iterates give different order than in latex -> change (11 iterates gives the written order)
+
+## NonLinElectr (9-7)
+- ported to matplotlibcpp and CE
+- **TODO**: create Udiode.eps plot for Latex (my eps creation did not work) and put in project root folder
