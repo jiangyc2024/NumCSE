@@ -27,3 +27,8 @@
 ## NonLinElectr (9-7)
 - ported to matplotlibcpp and CE
 - **TODO**: create Udiode.eps plot for Latex (my eps creation did not work) and put in project root folder
+
+## JuliaSet (9-8)
+- removed `using namespace Eigen;`
+
+
