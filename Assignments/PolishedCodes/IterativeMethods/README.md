@@ -35,4 +35,8 @@
 ## ModifiedNewton (9-9)
 - no changes
 
-##
+## QuasiLinear (9-10)
+- **typo in LATEX**: 9.10.3 iterate x^{(k+11)} is used; should be x^{(k+1)}
+- remove TODO in subtask f in latex (already implemented)
+- small cosmetic changes
+
