@@ -33,4 +33,6 @@
 - removed `using namespace Eigen;`
 
 ## ModifiedNewton (9-9)
-- 
+- no changes
+
+##
