@@ -43,6 +43,7 @@
 ## Radioactive (9-11) see LeastSquares problem folder
 - completely reworked the code
 - still have to compute solution.eps for Latex
+- Latex seems to be outdated
 
 ## CircleAppr (9-12)
 - **TODO** -> leastsquares
