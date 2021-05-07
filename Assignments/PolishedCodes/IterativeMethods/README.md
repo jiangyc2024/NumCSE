@@ -40,3 +40,16 @@
 - remove TODO in subtask f in latex (already implemented)
 - small cosmetic changes
 
+## Radioactive (9-11) see LeastSquares problem folder
+- completely reworked the code
+- still have to compute solution.eps for Latex
+
+## CircleAppr (9-12)
+- **TODO** -> leastsquares
+
+## LevelSetPlot (9-13)
+- **TODO**
+
+## SymRankOneApprox (9-14)
+- **TODO**
+
