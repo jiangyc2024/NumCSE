@@ -61,14 +61,14 @@ void plot(const Eigen::ArrayXd& t, const Eigen::VectorXd& m,
     return (-l2 * t).exp() * b0 +
            (l1 / (l2 - l1)) * ((-l1 * t).exp() - (-l2 * t).exp()) * a0;
   };
-  plt::plot(t, m, ".", {{"label", {"measured PhiB"}}});
+  plt::plot(t, m, ".", {{"label", "measured PhiB"}});
   plt::plot(t, f(x), {{"label", "fitted PhiB"}});
   const Eigen::VectorXd phiA = x[0] * (-x[2] * Eigen::ArrayXd(t)).exp();
   plt::plot(t, phiA, {{"label", "fitted PhiA"}});
   plt::xlabel("t");
   plt::legend();
   // END
-  plt::savefig("./cx_out/solution.png");  //! TODO
+  plt::savefig("./cx_out/solution.png");
   plt::figure();
   // TODO: (9-11.d) Plot the iteration error using matplotlibcpp.
   // START
@@ -79,7 +79,7 @@ void plot(const Eigen::ArrayXd& t, const Eigen::VectorXd& m,
   plt::xlabel("iteration");
   plt::ylabel("change");
   // END
-  plt::savefig("./cx_out/convergence.png");  //! TODO
+  plt::savefig("./cx_out/convergence.png");
 }
 /* SAM_LISTING_END_3 */
 

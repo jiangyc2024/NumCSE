@@ -45,8 +45,8 @@
 - still have to compute solution.eps for Latex
 - Latex seems to be outdated
 
-## CircleAppr (9-12)
-- **TODO** -> leastsquares
+## CircleAppr (9-12) see LeastSquares problem folder
+- wrote this task from ground up (nearly), changed some interfaces, but Latex needs a lot of work
 
 ## LevelSetPlot (9-13)
 - **TODO**
