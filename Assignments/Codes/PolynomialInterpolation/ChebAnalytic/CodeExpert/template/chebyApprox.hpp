@@ -1,4 +1,5 @@
 #include <Eigen/Dense>
+#include <vector>
 #include <cmath>
 #include <complex>
 #include <iostream>
