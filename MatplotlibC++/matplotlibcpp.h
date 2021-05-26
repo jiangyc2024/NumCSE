@@ -1,10 +1,11 @@
 //
 // Wishlist:
 // * (WIP) Make work for Eigen Vectors and Matrices
-// * add submodule for our own functions such as spy
 // * export functions in different files for better structure
 // * make plot(y) work with x of unsigned type, or get to the bottom of that
 //   problem at least
+// * errorbar for xerr and yerr
+// * errorbar for yerr of shape (2, N)
 //
 // Changed:
 // * Implement a better way for named_plot, maybe just as additional
@@ -23,6 +24,7 @@
 #include <numeric>
 #include <stdexcept>
 #include <vector>
+#include <sstream>
 
 #include <Python.h>
 
@@ -52,6 +54,10 @@ struct _interpreter {
   PyObject *s_python_function_fignum_exists;
   PyObject *s_python_function_plot;
   PyObject *s_python_function_quiver;
+  PyObject *s_python_function_contour;
+  PyObject *s_python_function_colormap;
+  PyObject *s_python_function_axhline;
+  PyObject *s_python_function_axvline;
   PyObject *s_python_function_semilogx;
   PyObject *s_python_function_semilogy;
   PyObject *s_python_function_loglog;
@@ -87,6 +93,8 @@ struct _interpreter {
   PyObject *s_python_function_suptitle;
   PyObject *s_python_function_bar;
   PyObject *s_python_function_subplots_adjust;
+  PyObject *s_python_function_imshow;
+  PyObject *s_python_function_colorbar;
 
   /* For now, _interpreter is implemented as a singleton since its currently not
      possible to have multiple independent embedded python interpreters without
@@ -181,6 +189,9 @@ private:
         PyObject_GetAttrString(pymod, "fignum_exists");
     s_python_function_plot = PyObject_GetAttrString(pymod, "plot");
     s_python_function_quiver = PyObject_GetAttrString(pymod, "quiver");
+    s_python_function_contour = PyObject_GetAttrString(pymod, "contour");
+    s_python_function_axhline = PyObject_GetAttrString(pymod, "axhline");
+    s_python_function_axvline = PyObject_GetAttrString(pymod, "axvline");
     s_python_function_semilogx = PyObject_GetAttrString(pymod, "semilogx");
     s_python_function_semilogy = PyObject_GetAttrString(pymod, "semilogy");
     s_python_function_loglog = PyObject_GetAttrString(pymod, "loglog");
@@ -218,11 +229,14 @@ private:
     s_python_function_bar = PyObject_GetAttrString(pymod, "bar");
     s_python_function_subplots_adjust =
         PyObject_GetAttrString(pymod, "subplots_adjust");
+    s_python_function_imshow = PyObject_GetAttrString(pymod, "imshow");
+    s_python_function_colorbar = PyObject_GetAttrString(pymod, "colorbar");
 
     if (!s_python_function_show || !s_python_function_close ||
         !s_python_function_draw || !s_python_function_pause ||
         !s_python_function_figure || !s_python_function_fignum_exists ||
         !s_python_function_plot || !s_python_function_quiver ||
+        !s_python_function_contour || !s_python_function_colorbar ||
         !s_python_function_semilogx || !s_python_function_semilogy ||
         !s_python_function_loglog || !s_python_function_fill ||
         !s_python_function_fill_between || !s_python_function_subplot ||
@@ -239,7 +253,7 @@ private:
         !s_python_function_stem || !s_python_function_xkcd ||
         !s_python_function_text || !s_python_function_suptitle ||
         !s_python_function_bar || !s_python_function_subplots_adjust ||
-        !s_python_function_spy) {
+        !s_python_function_spy || !s_python_function_imshow) {
       throw std::runtime_error("Couldn't find required function!");
     }
 
@@ -251,6 +265,7 @@ private:
         !PyFunction_Check(s_python_function_fignum_exists) ||
         !PyFunction_Check(s_python_function_plot) ||
         !PyFunction_Check(s_python_function_quiver) ||
+        !PyFunction_Check(s_python_function_contour) ||
         !PyFunction_Check(s_python_function_semilogx) ||
         !PyFunction_Check(s_python_function_semilogy) ||
         !PyFunction_Check(s_python_function_loglog) ||
@@ -282,7 +297,10 @@ private:
         !PyFunction_Check(s_python_function_text) ||
         !PyFunction_Check(s_python_function_suptitle) ||
         !PyFunction_Check(s_python_function_bar) ||
-        !PyFunction_Check(s_python_function_subplots_adjust)) {
+        !PyFunction_Check(s_python_function_subplots_adjust) ||
+        !PyFunction_Check(s_python_function_imshow) ||
+        !PyFunction_Check(s_python_function_colorbar)
+      ) {
       throw std::runtime_error(
           "Python object is unexpectedly not a PyFunction.");
     }
@@ -392,9 +410,7 @@ template <typename Vector> PyObject *get_array(const Vector &v) {
   return varray;
 }
 
-// TODO maybe we have to add a function for Eigen matrices, not sure
-// if the v[0] is valid for matrices and also the ::std::vector &v_row
-// probably doesn't work
+// specialized get_2darray function for nested std::vectors
 template <typename Numeric>
 PyObject *get_2darray(const std::vector<::std::vector<Numeric>> &v) {
   detail::_interpreter::get(); // interpreter needs to be initialized for the
@@ -420,9 +436,8 @@ PyObject *get_2darray(const std::vector<::std::vector<Numeric>> &v) {
   return reinterpret_cast<PyObject *>(varray);
 }
 
-// suitable for Eigen matrices
-template <typename Matrix>
-PyObject *get_2darray(const Matrix &A) {
+// suitable for more general matrices (especially Eigen matrices)
+template <typename Matrix> PyObject *get_2darray(const Matrix &A) {
   detail::_interpreter::get(); // interpreter needs to be initialized for the
                                // numpy commands to work
   if (A.size() < 1)
@@ -462,8 +477,8 @@ namespace detail {
 // @brief Since most of the plot commands require the exact same usage apart
 //        from the call to the correct Python function, we encapsulate this
 // @param pyfunc The matplotlib function to be called with the given arguments
-// @param x The x vector, must support std::vector methods
-// @param y The y vector, must support std::vector methods
+// @param x The x vector
+// @param y The y vector
 // @param s The formatting string for colour, marker and linestyle
 // @param keywords Additional keywords, such as label
 // @return true if plot was successful, false otherwise
@@ -501,6 +516,12 @@ bool plot_base(PyObject *const pyfunc, const VectorX &x, const VectorY &y,
 
 } // namespace detail
 
+// @brief standard plot function supporting the args (x, y, s, keywords)
+// @param x The x vector
+// @param y The y vector
+// @param s The formatting string
+// @param keywords Additional keywords
+// @return true, if successful, false otherwise
 template <typename VectorX, typename VectorY>
 bool plot(const VectorX &x, const VectorY &y, const std::string &s = "",
           const std::map<std::string, std::string> &keywords = {}) {
@@ -508,12 +529,15 @@ bool plot(const VectorX &x, const VectorY &y, const std::string &s = "",
                            x, y, s, keywords);
 }
 
+// @brief standard plot function without formatting string, needed if
+//        keywords are given but formatting string is not
 template <typename VectorX, typename VectorY>
 bool plot(const VectorX &x, const VectorY &y,
           const std::map<std::string, std::string> &keywords) {
   return plot(x, y, "", keywords);
 }
 
+// @brief standard plot function if x data is not specified
 template <typename VectorY = std::vector<double>>
 bool plot(const VectorY &y, const std::string &format = "",
           const std::map<std::string, std::string> &keywords = {}) {
@@ -526,6 +550,8 @@ bool plot(const VectorY &y, const std::string &format = "",
   return plot(x, y, format);
 }
 
+// @brief standard plot function if x data is not specified and the formatting
+//        string is missing
 template <typename VectorY = std::vector<double>>
 bool plot(const VectorY &y,
           const std::map<std::string, std::string> &keywords) {
@@ -536,6 +562,7 @@ bool plot(const VectorY &y,
   return plot(x, y, "", keywords);
 }
 
+// @brief loglog plot function, see `plot` for more detail
 template <typename VectorX, typename VectorY>
 bool loglog(const VectorX &x, const VectorY &y, const std::string &s = "",
             const std::map<std::string, std::string> &keywords = {}) {
@@ -569,6 +596,7 @@ bool loglog(const VectorY &y,
   return loglog(x, y, "", keywords);
 }
 
+// @brief semilogx plot function, see `plot` for more detail
 template <typename VectorX, typename VectorY>
 bool semilogx(const VectorX &x, const VectorY &y, const std::string &s = "",
               const std::map<std::string, std::string> &keywords = {}) {
@@ -583,7 +611,7 @@ bool semilogx(const VectorX &x, const VectorY &y,
   return semilogx(x, y, "", keywords);
 }
 
-template <typename VectorY>
+template <typename VectorY = std::vector<double>>
 bool semilogx(const VectorY &y, const std::string &s = "",
               const std::map<std::string, std::string> &keywords = {}) {
   std::vector<std::size_t> x(y.size());
@@ -593,7 +621,7 @@ bool semilogx(const VectorY &y, const std::string &s = "",
   return semilogx(x, y, s, keywords);
 }
 
-template <typename VectorY>
+template <typename VectorY = std::vector<double>>
 bool semilogx(const VectorY &y,
               const std::map<std::string, std::string> &keywords) {
   std::vector<std::size_t> x(y.size());
@@ -603,6 +631,7 @@ bool semilogx(const VectorY &y,
   return semilogx(x, y, "", keywords);
 }
 
+// @brief semilogy plot function, see `plot` for more detail
 template <typename VectorX, typename VectorY>
 bool semilogy(const VectorX &x, const VectorY &y, const std::string &s = "",
               const std::map<std::string, std::string> &keywords = {}) {
@@ -617,7 +646,7 @@ bool semilogy(const VectorX &x, const VectorY &y,
   return semilogy(x, y, "", keywords);
 }
 
-template <typename VectorY>
+template <typename VectorY = std::vector<double>>
 bool semilogy(const VectorY &y, const std::string &s = "",
               const std::map<std::string, std::string> &keywords = {}) {
   std::vector<std::size_t> x(y.size());
@@ -627,7 +656,7 @@ bool semilogy(const VectorY &y, const std::string &s = "",
   return semilogy(x, y, s, keywords);
 }
 
-template <typename VectorY>
+template <typename VectorY = std::vector<double>>
 bool semilogy(const VectorY &y,
               const std::map<std::string, std::string> &keywords) {
   std::vector<std::size_t> x(y.size());
@@ -637,10 +666,45 @@ bool semilogy(const VectorY &y,
   return semilogy(x, y, "", keywords);
 }
 
-template <typename Numeric>
-void plot_surface(const std::vector<::std::vector<Numeric>> &x,
-                  const std::vector<::std::vector<Numeric>> &y,
-                  const std::vector<::std::vector<Numeric>> &z,
+template <typename Matrix>
+void imshow(const Matrix& X, const std::map<std::string, std::string> &keywords = {}) {
+  PyObject *Xarray = get_2darray(X);
+
+  PyObject *kwargs = PyDict_New();
+  for (std::map<std::string, std::string>::const_iterator it = keywords.begin();
+       it != keywords.end(); ++it) {
+    PyDict_SetItemString(kwargs, it->first.c_str(),
+                         PyUnicode_FromString(it->second.c_str()));
+  }
+
+  PyObject *plot_args = PyTuple_New(1);
+  PyTuple_SetItem(plot_args, 0, Xarray);
+
+  PyObject *res = PyObject_Call(
+      detail::_interpreter::get().s_python_function_imshow, plot_args, kwargs);
+
+  Py_DECREF(plot_args);
+  Py_DECREF(kwargs);
+  if (res)
+    Py_DECREF(res);
+}
+
+// @brief Add the colorbar
+void colorbar() {
+  PyObject *res =
+      PyObject_CallObject(detail::_interpreter::get().s_python_function_colorbar,
+                          detail::_interpreter::get().s_python_empty_tuple);
+  if (!res)
+    throw std::runtime_error("Call to colorbar() failed.");
+}
+
+// @brief plot_surface for datapoints (x_ij, y_ij, z_ij) with i,j = 0..n
+// @param x The x values of the datapoints in a matrix
+// @param y The y values of the datapoints in a matrix
+// @param z The function value of the datapoints in a matrix
+// @param keywords Additional keywords
+template <typename Matrix>
+void plot_surface(const Matrix &x, const Matrix &y, const Matrix &z,
                   const std::map<std::string, std::string> &keywords =
                       std::map<std::string, std::string>()) {
   // We lazily load the modules here the first time this function is called
@@ -733,6 +797,52 @@ void plot_surface(const std::vector<::std::vector<Numeric>> &x,
   Py_DECREF(plot_surface);
 
   Py_DECREF(axis);
+  Py_DECREF(args);
+  Py_DECREF(kwargs);
+  if (res)
+    Py_DECREF(res);
+}
+
+// @brief plot_surface for datapoints (x_ij, y_ij, z_ij) with i,j = 0..n
+// @param x The x values of the datapoints in a matrix
+// @param y The y values of the datapoints in a matrix
+// @param z The function value of the datapoints in a matrix
+// @param keywords Additional keywords
+template <typename Matrix>
+void contour(const Matrix &x, const Matrix &y, const Matrix &z,
+             const std::map<std::string, std::string> &keywords = {}) {
+  detail::_interpreter::get();
+
+  // using numpy arrays
+  PyObject *xarray = get_2darray(x);
+  PyObject *yarray = get_2darray(y);
+  PyObject *zarray = get_2darray(z);
+
+  // construct positional args
+  PyObject *args = PyTuple_New(3);
+  PyTuple_SetItem(args, 0, xarray);
+  PyTuple_SetItem(args, 1, yarray);
+  PyTuple_SetItem(args, 2, zarray);
+
+  // Build up the kw args.
+  PyObject *kwargs = PyDict_New();
+
+  PyObject *python_colormap_coolwarm = PyObject_GetAttrString(
+      detail::_interpreter::get().s_python_colormap, "coolwarm");
+
+  PyDict_SetItemString(kwargs, "cmap", python_colormap_coolwarm);
+
+  for (std::map<std::string, std::string>::const_iterator it = keywords.begin();
+       it != keywords.end(); ++it) {
+    PyDict_SetItemString(kwargs, it->first.c_str(),
+                         PyString_FromString(it->second.c_str()));
+  }
+
+  PyObject *res = PyObject_Call(
+      detail::_interpreter::get().s_python_function_contour, args, kwargs);
+  if (!res)
+    throw std::runtime_error("failed surface");
+
   Py_DECREF(args);
   Py_DECREF(kwargs);
   if (res)
@@ -872,16 +982,23 @@ bool hist(const VectorY &y, long bins = 10, std::string color = "b",
 // @brief Scatter plot
 // @param x x-coordinates of the 2d points
 // @param y y-coordinates of the 2d points
-// @param s the marker size  in points**2
+// @param s the marker size in points**2
+// @param keywords Additional keywords
 template <typename VectorX, typename VectorY>
-bool scatter(const VectorX &x, const VectorY &y, const double s = 1.0) {
+bool scatter(const VectorX &x, const VectorY &y, const double s = 1.0,
+             const std::map<std::string, std::string> keywords = {}) {
   assert(x.size() == y.size());
 
   PyObject *xarray = get_array(x);
   PyObject *yarray = get_array(y);
 
   PyObject *kwargs = PyDict_New();
-  PyDict_SetItemString(kwargs, "s", PyLong_FromLong(s));
+  PyDict_SetItemString(kwargs, "s", PyFloat_FromDouble(s));
+  for (std::map<std::string, std::string>::const_iterator it = keywords.begin();
+       it != keywords.end(); ++it) {
+    PyDict_SetItemString(kwargs, it->first.c_str(),
+                         PyUnicode_FromString(it->second.c_str()));
+  }
 
   PyObject *plot_args = PyTuple_New(2);
   PyTuple_SetItem(plot_args, 0, xarray);
@@ -898,13 +1015,19 @@ bool scatter(const VectorX &x, const VectorY &y, const double s = 1.0) {
   return res;
 }
 
+template <typename VectorX, typename VectorY>
+bool scatter(const VectorX &x, const VectorY &y,
+             const std::map<std::string, std::string> &keywords) {
+  return scatter(x, y, 1.0, keywords);
+}
+
 // @brief Spy plot
 // @param A the matrix
 // @param precision Plot all elements above `|precision|`
 // @param keywords Additional keywords
 template <typename Matrix>
 bool spy(const Matrix &A,
-         const std::map<std::string, std::string>& keywords = {}) {
+         const std::map<std::string, std::string> &keywords = {}) {
   PyObject *Aarray = get_2darray(A);
 
   PyObject *kwargs = PyDict_New();
@@ -1047,6 +1170,64 @@ bool quiver(const std::vector<NumericX> &x, const std::vector<NumericY> &y,
   return res;
 }
 
+template <typename NumericY>
+void axhline(const NumericY y,
+             const std::map<std::string, std::string> keywords = {}) {
+  detail::_interpreter::get();
+
+  PyObject *kwargs = PyDict_New();
+
+  // add location
+  PyDict_SetItemString(kwargs, "y", PyFloat_FromDouble(y));
+
+  // add other keywords
+  for (std::map<std::string, std::string>::const_iterator it = keywords.begin();
+       it != keywords.end(); ++it) {
+    PyDict_SetItemString(kwargs, it->first.c_str(),
+                         PyUnicode_FromString(it->second.c_str()));
+  }
+
+  PyObject *res =
+      PyObject_Call(detail::_interpreter::get().s_python_function_axhline,
+                    detail::_interpreter::get().s_python_empty_tuple, kwargs);
+
+  Py_DECREF(kwargs);
+
+  if (!res)
+    throw std::runtime_error("Call to axhline() failed.");
+
+  Py_DECREF(res);
+}
+
+template <typename NumericX>
+void axvline(const NumericX x,
+             const std::map<std::string, std::string> keywords = {}) {
+  detail::_interpreter::get();
+
+  PyObject *kwargs = PyDict_New();
+
+  // add location
+  PyDict_SetItemString(kwargs, "x", PyFloat_FromDouble(x));
+
+  // add other keywords
+  for (std::map<std::string, std::string>::const_iterator it = keywords.begin();
+       it != keywords.end(); ++it) {
+    PyDict_SetItemString(kwargs, it->first.c_str(),
+                         PyUnicode_FromString(it->second.c_str()));
+  }
+
+  PyObject *res =
+      PyObject_Call(detail::_interpreter::get().s_python_function_axvline,
+                    detail::_interpreter::get().s_python_empty_tuple, kwargs);
+
+  Py_DECREF(kwargs);
+
+  if (!res)
+    throw std::runtime_error("Call to axvline() failed.");
+
+  Py_DECREF(res);
+}
+
 template <typename NumericX, typename NumericY>
 bool stem(const std::vector<NumericX> &x, const std::vector<NumericY> &y,
           const std::string &s = "") {
@@ -1072,9 +1253,8 @@ bool stem(const std::vector<NumericX> &x, const std::vector<NumericY> &y,
   return res;
 }
 
-template <typename NumericX, typename NumericY>
-bool errorbar(const std::vector<NumericX> &x, const std::vector<NumericY> &y,
-              const std::vector<NumericX> &yerr,
+template <typename VectorX, typename VectorY>
+bool errorbar(const VectorX &x, const VectorY &y, const VectorY &yerr,
               const std::map<std::string, std::string> &keywords = {}) {
   assert(x.size() == y.size());
 
@@ -1214,15 +1394,27 @@ inline void figure_size(size_t w, size_t h) {
 
 template <typename Vector = std::vector<double>>
 inline void legend(const std::string &loc = "best",
-                   const Vector &bbox_to_anchor = Vector()) {
+                   const Vector &bbox_to_anchor = Vector(),
+                   const std::map<std::string, std::string> &keywords = {}) {
   detail::_interpreter::get();
 
   PyObject *kwargs = PyDict_New();
-  PyDict_SetItemString(kwargs, "loc", PyString_FromString(loc.c_str()));
 
+  // add location
+  if (loc != "")
+    PyDict_SetItemString(kwargs, "loc", PyString_FromString(loc.c_str()));
+
+  // add bbox to anchor
   if (bbox_to_anchor.size() == 2 || bbox_to_anchor.size() == 4) {
     PyObject *bbox = get_array(bbox_to_anchor);
     PyDict_SetItemString(kwargs, "bbox_to_anchor", bbox);
+  }
+
+  // add other keywords
+  for (std::map<std::string, std::string>::const_iterator it = keywords.begin();
+       it != keywords.end(); ++it) {
+    PyDict_SetItemString(kwargs, it->first.c_str(),
+                         PyString_FromString(it->second.c_str()));
   }
 
   PyObject *res =
@@ -1237,7 +1429,35 @@ inline void legend(const std::string &loc = "best",
   Py_DECREF(res);
 }
 
-template <typename Numeric> void ylim(Numeric bottom, Numeric top) {
+template <typename Vector>
+inline void legend(const Vector &bbox_to_anchor,
+                   const std::map<std::string, std::string> &keywords = {}) {
+  legend("", bbox_to_anchor, keywords);
+}
+
+inline void legend(const std::string &loc,
+                   const std::map<std::string, std::string> &keywords = {}) {
+  legend(loc, std::vector<double>(), keywords);
+}
+
+// to support C-style strings we also need const char[], std::string only
+// does not capture calls of style legend("lower left")
+inline void legend(const char loc[],
+                   const std::map<std::string, std::string> &keywords = {}) {
+  legend(loc, std::vector<double>(), keywords);
+}
+
+/*
+inline void legend(const std::string& loc,
+                   const std::map<std::string, std::string>& keywords = {}) {
+  legend(loc, std::vector<double>(), keywords);
+}
+inline void legend(const std::map<std::string, std::string>& keywords) {
+  legend("", std::vector<double>(), keywords);
+}
+*/
+
+template <typename Numeric> void ylim(const Numeric bottom, const Numeric top) {
   detail::_interpreter::get();
 
   PyObject *list = PyList_New(2);
@@ -1256,7 +1476,7 @@ template <typename Numeric> void ylim(Numeric bottom, Numeric top) {
   Py_DECREF(res);
 }
 
-template <typename Numeric> void xlim(Numeric left, Numeric right) {
+template <typename Numeric> void xlim(const Numeric left, const Numeric right) {
   detail::_interpreter::get();
 
   PyObject *list = PyList_New(2);
@@ -1735,31 +1955,8 @@ bool plot(const A &a, const B &b, const std::string &format, Args... args) {
   return plot(a, b, format) && plot(args...);
 }
 
-#if 0
-/*
- * This group of plot() functions is needed to support initializer lists, i.e.
- * calling plot( {1,2,3,4} )
- */
-inline bool plot(const std::vector<double> &x, const std::vector<double> &y,
-                 const std::string &format = "") {
-  return plot<std::vector<double>, std::vector<double>>(x, y, format);
-}
-
-inline bool plot(const std::vector<double> &y, const std::string &format = "") {
-  return plot<std::vector<double>>(y, format);
-}
-
-inline bool plot(const std::vector<double> &x, const std::vector<double> &y,
-                 const std::map<std::string, std::string> &keywords) {
-  return plot<std::vector<double>, std::vector<double>>(x, y, keywords);
-}
-#endif
-
-/*
- * This class allows dynamic plots, ie changing the plotted data without
- * clearing and re-plotting
- */
-
+// This class allows dynamic plots, ie changing the plotted data without
+// clearing and re-plotting
 class Plot {
 public:
   // default initialization with plot label, some data and format
