@@ -47,6 +47,8 @@
 
 ## CircleAppr (9-12) see LeastSquares problem folder
 - wrote this task from ground up (nearly), changed some interfaces, but Latex needs a lot of work
+- comparison plot is quite heavy – maybe zoom in to see difference between circles
+- TODO: generate eps plots
 
 ## LevelSetPlot (9-13)
 - **TODO**
