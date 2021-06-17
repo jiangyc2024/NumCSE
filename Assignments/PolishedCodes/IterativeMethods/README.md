@@ -51,7 +51,9 @@
 - TODO: generate eps plots
 
 ## LevelSetPlot (9-13)
-- **TODO**
+- more comments
+- applied interface from the homework document
+- TODO: last two green boxes ask for subproblem with polar coordinates as well as plotting -> should this be done?
 
 ## SymRankOneApprox (9-14)
 - **TODO**
