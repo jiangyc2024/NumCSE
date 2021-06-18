@@ -1,8 +1,7 @@
 include_directories(../../../Utils)
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/solution/decay.txt
-        DESTINATION ${CMAKE_BINARY_DIR}/bin/Assignments/PolishedCodes/LeastSquares/Radioactive)
-file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/bin/Assignments/PolishedCodes/LeastSquares/Radioactive/cx_out)
+        DESTINATION ${TARGET_RUNTIME_OUTPUT_DIRECTORY})
 
 add_executable_numcse(solution solution/main.cpp)
 get_target_name_numcse(solution SOLUTION)
@@ -13,3 +12,5 @@ get_target_name_numcse(template TEMPLATE)
 target_compile_definitions(${TEMPLATE} PRIVATE SOLUTION=0 INTERNAL=1)
 
 add_tests_numcse(tests template/tests.cpp)
+file(MAKE_DIRECTORY ${TARGET_RUNTIME_OUTPUT_DIRECTORY}/cx_out)
+
