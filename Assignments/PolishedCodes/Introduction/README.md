@@ -18,3 +18,8 @@ using namespace Eigen;
 ````
 because omitting the namespace does not comply with Google coding guidelines
 - small cosmetic changes
+
+## MatrixReduce (1-3)
+
+- small cosmetic changes
+- changed from C-style cast to C++-style cast
