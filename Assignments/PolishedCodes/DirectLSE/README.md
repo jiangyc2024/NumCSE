@@ -12,3 +12,6 @@
 
 ## BlockLU (3-3)
 - ported to CodeExpert
+
+## CholeskyQR (3-4)
+- ported to CodeExpert
