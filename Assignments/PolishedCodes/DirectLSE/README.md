@@ -15,3 +15,6 @@
 
 ## CholeskyQR (3-4)
 - ported to CodeExpert
+
+## CircuitImpedance (3-5)
+- has already been checked thoroughly last semester, so no real changes
