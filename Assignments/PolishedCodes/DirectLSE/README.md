@@ -18,3 +18,8 @@
 
 ## CircuitImpedance (3-5)
 - has already been checked thoroughly last semester, so no real changes
+
+## EfficientBandMult (3-6)
+- ported to CodeExpert
+- changed the initialization for Vector c, d in solvelseA to be a loop because of Eigen assertions (type is templated...); this also conforms to the template requirements
+- **TODO:** There are some typos in the Latex
