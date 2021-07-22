@@ -23,3 +23,7 @@
 - ported to CodeExpert
 - changed the initialization for Vector c, d in solvelseA to be a loop because of Eigen assertions (type is templated...); this also conforms to the template requirements
 - **TODO:** There are some typos in the Latex
+
+## Householder (3-7)
+- added division by squaredNorm() as requested by task description
+- 
