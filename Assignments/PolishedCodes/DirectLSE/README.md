@@ -27,3 +27,6 @@
 ## Householder (3-7)
 - added division by squaredNorm() as requested by task description
 - 
+
+## Lyapunov (3-8)
+- small cosmetic changes
