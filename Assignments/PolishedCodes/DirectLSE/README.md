@@ -30,3 +30,6 @@
 
 ## Lyapunov (3-8)
 - small cosmetic changes
+
+## PartitionedMatrix (3-9)
+- small cosmetic changes
