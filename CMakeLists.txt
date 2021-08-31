@@ -26,6 +26,15 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMake/Modules/")
 # store binaries in ./bin
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 
+# enable linting next to compile
+set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=*;-system-headers=0")
+
+# TODO(heinrich): command to invoke stand-alone linting
+#add_custom_target(
+#        ncse-lint
+#        COMMAND clang-tidy -checks=* -system-headers=0 ${CMAKE_SOURCE_DIR} -p .
+#)
+
 # load macros
 include(CMake/Macros/subdirlist.cmake)
 include(CMake/Macros/add_all_subdirectories.cmake)
@@ -89,7 +98,7 @@ include(ExternalProject)
 find_package(Eigen3)
 
 if (${EIGEN3_FOUND})
-  include_directories(${EIGEN3_INCLUDE_DIR})
+  include_directories(SYSTEM ${EIGEN3_INCLUDE_DIR})
 
   add_custom_target(Eigen) # dependency dummy
 else()
@@ -103,7 +112,7 @@ else()
       INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/Eigen_install
       DOWNLOAD_NO_PROGRESS 1
       CMAKE_ARGS ${EXTERNAL_PROJECT_CMAKE_ARGS_PREFIX} -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/Eigen_install)
-  include_directories(${CMAKE_CURRENT_BINARY_DIR}/Eigen_install/include/eigen3)
+  include_directories(SYSTEM ${CMAKE_CURRENT_BINARY_DIR}/Eigen_install/include/eigen3)
 endif()
 
 include_directories(${CMAKE_SOURCE_DIR}/Utils) # oh dear
@@ -116,7 +125,7 @@ include_directories(${CMAKE_SOURCE_DIR}/Utils) # oh dear
 #
 
 # include the header-only library matplotlibcpp
-include_directories("${CMAKE_SOURCE_DIR}/MatplotlibC++")
+include_directories(SYSTEM "${CMAKE_SOURCE_DIR}/MatplotlibC++")
 
 # find Python3
 find_package(Python3 COMPONENTS Interpreter Development NumPy)

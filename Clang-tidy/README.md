@@ -17,7 +17,13 @@ This will run only clang-tidy on all the Eigen tutorial lecture codes and apply 
 `python conformance_test.py [-f <file> |-d <directory>] [-p <build_directory>] [--no_filter] [--format]`
 - `-f`: process only a single file `<file>`
 - `-d`: process a whole directory `<directory>`
--	neither `-f` nor `-d`: process the working directory
--	`-p`: specify the build directory `<build_directory>`, **default**: working directory
+-   neither `-f` nor `-d`: process the working directory
+-   `-p`: specify the build directory `<build_directory>`, **default**: working directory
 - `--no_filter`: do not filter out irrelevant warnings
 - `--format`: additionally run clang-format on all processed files
+
+#### Do we need this?
+
+We want to run static analyzer checks on the C++ codes. Clang-tidy is, in principle, the best tool for the job. However, it produces warnings for calls into some included header libraries we do not want to analyze. The //NOLINT annotations in clang-tidy can solve that problem for code with only a few calls into these libraries, but not for the vast amount of calls in the NumCSE code. It would require manual editing of practically every source file, just to ignore warnings. All the standard ways to exclude output in clang-tidy, such as -header-filter, do not work here. So naturally, post-processing clang-tidy output is an option. 
+
+It might be possible to trick clang-tidy into thinking these libraries are system headers. This can be done by replacing the respective includes in the 'compile_commands.json' by -isystem. If it is possible to do that before cmake runs clang-tidy, we could improve the current situation a lot. The Cmake SYSTEM flag in add_directory does exactly that and runs static checks next to building. Now we are only missing a stand-alone invocation of clang-tidy from Cmake.
