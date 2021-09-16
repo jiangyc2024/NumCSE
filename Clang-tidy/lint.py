@@ -2,7 +2,7 @@
 Author: Heinrich Grattenthaler (hgratten@ethz.ch)
 Runs clang-tidy on NumCSE codes and filters out warnings from selected third-party includes. 
 This script requires exported compile_commands.json from the cmake generation step.
-Usage: python conformance_test.py [-f <file> |-d <directory>] [-p <build_directory>] [--no_filter] [--format]
+Usage: python lint.py [-f <file> |-d <directory>] [-p <build_directory>] [--no_filter] [--format]
 	-f: process only a single file (<file>)
 	-d: process a whole directory (<directory>)
 	neither -f nor -d: process the working directory

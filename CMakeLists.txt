@@ -27,13 +27,13 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMake/Modules/")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 
 # enable linting next to compile
-set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=*;-system-headers=0")
-
-# TODO(heinrich): command to invoke stand-alone linting
-#add_custom_target(
-#        ncse-lint
-#        COMMAND clang-tidy -checks=* -system-headers=0 ${CMAKE_SOURCE_DIR} -p .
-#)
+set(TIDY FALSE CACHE BOOL "whether to enable linting")
+if(TIDY)
+    set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=*;-system-headers=0")
+    message( "clang-tidy enabled" )
+else()
+    message( "clang-tidy disabled" )
+endif()
 
 # load macros
 include(CMake/Macros/subdirlist.cmake)
