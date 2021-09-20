@@ -61,7 +61,7 @@ int main(int /*argc*/, char ** /*argv */) {
     Eigen::MatrixXd M =
         (Eigen::MatrixXd(3, 4) << 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
             .finished();
-    std::cout << "Matrix = " << std::endl << M << std::endl;
+    std::cout << "Column-major matrix M = " << std::endl << M << std::endl;
     vectorizedemo(M);
   }
   {
@@ -70,7 +70,7 @@ int main(int /*argc*/, char ** /*argv */) {
         (Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>(
              3, 4)
              << 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12).finished();
-    std::cout << "Matrix = " << std::endl << M << std::endl;
+    std::cout << "Row major matrix M = " << std::endl << M << std::endl;
     vectorizedemo(M);
   }
   return 0;
