@@ -45,3 +45,7 @@
 - buildA: set matrix to zero because some entries are not touched
 - **TODO**: generate eps files
 - changed sizes to go from 16 to 512 instead of 16 to 4096 because of runtime issues on CodeExpert
+
+## TripletToCRS (3-13)
+- removed default constructor of Triplet
+- 
