@@ -1,8 +1,8 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "doctest.h"
+#include <Eigen/Dense>
 
 #include "copy.hpp"
-#include <Eigen/Dense>
+#include "doctest.h"
 
 struct TestData {
   TestData() {
@@ -34,7 +34,7 @@ TEST_SUITE("Kronecker") {
     kron_mult(data.A, data.B, data.x, y_sol);
     kron_mult_TEST(data.A, data.B, data.x, y_stud);
     REQUIRE(y_sol.size() == y_stud.size());
-    CHECK((y_sol - y_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+    CHECK((y_sol - y_stud).norm() == doctest::Approx(0.).epsilon(1e-10));
   }
 
   TEST_CASE("void kron_reshape" * doctest::description("kron_reshape(A,B)*x")) {
@@ -43,7 +43,7 @@ TEST_SUITE("Kronecker") {
     kron_reshape(data.A, data.B, data.x, y_sol);
     kron_reshape_TEST(data.A, data.B, data.x, y_stud);
     REQUIRE(y_sol.size() == y_stud.size());
-    CHECK((y_sol - y_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+    CHECK((y_sol - y_stud).norm() == doctest::Approx(0.).epsilon(1e-10));
   }
 
   TEST_CASE("void kron_runtime" * doctest::description("Test runtime")) {

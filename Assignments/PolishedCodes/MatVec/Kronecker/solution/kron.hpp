@@ -1,25 +1,26 @@
 #ifndef KRON_HPP
 #define KRON_HPP
 
+#include <Eigen/Dense>
 #include <iomanip>
 #include <iostream>
 #include <vector>
 
-#include <Eigen/Dense>
-
 #include "timer.h"
 
-/* \brief Compute the Kronecker product.
+/**
+ * @brief Compute the Kronecker product.
  * Computes $\mathbf{C} = \mathbf{A} \otimes \mathbf{B}$.
  * @param A Matrix of size $n \times n$
  * @param B Matrix of size $n \times n$
  * @param C Kronecker product of A and B of dim $n^2 \times n^2$
  */
 /* SAM_LISTING_BEGIN_1 */
-void kron(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B, Eigen::MatrixXd &C) {
+void kron(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B,
+          Eigen::MatrixXd &C) {
   // Allocate enough space for the matrix
   C = Eigen::MatrixXd(A.rows() * B.rows(), A.cols() * B.cols());
-  // TO DO: (2-3.b) Fill in the entries of C.
+  // TODO: (2-3.b) Fill in the entries of C.
   // Hint: Use a nested for-loop and C.block().
   // START
   for (unsigned int i = 0; i < A.rows(); ++i) {
@@ -27,14 +28,15 @@ void kron(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B, Eigen::MatrixXd &C
       // We use eigen block operations to set the values of
       // each $n \times n$ block.
       C.block(i * B.rows(), j * B.cols(), B.rows(), B.cols()) =
-          A(i, j) * B; // $\in \mathbb{R}^{(n \times n)}$
+          A(i, j) * B;  // $\in \mathbb{R}^{(n \times n)}$
     }
   }
   // END
 }
 /* SAM_LISTING_END_1 */
 
-/* \brief Compute the Kronecker product applied to a vector.
+/**
+ * @brief Compute the Kronecker product applied to a vector.
  * Computes $\mathbf{y} = (\mathbf{A} \otimes \mathbf{B}) \mathbf{x}$.
  * @param A Matrix of size $n \times n$
  * @param B Matrix of size $n \times n$
@@ -42,18 +44,18 @@ void kron(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B, Eigen::MatrixXd &C
  * @param y Vector y = kron(A,B)*x
  */
 /* SAM_LISTING_BEGIN_2 */
-void kron_mult(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B, const Eigen::VectorXd &x,
-               Eigen::VectorXd &y) {
+void kron_mult(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B,
+               const Eigen::VectorXd &x, Eigen::VectorXd &y) {
   assert(A.rows() == A.cols() && A.rows() == B.rows() && B.rows() == B.cols() &&
          "Matrices A and B must be square matrices with same size!");
   assert(x.size() == A.cols() * A.cols() &&
          "Vector x must have length A.cols()^2");
-  unsigned int n = A.rows();
+  const unsigned int n = A.rows();
 
   // Allocate space for output
   y = Eigen::VectorXd::Zero(n * n);
 
-  // TO DO: (2-3.d) Fill in the entires of y.
+  // TODO: (2-3.d) Fill in the entires of y.
   // Hint: Use a nested for-loop, x.segment(), and y.segment().
   // In the outer loop, you can perform a computation based on
   // B and x, and save the result in a variable that is reused in
@@ -77,7 +79,8 @@ void kron_mult(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B, const Eigen::
 }
 /* SAM_LISTING_END_2 */
 
-/* \brief Compute the Kronecker product $C = A \otimes B$.
+/**
+ * @brief Compute the Kronecker product $C = A \otimes B$.
  * Use fast reshaping (similar to Matlab reshape)
  * WARNING: using Matrix::Map we assume the matrix is in Column major format,
  *          the code is not valid for Row Major format.
@@ -87,13 +90,13 @@ void kron_mult(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B, const Eigen::
  * @param y Vector y = kron(A,B)*x
  */
 /* SAM_LISTING_BEGIN_3 */
-void kron_reshape(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B, const Eigen::VectorXd &x,
-                  Eigen::VectorXd &y) {
+void kron_reshape(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B,
+                  const Eigen::VectorXd &x, Eigen::VectorXd &y) {
   assert(A.rows() == A.cols() && A.rows() == B.rows() && B.rows() == B.cols() &&
          "Matrices A and B must be square matrices with same size!");
-  unsigned int n = A.rows();
+  const unsigned int n = A.rows();
 
-  // TO DO: (2-3.e) Fill in the entires of y.
+  // TODO: (2-3.e) Fill in the entires of y.
   // Hint: Use Eigen::MatrixXd::Map() to reshape x into a n by n matrix.
   // Then y is obtained by simple matrix multiplications and
   // another reshape.
@@ -106,12 +109,11 @@ void kron_reshape(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B, const Eige
 
 /* SAM_LISTING_BEGIN_4 */
 void kron_runtime() {
-
   Eigen::MatrixXd A, B, C;
   Eigen::VectorXd x, y;
   // We repeat each runtime measurement 10 times
   // (this is done in order to remove outliers).
-  unsigned int repeats = 10;
+  constexpr unsigned int repeats = 10;
 
   std::cout << "Runtime for each implementation." << std::endl;
   std::cout << std::setw(5) << "n" << std::setw(15) << "kron" << std::setw(15)
@@ -135,7 +137,7 @@ void kron_runtime() {
         tm_kron.stop();
       }
 
-      // TO DO: (2-3.f) Measure the runtime of kron_mult() and kron_reshape().
+      // TODO: (2-3.f) Measure the runtime of kron_mult() and kron_reshape().
       // START
 
       // Kron matrix-vector multiplication
