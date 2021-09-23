@@ -18,6 +18,7 @@ note down the executable path of `geckodriver` and specify it to this script.
 4. Find the absolute path for Testing script folder, should be `Testing` folder inside `NumCSE` repo
 5. Call this script with infomation found above: `python uploadce.py --driver_path <DRIVER_PATH> --exercise_url <EXERCISE_URL> --exercise_path <EXERCISE_PATH> --testscript_path <TESTSCRIPT_PATH>`
 6. The script will open an automated Firefox window, and direct to Code Expert login page, please login with your ETH identity and wait for the uploading process
+7. The script will firstly upload the solution folder. When it finishes, please fix all the visibility settings in the solution folder, and press any button in the command line to continue uploading process. This process is to avoid duplicated files in template folder if one fix the visibility of the solution folder after uploading finishes.
 
 ## Problems
 - When having timeout errors, rerunning the script may solve the issue
