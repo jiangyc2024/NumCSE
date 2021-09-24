@@ -69,3 +69,6 @@ copy.hpp
 
 # macos
 .DS_Store
+
+# upload tool
+geckodriver.log
