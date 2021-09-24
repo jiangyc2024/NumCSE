@@ -1,5 +1,3 @@
-
-
 # Tests of gramschmidt.hpp
 
 > There are two functions in gramschmidt.hpp and main.cpp has one test for each function.
