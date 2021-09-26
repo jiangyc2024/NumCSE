@@ -45,3 +45,7 @@ latex.
 
 ## Cancellation (1-8)
 - No major changes. Just simple cleanup.
+
+## ComplexRoot (1-11)
+- No major changes. Just copied the solution and template from the already
+  existing CodeExpert folder and cleaned up the formatting a bit.
