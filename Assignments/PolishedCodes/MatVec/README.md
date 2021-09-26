@@ -1,6 +1,8 @@
 # Issues in Latex
 - Problem 1.7.b refers to code 1.7.5 but should be 1.7.2 I think? The normal
   problem collection does it correct.
+- Most problems don't have a link to the template/github like e.g. problem
+  1-4 but then maybe the issue is with problem 1-4 having such a link?
 
 # Problems
 - Changed all 2-* to 1-* and 20 to 21 (as in 2020 to 2021) in all problems.
