@@ -25,6 +25,10 @@ latex.
 ## Kroenecker (1-3)
 - No major changes. Just simple cleanup.
 
+## FastMatMult (1-4)
+- No major changes. Just copied the solution and template from the already
+  existing CodeExpert folder and cleaned up the formatting a bit.
+
 ## HouseRefl (1-5) !
 - Split the code from `houserefl.cpp` into `main.cpp` and `houserefl.hpp`.
 - The latex labels are now inside `houserefl.hpp`.
