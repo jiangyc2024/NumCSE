@@ -17,6 +17,10 @@ latex.
 - Basically deleted everything except CodeExpert folder
 - Changed `arrow_matrix_2_times_x(d,a,x,yi);` to 
   `arrow_matrix_2_times_x(d,a,x,yi);` to times in `main.cpp`.
+- Fixed "bug" in `plot.hpp` s.t. the lines for the asym. complexities start
+  at the correct point.
+- Recomputed the `arrowmatvec_comparison.eps` but not
+  `arrowmatvec_timing.eps`
 
 ## GramSchmidt (1-2)
 - Removed `zzzzz_test_runner.cpp`.
