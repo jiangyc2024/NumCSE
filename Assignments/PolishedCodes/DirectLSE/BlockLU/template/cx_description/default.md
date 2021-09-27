@@ -1,4 +1,4 @@
-# Problem 3-3: Block-wise LU-decomposition
+# Problem 2-3: Block-wise LU-decomposition
 
 > For the task description of this exercise, please refer to [NCSE21_Problems.pdf](
 https://www.sam.math.ethz.ch/~grsam/NCSE21/HOMEWORK/NCSE21_Problems.pdf). 
