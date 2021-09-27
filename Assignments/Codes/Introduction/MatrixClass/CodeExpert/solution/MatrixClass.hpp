@@ -10,36 +10,35 @@
 #include <Eigen/Dense>
 // END
 
+/*
+ * This functions returns a 2 by 2 triangular matrix of doubles a, b, c.
+ */
+
 /* SAM_LISTING_BEGIN_0 */
 Eigen::Matrix<double, 2, 2> smallTriangular(double a, double b, double c) {
-  /*
-   * This functions returns a 2 by 2 triangular matrix of doubles a, b, c.
-   */
-
   // We know in advance that we want to create a matrix of doubles with a fixed
   // size of 2 by 2. Therefore, we pass the parameters <double, 2, 2> to the
   // template class Eigen::Matrix.
   Eigen::Matrix<double, 2, 2> A;
-
+  // TODO: Implement the initialization
+  // START
   // We have declared the variable A of the type Eigen::Matrix<double,2,2>,
   // but we have not initialized its entries.
-  // We can do this using comma-initialization:
+  // We can do this using \cor{comma-initialization}.
   A << a, b, 0, c;
-
   // Question: Is A now an upper triangular matrix, or a lower triangular
   // matrix?
-
+  // END
   return A;
 }
 /* SAM_LISTING_END_0 */
 
+/*
+ * This function returns an n by n upper triangular matrix with the constant
+ * value val in the upper triangular part.
+ */
 /* SAM_LISTING_BEGIN_1 */
 Eigen::MatrixXd constantTriangular(int n, double val) {
-  /*
-   * This function returns an n by n upper triangular matrix with the constant
-   * value val in the upper triangular part.
-   */
-
   // Now we do not know the size of our matrix at compile time.
   // Hence, we use the special value Eigen::Dynamic to set the size of A.
   Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> A;
@@ -55,7 +54,6 @@ Eigen::MatrixXd constantTriangular(int n, double val) {
     // Hint: We can access and change the entries of A using parentheses, i.e.
     // A(row,col) = val; Note that indexing starts at the value 0 (as usual),
     // and not 1 (as in Matlab).
-
     // START
     for (int col = row; col < n; col++) {
       A(row, col) = val;
@@ -72,7 +70,6 @@ double casting() {
    * This function does not do anything meaningful.
    * It is only meant to introduce vectors and how to typecast.
    */
-
   // Because the syntax Eigen::Matrix< type, n_rows, n_cols > is very
   // cumbersome, Eigen provides convenience classes that work as shorthands.
   // For example, Eigen::Matrix2d is shorthand for Eigen::Matrix< double, 2, 2
@@ -100,7 +97,8 @@ double casting() {
   // first we need to cast the "int" vector u to a "std::complex<double>"
   // vector. Use u.cast< NEW TYPE >() to achieve this. The result of the inner
   // product will be 1*(1-i) + 1*(5+i) = 6 + 0i, a real number. You can get the
-  // real part of an std::complex<double> using the method "real()". START
+  // real part of an std::complex<double> using the method "real()".
+  // START
   std::complex<double> z = u.cast<std::complex<double>>().dot(v);
   x = z.real();
   // END
