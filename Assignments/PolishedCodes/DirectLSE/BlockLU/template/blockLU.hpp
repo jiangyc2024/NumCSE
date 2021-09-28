@@ -20,7 +20,7 @@ Eigen::VectorXd solve_R(const Eigen::MatrixXd& R, const Eigen::VectorXd& c) {
   Eigen::VectorXd y(n);
 
   // TODO: (3-3.c) (optional) Solve Ry=c using backward substitution. May help
-  // when implementing solve_LSE.
+  // when implementing solve\_LSE.
   // START
 
   // END
