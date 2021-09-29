@@ -16,6 +16,9 @@ def parseWriteChange(student_sol, copy, tests):
     # get all function signatures to be tested from the test file
     function_signatures = []
     for line in tests:
+        disable = re.match('// DISABLE_TESTS', line)
+        if disable:
+            return
         parse = re.match('\s*TEST_CASE\("([\S\s]*)"\s\*.*', line)
         if parse and keyword not in parse.group(1):
             function_signatures.append(parse)

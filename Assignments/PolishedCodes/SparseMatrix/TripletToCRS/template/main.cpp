@@ -11,18 +11,14 @@ int main() {
 
   // TODO: (2-13.f) Construct T here.
   // START
-  T.rows = nrows;
-  T.cols = ncols;
-  T.triplets.reserve(ntriplets);  // Always reserve space if you can
+
   // END
 
   for (std::size_t i = 0; i < ntriplets; ++i) {
     // TODO: (2-13.f) Use this loop to push back triplets in your matrix. Insert
     // triplet with arguments: (rand() % nrows, rand() % ncols, rand() % 1000))
     // START
-    // Test unordered triplets, random and possibly repeated triplets
-    T.triplets.push_back(
-        Triplet<double>(rand() % nrows, rand() % ncols, rand() % 1000));
+
     // END
   }
 
@@ -32,16 +28,13 @@ int main() {
   // TODO: (2-13.f) If you implemented densify(), compute the Frobenius norm of
   // $T - C$.
   // START
-  std::cout << "--> Frobenius norm of T - C: "
-            << (T.densify() - C.densify()).norm() << std::endl;
-  std::cout << "--> Frobenius norm of T - D: "
-            << (T.densify() - D.densify()).norm() << std::endl;
+
   // END
 
   std::cout << "Enter 0 for no runtime measurements." << std::endl;
   int noruntime = 0;
   std::cin >> noruntime;
-  if (!noruntime) {
+  if (noruntime) {
     return 0;
   }
 
@@ -62,13 +55,7 @@ int main() {
 
     // TODO: (2-13.f) Construct and initialize A for runtime measurements.
     // START
-    A.rows = frows(n);  // nrows
-    A.cols = fcols(n);  // ncols
-    A.triplets.reserve(ftriplets(n));
-    for (std::size_t i = 0; i < ftriplets(n); ++i) {
-      A.triplets.push_back(
-          Triplet<double>(rand() % A.rows, rand() % A.cols, rand() % 1000));
-    }
+
     // END
 
     insertsort_timer.start();
