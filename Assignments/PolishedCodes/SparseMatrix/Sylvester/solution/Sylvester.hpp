@@ -4,8 +4,8 @@
 #include <iostream>
 
 /* @brief Solve $X+AXA=A$ for $X$ where $A$ is a diagonal s.p.d. matrix.
- * \param[in] diagA, a size $n$ Vector of the diagonal entries of A (all > 0).
- * \param[out] X, the $n\times n$ sparse matrix that solves $X+AXA=A$.
+ * @param diagA, a size $n$ Vector of the diagonal entries of A (all > 0).
+ * @param X, the $n\times n$ sparse matrix that solves $X+AXA=A$.
  */
 /* SAM_LISTING_BEGIN_0 */
 template <typename Vector>
@@ -32,8 +32,8 @@ Eigen::SparseMatrix<double> solveDiagSylvesterEq(const Vector &diagA) {
 /* SAM_LISTING_END_0 */
 
 /* @brief Compute the Kronecker product $A\otimes A$.
- * \param[in] A, an $n\times n$ sparse matrix.
- * \param[out] B, the $n^2\times n^2$ sparse matrix $B=A\otimes A$
+ * @param A, an $n\times n$ sparse matrix.
+ * @param B, the $n^2\times n^2$ sparse matrix $B=A\otimes A$
  */
 /* SAM_LISTING_BEGIN_1 */
 Eigen::SparseMatrix<double> sparseKron(const Eigen::SparseMatrix<double> &M) {
@@ -106,8 +106,8 @@ Eigen::SparseMatrix<double> sparseKron(const Eigen::SparseMatrix<double> &M) {
 /* SAM_LISTING_END_1 */
 
 /* @brief Solve $XA^{-1}+AX=I$ for $X$ where $A$ is s.p.d.
- * \param[in] A, sparse s.p.d. matrix.
- * \param[out] X, the $n\times n$ sparse matrix that solves $X+AXA=A$.
+ * @param A, sparse s.p.d. matrix.
+ * @param X, the $n\times n$ sparse matrix that solves $X+AXA=A$.
  */
 /* SAM_LISTING_BEGIN_2 */
 Eigen::MatrixXd solveSpecialSylvesterEq(const Eigen::SparseMatrix<double> &A) {
