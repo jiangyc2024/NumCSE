@@ -51,8 +51,9 @@ void kminplot() {
   std::vector<std::string> xlabels(5), ylabels(5);
   for (unsigned int i = 0; i < 5; ++i) {
     ticks[i] = i * (ngp - 3) / 4;
-    xlabels[i] = std::to_string(eps_lin_seg(ticks[i]));
-    ylabels[i] = std::to_string(tau_lin_seg(ticks[i]));
+    Eigen::Index id = (Eigen::Index)ticks[i];
+    xlabels[i] = std::to_string(eps_lin_seg(id));
+    ylabels[i] = std::to_string(tau_lin_seg(id));
   }
 
   plt::imshow(kmin, {{"cmap", "viridis"}, {"origin", "lower"}});
