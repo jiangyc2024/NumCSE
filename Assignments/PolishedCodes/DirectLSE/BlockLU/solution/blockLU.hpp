@@ -20,7 +20,7 @@ Eigen::VectorXd solve_R(const Eigen::MatrixXd& R, const Eigen::VectorXd& c) {
   Eigen::VectorXd y(n);
 
   // TODO: (3-3.c) (optional) Solve Ry=c using backward substitution. May help
-  // when implementing solve_LSE.
+  // when implementing solve\_LSE.
   // START
   // Since R is upper triangular, we can solve by backwards substitution
   for (int i = n - 1; i >= 0; --i) {
@@ -61,8 +61,8 @@ Eigen::VectorXd solve_LSE(const Eigen::MatrixXd& R, const Eigen::VectorXd& v,
   // Due to the special structure of our L,
   // the first n entries of y are easy:
   y.head(n) = b.head(n);
-  // The last element of y is given by $y_n = b_n -
-  // u^T\mathbf{R}^{-1}y_{0...n-1}$
+  // The last element of y is given by $y_n = b_n -$
+  // $u^T\mathbf{R}^{-1}y_{0...n-1}$
   y(n) = b(n) - u.transpose() * solve_R(R, y.head(n));
 
   // Solve Ux = y by backward substitution.
