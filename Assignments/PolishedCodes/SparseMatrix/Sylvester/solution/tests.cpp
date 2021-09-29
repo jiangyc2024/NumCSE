@@ -9,13 +9,13 @@
 Eigen::MatrixXd sparseSPD(int n) {
   double rate = 1.0 / n;
   // R is a random sparse matrix.
-  ArrayXXd R = ArrayXXd::Random(n, n);
+  Eigen::ArrayXXd R = Eigen::ArrayXXd::Random(n, n);
   R = R * (R.abs() < rate).cast<double>();
   // B is diagonally dominant.
-  MatrixXd B = R.matrix();
+  Eigen::MatrixXd B = R.matrix();
   B.diagonal() = R.abs().matrix().rowwise().sum();
   // A is symmetric and strictly diagonally dominant.
-  MatrixXd A = B + B.transpose() + MatrixXd::Identity(n, n);
+  Eigen::MatrixXd A = B + B.transpose() + Eigen::MatrixXd::Identity(n, n);
   return A;
 }
 
@@ -35,7 +35,7 @@ struct TestData {
 TestData data;
 
 TEST_SUITE("Sylvester") {
-  TEST_CASE("SparseMatrix<double> solveDiagSylvesterEq" *
+  TEST_CASE("Eigen::SparseMatrix<double> solveDiagSylvesterEq" *
             doctest::description("solveDiagSylvesterEq()")) {
     Eigen::ArrayXd diagA = Eigen::ArrayXd::LinSpaced(data.n, 1, data.n);
 
@@ -47,7 +47,7 @@ TEST_SUITE("Sylvester") {
     CHECK((Xdiag_sol - Xdiag_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
   }
 
-  TEST_CASE("SparseMatrix<double> sparseKron" *
+  TEST_CASE("Eigen::SparseMatrix<double> sparseKron" *
             doctest::description("sparseKron()")) {
     Eigen::SparseMatrix<double> sol = sparseKron(data.As);
     Eigen::SparseMatrix<double> stud = sparseKron_TEST(data.As);
@@ -57,7 +57,7 @@ TEST_SUITE("Sylvester") {
     CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
   }
 
-  TEST_CASE("MatrixXd solveSpecialSylvesterEq" *
+  TEST_CASE("Eigen::MatrixXd solveSpecialSylvesterEq" *
             doctest::description("solveSpecialSylvesterEq")) {
     Eigen::MatrixXd sol = solveSpecialSylvesterEq(data.As);
     Eigen::MatrixXd stud = solveSpecialSylvesterEq_TEST(data.As);
