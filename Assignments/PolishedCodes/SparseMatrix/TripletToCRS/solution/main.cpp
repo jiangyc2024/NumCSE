@@ -19,10 +19,10 @@ bool testTripletToCRS(std::size_t n) {
   M.n_rows = n;
   M.n_cols = n;
   std::vector<std::tuple<std::size_t, std::size_t, double>> triplets(5 * n);
-  for (auto&& triplet : triplets) {
-    triplet = {std::rand() % n, std::rand() % n, 1.};
+  for (std::size_t i = 0; i < 5 * n; ++i) {
+    triplets[i] = {std::rand() % n, std::rand() % n, 1.};
   }
-
+  M.triplets = triplets;
   CRSMatrix<double> C = tripletToCRS(M);
   areTheSame = (densify(C) - densify(M)).norm() < 1e-10;
   // END
