@@ -48,7 +48,7 @@ TEST_SUITE("TripletToCRS") {
     CRSMatrix<double> C = tripletToCRS_TEST(data.T);
     REQUIRE(C.n_rows == data.C.n_rows);
     REQUIRE(C.n_cols == data.C.n_cols);
-    std::cout << densify(C) << std::endl;
+
     CHECK((densify(C) - data.X).norm() == doctest::Approx(0.).epsilon(eps));
   }
 }

@@ -3,7 +3,6 @@
 
 #include <Eigen/Dense>
 #include <algorithm>
-#include <iostream>
 #include <random>
 #include <tuple>
 #include <vector>
@@ -131,11 +130,14 @@ CRSMatrix<SCALAR> tripletToCRS(const TripletMatrix<SCALAR>& T) {
   crs.row_ptr = std::vector<std::size_t>(crs.n_rows + 1, 0);
   std::size_t k = 0;
   std::size_t last_j = -1;
+  std::size_t last_i = -1;
   for (std::size_t i = 1; i <= crs.n_rows; ++i) {
     while (k < triplets_copy.size() && std::get<0>(triplets_copy[k]) == i - 1) {
       // do only when no duplicate index pair
-      if (std::get<1>(triplets_copy[k]) != last_j) {
+      if (std::get<1>(triplets_copy[k]) != last_j ||
+          std::get<0>(triplets_copy[k]) != last_i) {
         last_j = std::get<1>(triplets_copy[k]);
+        last_i = std::get<0>(triplets_copy[k]);
         ++crs.row_ptr[i];
       }
       ++k;
@@ -146,21 +148,19 @@ CRSMatrix<SCALAR> tripletToCRS(const TripletMatrix<SCALAR>& T) {
   // now, we know nnz; reserve in advance
   crs.val.reserve(crs.row_ptr[crs.n_rows]);
   crs.col_ind.reserve(crs.row_ptr[crs.n_rows]);
-  // fill val and col_ind
-  std::cout << crs.row_ptr[crs.n_rows] << std::endl;
-  for (std::size_t i = 0, k = 0;
-       k < triplets_copy.size() && i < crs.row_ptr[crs.n_rows]; ++i) {
-    std::cout << k << std::endl;
-    crs.val.push_back(std::get<2>(triplets_copy[k]));
-    crs.col_ind.push_back(std::get<1>(triplets_copy[k]));
-    ++k;
-    // sum values of repeated index pairs
-    while (k < triplets_copy.size() &&
-           std::get<0>(triplets_copy[k]) == std::get<0>(triplets_copy[k - 1]) &&
-           std::get<1>(triplets_copy[k]) == std::get<1>(triplets_copy[k - 1])) {
-      std::cout << k << ", " << i << std::endl;
+
+  crs.val.push_back(std::get<2>(triplets_copy[0]));
+  crs.col_ind.push_back(std::get<1>(triplets_copy[0]));
+  std::size_t i = 0;
+  for (k = 1; k < triplets_copy.size(); ++k) {
+    // repeated index pairs
+    if (std::get<0>(triplets_copy[k]) == std::get<0>(triplets_copy[k - 1]) &&
+        std::get<1>(triplets_copy[k]) == std::get<1>(triplets_copy[k - 1])) {
       crs.val[i] += std::get<2>(triplets_copy[k]);
-      ++k;
+    } else {
+      crs.val.push_back(std::get<2>(triplets_copy[k]));
+      crs.col_ind.push_back(std::get<1>(triplets_copy[k]));
+      ++i;
     }
   }
   // END
