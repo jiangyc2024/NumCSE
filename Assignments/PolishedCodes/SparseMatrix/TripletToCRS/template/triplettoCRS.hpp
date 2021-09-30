@@ -3,26 +3,10 @@
 
 #include <Eigen/Dense>
 #include <algorithm>
-#include <ostream>
+#include <iostream>
+#include <random>
+#include <tuple>
 #include <vector>
-
-/**
- * @brief Structure holding a triplet in format (row, col, value)
- * All members are public. Used in the TripletMatrix class to provide a nice
- * wrapper for a triplet.
- *
- * @tparam scalar Type of the triplet (e.g. double)
- */
-/* SAM_LISTING_BEGIN_0 */
-template <typename scalar>
-struct Triplet {
-  // TODO: (2-13.a – optional) Complete this struct if you want to use it for
-  // TripletMatrix.
-  // START
-
-  // END
-};
-/* SAM_LISTING_END_0 */
 
 /**
  * @brief Defines a matrix stored in triplet format (using the Triplet<scalar>
@@ -30,220 +14,158 @@ struct Triplet {
  * triplet for (row,col) pair, we assume that the values are intended to be
  * added together. Dimensions are also stored to simplify the code.
  *
- * @tparam scalar Type of the matrix and triplets (e.g. double)
+ * @tparam SCALAR Type of the matrix values (e.g. double)
  */
-/* SAM_LISTING_BEGIN_1 */
-template <typename scalar>
+/* SAM_LISTING_BEGIN_0 */
+template <typename SCALAR>
 struct TripletMatrix {
-  // TODO: (2-13.a) Store sizes and indices using appropriate types.
-  // START
-
-  // END
-
-  Eigen::MatrixXd densify() const;
+  std::size_t n_rows{0};  // Number of rows
+  std::size_t n_cols{0};  // Number of columns
+  std::vector<std::tuple<std::size_t, std::size_t, SCALAR>> triplets;
 };
-/* SAM_LISTING_END_1 */
+/* SAM_LISTING_END_0 */
 
 /**
  * @brief Defines a matrix stored in CRS format.
  * Dimensions are also stored to simplify the code.
  *
- * @tparam scalar Type of the matrix and CRS vectors (e.g. double)
+ * @tparam SCALAR Type of the matrix values (e.g. double)
+ */
+/* SAM_LISTING_BEGIN_1 */
+template <typename SCALAR>
+struct CRSMatrix {
+  std::size_t n_rows{0};             // Number of rows
+  std::size_t n_cols{0};             // Number of columns
+  std::vector<SCALAR> val;           // Value array
+  std::vector<std::size_t> col_ind;  // Column indices
+  std::vector<std::size_t> row_ptr;  // Row pointers
+};
+/* SAM_LISTING_END_1 */
+
+/**
+ * @brief Converts a TripletMatrix to a dense Eigen matrix.
+ *
+ * @tparam SCALAR Type of the matrix values (e.g. double)
+ * @param M the TripletMatrix to convert
+ * @return Eigen::Matrix<SCALAR, Eigen::Dynamic, Eigen::Dynamic> the densified
+ * matrix
  */
 /* SAM_LISTING_BEGIN_2 */
-template <typename scalar>
-struct CRSMatrix {
-  // TODO: (2-13.b) Define the member variables for a CRS matrix using
-  // appropriate types.
+template <typename SCALAR>
+Eigen::Matrix<SCALAR, Eigen::Dynamic, Eigen::Dynamic> densify(
+    const TripletMatrix<SCALAR>& M) {
+  Eigen::Matrix<SCALAR, Eigen::Dynamic, Eigen::Dynamic> dense =
+      Eigen::Matrix<SCALAR, Eigen::Dynamic, Eigen::Dynamic>::Zero(M.n_rows,
+                                                                  M.n_cols);
+
+  // TODO: (2-13.a) Densify the TripletMatrix.
   // START
-
+  for (auto& triplet : M.triplets) {
+    dense(std::get<0>(triplet), std::get<1>(triplet)) += std::get<2>(triplet);
+  }
   // END
-
-  Eigen::MatrixXd densify() const;
-};
+  return dense;
+}
 /* SAM_LISTING_END_2 */
 
 /**
- * @brief Convert *this (TripletMatrix) to an Eigen (dense) matrix:
- * Loop over all triplets and add values to a zero matrix.
- * WARNING: May fill in many nonzeros if large n,m
+ * @brief Converts a CRSMatrix to a dense Eigen matrix.
  *
- * @tparam scalar Type of the matrix and triplets (e.g. double)
- * @return Eigen::MatrixXd Matrix of double type
+ * @tparam SCALAR Type of the matrix values (e.g. double)
+ * @param M the CRSMatrix to convert
+ * @return Eigen::Matrix<SCALAR, Eigen::Dynamic, Eigen::Dynamic> the densified
+ * matrix
  */
 /* SAM_LISTING_BEGIN_3 */
-template <typename scalar>
-Eigen::MatrixXd TripletMatrix<scalar>::densify() const {
-  Eigen::MatrixXd M;
+template <typename SCALAR>
+Eigen::Matrix<SCALAR, Eigen::Dynamic, Eigen::Dynamic> densify(
+    const CRSMatrix<SCALAR>& M) {
+  Eigen::Matrix<SCALAR, Eigen::Dynamic, Eigen::Dynamic> dense =
+      Eigen::Matrix<SCALAR, Eigen::Dynamic, Eigen::Dynamic>::Zero(M.n_rows,
+                                                                  M.n_cols);
 
-  // TODO: (2-13.c – optional) Convert the sparse TripletMatrix to a dense
-  // Eigen::MatrixXd.
+  // TODO: (2-13.a) Densify the CRSMatrix.
   // START
+  std::vector<std::size_t> row_ptr_end = M.row_ptr;
+  row_ptr_end.push_back(M.col_ind.size());
 
+  for (std::size_t i = 0; i < M.row_ptr.size(); ++i) {
+    for (std::size_t j = row_ptr_end[i]; j < row_ptr_end[i + 1]; ++j) {
+      dense(i, M.col_ind[j]) = M.val[j];
+    }
+  }
   // END
-  return M;
+  return dense;
 }
 /* SAM_LISTING_END_3 */
 
 /**
- * @brief Convert *this (CRSMatrix) to an Eigen (dense) matrix:
- * Loop over all rows and add values at col to zero matrix.
- * WARNING: May fill in many nonzeros if large n,m
+ * @brief Converts a TripletMatrix to a CRSMatrix.
  *
- * @tparam scalar Type of the matrix and triplets (e.g. double)
- * @return Eigen::MatrixXd Matrix of double type
+ * @tparam SCALAR Type of the matrix values (e.g. double)
+ * @param T the TripletMatrix to convert
+ * @return CRSMatrix<SCALAR> the converted matrix
  */
 /* SAM_LISTING_BEGIN_4 */
-template <typename scalar>
-Eigen::MatrixXd CRSMatrix<scalar>::densify() const {
-  Eigen::MatrixXd M;
+template <typename SCALAR>
+CRSMatrix<SCALAR> tripletToCRS(const TripletMatrix<SCALAR>& T) {
+  CRSMatrix<SCALAR> crs;
+  crs.n_rows = T.n_rows;
+  crs.n_cols = T.n_cols;
 
-  // TODO: (2-13.c – optional) Convert the sparse CRSMatrix to a dense
-  // Eigen::MatrixXd.
+  // TODO: (2-13.b) Convert the TripletMatrix to a CRSMatrix. Make sure that you
+  // handle repeated index pairs.
   // START
+  // sort the triplets according to their indices over a copy of the vector
+  auto triplets_copy = T.triplets;
+  auto sorting_predicate =
+      [](const std::tuple<std::size_t, std::size_t, SCALAR>& a,
+         const std::tuple<std::size_t, std::size_t, SCALAR>& b) {
+        return (std::get<0>(a) < std::get<0>(b)) ||
+               ((std::get<0>(a) == std::get<0>(b)) &&
+                (std::get<1>(a) < std::get<1>(b)));
+      };
+  std::sort(triplets_copy.begin(), triplets_copy.end(), sorting_predicate);
 
-  // END
-  return M;
-}
-/* SAM_LISTING_END_4 */
-
-/**
- * @brief Structure holding a pair column index-value to be used in CRS format
- * Provides handy constructor and comparison operators.
- *
- * @tparam scalar represents the scalar type of the value stored (e.g. double)
- */
-/* SAM_LISTING_BEGIN_7 */
-template <typename scalar>
-struct ColValPair {
-  ColValPair(std::size_t col_, scalar v_) : col(col_), v(v_) {}
-
-  /**
-   * @brief Comparison operator for std::sort and std::lower\_bound: Basic
-   * sorting operator < to use with std::functions (i.e. for ordering according
-   * to first component col). We keep the column values sorted, either by
-   * sorting after insertion of by sorted insertion.
-   *
-   * @param other the ColValPair to compare to
-   * @return true this->col < other.col.
-   * @return false this->col >= other.col.
-   */
-  bool operator<(const ColValPair& other) const {
-    return this->col < other.col;
+  // count the number of non-zeroes per row
+  crs.row_ptr = std::vector<std::size_t>(crs.n_rows + 1, 0);
+  std::size_t k = 0;
+  std::size_t last_j = -1;
+  for (std::size_t i = 1; i <= crs.n_rows; ++i) {
+    while (k < triplets_copy.size() && std::get<0>(triplets_copy[k]) == i - 1) {
+      // do only when no duplicate index pair
+      if (std::get<1>(triplets_copy[k]) != last_j) {
+        last_j = std::get<1>(triplets_copy[k]);
+        ++crs.row_ptr[i];
+      }
+      ++k;
+    }
+    crs.row_ptr[i] += crs.row_ptr[i - 1];
   }
 
-  std::size_t col;  // col index
-  scalar v;         // scalar value at col
-};
-/* SAM_LISTING_END_7 */
-
-/**
- * @brief Convert 'preCRS' to proper CRS format (CRSMatrix)
- *
- * @tparam scalar represents the scalar type of the value stored (e.g. double)
- * @param preCRS Vector of rows of pairs (col\_ind, val).
- * The original matrix does not have rows only made by zeros.
- * @param C Proper CRSMatrix format
- */
-/* SAM_LISTING_BEGIN_8 */
-template <typename scalar>
-void properCRS(const std::vector<std::vector<ColValPair<scalar>>>& preCRS,
-               CRSMatrix<scalar>& C) {
-  C.row_ptr.push_back(0);
-  for (auto& row : preCRS) {
-    // If one whole row is empty,
-    // the same index is stored in 'row\_ptr' twice.
-    C.row_ptr.push_back(C.row_ptr.back() + row.size());
-    for (auto& col_val : row) {
-      C.col_ind.push_back(col_val.col);
-      C.val.push_back(col_val.v);
+  // now, we know nnz; reserve in advance
+  crs.val.reserve(crs.row_ptr[crs.n_rows]);
+  crs.col_ind.reserve(crs.row_ptr[crs.n_rows]);
+  // fill val and col_ind
+  std::cout << crs.row_ptr[crs.n_rows] << std::endl;
+  for (std::size_t i = 0, k = 0;
+       k < triplets_copy.size() && i < crs.row_ptr[crs.n_rows]; ++i) {
+    std::cout << k << std::endl;
+    crs.val.push_back(std::get<2>(triplets_copy[k]));
+    crs.col_ind.push_back(std::get<1>(triplets_copy[k]));
+    ++k;
+    // sum values of repeated index pairs
+    while (k < triplets_copy.size() &&
+           std::get<0>(triplets_copy[k]) == std::get<0>(triplets_copy[k - 1]) &&
+           std::get<1>(triplets_copy[k]) == std::get<1>(triplets_copy[k - 1])) {
+      std::cout << k << ", " << i << std::endl;
+      crs.val[i] += std::get<2>(triplets_copy[k]);
+      ++k;
     }
   }
-  C.row_ptr.pop_back();
-}
-/* SAM_LISTING_END_8 */
-
-/**
- * @brief Converts a matrix given as triplet matrix to a matrix in CRS format.
- * No assumption is made on the triplets, which may be unsorted and/or
- * duplicated, but it is imposed that the original matrix does not have rows
- * only made by zeros. In case of duplicated triplets, values are added
- * together. The output CRS matrix may be empty (in which case T = C) or may be
- * already filled with values (in which case C += T). This version inserts the
- * pairs ColVal already sorted in the list Complexity: Loop over all $k$
- * triplets and look up over all $n_i$ columns of row $i$, performing a linear
- * search and an insertion (complexity $O(n_i)$). If $n_i$ is bounded by a small
- * $n$, the complexity is $k*n$, otherwise $k^2$.
- *
- * @tparam scalar represents the scalar type of the value stored (e.g. double)
- * @param T input matrix
- * @param C output matrix in CRS format
- */
-/* SAM_LISTING_BEGIN_5 */
-template <typename scalar>
-void tripletToCRS_insertsort(const TripletMatrix<scalar>& T,
-                             CRSMatrix<scalar>& C) {
-  // TODO: (2-13.d – alternative 1) Convert the TripletMatrix to a CRSMatrix by
-  // inserting the pair (col, val) already sorted into the data structure. You
-  // may use the provided struct ColValPair and the function properCRS().
-  // START
-
   // END
+  return crs;
 }
-/* SAM_LISTING_END_5 */
-
-/**
- * @brief Converts a matrix given as triplet matrix to a matrix in CRS format.
- * No assumption is made on the triplets, which may be unsorted and/or
- * duplicated, but it is imposed that the original matrix does not have rows
- * only made by zeros. In case of duplicated triplets, values are added
- * together. The output CRS matrix may be empty (in which case T = C) or may be
- * already filled with values (in which case C += T). This version inserts all
- * the triplets (push_back), then sorts each row and cumsum all the duplicated
- * col values. Complexity: Loop over all $k$ triplets and do a cheap (amortized)
- * o(1) push_back (complexity $k*1$). Then sorts an array of rows (i-th
- * quicksort complexity $k * log(k)$).
- *
- * @tparam scalar represents the scalar type of the value stored (e.g. double)
- * @param T input matrix
- * @param C output matrix in CRS format
- */
-/* SAM_LISTING_BEGIN_6 */
-template <typename scalar>
-void tripletToCRS_sortafter(const TripletMatrix<scalar>& T,
-                            CRSMatrix<scalar>& C) {
-  // TODO: (2-13.d – alternative 2) Convert the TripletMatrix to a CRSMatrix by
-  // inserting all triplets, sorting each row and cumulatively summing all the
-  // duplicated column values. You may use the struct ColValPair and the
-  // function properCRS().
-  // START
-
-  // END
-}
-/* SAM_LISTING_END_6 */
-
-/**
- * @brief overload of operator << for output of Triplet Matrix (debug).
- * WARNING: Uses densify() so there may be a lot of fill-in
- *
- * @param o Standard output stream
- * @param S Matrix in Triplet matrix format
- * @return o std::ostream s.t. you can write o << A << B;
- */
-std::ostream& operator<<(std::ostream& o, const TripletMatrix<double>& S) {
-  return o << S.densify();
-}
-
-/**
- * @brief overload of operator << for output of CRS Matrix (debug).
- * WARNING: Uses densify() so there may be a lot of fill-in
- *
- * @param o Standard output stream
- * @param S Matrix in CRS matrix format
- * @return o std::ostream s.t. you can write o << A << B;
- */
-std::ostream& operator<<(std::ostream& o, const CRSMatrix<double>& S) {
-  return o << S.densify();
-}
+/* SAM_LISTING_END_4 */
 
 #endif

@@ -14,9 +14,13 @@ def parseWriteChange(student_sol, copy, tests):
     keyword = "[OUT OF CLASS]"
 
     # get all function signatures to be tested from the test file
+    ncc = False
     function_signatures = []
     for line in tests:
         disable = re.match('// DISABLE_TESTS', line)
+        no_class_copy = re.match('// NO_CLASS_COPY', line)
+        if no_class_copy:
+            ncc = True
         if disable:
             return
         parse = re.match('\s*TEST_CASE\("([\S\s]*)"\s\*.*', line)
@@ -65,8 +69,9 @@ def parseWriteChange(student_sol, copy, tests):
             if write and not line.startswith("#endif") and not line.startswith('#include "'):
                 new_line = line
                 # replace all class occurences with its test version
-                for el in classes:
-                    new_line = line.replace(el, el + suffix)
+                if not ncc:
+                    for el in classes:
+                        new_line = line.replace(el, el + suffix)
                 copy.write(new_line)
         copy.write("\n")
 
