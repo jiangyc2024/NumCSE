@@ -214,6 +214,10 @@ def upload_ceproject(browser, ce_folder_path, additional_folders = {}, additiona
     solution_path = os.path.join(ce_folder_path, "solution")
     upload_folder(browser, solution_path, upload_path=".")
     upload_additional_folders(browser, additional_folders, additional_properties)
+
+    browser.execute_script('alert("Please fix visibility settings in solution! Press Any button in CLI to continue uploading...");')
+    input("Please fix visibility settings in solution! Press Any button to continue uploading...")
+
     switch_env(browser, False)
     refresh_page(browser)
     clear_project(browser)

@@ -173,7 +173,7 @@ void runtime_arrow_matrix() {
 
   /* DO NOT CHANGE */
   // create plot
-  plot(vec_size, elap_time, elap_time_eff, "./cx_out/comparison.png");
+  plot(vec_size, elap_time, elap_time_eff, "./cx_out/comparison.eps");
 }
 /* SAM_LISTING_END_3 */
 
