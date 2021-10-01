@@ -24,7 +24,7 @@ Eigen::SparseMatrix<double> buildC(const Eigen::MatrixXd &A) {
   // Iterate over n*n blocks.
   for (unsigned int i = 0; i < n; ++i) {
     for (unsigned int j = 0; j < n; ++j) {
-      // TODO: (3-8.e) Fill in the (i,j)-th block of C.
+      // TODO: (2-8.e) Fill in the (i,j)-th block of C.
       // Hint: The vector triplets should contain the position
       // and value the non-zero entries of C.
       // Use triplets.push_back() to add a new
@@ -71,7 +71,7 @@ void solveLyapunov(const Eigen::MatrixXd &A, Eigen::MatrixXd &X) {
   Eigen::VectorXd b(n * n);
   Eigen::VectorXd vecX(n * n);
 
-  // TODO: (3-8.f) Fill in the entries of C, b, and vecX.
+  // TODO: (2-8.f) Fill in the entries of C, b, and vecX.
   // Hint: Use SparseLU to solve the LSE.
   // START
   C = buildC(A);
@@ -96,7 +96,7 @@ bool testLyapunov() {
   constexpr double tol = 1e-8;
   bool works = false;
 
-  // TODO: (3-8.g)
+  // TODO: (2-8.g)
   // i) Print the full system matrix C (with zeroes),
   // ii) print the solution X, and
   // iii) return true if and only if the error defined
