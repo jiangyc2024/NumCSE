@@ -16,7 +16,7 @@
 /* SAM_LISTING_BEGIN_0 */
 Eigen::VectorXd lsqEst(const Eigen::VectorXd& z, const Eigen::VectorXd& c) {
   assert(z.size() == c.size() && "z and c must have same size");
-  Eigen::VectorXd x = Eigen::VectorXd::Zero(2);  // $(alpha,\beta)$.
+  Eigen::VectorXd x = Eigen::VectorXd::Zero(2);  // $(\alpha,\beta)$.
 
   // TODO: (3-2.c) Solve eq. (3.2.1) using the method of normal equations.
   // START
