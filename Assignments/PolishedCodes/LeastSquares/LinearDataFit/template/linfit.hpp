@@ -78,7 +78,8 @@ Eigen::VectorXd fitted_function(const Eigen::VectorXd &gamma,
   // TODO (3-3.c): Define the data for the first plot by
   // evaluating the function f at the grid defined by t_vec
 
-  Eigen::VectorXd y;
+  unsigned int n = t_vec.size();
+  Eigen::VectorXd y(n);
 
   // START
 
@@ -95,7 +96,7 @@ Eigen::VectorXd fitted_function(const Eigen::VectorXd &gamma,
 Eigen::VectorXd fitting_error(const Eigen::VectorXd &gamma) {
   // TODO (3-3.c): Compute the vector of squared errors of your
   // fit at the provided sample points
-  Eigen::VectorXd err;
+  Eigen::VectorXd err(10);
 
   // START
  
