@@ -29,7 +29,7 @@ struct TestData {
   }
 
   unsigned int n;
-  Eigen::Eigen::MatrixXd Xstop, Xpriority, P1, P2, P3;
+  Eigen::MatrixXd Xstop, Xpriority, P1, P2, P3;
 };
 
 TestData data;
@@ -37,7 +37,7 @@ TestData data;
 TEST_SUITE("ShapeIdent") {
   TEST_CASE("Eigen::MatrixXd shape_ident_matrix" *
             doctest::description("shape_ident_matrix()")) {
-    Eigen::Eigen::MatrixXd sol, stud;
+    Eigen::MatrixXd sol, stud;
 
     sol = shape_ident_matrix(data.Xstop);
     stud = shape_ident_matrix_TEST(data.Xstop);
