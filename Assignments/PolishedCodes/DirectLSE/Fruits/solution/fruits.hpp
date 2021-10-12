@@ -15,7 +15,7 @@
 Eigen::VectorXd fruitPrice() {
   Eigen::VectorXd x = Eigen::VectorXd::Zero(6);
 
-  // TODO: (3-1.b) Determine the fruit prices using Eigen.
+  // TODO: (2-1.b) Determine the fruit prices using Eigen.
   // START
   // Initialize the matrix
   Eigen::MatrixXd A(6, 6);

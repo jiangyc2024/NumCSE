@@ -24,7 +24,7 @@ void multAx(const Vector& a, const Vector& b, const Vector& x, Vector& y) {
   }
   y.resize(n);
 
-  // TODO: (3-6.a) Multiply A*x and exploit the diagonal structure of the
+  // TODO: (2-6.a) Multiply A*x and exploit the diagonal structure of the
   // matrix. START Handle first two rows
   if (n > 1) {
     y(0) = 2 * x(0) + a(0) * x(1);
@@ -71,7 +71,7 @@ void solvelseAupper(const Vector& a, const Vector& r, Vector& x) {
   }
   x.resize(n);
 
-  // TODO: (3-6.c) Solve the LSE A*x = r for x by exploiting the diagonal
+  // TODO: (2-6.c) Solve the LSE A*x = r for x by exploiting the diagonal
   // structure of A and the fact that b is zero.
   // START
   // Backward substitution
@@ -104,7 +104,7 @@ void solvelseA(const Vector& a, const Vector& b, const Vector& r, Vector& x) {
     return;
   }
 
-  // TODO: (3-6.d) Compute the solution to A*x=r by Gaussian elimination and
+  // TODO: (2-6.d) Compute the solution to A*x=r by Gaussian elimination and
   // without the help of Eigen's solvers.
   // START
   Vector c, d, y;
@@ -158,7 +158,7 @@ void solvelseAEigen(const Vector& a, const Vector& b, const Vector& r,
     return;
   }
 
-  // TODO: (3-6.f) Solve A*x=r using Eigen's sparse solver.
+  // TODO: (2-6.f) Solve A*x=r using Eigen's sparse solver.
   // START
   // Fill in matrix:
   // We reserve three nonzero entries per row for Gaussian fill-in

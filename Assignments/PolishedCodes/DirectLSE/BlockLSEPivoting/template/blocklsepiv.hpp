@@ -31,7 +31,7 @@ Eigen::VectorXd multA(const Eigen::VectorXd& d1, const Eigen::VectorXd& d2,
          "Size mismatch!");
   Eigen::ArrayXd y = Eigen::VectorXd::Zero(2 * n);
 
-  // TODO: (3-2.b) Efficiently calculate A*x. Eigen's array arithmetic is
+  // TODO: (2-2.b) Efficiently calculate A*x. Eigen's array arithmetic is
   // helpful here.
   // START
 
@@ -61,7 +61,7 @@ Eigen::VectorXd solveA(const Eigen::VectorXd& d1, const Eigen::VectorXd& d2,
 
   constexpr double eps = std::numeric_limits<double>::epsilon();
 
-  // TODO: (3-2.d) Solve Ax = b for x using Gaussian elimination without using
+  // TODO: (2-2.d) Solve Ax = b for x using Gaussian elimination without using
   // Eigen's built-in solvers
   // START
 
@@ -81,7 +81,7 @@ void numericalExperiment() {
   Eigen::VectorXd d1, d2, c, b, y;
   plt::figure();
 
-  // TODO: (3-2.f) Tabulate runtimes of solveA and plot them using
+  // TODO: (2-2.f) Tabulate runtimes of solveA and plot them using
   // matplotlibcpp.
   // START
 
