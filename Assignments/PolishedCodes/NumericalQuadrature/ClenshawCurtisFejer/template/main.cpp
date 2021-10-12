@@ -1,9 +1,3 @@
-#ifdef NICEBACKTRACE
-#include "backtrace.hpp"
-#undef eigen_assert
-#define eigen_assert(cond) backtrace_assert(cond, #cond)
-#endif
-
 #include "clenshawcurtisfejer.hpp"
 #include <cassert>
 #include <cmath>

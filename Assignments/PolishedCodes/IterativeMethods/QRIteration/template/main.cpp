@@ -1,9 +1,3 @@
-#ifdef NICEBACKTRACE
-#include "backtrace.hpp"
-#undef eigen_assert
-#define eigen_assert(cond) backtrace_assert(cond, #cond)
-#endif
-
 #include "qriteration.hpp"
 #include <Eigen/Dense>
 #include <algorithm>

@@ -1,9 +1,3 @@
-#ifdef NICEBACKTRACE
-#include "backtrace.hpp"
-#undef eigen_assert
-#define eigen_assert(cond) backtrace_assert(cond, #cond)
-#endif
-
 #include "polardecomposition.hpp"
 #include <Eigen/Dense>
 #include <Eigen/SVD>
@@ -94,7 +88,7 @@ int main(int /*argc*/, char ** /*argv*/) {
     else {
       std::cout << "Shape mismatch between AB^T and QM!" << std::endl;
     }
-    
+
   }
   return 0;
 }

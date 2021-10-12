@@ -1,9 +1,3 @@
-#ifdef NICEBACKTRACE
-#include "backtrace.hpp"
-#undef eigen_assert
-#define eigen_assert(cond) backtrace_assert(cond, #cond)
-#endif
-
 #include "naturalcubicspline.hpp"
 #include "notaknotcubicspline.hpp"
 #include <iostream>
@@ -35,7 +29,7 @@ int main(int /*argc*/, char ** /*argv*/) {
     std::cout << "t[n] = " << t[n] << ": s(tm) = " << spline.eval(t[n] - delta)
               << " <-> y = " << y[n] << std::endl << std::endl;
   }
-  
+
   // The below should be identical to what is printed for NaturalCubicSpline
   // above, as both splines match the data values at the knots. This will
   // already be the case before you start implementing NotAKnotCubicSpline,
