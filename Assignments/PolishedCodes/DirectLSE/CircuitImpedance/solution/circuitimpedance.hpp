@@ -104,7 +104,7 @@ class NodalPotentials {
   Eigen::VectorXd operator()(double V) const;
 
  private:
-  // TODO: (3-5.d) Specify which variables should be stored.
+  // TODO: (2-5.d) Specify which variables should be stored.
   // START
   Eigen::VectorXd nodal_voltage_;
   double R_, Rx_, xi_;
@@ -120,13 +120,13 @@ class NodalPotentials {
  */
 /* SAM_LISTING_BEGIN_1 */
 NodalPotentials::NodalPotentials(double R, double Rx)
-    // TODO: (3-5.d) initializer list.
+    // TODO: (2-5.d) initializer list.
     // START
     : R_(R),
       Rx_(Rx)
 // END
 {
-  // TODO: (3-5.d) Build the matrix and the r.h.s. vector by either using
+  // TODO: (2-5.d) Build the matrix and the r.h.s. vector by either using
   // the topology struct or by hardcoding the matrix and vector.
   // START
   assert(Rx_ != 0. && "Rx should not be equal to zero!");
@@ -190,7 +190,7 @@ NodalPotentials::NodalPotentials(double R, double Rx)
 Eigen::VectorXd NodalPotentials::operator()(double V) const {
   Eigen::VectorXd return_vector = Eigen::VectorXd::Zero(15);
 
-  // TODO: (3-5.d) Return the values of the potential at the nodes.
+  // TODO: (2-5.d) Return the values of the potential at the nodes.
   // START
   return_vector = nodal_voltage_ * V;
   // END
@@ -218,7 +218,7 @@ class ImpedanceMap {
   double operator()(double Rx) const;
 
  private:
-  // TODO: (3-5.g) Specify which variables should be stored.
+  // TODO: (2-5.g) Specify which variables should be stored.
   // START
   double R_, V_;  //< Resistance $R$ and source voltage $V$.
   Eigen::VectorXd w_, z_;
@@ -238,13 +238,13 @@ class ImpedanceMap {
  */
 /* SAM_LISTING_BEGIN_4 */
 ImpedanceMap::ImpedanceMap(double R, double V)
-    // TODO: (3-5.g) initializer list.
+    // TODO: (2-5.g) initializer list.
     // START
     : R_(R),
       V_(V)
 // END
 {
-  // TODO: (3-5.g) Build the matrix and the r.h.s. vector by either using
+  // TODO: (2-5.g) Build the matrix and the r.h.s. vector by either using
   // 		 the topology or by hardcoding the matrix and vector. Also, do
   //		 the setup phase for the solver here or find an even smarter way
   //		 for an efficient implementation
@@ -314,7 +314,7 @@ ImpedanceMap::ImpedanceMap(double R, double V)
 double ImpedanceMap::operator()(double Rx) const {
   double return_value = 0.;
 
-  // TODO: (3-5.g) Return the impedance of the circuit given a specific Rx
+  // TODO: (2-5.g) Return the impedance of the circuit given a specific Rx
   // START
   assert(Rx != 0 && "Rx should not be equal to zero!");
   // Store the scaled factor for convenience

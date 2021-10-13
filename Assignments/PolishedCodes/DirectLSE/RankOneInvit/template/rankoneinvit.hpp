@@ -18,7 +18,7 @@
 double rankoneinvit(const Eigen::VectorXd& d, const double& tol) {
   // Initialization
   double lmin = 0, lnew = 0;
-  // TODO: (3-10.a) Port the pseudocode in algorithm (3.10.1) to C++-code.
+  // TODO: (2-10.a) Port the pseudocode in algorithm (3.10.1) to C++-code.
   // START
 
   // END
@@ -37,7 +37,7 @@ double rankoneinvit(const Eigen::VectorXd& d, const double& tol) {
 double rankoneinvit_fast(const Eigen::VectorXd& d, const double& tol) {
   // Initialization
   double lmin = 0, lnew = 0;
-  // TODO: (3-10.c) Rewrite rankoneinvit() to have much better asymptotic
+  // TODO: (2-10.c) Rewrite rankoneinvit() to have much better asymptotic
   // complexity.
   // START
 
@@ -55,7 +55,7 @@ double rankoneinvit_fast(const Eigen::VectorXd& d, const double& tol) {
 void rankoneinvit_runtime() {
   constexpr unsigned int repeats = 3;
   constexpr double tol = 1e-3;
-  // TODO: (3-10.e) Tabulate the runtimes of both implementations according to
+  // TODO: (2-10.e) Tabulate the runtimes of both implementations according to
   // the problem description. The choice of the "tol" argument affects the
   // runtime.
   // START

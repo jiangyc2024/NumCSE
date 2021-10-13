@@ -16,7 +16,7 @@ Eigen::MatrixXd buildA(const Eigen::VectorXd& a) {
   // Initialization
   const unsigned int n = a.size();
   Eigen::MatrixXd A = Eigen::MatrixXd::Zero(n, n);
-  // TODO: (3-12.b) Build the matrix A given the vector a.
+  // TODO: (2-12.b) Build the matrix A given the vector a.
   // START
   for (unsigned int j = 0; j < n; ++j) {
     for (unsigned int i = j; i < n; ++i) {
@@ -42,7 +42,7 @@ void solveA(const Eigen::VectorXd& a, const Eigen::VectorXd& b,
   // size of b, which is the size of a
   const unsigned int n = b.size();
   assert(n == a.size() && "Error: size mismatch!");
-  // TODO: (3-12.c) Solve Ax = b using "structure oblivious" Gaussian
+  // TODO: (2-12.c) Solve Ax = b using "structure oblivious" Gaussian
   // elimination.
   // START
   x.resize(n);
@@ -55,7 +55,7 @@ void solveA(const Eigen::VectorXd& a, const Eigen::VectorXd& b,
 /**
  * @brief Solve $Ax = b$.
  * Function with efficient implementation, using the solution of subproblem
- * 3-12.d.
+ * 2-12.d.
  *
  * @param a An $n$-dimensional vector to build the lower triangular matrix $A$
  * @param b An $n$-dimensional vector
@@ -67,7 +67,7 @@ void solveA_fast(const Eigen::VectorXd& a, const Eigen::VectorXd& b,
   // size of b, which is the size of a
   const unsigned int n = b.size();
   assert(n == a.size() && "Error: size mismatch!");
-  // TODO: (3-12.e) Efficiently (O(n)) solve Ax = b.
+  // TODO: (2-12.e) Efficiently (O(n)) solve Ax = b.
   // START
   x.resize(n);
 
