@@ -57,11 +57,6 @@ Eigen::VectorXd polyMult_fast(const Eigen::VectorXd &u,
   v_tmp.head(n) = v;
   v_tmp.tail(m - 1).setZero();
 
-  // Eigen::VectorXd u_tmp = u;
-  // u_tmp.conservativeResizeLike(Eigen::VectorXd::Zero(u.size() + n - 1));
-  // Eigen::VectorXd v_tmp = v;
-  // v_tmp.conservativeResizeLike(Eigen::VectorXd::Zero(v.size() + m - 1));
-
   Eigen::VectorXd uv;
 
   // TODO: (4-3.b) Multiply polynomials $u$ and $v$ efficiently.
