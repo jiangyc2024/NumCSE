@@ -1,7 +1,7 @@
-# Problem 3-4: Cholesky and QR decomposition
+# Problem 2-4: Cholesky and QR decomposition
 
-> For the task description of this exercise, please refer to [NCSE20_Problems.pdf](
-https://www.sam.math.ethz.ch/~grsam/NCSE20/HOMEWORK/NCSE20_Problems.pdf). 
+> For the task description of this exercise, please refer to [NCSE21_Problems.pdf](
+https://www.sam.math.ethz.ch/~grsam/NCSE21/HOMEWORK/NCSE21_Problems.pdf).
 
 > Open `cholesyQR.hpp` and have a look at the functions provided.
 

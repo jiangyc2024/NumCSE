@@ -10,8 +10,8 @@ int main() {
   int n = 3;
   Eigen::VectorXd u(m);
   Eigen::VectorXd v(n);
-  u << 1, 2, 3, 4;
-  v << 10, 20, 30;
+  u << 1, 2, 3, 4;  // u = 1 + 2x + 3x^2 + 4x^3
+  v << 10, 20, 30;  // v = 10 + 20x + 30x^2
 
   // Compute with both functions
   std::cout << "Check that all functions are correct" << std::endl;

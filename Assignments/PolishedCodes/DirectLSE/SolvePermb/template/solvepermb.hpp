@@ -32,7 +32,7 @@ void solvpermb(const Eigen::MatrixXd& A, Eigen::VectorXd& b,
   // Size of b, which is the size of A
   const unsigned int n = b.size();
   assert(n == A.rows() && n == A.cols() && "Error: size mismatch!");
-  // TODO: (3-11.b) Port the pseudocode from (3.11.1) to C++-code.
+  // TODO: (2-11.b) Port the pseudocode from (3.11.1) to C++-code.
   // START
 
   // END
@@ -53,7 +53,7 @@ void solvpermb_on3(const Eigen::MatrixXd& A, Eigen::VectorXd& b,
   // Size of b, which is the size of A
   const unsigned int n = b.size();
   assert(n == A.cols() && n == A.rows() && "Error: size mismatch!");
-  // TODO: (3-11.c) Alter the above function such that it has asymptotic
+  // TODO: (2-11.c) Alter the above function such that it has asymptotic
   // complexity O(n^3).
   // START
 

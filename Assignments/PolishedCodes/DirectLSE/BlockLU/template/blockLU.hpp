@@ -19,7 +19,7 @@ Eigen::VectorXd solve_R(const Eigen::MatrixXd& R, const Eigen::VectorXd& c) {
   // initialize the return value
   Eigen::VectorXd y(n);
 
-  // TODO: (3-3.c) (optional) Solve Ry=c using backward substitution. May help
+  // TODO: (optional) Solve Ry=c using backward substitution. May help
   // when implementing solve\_LSE.
   // START
 
@@ -48,7 +48,7 @@ Eigen::VectorXd solve_LSE(const Eigen::MatrixXd& R, const Eigen::VectorXd& v,
          "Input dimensions must agree");
   Eigen::VectorXd y(n + 1), x(n + 1);
 
-  // TODO: (3-3.c) Solve the system Ax=b by LU-Decomposition.
+  // TODO: (2-3.d) Solve the system Ax=b by LU-Decomposition.
   // START
 
   // END

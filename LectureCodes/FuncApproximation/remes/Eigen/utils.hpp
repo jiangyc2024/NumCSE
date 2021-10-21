@@ -45,7 +45,7 @@ VectorXd findNegative(const VectorXd& x) {
 VectorXd select(const VectorXd& x, const VectorXd& ind) {
   VectorXd res(ind.size());
   for (int i = 0; i < ind.size(); ++i) {
-    res(i) = x(ind(i));
+    res(i) = x( Eigen::Index(ind(i)));
   }
   return res;
 }
@@ -55,6 +55,6 @@ VectorXd select(const VectorXd& x, const VectorXd& ind) {
 VectorXd sort_indices(const VectorXd& x) {
   VectorXd ind = VectorXd::LinSpaced(x.size(), 0, x.size() - 1);
   std::sort(ind.data(), ind.data() + ind.size(),
-      [&x](double i1, double i2) { return x(i1) < x(i2); });
+      [&x](int i1, int i2) { return x(i1) < x(i2); });
   return ind;
 }

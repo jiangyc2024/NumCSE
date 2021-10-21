@@ -24,7 +24,7 @@ Eigen::VectorXd polyMult_naive(const Eigen::VectorXd &u,
 
   // TODO: (4-3.a) Multiply polynomials $u$ and $v$ naively.
   // START
-
+  
   // END
 
   return uv;
@@ -43,16 +43,24 @@ Eigen::VectorXd polyMult_fast(const Eigen::VectorXd &u,
   int m = u.size();
   int n = v.size();
 
-  Eigen::VectorXd u_tmp = u;
-  u_tmp.conservativeResizeLike(Eigen::VectorXd::Zero(u.size() + n - 1));
-  Eigen::VectorXd v_tmp = v;
-  v_tmp.conservativeResizeLike(Eigen::VectorXd::Zero(v.size() + m - 1));
+  Eigen::VectorXd u_tmp(m + n - 1);
+  u_tmp.head(m) = u;
+  u_tmp.tail(n - 1).setZero();
+
+  Eigen::VectorXd v_tmp(m + n - 1);
+  v_tmp.head(n) = v;
+  v_tmp.tail(m - 1).setZero();
+
+  // Eigen::VectorXd u_tmp = u;
+  // u_tmp.conservativeResizeLike(Eigen::VectorXd::Zero(u.size() + n - 1));
+  // Eigen::VectorXd v_tmp = v;
+  // v_tmp.conservativeResizeLike(Eigen::VectorXd::Zero(v.size() + m - 1));
 
   Eigen::VectorXd uv;
 
   // TODO: (4-3.b) Multiply polynomials $u$ and $v$ efficiently.
   // START
-
+  
   // END
 
   return uv;
@@ -71,7 +79,6 @@ Eigen::VectorXd polyDiv(const Eigen::VectorXd &uv, const Eigen::VectorXd &u) {
   int mn = uv.size();
   int m = u.size();
   // need well behaved input
-  assert(uv(mn - 1) != 0. && u(m - 1) != 0.);
   if (mn < m) {
     std::cerr << "uv can't be divided by u\n";
     return Eigen::VectorXd(0);
