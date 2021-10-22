@@ -188,7 +188,7 @@ void runtime_toeplitz() {
     // number of repetitions
     unsigned int repeats = 3;
 
-    // TODO: (5-4.g) Perform a runtime comparison by repeating time computation
+    // TODO: (4-4.g) Perform a runtime comparison by repeating time computation
     // 'repeats' times
 
     Timer tm_matmult, tm_mult, tm_ttmat, tm_ttrec;
