@@ -31,7 +31,7 @@ private:
 /* SAM_LISTING_BEGIN_1 */
 void PolarDecomposition::initialize(const Eigen::MatrixXd &X) {
   assert(X.rows() >= X.cols());
-  // TO DO: Implement a method to initialize the data members _Q and _M 
+  // TO DO: Implement a method to initialize the data members Q_ and M_ 
   // corresponding to Q and M in Theorem 0.3.1, where X = QM
   // START
   
@@ -49,7 +49,7 @@ PolarDecomposition::PolarDecomposition(const Eigen::MatrixXd &A,
   assert(m >= n);
   assert(k < n);
   assert(B.cols() == k);
-  // TO DO: Implement a method to initialize the data members _Q and _M
+  // TO DO: Implement a method to initialize the data members Q_ and M_
   // for X := AB^T = QM, with optimal complexity
   // START
   
