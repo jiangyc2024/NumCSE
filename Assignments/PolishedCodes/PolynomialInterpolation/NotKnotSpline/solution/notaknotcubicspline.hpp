@@ -30,6 +30,9 @@ private:
 /* SAM_LISTING_BEGIN_1 */
 NotAKnotCubicSpline::NotAKnotCubicSpline(Eigen::VectorXd t, Eigen::VectorXd y)
     : t_(std::move(t)), y_(std::move(y)), c_(y_.size()) {
+  // TO DO: Modify the given constructor of a Natural Cubic Spline into an
+  // efficient constructor for Not-a-knot Cubic Spline
+  // START
   const long n = t_.size() - 1;
   assert(n > 2);
   assert(n == y_.size() - 1);
@@ -80,6 +83,7 @@ NotAKnotCubicSpline::NotAKnotCubicSpline(Eigen::VectorXd t, Eigen::VectorXd y)
   if (checkC2()) {
     std::cout << "C2 continuity satisfied" << std::endl;
   }
+  // END
 }
 /* SAM_LISTING_END_1 */
 
@@ -142,6 +146,9 @@ double NotAKnotCubicSpline::eval(double t) const {
 
 /* SAM_LISTING_BEGIN_3 */
 double NotAKnotCubicSpline::evalDerivative(double t) const {
+  double derivative = 0;
+  // TO DO: Implement the evaluation of the first derivative
+  // START
   const int idx = getPtIdx(t);
   const double h = t_[idx] - t_[idx - 1];
   const double tau = (t - t_[idx - 1]) / h;
@@ -150,7 +157,9 @@ double NotAKnotCubicSpline::evalDerivative(double t) const {
       6.0 / h * (y_[idx] - y_[idx - 1]) - 4.0 * c_[idx - 1] - 2.0 * c_[idx];
   const double a2 =
       6.0 / h * (y_[idx - 1] - y_[idx]) + 3.0 * c_[idx - 1] + 3.0 * c_[idx];
-  return a0 + tau * (a1 + tau * a2);
+  derivative = a0 + tau * (a1 + tau * a2);
+  // END
+  return derivative;
 }
 /* SAM_LISTING_END_3 */
 

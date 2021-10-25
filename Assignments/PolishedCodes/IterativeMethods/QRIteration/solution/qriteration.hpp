@@ -1,9 +1,3 @@
-/* **********************************************************************
- * Course "Numerical Methods for CSE", R. Hiptmair, SAM, ETH Zurich
- * Author: R. Hiptmair
- * Date: January 2020
- */
-
 #include <Eigen/Dense>
 #include <algorithm>
 #include <cassert>
