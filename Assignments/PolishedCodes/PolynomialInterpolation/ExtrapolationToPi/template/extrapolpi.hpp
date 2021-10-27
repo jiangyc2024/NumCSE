@@ -18,8 +18,6 @@ double extrapolate_to_pi(const unsigned int k) {
 
   // START
 
-  // Data for interpolation.
-
   // END
 
   return pi;
