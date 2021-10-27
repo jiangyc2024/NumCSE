@@ -16,7 +16,8 @@ struct TestData2 {
 TEST_SUITE("ExtrapolationToPi") {
   TEST_CASE("double extrapolate_to_pi" *
             doctest::description("Extrapolate to k")) {
-    for (unsigned int k : data.K) {
+    for (unsigned int i=0; i < data.K.size(); ++i) {
+      unsigned int k = data.K(i);
       double sol = extrapolate_to_pi(k);
       double stud = extrapolate_to_pi_TEST(k);
 
