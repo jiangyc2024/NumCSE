@@ -45,7 +45,7 @@ Eigen::SparseMatrix<double> sparseKron(const Eigen::SparseMatrix<double> &M) {
   const int *JM = M.outerIndexPtr();
 
   // Define nnzColwiseM(j) = nnz( M.col(j) )
-  Eigen::VectorXd nnzColwiseM(n);
+  Eigen::VectorXi nnzColwiseM(n);
   for (int j = 0; j < n; j++) {
     nnzColwiseM(j) = JM[j + 1] - JM[j];
   }
@@ -60,10 +60,10 @@ Eigen::SparseMatrix<double> sparseKron(const Eigen::SparseMatrix<double> &M) {
 
   // START
 
-  Eigen::VectorXd nnzColwiseB;
+  Eigen::VectorXi nnzColwiseB;
   // We have that nnz(B.col(j*n+l)) = nnz(M.col(j)) * nnz(M.col(l)).
-  Eigen::MatrixXd tmp = nnzColwiseM * nnzColwiseM.transpose();  // O(n^2)
-  nnzColwiseB = Eigen::MatrixXd::Map(tmp.data(), n * n, 1);
+  Eigen::MatrixXi tmp = nnzColwiseM * nnzColwiseM.transpose();  // O(n^2)
+  nnzColwiseB = Eigen::MatrixXi::Map(tmp.data(), n * n, 1);
 
   // Reserve sufficient space.
   B.reserve(nnzColwiseB);
