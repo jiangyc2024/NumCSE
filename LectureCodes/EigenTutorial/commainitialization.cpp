@@ -5,7 +5,7 @@
 // See commainitialization_notes.pdf for explanations
 // **********************************************************************
 
-#include <eigen3/Eigen/Dense>
+#include <Eigen/Dense>
 #include <iostream>
 
 int main() {
