@@ -13,11 +13,9 @@
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 
-using namespace Eigen;
-
-using Triplet_new = Triplet<double>;
+using Triplet_new = Eigen::Triplet<double>;
 using Triplets = std::vector<Triplet_new>;
-using Vector = VectorXd;
+using Vector = Eigen::VectorXd;
 using index_t = std::ptrdiff_t;
 
 /* @brief Class representing a sparse matrix in Ellpack format
@@ -31,8 +29,8 @@ class EllpackMat {
 public:
   EllpackMat(const Triplets &triplets, index_t m, index_t n);
   double operator()(index_t i, index_t j) const;
-  void mvmult(const VectorXd &x, VectorXd &y) const;
-  void mtvmult(const VectorXd &x, VectorXd &y) const;
+  void mvmult(const Eigen::VectorXd &x, Eigen::VectorXd &y) const;
+  void mtvmult(const Eigen::VectorXd &x, Eigen::VectorXd &y) const;
 private:
   std::vector<double> val; //< Vector containing values
   // corresponding to entries in 'col'
@@ -84,7 +82,7 @@ EllpackMat::EllpackMat(const Triplets &triplets, index_t m, index_t n)
  * \param[out] y Vector from $y = Ax$
  */
 /* SAM_LISTING_BEGIN_3 */
-void EllpackMat::mvmult(const VectorXd &x, VectorXd &y) const {
+void EllpackMat::mvmult(const Eigen::VectorXd &x, Eigen::VectorXd &y) const {
   assert(x.size() == n && "Incompatible vector x size!");
   assert(y.size() == m && "Incompatible vector y size!");
   // TODO (3-15.b) : implement the multiplication $\cob{A^{\top}*x}$ using the
@@ -100,7 +98,7 @@ void EllpackMat::mvmult(const VectorXd &x, VectorXd &y) const {
  * Vector from $y = Ax$
  */
 /* SAM_LISTING_BEGIN_4 */
-void EllpackMat::mtvmult(const VectorXd &x, VectorXd &y) const {
+void EllpackMat::mtvmult(const Eigen::VectorXd &x, Eigen::VectorXd &y) const {
   assert(x.size() == m && "Incompatible vector x size!");
   assert(y.size() == n && "Incompatible vector y size!");
   // TODO (3-15.c) : implement the multiplication $\cob{A^{\top}*x}$ using the class

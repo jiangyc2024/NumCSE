@@ -22,11 +22,12 @@ using namespace Eigen;
 template <class LUDec>
 Eigen::VectorXd smw(const LUDec &lu, const Eigen::VectorXd &u,
                     const Eigen::VectorXd &v, const Eigen::VectorXd &b) {
+  const double singfac = 1.0E6; // Do not lose more than 10 digits 
   const Eigen::VectorXd z = lu.solve(b); // $\cob{\Vz=\VA^{-1}\Vb}$ \Label[line]{smw:1}
   const Eigen::VectorXd w = lu.solve(u); // $\cob{\Vw=\VA^{-1}\Vu}$ \Label[line]{smw:2}
   double alpha = 1.0 + v.dot(w); // Compute denominator of \eqref{eq:smwx}
   double beta = v.dot(z);        // Factor for numerator of \eqref{eq:smwx}
-  if (std::abs(alpha) < std::numeric_limits<double>::epsilon() * std::abs(beta))
+  if (std::abs(alpha) <= singfac * std::numeric_limits<double>::epsilon())
     throw std::runtime_error("A nearly singular");
   else
     return (z - w * beta / alpha); // see \eqref{eq:smwx}

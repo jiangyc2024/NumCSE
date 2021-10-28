@@ -4,16 +4,12 @@
 //// Contributors: tille, jgacon, dcasati
 //// This file is part of the NumCSE repository.
 ////
-#include <Eigen/Dense>
 #include <iostream>
 #include <iomanip>
 
 #include "ellpack.hpp"
 
-using namespace Eigen;
-
-
- /* SAM_LISTING_BEGIN_5 */
+/* SAM_LISTING_BEGIN_5 */
 int main(int, char**) {
     // Vector of triplets
     Triplets triplets;

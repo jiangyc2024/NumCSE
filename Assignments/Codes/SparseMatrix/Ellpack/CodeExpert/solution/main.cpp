@@ -10,9 +10,6 @@
 
 #include "ellpack.hpp"
 
-using namespace Eigen;
-
-
  /* SAM_LISTING_BEGIN_5 */
 int main(int, char**) {
     // Vector of triplets

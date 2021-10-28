@@ -23,10 +23,10 @@ void newton2Ddriver(void) {
     return (s);
   };
   // initial guess
-  Vector2d x0(2., 3.);
+  Eigen::Vector2d x0(2., 3.);
 
   // Invoke Newton's method
-  Vector2d x = newton(F, DFinv, x0, 1E-6, 1E-8);
+  Eigen::Vector2d x = newton(F, DFinv, x0, 1E-6, 1E-8);
   std::cout << "||F(x)|| = " << F(x).norm() << std::endl;
 }
 /* SAM_LISTING_END_0 */

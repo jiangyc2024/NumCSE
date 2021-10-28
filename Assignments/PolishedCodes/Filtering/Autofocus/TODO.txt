@@ -1,0 +1,5 @@
+1. Check correctness of mathgl to matplotlibcpp conversion
+2. SPEEEEEEED UP
+3. Write more comprehensive tests?
+4. Replace M in tests.cpp (template and solution) with the correct
+one
