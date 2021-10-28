@@ -8,7 +8,7 @@ int main() {
   std::cout << "extrapolate_to_pi(15) = " << extrapolate_to_pi(15) << std::endl;
   
   std::cout << "\nPlotting error for k = 15:" << std::endl;
-  plotExtrapolationError(15);
+  plotExtrapolationError(10);
   
   std::cout << "\nPlotting error for k = 30:" << std::endl;
   plotExtrapolationError(30);
