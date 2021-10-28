@@ -21,7 +21,7 @@ void testConvGaussQuad() {
   // Value obtained by overkill quadrature as reference value
   constexpr double ref_val = 1.7576137811123187;
 
-  // TO DO: (0-1.a) Print a table that allows you to predict the asymptotic
+  // TO DO: Print a table that allows you to predict the asymptotic
   // behaviour of Gauss-Legendre numerical quadrature when approximating I(f).
   // START
   
@@ -32,7 +32,7 @@ void testConvGaussQuad() {
 template <typename FUNCTION>
 double arccosWeightedQuad(FUNCTION &&f, unsigned int n) {
   double I = 0.0; // For accumulating quadrature result
-  // TO DO: (0-1.c) Approximate I(f) with exponential convergence in n.
+  // TO DO: Approximate I(f) with exponential convergence in n.
   // START
   
   // END
@@ -49,7 +49,7 @@ void testConvTrfGaussQuad() {
   // Value obtained by overkill quadrature as reference value
   const double ref_val = 1.7576137811123187;
   
-  // TO DO: (0-1.d) Print a table that allows you to predict the asymptotic
+  // TO DO: Print a table that allows you to predict the asymptotic
   // behaviour of arccosWeightedQuad().
   // START
   

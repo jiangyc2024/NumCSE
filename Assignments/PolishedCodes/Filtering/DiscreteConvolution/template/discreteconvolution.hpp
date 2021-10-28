@@ -29,7 +29,7 @@ Eigen::VectorXd pconv_fast(const Eigen::VectorXd &p, const Eigen::VectorXd &x) {
   assert(n == p.size());
   Eigen::VectorXd z = Eigen::VectorXd::Zero(n);
 
-  // TO DO: (0-2.b) Compute the discrete periodic convolution of p with x
+  // TO DO: Compute the discrete periodic convolution of p with x
   // in an efficient manner.
   // START
  

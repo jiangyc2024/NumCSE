@@ -30,10 +30,9 @@ private:
 /* SAM_LISTING_BEGIN_1 */
 NotAKnotCubicSpline::NotAKnotCubicSpline(Eigen::VectorXd t, Eigen::VectorXd y)
     : t_(std::move(t)), y_(std::move(y)), c_(y_.size()) {
-  // TO DO: Modify the given constructor of a Natural Cubic Spline into an 
+  // TO DO: Modify the given constructor of a Natural Cubic Spline into an
   // efficient constructor for Not-a-knot Cubic Spline
-  // START 
-  
+  // START
   const long n = t_.size() - 1;
   assert(n == y_.size() - 1);
   // Vector of h_i's , t has to be sorted
@@ -75,7 +74,6 @@ NotAKnotCubicSpline::NotAKnotCubicSpline(Eigen::VectorXd t, Eigen::VectorXd y)
   if (checkC2()) {
     std::cout << "C2 continuity satisfied" << std::endl;
   }
-  
   // END
 }
 /* SAM_LISTING_END_1 */
@@ -142,7 +140,7 @@ double NotAKnotCubicSpline::evalDerivative(double t) const {
   double derivative = 0;
   // TO DO: Implement the evaluation of the first derivative
   // START
-  
+
   // END
   return derivative;
 }

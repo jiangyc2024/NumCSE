@@ -18,7 +18,7 @@ public:
   void applyQ(Eigen::MatrixXd &Y) const { Y.applyOnTheLeft(Q_); }
   // Left multiplication of M with the M-factor of the polar decomposition
   void applyM(Eigen::MatrixXd &Y) const { Y.applyOnTheLeft(M_); }
-  
+
   int Qcols() { return Q_.cols(); }
   int Mcols() { return M_.cols(); }
 
@@ -31,6 +31,9 @@ private:
 /* SAM_LISTING_BEGIN_1 */
 void PolarDecomposition::initialize(const Eigen::MatrixXd &X) {
   assert(X.rows() >= X.cols());
+  // TO DO: Implement a method to initialize the data members Q_ and M_
+  // corresponding to Q and M in Theorem 0.3.1, where X = QM
+  // START
   // Compute SVD
   Eigen::JacobiSVD<Eigen::MatrixXd> svd(X, Eigen::ComputeThinU |
                                                Eigen::ComputeFullV);
@@ -41,6 +44,7 @@ void PolarDecomposition::initialize(const Eigen::MatrixXd &X) {
   // Form factors of polar decomposition
   Q_ = U * V.transpose();
   M_ = V * Sigma * V.transpose();
+  // END
 }
 /* SAM_LISTING_END_1 */
 
@@ -54,6 +58,9 @@ PolarDecomposition::PolarDecomposition(const Eigen::MatrixXd &A,
   assert(m >= n);
   assert(k < n);
   assert(B.cols() == k);
+  // TO DO: Implement a method to initialize the data members Q_ and M_
+  // for X := AB^T = QM, with optimal complexity
+  // START
   // Compute QR-decompositions in an encoded way, see \lref{par:ecovsfull}
   Eigen::HouseholderQR<Eigen::MatrixXd> QRA(A);  // cost = $\cob{O(mk^2)}$
   Eigen::HouseholderQR<Eigen::MatrixXd> QRB(B);  // cost = $\cob{O(nk^2)}$
@@ -85,6 +92,7 @@ PolarDecomposition::PolarDecomposition(const Eigen::MatrixXd &A,
   T.block(0, 0, k, n) =
       (QRB.householderQ() * S).transpose();   // cost = $\cob{O(kn^2)}$
   M_ = (QRB.householderQ() * T).transpose();  // cost = $\cob{O(kn^2)}$
+  // END
 }
 /* SAM_LISTING_END_7 */
 
