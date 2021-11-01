@@ -1,0 +1,31 @@
+An explanation of why we disabled some clang-tidy checks.
+
+llvmlibc-*
+==========
+
+These checks enforce standards specific to the llvm-libc project and do not make much sense outside of it.
+
+fuchsia-default-arguments-*
+===========================
+
+Although you can easily blow your foot of with default arguments in some cases, we need them for a very special reason. They are needed inside the SAM_LISTING to demonstrate the arguments with which we would call the function for the lecture notes PDF. Thus we can avoid listing main and the function call as they carry little educational value.
+
+*-magic-numbers
+===============
+
+Our code is often used for demonstration purposes in slides/PDFs where reading from file or stdin has no real value. Magic numbers as example data are unlikely to confuse students. In case these numbers do have an extra meaning, we should make sure they are named somehow.
+
+modernize-use-trailing-return-type
+==================================
+
+This is (almost) only a stylistic choice to begin with. Moreover, it might confuse students that know Java and C, or those familiar with the - still much more common - "old" way in C++. We also tell students to avoid the auto keyword in the beginning and would have to make an exception for this.
+
+cppcoreguidelines-pro-bounds-array-to-pointer-decay
+===================================================
+
+Unfortunately, there is currently (2021-10-31) a bug in clang-tidy which emits this warning for every use of the assert macro, because macros are expanded in user code and do not count as system code. There exists a patch (https://reviews.llvm.org/D88833), but it was never merged. Apart from building clang-tidy from source with this patch applied, there is nothing we can do but to disable this check entirely. We use the assert macro rather frequently. 
+
+google-runtime-references
+=========================
+
+This check was removed in the Google C++ style guide and is obsolete.
