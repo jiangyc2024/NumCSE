@@ -10,19 +10,19 @@
 #include <limits>
 
 class NotAKnotCubicSpline {
-public:
+ public:
   NotAKnotCubicSpline(Eigen::VectorXd t, Eigen::VectorXd y);
   ~NotAKnotCubicSpline() = default;
 
   [[nodiscard]] double eval(double t) const;
   [[nodiscard]] double evalDerivative(double t) const;
 
-private:
+ private:
   [[nodiscard]] bool checkC2() const;
   [[nodiscard]] int getPtIdx(double t) const;
-  Eigen::VectorXd t_; // knot vector
-  Eigen::VectorXd y_; // data values
-  Eigen::VectorXd c_; // slopes
+  Eigen::VectorXd t_;  // knot vector
+  Eigen::VectorXd y_;  // data values
+  Eigen::VectorXd c_;  // slopes
 };
 
 // Compute the slopes of the not-a-knot cubic spline interpolant
@@ -30,8 +30,8 @@ private:
 /* SAM_LISTING_BEGIN_1 */
 NotAKnotCubicSpline::NotAKnotCubicSpline(Eigen::VectorXd t, Eigen::VectorXd y)
     : t_(std::move(t)), y_(std::move(y)), c_(y_.size()) {
-  // TO DO: Modify the given constructor of a Natural Cubic Spline into an
-  // efficient constructor for Not-a-knot Cubic Spline
+  // TODO: (5-12.c) Modify the given constructor of a Natural Cubic Spline into
+  // an efficient constructor for Not-a-knot Cubic Spline
   // START
   const long n = t_.size() - 1;
   assert(n == y_.size() - 1);
@@ -85,7 +85,7 @@ bool NotAKnotCubicSpline::checkC2() const {
   // Vector h_i^2
   auto hs = h.pow(2);
 
-  double spp; // second derivative
+  double spp;  // second derivative
   // Visit all knot intervals
   bool error = false;
   for (int j = 1; j <= n; ++j) {
@@ -138,7 +138,7 @@ double NotAKnotCubicSpline::eval(double t) const {
 /* SAM_LISTING_BEGIN_3 */
 double NotAKnotCubicSpline::evalDerivative(double t) const {
   double derivative = 0;
-  // TO DO: Implement the evaluation of the first derivative
+  // TODO: (5-12.d) Implement the evaluation of the first derivative
   // START
 
   // END
