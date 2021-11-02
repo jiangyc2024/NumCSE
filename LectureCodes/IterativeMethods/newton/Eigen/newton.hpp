@@ -12,8 +12,6 @@
 #include "void_cb.hpp"
 #include <Eigen/Dense>
 
-using namespace Eigen;
-
 // convenience typedef
 template <typename T, int N> using Vector = Eigen::Matrix<T, N, 1>;
 
@@ -36,7 +34,7 @@ VecType newton(FuncType &&F, JacType &&DFinv, VecType x, const double rtol,
 /* SAM_LISTING_END_0 */
 
 /* SAM_LISTING_BEGIN_1 */
-template <typename FuncType, typename JacType, typename Scalar, int N = Dynamic,
+template <typename FuncType, typename JacType, typename Scalar, int N = Eigen::Dynamic,
           typename CB = void_cb>
 Vector<Scalar, N> newton_ext(FuncType &F, JacType &DFinv,
                              const Vector<Scalar, N> x0, const double rtol,

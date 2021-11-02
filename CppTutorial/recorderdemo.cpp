@@ -16,7 +16,7 @@ int main(int /*argc*/, char** /*argv*/) {
   std::cout << "myloopfunction(10, 1) = " << myloopfunction(10, 1) << std::endl;
   // Run with recorder
   std::vector<std::pair<int, int>> store{};
-  std::cout << "myloopfunction(10) = "
+  std::cout << "myloopfunction(10, 1) = "
             << myloopfunction(10, 1,
                               [&store](int n, int val) -> void {
                                 store.emplace_back(n, val);

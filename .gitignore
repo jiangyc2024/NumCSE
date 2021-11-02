@@ -61,8 +61,14 @@ main
 /.kdev4/
 /NumCSE.kdev4
 
+# IDE files
+.vscode
+
 # independent testing
 copy.hpp
 
 # macos
 .DS_Store
+
+# upload tool
+geckodriver.log
