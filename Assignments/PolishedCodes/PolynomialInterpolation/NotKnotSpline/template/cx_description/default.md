@@ -1,4 +1,4 @@
-# Problem X-X: Not a Knot Cubic Spline
+# Problem 5-12: Not a Knot Cubic Spline
 
 > For the task description of this exercise, please refer to [NCSE21_Problems.pdf](
 https://www.sam.math.ethz.ch/~grsam/NCSE21/HOMEWORK/NCSE21_Problems.pdf). 
