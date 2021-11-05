@@ -1,7 +1,8 @@
 """
+Author: Heinrich Grattenthaler (hgratten@ethz.ch)
 Runs clang-tidy on NumCSE codes and filters out warnings from selected third-party includes. 
 This script requires exported compile_commands.json from the cmake generation step.
-Usage: python conformance_test.py [-f <file> |-d <directory>] [-p <build_directory>] [--no_filter] [--format]
+Usage: python lint.py [-f <file> |-d <directory>] [-p <build_directory>] [--no_filter] [--format]
 	-f: process only a single file (<file>)
 	-d: process a whole directory (<directory>)
 	neither -f nor -d: process the working directory
@@ -125,11 +126,11 @@ def main( ):
 
 	if len( sys.argv ) >= 3:
 		if sys.argv[ 1 ] == "-f":
-			go( sys.argv[ 2 ] )	
+			go( os.path.abspath( sys.argv[ 2 ] ))	
 		elif sys.argv[ 1 ] == "-d": 
-			go_dir( sys.argv[ 2 ] )
+			go_dir( os.path.abspath( sys.argv[ 2 ] ))
 		else: 
-			go_dir( "." )
+			go_dir( os.path.abspath( "." ))
 	else:
 		go_dir( "." )
 
