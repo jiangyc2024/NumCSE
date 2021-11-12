@@ -59,13 +59,7 @@ void plotInterpolationError() {
 
   // TODO: (6-3.c) generate the plots of error vs number of nodes for f1, f2
   // START
-  Eigen::VectorXd tf1, tf2;      // nodes for f1 resp. f2
-  std::vector<double> ef1, ef2;  // errors for f1 resp. f2
 
-  tf1 = adaptivepolyintp(f1, a, b, tol, N, &ef1);
-  tf2 = adaptivepolyintp(f2, a, b, tol, N, &ef2);
-  Eigen::VectorXd n1 = Eigen::VectorXd::LinSpaced(ef1.size(), 1, ef1.size());
-  Eigen::VectorXd n2 = Eigen::VectorXd::LinSpaced(ef2.size(), 1, ef2.size());
   // Plot
   plt::title("Error VS step");
   plt::xlabel("No. of interpolation nodes");
