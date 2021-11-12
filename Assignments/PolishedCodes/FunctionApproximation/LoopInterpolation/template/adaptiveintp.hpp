@@ -105,7 +105,16 @@ std::pair<std::vector<Vector2d>, std::vector<Vector2d>> adaptedHermiteInterpolan
 void plotKite(const char *filename, double tol = 1.0e-3) {
   // TO DO (5-10.d)
   // START
-  
+
+    // making the plot
+  plt::figure();
+  plt::title("Adapted Interpolation with tol=" + std::to_string(tol));
+  plt::xlabel("x");
+  plt::ylabel("y");
+  plt::plot(x_poly, y_poly, "r", {{"label", "Polygonal Interpolant"}});
+  plt::plot(x_hermite, y_hermite, {{"label", "Hermite Interpolation"}});
+  plt::legend();
+  plt::savefig(filename);  
   // END
   return;
 }
