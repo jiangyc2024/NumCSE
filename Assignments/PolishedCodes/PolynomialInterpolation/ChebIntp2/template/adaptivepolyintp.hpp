@@ -60,7 +60,15 @@ void plotInterpolationError() {
   // TODO: (6-3.c) generate the plots of error vs number of nodes for f1, f2
   // START
 
+  // Plot
+  plt::title("Error VS step");
+  plt::xlabel("No. of interpolation nodes");
+  plt::ylabel("$max |f(t) - I_Tf(t)|$");
+  plt::semilogy(n1, ef1, "ro", {{"label", "$f_1(t) = sin(e^{2t})$"}});
+  plt::semilogy(n2, ef2, "bo", {{"label", "$f_2(t) = \\sqrt{t}/(1 + 16t^2)$"}});
+  plt::legend();
   // END
+
 
   plt::savefig("./cx_out/intperrplot.png");
 }
