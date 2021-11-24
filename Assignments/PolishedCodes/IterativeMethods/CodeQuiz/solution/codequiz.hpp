@@ -14,7 +14,7 @@ double myfunction(double x) {
   // with integer $n$ and $r\in[ 0.5, 1.5 ]$.
   // Set $y = n\log(2)$ and $z=\log(x_{new})$,
   // then $\log(x) = y + z$.
-  const double dy = 0.693147180559945;  // = std::log(2)
+  constexpr double dy = 0.693147180559945;  // = std::log(2)
   double y = 0.;
   // If x $x=2^{n+r}$ with positive $n$:
   while (x > 2. * std::sqrt(2.)) {
@@ -42,7 +42,7 @@ double myfunction(double x) {
 
 /* SAM_LISTING_BEGIN_2 */
 double myfunction_modified(double x) {
-  const double dy = 0.693147180559945;  // = std::log(2)
+  constexpr double dy = 0.693147180559945;  // = std::log(2)
   double y = 0.;
   while (x > 2. * std::sqrt(2.)) {
     x /= 2.;
@@ -54,7 +54,7 @@ double myfunction_modified(double x) {
   }
   double z = x - 1.;
   double dz = x * std::exp(-z) - 1.;
-  // TODO: (9-2.e) Write a for-loop that achieves the same accuracy
+  // TODO: (8-2.e) Write a for-loop that achieves the same accuracy
   // as the third while-loop of myfunction(). I.e. fix the number of
   // iterations before looping.
   // START
