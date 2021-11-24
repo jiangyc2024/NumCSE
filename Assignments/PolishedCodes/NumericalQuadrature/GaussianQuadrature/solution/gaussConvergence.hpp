@@ -23,7 +23,7 @@ template <class Function>
 double integrate(const QuadRule& qr, const Function& f) {
   double I = 0;
 
-  // TODO: (8-1.a) optional: compute the integral with this helper function
+  // TODO: (7-1.a) optional: compute the integral with this helper function
   // START
 
   // Compute weighted sum of function values according to
@@ -55,7 +55,7 @@ double gaussConv(const Function& fh, const double I_ex, const unsigned N) {
   double I_N = 0.;  // best approx. of integral
   plt::figure();
 
-  // TODO: (8-1.a) write code that plots the no. of nodes versus the error
+  // TODO: (7-1.a) write code that plots the no. of nodes versus the error
   //               using matplotlibcpp and returns the best approximation
   // START
 
@@ -110,7 +110,7 @@ double gaussConvCV(const Function& f, const double I_ex, const unsigned N) {
   double I_N = 0.;  // best approx. of integral
   plt::figure();
 
-  // TODO: (8-1.d) complete to perform Gauss-Legendre quadrature with the
+  // TODO: (7-1.d) complete to perform Gauss-Legendre quadrature with the
   //               variable transform of the integral derived in 8-1.c)
   //               write code that plots the no. of nodes versus the error
   //               using matplotlibcpp and returns the best approximation
