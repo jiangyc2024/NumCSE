@@ -1,4 +1,4 @@
-# Problem X-X: Clenshaw Curtis Fejer Quadrature Rule
+# Problem 7-12: Clenshaw Curtis Fejer Quadrature Rule
 
 > For the task description of this exercise, please refer to [NCSE21_Problems.pdf](
 https://www.sam.math.ethz.ch/~grsam/NCSE21/HOMEWORK/NCSE21_Problems.pdf). 
