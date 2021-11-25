@@ -17,14 +17,14 @@ public:
   // Hint: there is no need to implement a constructor
   // since info is initialized as empty vector by default.
 
-  // TODO: (9-4.c) overload the operator() so that it adds its argument to
+  // TODO: (8-4.c) overload the operator() so that it adds its argument to
   // the member "info".
   void operator()(T val) {
     // START
     info.push_back(val);
     // END
   }
-  // TODO: (9-4.c) Define a member function that fetches the data contained in "info".
+  // TODO: (8-4.c) Define a member function that fetches the data contained in "info".
   // START
   std::vector<T> getInfo(void) { return info; }
   // END
@@ -47,7 +47,7 @@ template <class Function>
 double steffensen(Function &&f, double x0) {
   double x_old = x0;
   double x = x0;
-  // TODO: (9-4.a) implement the Steffensen's method for a function f
+  // TODO: (8-4.a) implement the Steffensen's method for a function f
   // START
   double upd = 1;
   constexpr double eps = std::numeric_limits<double>::epsilon();
@@ -69,7 +69,7 @@ double steffensen(Function &&f, double x0) {
 
 /* SAM_LISTING_BEGIN_1 */
 void testSteffensen(void) {
-  // TODO: (9-4.b) write a test of your implementation, that prints
+  // TODO: (8-4.b) write a test of your implementation, that prints
   // an estimate of the zero of $f(x) = xe^x - 1$
   // START
   const double x =
@@ -85,12 +85,12 @@ void testSteffensen(void) {
  *! @param[out] x Final estimation returned by the Steffensen's method
  */
 /* SAM_LISTING_BEGIN_3 */
-template <class Function>
+template <class Function, class LoggerType>
 double steffensen_log(Function &&f, double x0,
-                      Logger<double> *logger_p = nullptr) {
+                      LoggerType logger_p = nullptr) {
 
   double x = x0;
-  // TODO: (9-4.c) Modify the function steffensen: use the class Logger to
+  // TODO: (8-4.c) Modify the function steffensen: use the class Logger to
   // save all the iterations x of the Steffensen's method.
   // START
   bool log_enabled = false;
@@ -123,7 +123,7 @@ double steffensen_log(Function &&f, double x0,
 void orderSteffensen(void) {
   auto f = [](double x) { return x * std::exp(x) - 1; };
   constexpr double x_star = 0.567143290409784; // use as exact value
-  // TODO: (9-4.c) tabulate values from which you can read the
+  // TODO: (8-4.c) tabulate values from which you can read the
   // order of Steffensen's method.
   // Hint: to approximate the convergence rate, use the formula
   // $(\log(e_i) - \log(e_{i-1}))/ (\log(e_{i-1}) - \log(e_{i-2}))$

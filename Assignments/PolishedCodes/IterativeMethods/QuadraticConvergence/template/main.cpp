@@ -1,5 +1,5 @@
 ///
-/// Minimal runner for (9-4) A derivative-free iterative scheme for finding zeros
+/// Minimal runner for (8-4) A derivative-free iterative scheme for finding zeros
 ///
 
 #include <cmath>
