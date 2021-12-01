@@ -5,14 +5,14 @@
 #include <vector>
 
 /**
- * @brief Guesses the maximal order of convergence, using 10 iterations in default
+ * @brief Guesses the maximal order of convergence, using 20 iterations in default
  * @param[in] n the number of iterations
  * @returns the order of the method
  */
 /* SAM_LISTING_BEGIN_1 */
-double testOrder(const unsigned int n = 10) {
+double testOrder(const unsigned int n = 20) {
   double order = 0;
-  // TODO: (8-6.a) Compute the order of the method using recursion (9.6.1)
+  // TODO: (8-6.a) Compute the order of the method using recursion (8.6.1)
   // Use as initial error guess $e_1 = 1$ and $e_2 = 0.8$
   // START
   std::vector<double> e(n), loge(n);

@@ -7,5 +7,5 @@
 #include "recursionorder.hpp"
 
 int main() {
-  std::cout << "Order for 10 iterates: " << testOrder() << std::endl;
+  std::cout << "Order for 20 iterates: " << testOrder() << std::endl;
 }
