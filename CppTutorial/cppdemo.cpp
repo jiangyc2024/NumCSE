@@ -2,15 +2,19 @@
 // Testing of C++11 festures
 // **********************************************************************
 
-#include <assert.h>
+#include <cassert>
 
 #include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <iostream>
+#include <memory>
 #include <utility>
 #include <vector>
 
-using namespace std;
+using std::cout;
+using std::cerr;
+using std::endl;
 
 // Concatenation of sequential containers
 
@@ -27,27 +31,38 @@ class ConcatIterator {
   using iterator_category = typename si_t::iterator_category;
 
   ConcatIterator(const SEQ &s1_, const SEQ &s2_, it_t it_)
-      : s1(s1_), s2(s2_), it(it_) {}
+      : s1(&s1_), s2(&s2_), it(it_) {}
   ConcatIterator(const ConcatIterator &ci) : s1(ci.s1), s2(ci.s2), it(ci.it) {}
+  ConcatIterator(ConcatIterator &&) noexcept = default;
+  ~ConcatIterator() = default;
   ConcatIterator &operator=(const ConcatIterator &ci) {
-    // This does not compile
-    // s1=ci.s1; s2=ci.s2; it = ci.it;
+
+    if(this == &ci) { 
+      return *this;
+    }
+
+    s1 = ci.s1; 
+    s2 = ci.s2; 
+    it = ci.it;
     return *this;
   }
+  ConcatIterator &operator=(ConcatIterator &&) noexcept = default;
   bool operator==(const ConcatIterator<SEQ> &ci) const { return (it == ci.it); }
   bool operator!=(const ConcatIterator<SEQ> &ci) const {
     return !(operator==(ci));
   }
   ConcatIterator &operator++() {
-    if (++it == s1.end()) it = s2.begin();
+    if (++it == s1->end()) {
+      it = s2->begin();
+    }
     return *this;
   }
   ConcatIterator &operator++(int) {
-    auto tmp = this;
+    auto tmp = *this;
     operator++();
-    return *tmp;
+    return tmp;
   }
-  ConcatIterator &operator+=(inc_t i) {
+  ConcatIterator operator+=(inc_t i) {
     while (i--) {
       operator++();
     }
@@ -57,7 +72,10 @@ class ConcatIterator {
   it_t operator->() const { return it; }
 
  private:
-  const SEQ &s1, &s2;
+
+  //std::max_element requires operator=, which cannot be implemented with const &
+  const SEQ * s1;
+  const SEQ * s2;
   it_t it;
 };
 
@@ -70,32 +88,35 @@ class Concat {
   using difference_type = typename SEQ::difference_type;
   using size_type = typename SEQ::size_type;
   Concat(const SEQ &s1_, const SEQ &s2_) : s1(s1_), s2(s2_) {}
-  const_iterator begin(void) const {
+  [[nodiscard]] const_iterator begin() const {
     return ConcatIterator<SEQ>(s1, s2, s1.begin());
   }
-  const_iterator end(void) const {
+  [[nodiscard]] const_iterator end() const {
     return ConcatIterator<SEQ>(s1, s2, s2.end());
   }
-  size_type size(void) const { return (s1.size() + s2.size()); }
+  [[nodiscard]] size_type size() const { return (s1.size() + s2.size()); }
 
  private:
   const SEQ &s1, &s2;
 };
 
-void concattest(void) {
-  using cv_t = Concat<vector<double>>;
-  vector<double> v1 = {1.5, 2.5, 3.5, 4.5};
-  vector<double> v2 = {7.0, 8.0, 9.0, 10.0};
+void concattest() {
+  using cv_t = Concat<std::vector<double>>;
+  std::vector<double> v1 = {1.5, 2.5, 3.5, 4.5};
+  std::vector<double> v2 = {7.0, 8.0, 9.0, 10.0};
   cv_t cv(v1, v2);
-  for (typename cv_t::const_iterator it = cv.begin(); it != cv.end(); ++it)
+  for (typename cv_t::const_iterator it = cv.begin(); it != cv.end(); ++it){ //NOLINT(modernize-loop-convert)
     cout << *it << ", " << endl;
+  }
   cout << "range loop: ";
-  for (auto &&x : cv) cout << x << ", ";
+  for (auto &&x : cv) {
+    cout << x << ", ";
+  }
   cout << endl;
   double s = 0.0;
-  for_each(cv.begin(), cv.end(), [&s](double x) { s += x; });
+  std::for_each(cv.begin(), cv.end(), [&s](double x) { s += x; });
   cout << "sum = " << s << endl;
-  cout << "max = " << *max_element(cv.begin(), cv.end()) << endl;
+  cout << "max = " << *std::max_element(cv.begin(), cv.end()) << endl;
 }
 
 // Template deduction through constructor
@@ -103,14 +124,11 @@ template <typename T>
 class MyClsTempl {
  public:
   using type_t = T;
-  MyClsTempl(void) { ptr = nullptr; }
-  MyClsTempl(T &x) { ptr = &x; }
+  MyClsTempl() { ptr = nullptr; }
+  explicit MyClsTempl(T &x) { ptr = &x; }
   template <typename U>
-  T memfn(const T &x, const U &y) const {
-    if (x == y)
-      return (x);
-    else
-      return *ptr;
+  [[nodiscard]] T memfn(const T &x, const U &y) const {
+    return x == y ? x : *ptr;
   }
 
  private:
@@ -127,19 +145,19 @@ VectorType saxpy(ScalarType alpha, const VectorType &x, const VectorType &y) {
 
 double binop(double arg1, double arg2) { return (arg1 / arg2); }
 
-void functionwrapper(void) {
+void functionwrapper() {
   std::vector<std::function<double(double, double)>> fnvec;
-  fnvec.push_back(binop);
-  fnvec.push_back([](double x, double y) -> double { return y / x; });
+  fnvec.emplace_back(binop);
+  fnvec.emplace_back([](double x, double y) -> double { return y / x; });
 
-  for (auto fn : fnvec) {
+  for (auto const & fn : fnvec) {
     std::cout << fn(3, 2) << std::endl;
   }
 }
 
 // Initializer list
 void initlist(int n = 42) {
-  for (long int i : {2, 3, 4, 5, 6, 7, 8, 9, n}) {
+  for (int64_t i : {2, 3, 4, 5, 6, 7, 8, 9, n}) {
     std::cout << i << std::endl;
   }
 }
@@ -152,59 +170,78 @@ void printElements(const T &coll) {
   }
 }
 
+//using gsl::owner without actual Guideline Support Library
+namespace gsl { 
+
+  template<class T>
+  using owner = T; 
+} //namespace gsl
+
 // move semantics
 class X {
  public:
-  X(void) : n(0), data(nullptr) {}
+  X() = default;
 
   // Range initialization
   template <typename It>
-  X(It begin, It end) : n(0) {
+  X(It begin, It end) {
     using value_t = typename It::value_type;
     std::vector<value_t> tmp;
-    for (auto it = begin; it != end; ++it, n++) tmp.push_back(*it);
+    for (auto it = begin; it != end; ++it, n++) {
+      tmp.push_back(*it);
+    }
     data = new double[n];
-    for (int l = 0; l < n; l++) data[l] = tmp[l];
+    for (int l = 0; l < n; l++) { 
+      data[l] = tmp[l];
+    }
   }
 
   // Initialization from a collection
   template <typename Coll>
-  X(const Coll &c) : n(c.size()), data(new double[n]) {
-    double *tmp = data;
-    for (auto i : c) {
-      *tmp++ = i;
+  explicit X(const Coll &c) : n(c.size()), data(new double[n]) {
+    size_t i = 0;
+    for (auto x : c) {
+      data[ i ] = x;
+      i ++;
     }
   }
   // Copy constructor
   X(const X &x) : n(x.n), data(new double[n]) {
     cout << "X copy constructor: n = " << n << endl;
-    for (int l = 0; l < n; l++) data[l] = x.data[l];
+    for (int l = 0; l < n; l++) {
+      data[l] = x.data[l];
+    }
   }
 
   // Move constructor
-  X(X &&x) : n(x.n), data(x.data) {
+  X(X &&x) noexcept : n(x.n), data(x.data) {
     cout << "X move constructor: n = " << n << endl;
     x.n = 0;
     x.data = nullptr;
   }
 
-  virtual ~X(void) {
+  virtual ~X() {
     cout << "X destructor: n = " << n << endl;
-    if (data != nullptr) delete[] data;
+    delete[] data;
   }
 
   X &operator=(const X &x) {
     cout << "X assignment: n = " << x.n << endl;
-    if (data != nullptr) delete[] data;
+    if(this == &x) { 
+      return *this;
+    }
+    delete[] data;
     n = x.n;
     data = new double[n];
-    for (int l = 0; l < n; l++) data[l] = x.data[l];
+    for (int l = 0; l < n; l++) {
+      data[l] = x.data[l];
+    }
     return *this;
   }
 
-  X &operator=(X &&x) {
+  X &operator=(X &&x) noexcept {
     cout << "X assign & move: n = " << n << ", x.n = " << x.n << endl;
-    if (data != nullptr) delete[] data;
+    delete[] data;
     // Stealing the pointers from Rvalue object
     n = x.n;
     data = x.data;
@@ -213,16 +250,18 @@ class X {
     return *this;
   }
 
-  friend ostream &operator<<(ostream &o, const X &);
+  friend std::ostream &operator<<(std::ostream &o, const X &x);
 
  private:
-  int n;
-  double *data;
+  int n {0};
+  gsl::owner<double*> data {nullptr};
 };
 
-ostream &operator<<(ostream &o, const X &x) {
+std::ostream &operator<<(std::ostream &o, const X &x) {
   o << '[';
-  for (int l = 0; l < x.n; l++) o << x.data[l] << ' ';
+  for (int l = 0; l < x.n; l++) {
+    o << x.data[l] << ' ';
+  }
   return o << "] ";
 }
 
@@ -242,65 +281,71 @@ std::tuple<T, T, std::vector<T>> extcumsum(const std::vector<T> &v) {
                           std::move(w)));
 }
 
-void extcumsumdemo(void) {
+void extcumsumdemo() {
   // initialize a vector from an initializer list
   std::vector<double> v({1.2, 2.3, 3.4, 4.5, 5.6, 6.7, 7.8});
   // Variables for return values
-  double minv, maxv;       // Extremal elements
+  double minv(0);
+  double maxv(0);       // Extremal elements
   std::vector<double> cs;  // Cumulative sums
   std::tie(minv, maxv, cs) = extcumsum(v);
   cout << "min = " << minv << ", max = " << maxv << endl;
   cout << "cs = [ ";
-  for (double x : cs) cout << x << ' ';
+  for (double x : cs) {
+    cout << x << ' ';
+  }
   cout << "]" << endl;
 }
 
-void newextcumsumdemo(void) {
+void newextcumsumdemo() {
   // initialize a vector from an initializer list
   std::vector<double> v({1.2, 2.3, 3.4, 4.5, 5.6, 6.7, 7.8});
   // Definition and assignment of multiple return variables
   auto [minv, maxv, cs] = extcumsum(v);
   cout << "min = " << minv << ", max = " << maxv << endl;
   cout << "cs = [ ";
-  for (double x : cs) cout << x << ' ';
+  for (double x : cs) {
+    cout << x << ' ';
+  }
   cout << "]" << endl;
 }
 
 // Returning several objects
-std::tuple<string, X, std::size_t> multireturn(const std::vector<double> &v) {
-  std::tuple<string, X, std::size_t> t("tuple", X(v.begin(), v.end()),
+std::tuple<std::string, X, std::size_t> multireturn(const std::vector<double> &v) {
+  std::tuple<std::string, X, std::size_t> t("tuple", X(v.begin(), v.end()),
                                        v.size());
-  return (std::move(t));
+  return t;
 }
 
-void tupletest_copy(void) {
+void tupletest_copy() {
   cout << "Testing tuples: copy" << endl;
   std::vector<double> v({1.2, 2.3, 3.4, 4.5});
   // Variables for return values
-  string s;
+  std::string s{};
   X x{};
-  std::size_t sz;
+  std::size_t sz(0);
 
-  std::tuple<string, X, std::size_t> t(multireturn(v));
+  std::tuple<std::string, X, std::size_t> t(multireturn(v));
   cout << "X(tuple) = " << std::get<1>(t) << endl;
   std::tie(s, x, sz) = t;
   cout << "s = " << s << ", x = " << x << ", sz = " << sz << endl;
 }
 
-void tupletest_move(void) {
+void tupletest_move() {
   cout << "Testing tuples: move" << endl;
   std::vector<double> v({1.2, 2.3, 3.4, 4.5});
   // Variables for return values
-  string s{};
+  std::string s{};
   X x{};
-  std::size_t sz;
+  std::size_t sz(0);
 
+  //NOLINTNEXTLINE clang-diagnostic-pessimizing-move
   std::tie(s, x, sz) = std::move(multireturn(v));
   cout << "s = " << s << ", x = " << x << ", sz = " << sz << endl;
 }
 
 // Demonstration of lambda function and transform algorithm
-void lambdademo(void) {
+void lambdademo() {
   // initialize a vector from an initializer list
   std::vector<double> v({1.2, 2.3, 3.4, 4.5, 5.6, 6.7, 7.8});
   // A vector of the same length
@@ -312,17 +357,20 @@ void lambdademo(void) {
     return sum;
   });
   cout << "sum = " << sum << ", w = [ ";
-  for (auto x : w) cout << x << ' ';
+  for (auto x : w) {
+    cout << x << ' ';
+  }
   cout << ']' << endl;
 }
 
 int main(int argc, char **argv) {
   cout << "Testing of C++11 features" << endl;
+  int64_t code(0);
   if (argc != 2) {
-    cerr << "Usage: " << argv[0] << " <selection>" << endl;
-    return (-1L);
+    cerr << "Usage: " << argv[0] << " <selection>" << endl; //NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+    code = -1L;
   } else {
-    const int sel = atoi(argv[1]);
+    const auto sel = std::strtol(argv[1], nullptr, 10); //NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
     switch (sel) {
       case 8: {
         extcumsumdemo();
@@ -344,7 +392,7 @@ int main(int argc, char **argv) {
         std::vector<double> v({1.2, 2.3, 3.4, 4.5});
         X x(v);
         X y(std::move(x));
-        cout << "x = " << x << "y = " << y << endl;
+        cout << "x = " << x << "y = " << y << endl; //NOLINT(bugprone-use-after-move,hicpp-invalid-access-moved)
         break;
       }
       case 4: {
@@ -379,5 +427,5 @@ int main(int argc, char **argv) {
       }
     }
   }
-  return (0);
+  return code;
 }

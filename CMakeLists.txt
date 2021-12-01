@@ -35,7 +35,9 @@ if(TIDY)
         -*-magic-numbers, \
         -modernize-use-trailing-return-type, \
         -cppcoreguidelines-pro-bounds-array-to-pointer-decay, \
-        -google-runtime-references"
+        -google-runtime-references, \
+        -fuchsia-overloaded-operator, \
+        -cert-dcl21-cpp"
     )
     message( "clang-tidy enabled" )
 else()

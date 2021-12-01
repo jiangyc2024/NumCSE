@@ -29,3 +29,13 @@ google-runtime-references
 =========================
 
 This check was removed in the Google C++ style guide and is obsolete.
+
+fuchsia-overloaded-operator
+===========================
+
+Operator overloading is required for user-facing (demo) code or when using the std library for our custom data structures.
+
+cert-dcl21-cpp
+==============
+
+Warns on non-constant object returned from postfix operator, because it should be considered a temporary object. This is a controversial check to begin with and further justification is inaccessable. It also directly collides with a check for top-level const return types.
