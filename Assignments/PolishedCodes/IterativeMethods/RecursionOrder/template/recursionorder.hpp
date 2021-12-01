@@ -12,10 +12,10 @@
 /* SAM_LISTING_BEGIN_1 */
 double testOrder(const unsigned int n = 10) {
   double order = 0;
-  // TODO: (9-6.a) Compute the order of the method using recursion (9.6.1)
-  // Use as initial error guess e_1 = 1 and e_2 = 0.8
+  // TODO: (8-6.a) Compute the order of the method using recursion (9.6.1)
+  // Use as initial error guess $e_1 = 1$ and $e_2 = 0.8$
   // START
-  
+
   // END
   return order;
 }

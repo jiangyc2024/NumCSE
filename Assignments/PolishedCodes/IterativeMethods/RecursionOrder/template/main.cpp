@@ -1,5 +1,5 @@
 ///
-/// Minimal runner for (9-6.a)
+/// Minimal runner for (8-6.a)
 ///
 
 #include <iostream>
