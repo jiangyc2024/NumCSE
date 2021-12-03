@@ -11,6 +11,7 @@
 
 namespace plt = matplotlibcpp;
 
+/* SAM_LISTING_BEGIN_0 */
 void kminplot() {
   constexpr double p = 1.5;
   constexpr double C = 2.;
@@ -19,11 +20,12 @@ void kminplot() {
 
   plt::figure();
 
-  // TODO: (9-5.c) Plot kmin using matplotlibcpp. To that end, start by creating
-  // a mesh using the provided meshgrid function in meshgrid.hpp. START
+  // TODO: (8-5.c) Plot kmin using matplotlibcpp. To that end, start by creating
+  // a mesh using the provided meshgrid function in meshgrid.hpp.
+  // START
 
   // END
   plt::savefig("./cx_out/k_min.png");
 }
-
+/* SAM_LISTING_END_0 */
 #endif
