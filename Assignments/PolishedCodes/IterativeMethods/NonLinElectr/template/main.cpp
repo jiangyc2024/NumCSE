@@ -1,5 +1,5 @@
 ///
-/// Minimal runner for (9-7)
+/// Minimal runner for (8-7)
 ///
 
 #include <Eigen/Dense>
