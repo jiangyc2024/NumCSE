@@ -58,16 +58,15 @@ inline Eigen::MatrixXd lsqNRM(const Eigen::MatrixXd& A,
  * @return Eigen::Vector3d (m_1, m_2, r) - circle description
  */
 /* SAM_LISTING_BEGIN_1 */
-Eigen::Vector3d circl_alg_fit(const Eigen::VectorXd& x,
-                              const Eigen::VectorXd& y) {
+Eigen::Vector3d circl_alg_fit(const Eigen::VectorXd& x, const Eigen::VectorXd& y) {
   Eigen::Vector3d z = Eigen::VectorXd::Zero(3);
   assert(x.size() == y.size() && "Size mismatch!");
   const unsigned int n = x.size();
 
   // TODO: (8-12.b) Fit the circle in the least squares sense.
   // START
-
   // END
+  
   return z;
 }
 /* SAM_LISTING_END_1 */
@@ -90,7 +89,6 @@ void circl_geo_fit_GN(const Eigen::VectorXd& x, const Eigen::VectorXd& y,
 
   // TODO: (8-12.e) Use the Gauss-Newton method to compute the geometric fit.
   // START
-
   // END
 }
 /* SAM_LISTING_END_2 */
@@ -113,7 +111,6 @@ void circl_geo_fit_N(const Eigen::VectorXd& x, const Eigen::VectorXd& y,
 
   // TODO: (8-12.f) Use the Newton method to compute the geometric fit.
   // START
-
   // END
 }
 /* SAM_LISTING_END_3 */
@@ -131,7 +128,6 @@ void compare_convergence(const Eigen::VectorXd& x, const Eigen::VectorXd& y) {
   // TODO: (8-12.g) Plot both errors using matplotlibcpp. Don't forget to use a
   // sensible axes scaling.
   // START
-
   // END
   plt::savefig("./cx_out/convergence.png");
 }
@@ -154,7 +150,6 @@ Eigen::Vector3d circl_svd_fit(const Eigen::VectorXd& x,
 
   // TODO: (8-12.i) Fit the circle using the constrained method and SVD.
   // START
-
   // END
   return ret;
 }
@@ -179,7 +174,7 @@ void plot(const Eigen::VectorXd& x, const Eigen::VectorXd& y,
           const Eigen::Vector3d& z_geo_N, const Eigen::Vector3d& z_svd) {
   plt::figure();
   constexpr unsigned int N = 100;  // number of sample points
-  // TODO: (8-12.j) Plot the data points in x, y as well as the fitted circles
+  // (8-12.j) Plot the data points in x, y as well as the fitted circles
   // using matplotlibcpp and output the circle centers and radii.
   plt::plot(x, y, "ok", {{"label", "data points"}});
 
