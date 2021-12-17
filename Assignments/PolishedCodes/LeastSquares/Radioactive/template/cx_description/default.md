@@ -1,7 +1,7 @@
-# Problem 9-11: Radioactive decay
+# Problem 8-11: Radioactive decay
 
-> For the task description of this exercise, please refer to [NCSE20_Problems.pdf](
-https://www.sam.math.ethz.ch/~grsam/NCSE20/HOMEWORK/NCSE20_Problems.pdf). 
+> For the task description of this exercise, please refer to [NCSE21_Problems.pdf](
+https://www.sam.math.ethz.ch/~grsam/NCSE21/HOMEWORK/NCSE21_Problems.pdf). 
 
 > Open `radioactive.hpp` and `main.cpp` and fill in the missing code in between the delimiters `// START` and `// END` according to the instructions preceded by `// TO DO:`.
 
