@@ -58,13 +58,12 @@ inline Eigen::MatrixXd lsqNRM(const Eigen::MatrixXd& A,
  * @return Eigen::Vector3d (m_1, m_2, r) - circle description
  */
 /* SAM_LISTING_BEGIN_1 */
-Eigen::Vector3d circl_alg_fit(const Eigen::VectorXd& x,
-                              const Eigen::VectorXd& y) {
+Eigen::Vector3d circl_alg_fit(const Eigen::VectorXd& x, const Eigen::VectorXd& y) {
   Eigen::Vector3d z = Eigen::VectorXd::Zero(3);
   assert(x.size() == y.size() && "Size mismatch!");
   const unsigned int n = x.size();
 
-  // TODO: (9-12.b) Fit the circle in the least squares sense.
+  // TODO: (8-12.b) Fit the circle in the least squares sense.
   // START
   Eigen::MatrixXd A(n, 3);
   A << -2. * x, -2. * y, -Eigen::VectorXd::Ones(n);
@@ -74,6 +73,7 @@ Eigen::Vector3d circl_alg_fit(const Eigen::VectorXd& x,
   z = lsqHHR(A, b);  // lsqSVD(A, b); lsqNRM(A, b);
   z(2) = std::sqrt(z(2) + z(0) * z(0) + z(1) * z(1));
   // END
+  
   return z;
 }
 /* SAM_LISTING_END_1 */
@@ -94,7 +94,7 @@ void circl_geo_fit_GN(const Eigen::VectorXd& x, const Eigen::VectorXd& y,
   const unsigned int n = x.size();
   constexpr double tol = 1e-14;
 
-  // TODO: (9-12.e) Use the Gauss-Newton method to compute the geometric fit.
+  // TODO: (8-12.e) Use the Gauss-Newton method to compute the geometric fit.
   // START
   // the radius
   auto R = [&x, &y](const Eigen::Vector3d& z) -> Eigen::ArrayXd {
@@ -145,7 +145,7 @@ void circl_geo_fit_N(const Eigen::VectorXd& x, const Eigen::VectorXd& y,
   const unsigned int n = x.size();
   constexpr double tol = 1e-14;
 
-  // TODO: (9-12.f) Use the Newton method to compute the geometric fit.
+  // TODO: (8-12.f) Use the Newton method to compute the geometric fit.
   // START
   auto gradPhi = [&n](const Eigen::Vector3d& z, const Eigen::ArrayXd& xm,
                       const Eigen::ArrayXd& ym,
@@ -203,7 +203,7 @@ void circl_geo_fit_N(const Eigen::VectorXd& x, const Eigen::VectorXd& y,
 /* SAM_LISTING_BEGIN_4 */
 void compare_convergence(const Eigen::VectorXd& x, const Eigen::VectorXd& y) {
   plt::figure();
-  // TODO: (9-12.g) Plot both errors using matplotlibcpp. Don't forget to use a
+  // TODO: (8-12.g) Plot both errors using matplotlibcpp. Don't forget to use a
   // sensible axes scaling.
   // START
 
@@ -249,7 +249,7 @@ Eigen::Vector3d circl_svd_fit(const Eigen::VectorXd& x,
   assert(N == y.size() && "Size mismatch!");
   Eigen::Vector3d ret = Eigen::VectorXd::Zero(3);
 
-  // TODO: (9-12.i) Fit the circle using the constrained method and SVD.
+  // TODO: (8-12.i) Fit the circle using the constrained method and SVD.
   // START
   const Eigen::ArrayXd x_ = x.array();
   const Eigen::ArrayXd y_ = y.array();
@@ -261,7 +261,7 @@ Eigen::Vector3d circl_svd_fit(const Eigen::VectorXd& x,
   Eigen::JacobiSVD<Eigen::MatrixXd> svd(A, Eigen::ComputeThinV);
   Eigen::MatrixXd V = svd.matrixV();
 
-  // formulas from (9-12.h)
+  // formulas from (8-12.h)
   ret(0) = -V(1, 3) / (2. * V(0, 3));
   ret(1) = -V(2, 3) / (2. * V(0, 3));
   ret(2) = std::sqrt((V(1, 3) * V(1, 3) + V(2, 3) * V(2, 3)) /
@@ -286,15 +286,13 @@ Eigen::Vector3d circl_svd_fit(const Eigen::VectorXd& x,
  * @param z_svd (m_1, m_2, r) - circle description as given by constrained fit
  * using SVD
  */
-/* SAM_LISTING_BEGIN_6 */
 void plot(const Eigen::VectorXd& x, const Eigen::VectorXd& y,
           const Eigen::Vector3d& z_alg, const Eigen::Vector3d& z_geo_GN,
           const Eigen::Vector3d& z_geo_N, const Eigen::Vector3d& z_svd) {
   plt::figure();
   constexpr unsigned int N = 100;  // number of sample points
-  // TODO: (9-12.j) Plot the data points in x, y as well as the fitted circles
+  // (8-12.j) Plot the data points in x, y as well as the fitted circles
   // using matplotlibcpp and output the circle centers and radii.
-  // START
   plt::plot(x, y, "ok", {{"label", "data points"}});
 
   // sample with 100 angles
@@ -344,9 +342,8 @@ void plot(const Eigen::VectorXd& x, const Eigen::VectorXd& y,
   plt::legend();
   plt::xlabel("x");
   plt::ylabel("y");
-  // END
+
   plt::savefig("./cx_out/comparison.png");
 }
-/* SAM_LISTING_END_6 */
 
 #endif
