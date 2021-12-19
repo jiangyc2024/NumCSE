@@ -39,3 +39,8 @@ cert-dcl21-cpp
 ==============
 
 Warns on non-constant object returned from postfix operator, because it should be considered a temporary object. This is a controversial check to begin with and further justification is inaccessable. It also directly collides with a check for top-level const return types.
+
+llvm-header-guard
+=================
+
+Almost all compilers support "#pragma once" and the check clashes with dcl51-cpp (reserved identifiers).

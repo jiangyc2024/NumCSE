@@ -201,7 +201,7 @@ class X {
   explicit X(const Coll &c) : n(c.size()), data(new double[n]) {
     size_t i = 0;
     for (auto x : c) {
-      data[ i ] = x;
+      data[i] = x;
       i ++;
     }
   }

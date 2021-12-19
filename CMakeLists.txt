@@ -29,7 +29,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 # enable linting next to compile
 set(TIDY FALSE CACHE BOOL "whether to enable linting")
 if(TIDY)
-    set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-system-headers=0;-checks=*, \
+    set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-header-filter=.;-system-headers=0;-checks=*, \
         -llvmlibc-*, \
         -fuchsia-default-arguments-*, \
         -*-magic-numbers, \
@@ -37,7 +37,8 @@ if(TIDY)
         -cppcoreguidelines-pro-bounds-array-to-pointer-decay, \
         -google-runtime-references, \
         -fuchsia-overloaded-operator, \
-        -cert-dcl21-cpp"
+        -cert-dcl21-cpp, \
+        -llvm-header-guard"
     )
     message( "clang-tidy enabled" )
 else()
