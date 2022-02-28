@@ -7,22 +7,30 @@
 //////////////////////////////////////////////////////////////////////////
 
 #pragma once
+#include <Eigen/Dense>
+#include <iomanip>
 #include <ios>
 #include <iostream>
-#include <iomanip>
-
-#include <Eigen/Dense>
 
 #include "gramschmidt.hpp"
 
-using namespace Eigen;
-using namespace std;
+namespace gsroundoff {
 
+
+using Eigen::MatrixXd;
+using Eigen::Upper;
+using Eigen::HouseholderQR;
+using std::cout;
+using std::endl;
+using std::scientific;
+using std::setprecision;
+using std::fixed;
 
 //! \eigen{} Function demonstrating the effect of roundoff on the result
 //! of Gram-Schmidt orthogonalization
 //! A is 10x10 special matrix the so-called \href{https://en.wikipedia.org/wiki/Hilbert_matrix}{Hilbert matrix}:
 //! $\MAc{i}{j} = (i+j-1)^{-1}$
+inline
 /* SAM_LISTING_BEGIN_0 */
 void gsroundoff(MatrixXd& A){
   // Gram-Schmidt orthogonalization of columns of A, see \cref{cpp:gramschmidt}
@@ -42,3 +50,6 @@ void gsroundoff(MatrixXd& A){
   cout << scientific << "A-Q1*R1 = " << endl << A-Q1*R1 << endl; 
 }
 /* SAM_LISTING_END_0 */
+
+
+} //namespace gsroundoff

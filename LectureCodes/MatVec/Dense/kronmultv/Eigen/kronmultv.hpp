@@ -8,10 +8,6 @@
 
 #pragma once
 
-#include <Eigen/Dense>
-
-using namespace Eigen;
-
 //! @brief Multiplication of Kronecker product with vector $y = (A \otimes B)x$. Elegant way using reshape
 //! WARNING: using Matrix::Map we assume the matrix is in ColMajor format, *beware* you may incur bugs if matrix is in RowMajor isntead
 //! @param[in] A Matrix $m \times n$

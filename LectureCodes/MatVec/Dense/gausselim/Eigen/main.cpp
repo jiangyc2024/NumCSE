@@ -26,7 +26,7 @@ int main () {
 			9, 0, 1, 9;
 	std::cout << "A=\n" << A << std::endl << "B=\n"<< B << std::endl;
 	Eigen::MatrixXd X(n,m);
-	gausselimsolvemult(A, B, X);
+	gausselimsolvemult::gausselimsolvemult(A, B, X);
 	std::cout << "X=\n" << X << std::endl;
 	return 0;
 }

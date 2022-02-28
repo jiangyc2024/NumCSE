@@ -44,3 +44,23 @@ llvm-header-guard
 =================
 
 Almost all compilers support "#pragma once" and the check clashes with dcl51-cpp (reserved identifiers).
+
+readability-identifier-length
+=============================
+
+In mathematical codes, we need short identifiers to link variables to symbols in mathematical formulas.
+
+altera-id-dependent-backward-branch
+===================================
+
+This seems to be a buggy check. Issue: https://github.com/llvm/llvm-project/issues/52790
+
+altera-unroll-loops
+===================
+
+Only relevant for high-performance OpenCL kernel code. We probably do not want to bother students with these concepts by putting #pragma unroll everywhere.
+
+bugprone-easily-swappable-parameters.MinimumLength = 3
+======================================================
+
+Due to the nature of mathematical codes, we often have binary operators on the same type.
