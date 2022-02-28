@@ -1,0 +1,9 @@
+#! /bin/bash
+
+#cheat the docker build context to be the whole repository
+cd "$(dirname $0)/.."
+cp Clang-tidy/Dockerfile .
+docker build -t numcse_tidy .
+rm Dockerfile
+
+docker run -it --cpus="7" -v $(pwd):/numcse numcse_tidy /bin/bash
