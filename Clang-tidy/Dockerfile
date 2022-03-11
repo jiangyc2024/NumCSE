@@ -13,9 +13,13 @@ run ln -s /usr/bin/clang-tidy-15 /usr/bin/clang-tidy
 
 #temporarily cmake on a copy of the repository
 copy . ./numcse
-run ls
 run mkdir /build
 workdir /build
-run cmake -DTIDY=true /numcse
-run make -j7 Eigen
+run cmake -DTIDY=TRUE /numcse
+
+#compile Eigen before everything else so we can iterate faster with the full number of cores
+#(multithreading before Eigen is installed leads to an error)
+arg ncpus
+run make -j${ncpus} Eigen
+
 run rm -r /numcse

@@ -1,9 +1,33 @@
 #! /bin/bash
 
+ncpus=2
+
+help="
+Usage
+
+    $(basename $0) [OPTIONS]
+
+Options
+
+    -h            = see help
+    -j <ncpus>    = assign <ncpus> logical cores for the container to use
+"
+
+while getopts "j:h" opt
+do
+    case $opt in
+        h) echo "$help"; exit;;
+        j) ncpus=$OPTARG;;
+        \?) echo "$help"; exit;;
+    esac
+done
+
+echo "Launching NumCSE docker container with $ncpus logical cores "
+
 #cheat the docker build context to be the whole repository
 cd "$(dirname $0)/.."
 cp Clang-tidy/Dockerfile .
-docker build -t numcse_tidy .
+docker build --build-arg ncpus=$ncpus -t numcse_tidy .
 rm Dockerfile
 
-docker run -it --cpus="7" -v $(pwd):/numcse numcse_tidy /bin/bash
+docker run -it --cpus="$ncpus" -v $(pwd):/numcse numcse_tidy /bin/bash
