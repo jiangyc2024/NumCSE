@@ -7,7 +7,7 @@
 
 namespace plt = matplotlibcpp;
 
-//! \brief Compute the solution to the nonlinear system by using Newton's iteration
+//! \brief Compute the solution to the nonlinear system by using Newtons iteration
 //! \param[in] alpha
 //! \param[in] beta parameters
 //! \param[in] Uin input voltages
@@ -18,7 +18,7 @@ void circuit(const double& alpha, const double& beta, const Eigen::VectorXd& Uin
   constexpr double tau = 1e-6;
   const unsigned int n = Uin.size();
   
-  // TODO: (9-7.b) Compute the output voltages for the given circuit
+  // TODO: (8-7.b) Compute the output voltages for the given circuit
   // START
   double Uin_; // Uin of current node
   // lambda function for evaluation of F
@@ -33,7 +33,7 @@ void circuit(const double& alpha, const double& beta, const Eigen::VectorXd& Uin
   Eigen::MatrixXd J(3, 3); // the Jacobian
   J << 3, -1, -1,
       -1, 3, -1,
-      -1, -1, 0; // dummy in J(2, 2)
+      -1, -1, 0; // dummy in $J(2, 2)$
   Eigen::VectorXd f(3); // the function
   
   for (unsigned int i = 0; i < n; ++i) {
@@ -61,7 +61,7 @@ void plotU() {
   
   plt::figure();
   
-  // TODO: (9-7.c) Plot Uout as a function of Uin with matplotlibcpp
+  // TODO: (8-7.c) Plot Uout as a function of Uin with matplotlibcpp
   // START
   Eigen::VectorXd Uin = Eigen::VectorXd::LinSpaced(n, 0, 20);
   Eigen::VectorXd Uout(n);

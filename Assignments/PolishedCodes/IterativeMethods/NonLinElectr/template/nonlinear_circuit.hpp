@@ -18,7 +18,7 @@ void circuit(const double& alpha, const double& beta, const Eigen::VectorXd& Uin
   constexpr double tau = 1e-6;
   const unsigned int n = Uin.size();
   
-  // TODO: (9-7.b) Compute the output voltages for the given circuit
+  // TODO: (8-7.b) Compute the output voltages for the given circuit
   // START
   
   // END
@@ -34,7 +34,7 @@ void plotU() {
   
   plt::figure();
   
-  // TODO: (9-7.c) Plot Uout as a function of Uin with matplotlibcpp
+  // TODO: (8-7.c) Plot Uout as a function of Uin with matplotlibcpp
   // START
   
   // END

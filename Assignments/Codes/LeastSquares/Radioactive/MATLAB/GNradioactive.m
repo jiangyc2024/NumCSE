@@ -3,6 +3,8 @@ close all; tic;
 % get measured data:   [t, m] column vectors
 load decay.mat;
 
+format shortE;
+
 % CODE TEST: create perturbed vector  m  with known parameters
 % xtest = [1.7,  0.4,  0.7,  0.2]';
 % m = F(xtest, t, 0) + 0.01*randn(size(t));
@@ -28,25 +30,30 @@ rate = GNupdate(2:end)./GNupdate(1:end-1);
 % print norm of the update, rate and order of convergence:
 GNupdate_rate_order = [GNupdate',[0;rate'],[0;0;order']]
 
-figure;  subplot(2,1,1);      % plot solution
+disp('Solution: '); x,
+
+figure('name','solution');
 t_plot = linspace(t(1),t(length(t)),1000);
 plot(t,m,'*', t_plot, F(x,t_plot,0),'r',...
     t_plot, F(xi,t_plot,0),'k',...
     t_plot, x(1)*exp(-x(3)*t_plot), 'r--',...
     t_plot, xi(1)*exp(-xi(3)*t_plot), 'k--','linewidth',2);
+xlabel('{\bf time t}');
+ylabel('{\bf Substance amounts}');
 legend('data (t,m)', 'fittedPhiB','initial guess PhiB',...
-     'fittedPhiA','initial guess PhiA');
+     'fittedPhiA','initial guess PhiA','location','best');
+print -depsc2 'EstimatedPhiAPhiB.eps';
 
-subplot(2,1,2);               % plot convergence
+figure('name','convergence');
 semilogy(1:GNiter,GNupdate, '-o','linewidth',2);
-xlabel('iteration','fontsize',12); ylabel('GN update','fontsize',12);
-print -depsc2 'GNradioactive.eps';
+xlabel('{\bf no. of iteration step}','fontsize',12); 
+ylabel('{\bf Euclidean norm of parameter update}','fontsize',12);
+print -depsc2 'GNconvergence.eps';
 
 % CODE TEST: check if you reached your initial parameters:
 % CodeTest = [xtest, x]
 toc
-
-
+end
 
 function r = F(x,t,m)
 % Function F to be minimized in 2-norm 
@@ -58,6 +65,8 @@ function r = F(x,t,m)
 r = exp(-x(4)*t) * x(2) + x(3)/(x(4)-x(3)) *...
     (exp(-x(3)*t) - exp(-x(4)*t)) * x(1) -m; 
 
+
+end
 
 function r = DF(x,t)
 % Jacobian of F
@@ -71,3 +80,4 @@ exd = ex3-ex4;
 r = [x(3)/d*exd,    ex4,...
     x(4)/d^2*x(1) * exd - x(3)*x(1)/d * t.* ex3, ...
     -x(2)*ex4 .* t + x(3)*x(1)/d *t.*ex4 - x(4)/d^2*x(1) *exd];
+end

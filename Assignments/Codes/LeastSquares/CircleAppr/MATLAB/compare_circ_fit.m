@@ -8,7 +8,7 @@ y = [4; 4.7; 4; 1.3; -1.1; -3; -2.5; 1.3];
 %  x = mtest(1) + rtest*cos(angs)+0.3*randn(size(angs));
 %  y = mtest(2) + rtest*sin(angs)+0.3*randn(size(angs));
 
-figure; subplot(1,2,1);
+figure; 
 plot(x,y,'m+', 'linewidth',2);
 axis equal; hold on;
 
@@ -32,18 +32,23 @@ plot(m1(1),m1(2),'b+', m2(1),m2(2),'g+',...
      m3(1),m3(2),'r+', m4(1),m4(2),'k+');
 legend('data', 'algebraic fit','Gauss-Newton','Newton',...
     'constrained','location','so');
+print -depsc2 'CirclesFit.eps';
 
+figure;
 % plot convergence:
-subplot(1,2,2);
 semilogy(1:length(err_GN), err_GN, 'bo-',...
     1:length(err_DN), err_DN, 'ro-', 'linewidth',2)
 xlabel('iteration');  ylabel('error');
 legend('Gauss-Newton','Newton');
-print -depsc2 'CirclesFit.eps';
+print -depsc2 'CirclesFitCVG.eps';
 
+
+end
 
 function draw_circle(C,r,s)
 % plot the circle given by the center C = [c1 c2]
 % and the radius r in the color s.
 theta = (0:0.02:2)*pi;
 plot(C(1)+r*cos(theta), C(2)+r*sin(theta), s, 'linewidth',2);
+end
+
