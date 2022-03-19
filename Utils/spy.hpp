@@ -2,8 +2,6 @@
 
 #include <Eigen/Dense>
 #include <Eigen/Sparse>  //for nonZeros()
-
-// Will not compile if numpy is not found on your machine since matloplicpp.h is built with WITHOUT_NUMPY flag
 #include "matplotlibcpp.h"
 
 namespace plt = matplotlibcpp;

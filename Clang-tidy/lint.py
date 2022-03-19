@@ -126,11 +126,11 @@ def main( ):
 
 	if len( sys.argv ) >= 3:
 		if sys.argv[ 1 ] == "-f":
-			go( sys.argv[ 2 ] )	
+			go( os.path.abspath( sys.argv[ 2 ] ))	
 		elif sys.argv[ 1 ] == "-d": 
-			go_dir( sys.argv[ 2 ] )
+			go_dir( os.path.abspath( sys.argv[ 2 ] ))
 		else: 
-			go_dir( "." )
+			go_dir( os.path.abspath( "." ))
 	else:
 		go_dir( "." )
 

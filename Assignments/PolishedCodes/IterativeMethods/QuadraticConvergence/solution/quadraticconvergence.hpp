@@ -8,73 +8,63 @@
 #include <limits>
 #include <vector>
 
-/* SAM_LISTING_BEGIN_2 */
-template <class T>
-class Logger {
-  std::vector<T> info;
-
-public:
-  // Hint: there is no need to implement a constructor
-  // since info is initialized as empty vector by default.
-
-  // TODO: (9-4.c) overload the operator() so that it adds its argument to
-  // the member "info".
-  void operator()(T val) {
-    // START
-    info.push_back(val);
-    // END
-  }
-  // TODO: (9-4.c) Define a member function that fetches the data contained in "info".
-  // START
-  std::vector<T> getInfo(void) { return info; }
-  // END
-
-  void print_log() {
-    for (auto v : info) {
-      std::cout << v << std::endl;
-    }
-  }
-};
-/* SAM_LISTING_END_2 */
-
 /*! @brief Steffensen's method
  *! @param[in] f Function handler
  *! @param[in] x0 Initial guess
- *! @param[out] x Final estimation returned by the Steffensen's method
+ *! @return x Final estimation returned by the Steffensen's method
  */
 /* SAM_LISTING_BEGIN_0 */
 template <class Function>
 double steffensen(Function &&f, double x0) {
   double x_old = x0;
   double x = x0;
-  // TODO: (9-4.a) implement the Steffensen's method for a function f
+
+  // TODO: (8-4.a) Implement the Steffensen's method for a function f.
   // START
+
   double upd = 1;
-  constexpr double eps = std::numeric_limits<double>::epsilon();
+
+  // Get machine precision
+  const double eps = std::numeric_limits<double>::epsilon();
+  
   // Iterate until machine precision is reached
   while (std::abs(upd) > eps * std::abs(x_old)) {
-    x_old = x;              // Storing the old iterate
-    const double fx = f(x); // Only 2 evaluations of $f$ at each step
+    // Storing the old iterate
+    x_old = x;
+
+    // Only 2 evaluations of $f$ at each step
+    const double fx = f(x);
+
     if (fx != 0) {
+      // Compute update
       upd = fx * fx / (f(x + fx) - fx);
-      x -= upd; // New iterate
+
+      // New iterate
+      x -= upd;
     } else {
       upd = 0;
     }
   }
+
   // END
+
   return x;
 }
 /* SAM_LISTING_END_0 */
 
 /* SAM_LISTING_BEGIN_1 */
-void testSteffensen(void) {
-  // TODO: (9-4.b) write a test of your implementation, that prints
+void testSteffensen() {
+  // TODO: (8-4.b) write a test of your implementation, that prints
   // an estimate of the zero of $f(x) = xe^x - 1$
   // START
-  const double x =
-      steffensen([](double x) { return x * std::exp(x) - 1; }, 1.0);
+  
+  auto f = [](double x) { return x * std::exp(x) - 1; };
+  double x0 = 1.0;
+
+  const double x = steffensen(f, x0);
+
   std::cout << "The iterative method converges to " << x << std::endl;
+  
   // END
 }
 /* SAM_LISTING_END_1 */
@@ -82,63 +72,76 @@ void testSteffensen(void) {
 /*! @brief Steffensen's method
  *! @param[in] f Function handler
  *! @param[in] x0 Initial guess
- *! @param[out] x Final estimation returned by the Steffensen's method
+ *! @return x Final estimation returned by the Steffensen's method
  */
-/* SAM_LISTING_BEGIN_3 */
-template <class Function>
+/* SAM_LISTING_BEGIN_2 */
+template <class Function, typename LOGGER>
 double steffensen_log(Function &&f, double x0,
-                      Logger<double> *logger_p = nullptr) {
+    LOGGER &&log = [](double) -> void {}) {
 
   double x = x0;
-  // TODO: (9-4.c) Modify the function steffensen: use the class Logger to
+
+  // TODO: (8-4.c) Modify the function steffensen: use the logger to
   // save all the iterations x of the Steffensen's method.
   // START
-  bool log_enabled = false;
-  if (logger_p != nullptr) {
-    log_enabled = true;
-    (*logger_p)(x); // alternative: logger_p->operator()(x)
-  }
+  
+  // Add x to the log. Note: This is an idle lambda function if none is
+  // provided. See the default value in the function signature.
+  log(x);
+
   double upd = 1;
-  constexpr double eps = std::numeric_limits<double>::epsilon();
+  const double eps = std::numeric_limits<double>::epsilon();
+
   // Iterate until machine precision is reached
   while (std::abs(upd) > eps * x) {
-    const double fx = f(x); // Only 2 evaluations of $f$ at each step
+    // Only 2 evaluations of $f$ at each step
+    const double fx = f(x);
+
     if (fx != 0) {
+      // Compute update
       upd = fx * fx / (f(x + fx) - fx);
+
+      // New iterate
       x -= upd;
-      if (log_enabled) {
-        //(*logger_p)(x); // alternative: logger_p->operator()(x)
-        logger_p->operator()(x);
-      }
+
+      log(x);
     } else {
       upd = 0;
     }
   }
+  
   // END
+
   return x;
 }
-/* SAM_LISTING_END_3 */
+/* SAM_LISTING_END_2 */
 
-/* SAM_LISTING_BEGIN_4 */
-void orderSteffensen(void) {
+/* SAM_LISTING_BEGIN_3 */
+void orderSteffensen() {
   auto f = [](double x) { return x * std::exp(x) - 1; };
+
   constexpr double x_star = 0.567143290409784; // use as exact value
-  // TODO: (9-4.c) tabulate values from which you can read the
+
+  // TODO: (8-4.c) Tabulate values from which you can read the
   // order of Steffensen's method.
-  // Hint: to approximate the convergence rate, use the formula
+  // Hint: To approximate the convergence rate, use the formula
   // $(\log(e_i) - \log(e_{i-1}))/ (\log(e_{i-1}) - \log(e_{i-2}))$
   // START
-  Logger<double> logger;
+  
+  std::vector<double> store;
 
-  steffensen_log(f, 1.0, &logger);
-  std::vector<double> myData = logger.getInfo();
-  const unsigned n = myData.size();
+  auto log = [&store](double x) -> void { store.push_back(x); };
+
+  steffensen_log(f, 1.0, log);
+  
+  const unsigned n = store.size();
 
   Eigen::VectorXd errs(n), log_errs(n);
   for (unsigned i = 0; i < n; ++i) {
-    errs(i) = std::abs(myData[i] - x_star);
+    errs(i) = std::abs(store[i] - x_star);
     log_errs(i) = std::log(errs(i));
   }
+  
   Eigen::VectorXd ratios = Eigen::VectorXd::Zero(n);
   for (unsigned i = 2; i < n; ++i) {
     ratios(i) =
@@ -152,11 +155,12 @@ void orderSteffensen(void) {
   std::cout << "       -----------------------------------------------------"
             << std::endl;
   for (unsigned i = 0; i < n; ++i) {
-    std::cout << std::setw(20) << myData[i] << std::setw(20) << errs(i)
+    std::cout << std::setw(20) << store[i] << std::setw(20) << errs(i)
               << std::setw(20) << ratios(i) << std::endl;
   }
+  
   // END
 }
-/* SAM_LISTING_END_4 */
+/* SAM_LISTING_END_3 */
 
 #endif

@@ -33,7 +33,7 @@ void kron(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B,
  * Computes $\mathbf{y} = (\mathbf{A} \otimes \mathbf{B}) \mathbf{x}$.
  * @param A Matrix of size $n \times n$
  * @param B Matrix of size $n \times n$
- * @param x Vector of dim. $n^2 \times n^2$
+ * @param x Vector of dim. $n^2$
  * @param y Vector y = kron(A,B)*x
  */
 /* SAM_LISTING_BEGIN_2 */

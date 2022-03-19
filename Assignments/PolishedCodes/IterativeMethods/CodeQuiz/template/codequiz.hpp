@@ -8,7 +8,7 @@
 
 /* SAM_LISTING_BEGIN_1 */
 double myfunction(double x) {
-  const double dy = 0.693147180559945;  // = std::log(2)
+  constexpr double dy = 0.693147180559945;  // = std::log(2)
   double y = 0.;
   while (x > 2. * std::sqrt(2.)) {
     x /= 2.;
@@ -30,7 +30,7 @@ double myfunction(double x) {
 
 /* SAM_LISTING_BEGIN_2 */
 double myfunction_modified(double x) {
-  const double dy = 0.693147180559945;  // = std::log(2)
+  constexpr double dy = 0.693147180559945;  // = std::log(2)
   double y = 0.;
   while (x > 2. * std::sqrt(2.)) {
     x /= 2.;
@@ -42,7 +42,7 @@ double myfunction_modified(double x) {
   }
   double z = x - 1.;
   double dz = x * std::exp(-z) - 1.;
-  // TODO: (9-2.e) Write a for-loop that achieves the same accuracy
+  // TODO: (8-2.e) Write a for-loop that achieves the same accuracy
   // as the third while-loop of myfunction(). I.e. fix the number of
   // iterations before looping.
   // START

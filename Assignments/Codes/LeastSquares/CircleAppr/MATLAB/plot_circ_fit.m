@@ -12,7 +12,7 @@ y = [4; 4.7; 4; 1.3; -1.1; -3; -2.5; 1.3];
 r0 = 1;
 m0 = [mean(x), mean(y)];
 
-figure; subplot(1,2,1);
+figure; 
 plot(x,y,'m+', 'linewidth',2);
 axis equal; hold on;
 
@@ -29,13 +29,16 @@ centers_and_radii = [m2,m3;r2,r3]
 plot(m2(1), m2(2), 'g+', m3(1), m3(2), 'r+');
 legend('data', 'Gauss-Newton', 'Newton', 'location', 'so');
 
+print -depsc2 'circlefits.eps';
+
+figure;
 % plot convergence:
-subplot(1,2,2);
 semilogy(1:length(err_GN), err_GN, 'bo-',...
     1:length(err_DN), err_DN, 'ro-', 'linewidth',2)
-xlabel('iteration');  ylabel('error');
+xlabel('iteration step');  ylabel('error of estimate (max norm)');
 legend('Gauss-Newton','Newton');
-print -depsc2 '../PICTURES/plot_circ_fit.eps';
+
+print -depsc2 'circfitcvg.eps';
 end
 
 function draw_circle(C,r,s)
