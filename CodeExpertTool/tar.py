@@ -1,8 +1,9 @@
 import tarfile
 import os.path
+import sys
 
-source_dir = "/Users/heinrich/repositories/NumCSE/CodeExpertTool/taskExport_Introduction_MatrixBlocks"
-output_filename = "/Users/heinrich/repositories/NumCSE/CodeExpertTool/taskExport_Introduction_MatrixBlocks.tar"
+source_dir = sys.argv[ 1 ]
+output_filename = f"{ os.path.basename( source_dir )}.tar"
 
 with tarfile.open( output_filename, "w:gz" ) as tar:
     tar.add( source_dir, arcname = os.path.sep )

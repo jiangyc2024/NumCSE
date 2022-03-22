@@ -1,13 +1,12 @@
 const fs = require( "fs/promises" );
 const { exec } = require( "child_process" );
 const { basename } = require( "path" );
-const assignment_path = process.argv[ 2 ]
-const testing_path = process.argv[ 3 ];	
-const build_path = process.argv[ 4 ];
-const chapter = "Introduction"
-const name = "MatrixBlocks"
+const repo_root = process.argv[ 2 ];
+const assignment_path = process.argv[ 3 ]
+const default_file = process.argv[ 4 ]; //optional
+const display_name = basename( assignment_path );
 const date = ( new Date( )).toISOString( );
-const export_path = `${ build_path }/${[ "taskExport", chapter, name ].join( "_" )}`;
+const export_path = "taskExport";
 const user_id = "au4g3HpKS9AbksWyF";
 const solution_project_id = uid( );
 const template_project_id = uid( );
@@ -26,42 +25,48 @@ const info_export = {
 
 const permissions_strict = _ => ({
     
-    phase: [
-      "interactive",
-      "submission"
-    ],
-    read: [
-      "admin",
-      "assistant"
-    ],
-    write: [
-      "admin"
-    ]
+  phase: [
+    "interactive",
+    "submission"
+  ],
+  read: [
+    "admin",
+    "assistant"
+  ],
+  write: [
+    "admin"
+  ]
 });
 
 const env = {
 	
 	slug: "generic-1",
-    lastUpdateCheck: date,
-    replacedBy: "generic-2"
+	lastUpdateCheck: date,
+  replacedBy: "generic-2"
 };
 
 async function is_default_file( path ) {
 
-	if( path.endsWith( ".hpp" ) && ! path.endsWith( "solution.hpp" )) {
-
-		const code = await fs.readFile( path );
-		if( code.includes( "TODO:" ) && code.includes( "SAM_LISTING" )) {
-
-			return true;
-		}
-	}
+	return ( default_file && basename( path ) == basename( default_file )) ? true : await contains_todo( path );
 }
 
 async function is_editable( path ) {
 
 	if( await is_default_file( path )) return true;
+	if( await contains_todo( path )) return true;
 	if( path.includes( "/written_solution.md" ) || path.includes( "main.cpp" )) return true;
+}
+
+async function contains_todo( path ) {
+
+	if( path.includes( ".hpp" ) && ! path.endsWith( "solution.hpp" )) {
+
+		const code = await fs.readFile( path );
+		if( code.includes( "TODO" )) {
+
+			return true;
+		}
+	}
 }
 
 async function is_readable( path ) {
@@ -69,6 +74,12 @@ async function is_readable( path ) {
 	if( await is_editable( path )) return true;
 	if(( path.endsWith( ".h" ) || path.endsWith( ".hpp" )) && ! path.endsWith( "solution.hpp" )) return true;
 }
+
+const default_includes = [ 
+
+	"MatplotlibC++/matplotlibcpp.h",
+	"Utils/timer.h"
+];
 
 //-------------------- BUSINESS LOGIC --------------------//
 
@@ -89,7 +100,7 @@ async function main( ) {
 	const info_task = { 
 
 		_id: task_id,
-		name: `${ chapter } - ${ name }`,
+		name: display_name,
 		kind: "code",
 		masterSolutionId: solution_project_id,
 		studentTemplateId: template_project_id,
@@ -99,7 +110,7 @@ async function main( ) {
 			_id: solution_project_id,
 			lastUpdate: date,
 			rootDirKey: solution_root_key,
-			name: `${ chapter } - ${ name } - Master Solution`,
+			name: `${ display_name } - Master Solution`,
 			useCase: "masterSolution",
 			envVars: { },
 			taskId: task_id,
@@ -112,7 +123,7 @@ async function main( ) {
 			_id: template_project_id,
 			lastUpdate: date,
 			rootDirKey: template_root_key,
-			name: `${ chapter } - ${ name } - Student Template`,
+			name: `${ display_name } - Student Template`,
 			useCase: "studentTemplate",
 			envVars: { },
 			taskId: task_id,
@@ -132,6 +143,8 @@ async function assemble_project( name ) {
 	await copy_dir( `${ assignment_path }/${ name }`, `${ export_path }` );
 	
 	const project_path = `${ export_path }/${ name }`;
+	const testing_path = `${ repo_root }/Testing`;
+
 	await copy_dir( `${ testing_path }/scripts`, project_path );
 	await copy_file( `${ testing_path }/conf.yml`, project_path );
 	await copy_file( `${ testing_path }/doctest.h`, project_path );
@@ -139,6 +152,11 @@ async function assemble_project( name ) {
 
 	const solution_path = await find_default_file( `${ export_path }/solution` );
 	await copy_file( solution_path, `${ project_path }/solution.hpp` );
+
+	await Promise.all( default_includes.map( async file => {
+
+		await copy_file( `${ repo_root }/${ file }`, project_path );
+	}));
 }
 
 function copy_dir( source, target ) {
@@ -172,7 +190,15 @@ async function find_default_file( path ) {
 		}
 		else {
 
-			if( await is_default_file( child_path )) result = child_path;
+			if( await is_default_file( child_path )) {
+
+				if( result ) {
+
+					console.error( "Auto-detection of default file failed. Please specify its name explicitly in the arguments" );
+					process.exit( 1 );
+				}
+			 	result = child_path;
+			}
 		}
 	}));
 
