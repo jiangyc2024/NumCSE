@@ -108,7 +108,7 @@ async function contains_todo( path ) {
 	if( path.includes( ".hpp" ) && ! path.endsWith( "solution.hpp" )) {
 
 		const code = await fs.readFile( path );
-		if( code.includes( "TODO" )) {
+		if( code.includes( "TODO" ) || code.includes( "TO DO" )) {
 
 			return true;
 		}
