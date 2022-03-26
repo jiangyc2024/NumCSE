@@ -41,33 +41,11 @@ run dnf -y install python3-devel \
 # ==== install clang-tidy ==========================================================
 
 run dnf -y install clang-tools-extra
+# run dnf -y install xz 
+# run wget -O "clang-tidy.tar.xz" "https://polybox.ethz.ch/index.php/s/ao40Yc1soZgKzEr/download" \
+#       && tar -xf "clang-tidy.tar.xz" -C /usr/bin
 
-# ==== install clang-tidy ==========================================================
-
-# this here builds clang-tidy from source, but its taking ages. build on server and supply as pre-built archive?
-# https://stackoverflow.com/questions/47255526/how-to-build-the-latest-clang-tidy
-# https://github.com/llvm/llvm-project/releases/tag/llvmorg-13.0.1
-# run dnf -y install xz
-# run wget https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.1/llvm-13.0.1.src.tar.xz \
-#       && mkdir llvm \
-#       && tar -xf llvm-13.0.1.src.tar.xz -C llvm --strip-components 1 \
-#       && cd llvm/tools \
-#       && wget https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.1/clang-13.0.1.src.tar.xz \
-#       && mkdir clang \
-#       && tar -xf clang-13.0.1.src.tar.xz -C clang --strip-components 1 \
-#       && cd clang/tools \
-#       && wget https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.1/clang-tools-extra-13.0.1.src.tar.xz \
-#       && mkdir extra \
-#       && tar -xf clang-tools-extra-13.0.1.src.tar.xz -C extra --strip-components 1
-
-# arg ncpus
-# run mkdir /build \
-#       && cd /build \
-#       && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local/llvm -DCLANG_BUILD_TOOLS=ON ../llvm \
-#       && cd tools/clang/tools/extra/clang-tidy \
-#       && make -j${ncpus} install
-
-# ==== build repo ==================================================================
+# ==== prepare repository ==========================================================
 
 copy . ./numcse
 run mkdir /build
