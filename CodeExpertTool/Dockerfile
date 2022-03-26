@@ -15,7 +15,8 @@
 #from cxhub.ethz.ch/cx/cxenv/base-rhel8:latest
 from registry.access.redhat.com/ubi8/ubi:8.1
 
-# install cmake ===============================================================
+# ==== install cmake ===============================================================
+
 run dnf -y install wget clang make
 
 #based on https://github.com/Rikorose/gcc-cmake/blob/1e2943e709239beed1d368bf5c511823f956b54e/Dockerfile
@@ -30,13 +31,44 @@ run wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cm
 
 env PATH="/usr/bin/cmake/bin:${PATH}"
 
-# install python ==============================================================
+# ==== install python ==============================================================
+
 run dnf -y install python3-devel \
       && pip3 install --upgrade pip \
       && pip3 install --upgrade Pillow \
       && pip3 install matplotlib
 
-# build repo ==================================================================
+# ==== install clang-tidy ==========================================================
+
+run dnf -y install clang-tools-extra
+
+# ==== install clang-tidy ==========================================================
+
+# this here builds clang-tidy from source, but its taking ages. build on server and supply as pre-built archive?
+# https://stackoverflow.com/questions/47255526/how-to-build-the-latest-clang-tidy
+# https://github.com/llvm/llvm-project/releases/tag/llvmorg-13.0.1
+# run dnf -y install xz
+# run wget https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.1/llvm-13.0.1.src.tar.xz \
+#       && mkdir llvm \
+#       && tar -xf llvm-13.0.1.src.tar.xz -C llvm --strip-components 1 \
+#       && cd llvm/tools \
+#       && wget https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.1/clang-13.0.1.src.tar.xz \
+#       && mkdir clang \
+#       && tar -xf clang-13.0.1.src.tar.xz -C clang --strip-components 1 \
+#       && cd clang/tools \
+#       && wget https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.1/clang-tools-extra-13.0.1.src.tar.xz \
+#       && mkdir extra \
+#       && tar -xf clang-tools-extra-13.0.1.src.tar.xz -C extra --strip-components 1
+
+# arg ncpus
+# run mkdir /build \
+#       && cd /build \
+#       && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local/llvm -DCLANG_BUILD_TOOLS=ON ../llvm \
+#       && cd tools/clang/tools/extra/clang-tidy \
+#       && make -j${ncpus} install
+
+# ==== build repo ==================================================================
+
 copy . ./numcse
 run mkdir /build
 workdir /build
@@ -46,26 +78,6 @@ arg ncpus
 run make -j${ncpus} Eigen
 
 run rm -r /numcse
-
-# install clang-tidy ==========================================================
-# https://stackoverflow.com/questions/47255526/how-to-build-the-latest-clang-tidy
-# https://github.com/llvm/llvm-project/releases/tag/llvmorg-13.0.1
-# RUN dnf -y install git wget 
-# RUN dnf -y install xz
-# RUN wget https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.1/llvm-13.0.1.src.tar.xz
-# RUN mkdir llvm
-# RUN tar -xf llvm-13.0.1.src.tar.xz -C llvm --strip-components 1
-# WORKDIR llvm/tools
-# RUN wget https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.1/clang-13.0.1.src.tar.xz
-# RUN mkdir clang
-# RUN tar -xf clang-13.0.1.src.tar.xz -C clang --strip-components 1
-# WORKDIR clang/tools
-# RUN wget https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.1/clang-tools-extra-13.0.1.src.tar.xz
-# RUN mkdir extra
-# RUN tar -xf clang-tools-extra-13.0.1.src.tar.xz -C extra --strip-components 1
-# WORKDIR /
-# RUN mkdir build
-# WORKDIR build
 
 # Set the labels for your cxEnvironment.
 LABEL cxrun.name="NumCSE (Version 1.0)" \
