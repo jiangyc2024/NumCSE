@@ -30,7 +30,7 @@ run dnf -y install python3-devel \
 
 run dnf -y install wget
 
-#based on https://github.com/Rikorose/gcc-cmake/blob/1e2943e709239beed1d368bf5c511823f956b54e/Dockerfile
+# based on https://github.com/Rikorose/gcc-cmake/blob/1e2943e709239beed1d368bf5c511823f956b54e/Dockerfile
 arg CMAKE_VERSION=3.22.3
 
 run wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-Linux-x86_64.sh \
@@ -44,22 +44,30 @@ env PATH="/usr/bin/cmake/bin:${PATH}"
 
 # ==== install clang-tidy ==========================================================
 
-run dnf -y install clang-tools-extra
-# run dnf -y install xz 
-# run wget -O "clang-tidy.tar.xz" "https://polybox.ethz.ch/index.php/s/ao40Yc1soZgKzEr/download" \
-#       && tar -xf "clang-tidy.tar.xz" -C /usr/bin
+run dnf -y install xz 
+run wget -O "clang-tidy.tar.xz" "https://polybox.ethz.ch/index.php/s/IeMAQVk0GKJOYHw/download" \
+      && tar -xf "clang-tidy.tar.xz" -C /usr/local
+
+env PATH="/usr/local/llvm/bin:${PATH}"
 
 # ==== prepare repository ==========================================================
 
+# Temporarily cmakes on a copy of the repository and compile Eigen before everything 
+# else. Since parallel compilation fails if Eigen is not installed, this is the best
+# way to compile the entire repository as fast as possible.
+
 copy . ./numcse
-run mkdir /build
-workdir /build
-run cmake /numcse
-
 arg ncpus
-run make -j${ncpus} Eigen
+run mkdir /build \
+      && cd /build \
+      && cmake -DTIDY=1 /numcse \
+      && make -j${ncpus} Eigen \
+      && rm -r /numcse
 
-run rm -r /numcse
+workdir /build
+
+# TODO: use the actual v15 headers here (llvm-project/clang/lib/Headers)
+#copy CodeExpertTool/Headers /usr/lib64/clang/15.0.0/include
 
 # Set the labels for your cxEnvironment.
 LABEL cxrun.name="NumCSE (Version 1.0)" \
