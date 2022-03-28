@@ -10,7 +10,6 @@
 # supports) and place them in a directory named `script` within
 # your Environment's directory.
 
-
 # Select one of the cxrun base images.
 #from cxhub.ethz.ch/cx/cxenv/base-rhel8:latest
 from registry.access.redhat.com/ubi8/ubi:8.1
@@ -42,31 +41,9 @@ run wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cm
 
 env PATH="/usr/bin/cmake/bin:${PATH}"
 
-# ==== install clang-tidy ==========================================================
-
-run dnf -y install clang-tools-extra
-# run dnf -y install xz 
-# run wget -O "clang-tidy.tar.xz" "https://polybox.ethz.ch/index.php/s/ao40Yc1soZgKzEr/download" \
-#       && tar -xf "clang-tidy.tar.xz" -C /usr/bin
-
-# ==== prepare repository ==========================================================
-
-copy . ./numcse
-run mkdir /build
-workdir /build
-run cmake /numcse
+# ==== build clang-tidy ============================================================
 
 arg ncpus
-run make -j${ncpus} Eigen
-
-run rm -r /numcse
-
-# Set the labels for your cxEnvironment.
-LABEL cxrun.name="NumCSE (Version 1.0)" \
-      maintainer="NumCSE coding team <jinghao.cao@sam.math.ethz.ch>" \
-      description="Code Expert NumCSE cxEnvironment"
-
-# Set the USER and WORKDIR directive to its according ENV
-# variable. This needs to be at the end of the file.
-USER ${USER}
-WORKDIR ${WORKDIR}
+run dnf -y install xz unzip
+copy build_clang_tidy .
+run ./build_clang_tidy ${ncpus}

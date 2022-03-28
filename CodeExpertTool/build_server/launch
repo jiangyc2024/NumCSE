@@ -22,12 +22,6 @@ do
     esac
 done
 
-echo "Launching NumCSE docker container with $ncpus logical cores "
-
-#cheat the docker build context to be the whole repository
-cd "$(dirname $0)/.."
-cp CodeExpertTool/Dockerfile .
-docker build --build-arg ncpus=$ncpus -t numcse_monolith .
-rm Dockerfile
-
-docker run -it --cpus="$ncpus" -v "$(pwd):/numcse" numcse_monolith /bin/bash
+echo "Launching build server container with $ncpus logical cores "
+docker build --build-arg ncpus=$ncpus -t build_server .
+docker run -it --cpus="$ncpus" -v "$(pwd):/build_output_host" build_server cp -r /build_output/. /build_output_host
