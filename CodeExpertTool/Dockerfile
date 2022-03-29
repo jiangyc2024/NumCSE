@@ -28,6 +28,8 @@ run dnf -y install python3-devel \
 
 # ==== install cmake ===============================================================
 
+# Install a more recent version of cmake which is not available through dnf
+
 run dnf -y install wget
 
 # based on https://github.com/Rikorose/gcc-cmake/blob/1e2943e709239beed1d368bf5c511823f956b54e/Dockerfile
@@ -44,6 +46,8 @@ env PATH="/usr/bin/cmake/bin:${PATH}"
 
 # ==== install clang-tidy ==========================================================
 
+# Install a more recent version of clang-tidy which is not available through dnf
+
 run dnf -y install xz
 # pre-built binary clang-tidy-15.0.0-x86_64-linux-rhel-8.1.tar.xz 
 run wget -O "clang-tidy.tar.xz" "https://polybox.ethz.ch/index.php/s/YSUkzDatd8hdrh4/download" \
@@ -53,7 +57,7 @@ env PATH="/usr/local/llvm/bin:${PATH}"
 
 # ==== prepare repository ==========================================================
 
-# Temporarily cmakes on a copy of the repository and compile Eigen before everything 
+# Temporarily cmake on a copy of the repository and compile Eigen before everything 
 # else. Since parallel compilation fails if Eigen is not installed, this is the best
 # way to compile the entire repository as fast as possible.
 
@@ -66,9 +70,6 @@ run mkdir /build \
       && rm -r /numcse
 
 workdir /build
-
-# TODO: use the actual v15 headers here (llvm-project/clang/lib/Headers)
-#copy CodeExpertTool/Headers /usr/lib64/clang/15.0.0/include
 
 # Set the labels for your cxEnvironment.
 LABEL cxrun.name="NumCSE (Version 1.0)" \
