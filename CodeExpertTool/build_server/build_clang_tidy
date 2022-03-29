@@ -1,13 +1,11 @@
 #! /bin/bash
 
 ncpus=$1
+version="15.0.0" #indicates the version of llvm you are building
 
 cd /;
 wget https://github.com/llvm/llvm-project/archive/refs/heads/main.zip -O /llvm-project.zip;
 unzip /llvm-project.zip;
-
-mkdir /llvm-project-main/clang/tools/extra;
-cp -r /llvm-project-main/clang-tools-extra/. /llvm-project-main/clang/tools/extra;
 
 mkdir /llvm_build;
 cd /llvm_build;
@@ -22,4 +20,6 @@ make -j${ncpus} install;
 
 mkdir /build_output;
 cd /usr/local/;
-tar -czf "/build_output/clang-tidy-x86_64-linux-rhel-8.1.tar.xz" llvm;
+mkdir -p "llvm/lib64/clang/$version/include"
+cp -r /llvm-project-main/clang/lib/Headers/. "llvm/lib64/clang/$version/include"
+tar -czf "/build_output/clang-tidy-$version-x86_64-linux-rhel-8.1.tar.xz" llvm;

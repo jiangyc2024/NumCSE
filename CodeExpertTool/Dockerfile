@@ -44,8 +44,9 @@ env PATH="/usr/bin/cmake/bin:${PATH}"
 
 # ==== install clang-tidy ==========================================================
 
-run dnf -y install xz 
-run wget -O "clang-tidy.tar.xz" "https://polybox.ethz.ch/index.php/s/IeMAQVk0GKJOYHw/download" \
+run dnf -y install xz
+# pre-built binary clang-tidy-15.0.0-x86_64-linux-rhel-8.1.tar.xz 
+run wget -O "clang-tidy.tar.xz" "https://polybox.ethz.ch/index.php/s/YSUkzDatd8hdrh4/download" \
       && tar -xf "clang-tidy.tar.xz" -C /usr/local
 
 env PATH="/usr/local/llvm/bin:${PATH}"
