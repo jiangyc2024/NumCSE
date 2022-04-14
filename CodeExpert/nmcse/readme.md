@@ -1,6 +1,6 @@
-# Code Expert x nmcse
+# Code Expert & nmcse
 
-This directory is meant for development of the nmcse image on Code Expert. The actual *nmcse* repository is hosted by *isg.inf.ethz.ch* [here](https://gitlab.inf.ethz.ch/OU-LECTURERS/containers/cxenv/nmcse). Use this for publishing changes.
+This directory is meant for development of our custom *nmcse* image on Code Expert. The actual *nmcse* repository is hosted by *isg.inf.ethz.ch* [here](https://gitlab.inf.ethz.ch/OU-LECTURERS/containers/cxenv/nmcse). Use this for publishing changes.
 
 ## Basics
 
@@ -26,7 +26,7 @@ The latter is the most accurate/true-to-real-conditions test, since it is exactl
 
 ### Local Build
 
-For building and the image yourself, you have to `docker login -u<nethz> cxhub.ethz.ch` to the code expert registry, which enables you to pull the base image. Also, you need to be inside the ETH VPN, because the build process requires access an internal package repository.
+For building and the image yourself, you have to `docker login -u<nethz> cxhub.ethz.ch` to the code expert registry, which enables you to pull the base image. You may have to ask the CodeExpert team for access to this registry first. Also, you need to be inside the ETH VPN, because the build process requires access an internal package repository.
 
 `cd` to your local clone of the *nmcse* repository and run the `build.sh` next to this file.
 
