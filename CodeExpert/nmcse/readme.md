@@ -8,7 +8,7 @@ Code Expert (cx) is used for our student assignments. It uses Docker containers 
 
 ## History
 
-We used to rely on the cx's own *generic-1* environment/image, but in February 2022 we decided to upgrade our Eigen version to 3.4 and this meant we had to start maintaining our own image. Generally, it is a good idea, since we have quite the unique requirements and it is best we define those ourselves.
+We used to rely on the cx's own *generic-1* environment/image, but in February 2022 we decided to upgrade our Eigen version to 3.4 and this meant we had to start maintaining our own image. Generally, it is a good idea, since we have quite the unique requirements and it is best we define those ourselves. For more information on how everything came to be, consult the communication transcript.
 
 ## Deployment
 
@@ -28,7 +28,7 @@ The latter is the most accurate/true-to-real-conditions test, since it is exactl
 
 For building and the image yourself, you have to `docker login -u<nethz> cxhub.ethz.ch` to the code expert registry, which enables you to pull the base image. You may have to ask the CodeExpert team for access to this registry first. Also, you need to be inside the ETH VPN, because the build process requires access an internal package repository.
 
-`cd` to your local clone of the *nmcse* repository and run the `build.sh` next to this file.
+`cd` to your local clone of the *nmcse* repository and run the `build.sh` next to **this** file.
 
 ### Cloud Build
 
@@ -36,13 +36,13 @@ If you want to use the cloud-built image, (after pushing to the *nmcse* reposito
 
 ### Local testing
 
-Using either one of the two methods above, you will now have a local image tagged `cx-nmcse`. Test the image by running `run.sh`. This will run an action (either "compile", "run", or "test") on the project in `projectfiles`. You can change the action in the script. To use a different assignment, the `projectfiles` directory must be supplied with the assignment data in the same structure that Code Expert projects use. For this, you can export a known-to-work task from the Code Expert platform and pick one of the projects (either "solution" or "template"). Then paste those into `projectfiles`. 
+Using either one of the two methods above, you will now have a local image tagged `cx-nmcse`. Test the image by running `run.sh`. This will run an action (either "compile", "run", or "test") on the project in `projectfiles`. You can change the action in the script. To use a different assignment, a directory `projectfiles` (next to **this** file) must be supplied with the assignment data in the same structure that Code Expert projects use. For this, you can export a known-to-work task from the Code Expert platform and pick one of the projects (either "solution" or "template"). Then paste those into `projectfiles`.
 
 **Warning**: Since this directory is bind mounted, changes to this directory will persist on the host machine. This is good for debugging purposes, but may corrupt the files if something goes wrong. It is recommended to keep a clean backup of the `projectfiles` somewhere.
 
 ### Cleaning up
 
-Once in a while, you will want to clean up excess images and containers. For this, use `clean.sh`.
+Once in a while, you will want to clean up excess images and containers, especially during container development. For this, use `clean.sh`. This is a tentative clean-up process. For a more agressive version, consult `docker image ls` and `docker image rm`.
 
 ## Scripts directory
 

@@ -3,7 +3,7 @@ import os.path
 import sys
 
 source_dir = sys.argv[ 1 ]
-output_filename = f"{ os.path.basename( source_dir )}.tar"
+output_filename = os.path.basename( source_dir ) + ".tar"
 
 with tarfile.open( output_filename, "w:gz" ) as tar:
     

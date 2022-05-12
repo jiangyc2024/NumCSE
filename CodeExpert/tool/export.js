@@ -43,7 +43,7 @@ const default_file = process.argv[ 4 ];
 const display_name = basename( assignment_path_rel );
 
 //path/name used for the export directory/archive, relative to working directory
-const export_path = "taskExport";
+const export_path = "./taskExport";
 
 //creation date used for all file meta data
 const date = ( new Date( )).toISOString( );
@@ -137,7 +137,7 @@ const template_project_id = uid( );
 async function main( ) {
 	
 	//clean directory if existing
-	await fs.rmdir( export_path, { recursive: true });
+	await fs.rm( export_path, { recursive: true, force: true });
 	await fs.mkdir( export_path );
 
 	//copy necessary files into both projects
@@ -195,7 +195,7 @@ async function main( ) {
 	await zip( export_path );
 
 	//comment out for debugging the produced archive
-	await fs.rmdir( export_path, { recursive: true });
+	await fs.rm( export_path, { recursive: true });
 }
 
 async function assemble_project( name ) {

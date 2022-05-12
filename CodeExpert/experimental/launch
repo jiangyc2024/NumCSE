@@ -25,7 +25,7 @@ done
 echo "Launching NumCSE docker container with $ncpus logical cores "
 
 #cheat the docker build context to be the whole repository
-cd "$(dirname $0)/.."
+cd "$(dirname $0)/../.."
 cp CodeExpertTool/Dockerfile .
 docker build --build-arg ncpus=$ncpus -t nmcse-dev .
 rm Dockerfile
