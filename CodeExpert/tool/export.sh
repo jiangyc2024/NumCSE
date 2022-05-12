@@ -1,4 +1,7 @@
 #! /bin/bash
+# 
+# Usage: ./export.sh "Assignments/PolishedCodes/PolynomialInterpolation/EvaluatingDerivatives"
+# 
 # This is a docker wrapper around export.js, you only need to specify the assignment and the output will be next to this file.
 # Use this if you are a docker environment
 
