@@ -44,6 +44,10 @@ Using either one of the two methods above, you will now have a local image tagge
 
 Once in a while, you will want to clean up excess images and containers, especially during container development. For this, use `clean.sh`. This is a tentative clean-up process. For a more agressive version, consult `docker image ls` and `docker image rm`.
 
+### Troubleshooting
+
+There are some environment variables in cx that may impact the containers behavior in non-obvious ways. For example, increasing MAXFILESIZE was necessary for writing files for the test action. See [here](https://docs.expert.ethz.ch/lecturers/#environment-variables).
+
 ## Scripts directory
 
 As of now, we do not make use of the default `scripts` directory for Code Expert environments, which can be specified for an image. We leave those to the default. The actions in the `scripts` directory will be overridden by our assignments.

@@ -11,4 +11,4 @@ mkdir -p "$parent_dir/projectfiles/cx_out"
 
 # uncomment the /bin/bash in the end for debugging the container (this will skip the ACTION)
 # increasing MAXFILESIZE was necessary for the test action, see https://docs.expert.ethz.ch/lecturers/#environment-variables
-docker run -it -e ACTION=$cx_action -e MAXFILESIZE=100000 -v "$parent_dir/projectfiles:/var/lib/cxrun/projectfiles" cx-nmcse #/bin/bash
+docker run -it -e ACTION=$cx_action -e MAXFILESIZE=1000000 -e TIMEOUT=1000 -e CPUTIME=1000 -v "$parent_dir/projectfiles:/var/lib/cxrun/projectfiles" cx-nmcse #/bin/bash

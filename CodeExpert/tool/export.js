@@ -263,7 +263,7 @@ async function find_default_file( path, is_top_level = false ) {
 	//clean up and exit with error
 	const fail = async _ => {
 
-		await fs.rmdir( export_path, { recursive: true });
+		await fs.rm( export_path, { recursive: true });
 		console.error( "Error: Auto-detection of default file failed. Please specify it explicitly in the arguments" );
 		process.exit( 1 );
 	};
