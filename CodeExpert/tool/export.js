@@ -15,7 +15,7 @@ Disambiguation:
 
 Usage: 
 
-	node export.js <repo_root> <assignment_path_rel> [<default_file>]
+	node export.js <repo_root> <assignment_path_rel> [<default_file>] [--keep]
 
 This script reverse-engineers the cx task export format for automating part of the process of 
 uploading assignments to the cx platform. It produces a .tar archive ready for import in cx. 
@@ -38,6 +38,9 @@ const assignment_path_rel = process.argv[ 3 ]
 //the basename of the default student work file (optional, only needed if the auto-detection fails 
 //and you get an error)
 const default_file = process.argv[ 4 ];
+
+//whether to keep the export directory (unzipped)
+const keep = process.argv.includes( "--keep" );
 
 //display name of the task
 const display_name = basename( assignment_path_rel );
@@ -195,7 +198,7 @@ async function main( ) {
 	await zip( export_path );
 
 	//comment out for debugging the produced archive
-	await fs.rm( export_path, { recursive: true });
+	if( ! keep ) await fs.rm( export_path, { recursive: true });
 }
 
 async function assemble_project( name ) {
