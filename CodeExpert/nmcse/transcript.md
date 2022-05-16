@@ -132,3 +132,13 @@ Can you help me out here? Maybe I am not supposed to build these images locally 
 the repository is maintained by ISG and is only accessible internally or via VPN. 
 
 [...]
+
+###  2022/05/16 [Heinrich Grattenthaler](heinrich.grattenthaler@sam.math.ethz.ch):
+
+[...]
+
+we have tested our `nmcse` container to a sufficient degree and - for now - happy with its performance (in the simulator). As a real-world test, could you please deploy it on the Code Expert platform?
+
+Also, we will now start development of the `nmcse-dev` container and see whether basing it on the student container is a feasible solution. This would be a great way to avoid redundancy.
+
+[...]
