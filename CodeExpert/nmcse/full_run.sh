@@ -9,7 +9,7 @@
 
 parent_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")"; pwd -P)"
 tool_path="$parent_dir/../tool"
-$tool_path/export.sh "Assignments/PolishedCodes/$1" --keep;
+$tool_path/export.sh $1 --keep;
 rm -r $parent_dir/projectfiles/*;
 cp -r $tool_path/taskExport/solution/* $parent_dir/projectfiles/;
 $parent_dir/run.sh ${@:2};

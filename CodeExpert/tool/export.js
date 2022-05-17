@@ -86,9 +86,8 @@ const permissions_strict = _ => ({
 //the cx environment info used for this task
 const env = {
 	
-	slug: "generic-1",
-	lastUpdateCheck: date,
-  replacedBy: "generic-2"
+	slug: "nmcse",
+	lastUpdateCheck: date
 };
 
 //detection logic for whether this is the default student work file

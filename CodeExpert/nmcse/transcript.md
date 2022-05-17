@@ -142,3 +142,23 @@ we have tested our `nmcse` container to a sufficient degree and - for now - happ
 Also, we will now start development of the `nmcse-dev` container and see whether basing it on the student container is a feasible solution. This would be a great way to avoid redundancy.
 
 [...]
+
+###  2022/05/16 [Stefan Dröschler](expert@inf.ethz.ch):
+
+[...]
+
+the environment is already available on expert.ethz.ch. 
+
+If you'd like a custom template project for this environment, you can send us a project export and we'll set it up for you.
+
+[...]
+
+###  2022/05/17 [Heinrich Grattenthaler](heinrich.grattenthaler@sam.math.ethz.ch):
+
+[...]
+
+thanks for deploying the container! 
+
+In our simulator, we used `-e MAXFILESIZE=1000000 -e TIMEOUT=1000 -e CPUTIME=1000` for running, although I believe only the first environment variable is necessary. Is it possible for us to modify these variables on the platform or is that something only you can do?
+
+[...]
