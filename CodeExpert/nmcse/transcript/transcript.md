@@ -162,3 +162,34 @@ thanks for deploying the container!
 In our simulator, we used `-e MAXFILESIZE=1000000 -e TIMEOUT=1000 -e CPUTIME=1000` for running, although I believe only the first environment variable is necessary. Is it possible for us to modify these variables on the platform or is that something only you can do?
 
 [...]
+
+###  2022/05/17 [Stefan Dröschler](expert@inf.ethz.ch):
+
+[...]
+
+although you can modify the environment variables, it won't have the desired effect - they're informational only and required by some test runners. 
+
+Besides those you mentioned, a few more limits are enforced for your environment (see screenshot below):
+
+![screenshot](E96A2F09-299B-4BE5-9AC3-228CC67BEBAE_1_105_c.jpeg)
+
+These can only be changed by us on request. 
+
+[...]
+
+###  2022/06/03 [Heinrich Grattenthaler](heinrich.grattenthaler@sam.math.ethz.ch):
+
+[...]
+
+
+We did some more testing and it turns out that we require at least 20MB of file size (since one of our tests does not successfully compile otherwise). Could you please raise the file size limit of our container to 20MB? We used MAXFILESIZE=20000 in the simulator.
+
+[...]
+
+###  2022/06/03 [Stefan Dröschler](expert@inf.ethz.ch):
+
+[...]
+
+File size has been increased to 20MB.
+
+[...]
