@@ -12,3 +12,8 @@
 - could change type of row_ind and col_ptr to integer vectors
 - changed tests to test against Eigen and not the mastersolution
 - **TODO**: Latex
+
+# Ellpack (2-15)
+- changed Triplet_new type to Triplet -- has to be changed in Latex
+- some cosmetics
+- template throws exception because vector is accessed even though not having a size; **should main handle this exception?**
