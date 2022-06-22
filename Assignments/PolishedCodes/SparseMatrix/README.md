@@ -17,3 +17,8 @@
 - changed Triplet_new type to Triplet -- has to be changed in Latex
 - some cosmetics
 - template throws exception because vector is accessed even though not having a size; **should main handle this exception?**
+- **TODO**: Latex
+
+# GridFunction (2-16)
+- some cosmetics
+- **TODO**: Latex
