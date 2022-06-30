@@ -22,3 +22,9 @@
 # GridFunction (2-16)
 - some cosmetics
 - **TODO**: Latex
+
+# MatMatCOO (2-17)
+- cosmetics, more comments
+- replaced random matrix generation
+- added plotting using matplotlibcpp in main
+- **TODO**: Latex
