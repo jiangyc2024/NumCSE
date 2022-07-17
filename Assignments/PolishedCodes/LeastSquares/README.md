@@ -18,6 +18,10 @@
 - Renamed `error_plot()` to `fitting_error()` according to TODO in 3-3.d
 - The last TODO "use matplotlib in main(9 to plot data" was already done.
 
+## 3-6: Sparse Approximate Inverse (SPAI)
+- some cosmetics
+- **TODO**: Latex
+
 ## 3-7:
 - p. 192, just above 3-7.b) is a typo. It should be "matrix" instead of "metrix".
 - 3-7.b: The solution gives a condition when it is not full-rank, yet the
