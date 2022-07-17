@@ -29,3 +29,6 @@
   improve it a bit.
 - Added explicit Eigen:: prefix
 - Improved comments
+
+## 3-9: Matrix Fitting by Constrained Least Squares
+- 
