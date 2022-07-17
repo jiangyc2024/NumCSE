@@ -31,4 +31,4 @@
 - Improved comments
 
 ## 3-9: Matrix Fitting by Constrained Least Squares
-- 
+- small cosmetics
