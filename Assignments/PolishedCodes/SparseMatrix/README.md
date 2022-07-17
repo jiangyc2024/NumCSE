@@ -29,3 +29,7 @@
 - added plotting using matplotlibcpp in main
 - **TODO**: Latex
 - for runtime reasons this should not be timed for such big matrix sizes
+
+# Sylvester (2-19)
+- some cosmetics
+- **TODO**: Latex

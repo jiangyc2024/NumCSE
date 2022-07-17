@@ -3,9 +3,13 @@
 #include <iomanip>
 #include <iostream>
 
-/* @brief Solve $X+AXA=A$ for $X$ where $A$ is a diagonal s.p.d. matrix.
- * \@param diagA, a size $n$ Vector of the diagonal entries of A (all > 0).
- * \@param X, the $n\times n$ sparse matrix that solves $X+AXA=A$.
+/**
+ * @brief Solve $X+AXA=A$ for $X$ where $A$ is a diagonal s.p.d. matrix.
+ *
+ * @tparam Vector providing a size() method and operator[]
+ * @param diagA a size $n$ Vector of the diagonal entries of A (all > 0).
+ * @return Eigen::SparseMatrix<double> the $n\times n$ sparse matrix that solves
+ * $X+AXA=A$.
  */
 /* SAM_LISTING_BEGIN_0 */
 template <typename Vector>
@@ -13,7 +17,7 @@ Eigen::SparseMatrix<double> solveDiagSylvesterEq(const Vector &diagA) {
   int n = diagA.size();
   Eigen::SparseMatrix<double> X(n, n);
 
-  // TO DO: Fill in the entries of X.
+  // TODO: (2-19.h) Fill in the entries of X.
   // Don't forget to use makeCompressed().
 
   // START
@@ -24,9 +28,12 @@ Eigen::SparseMatrix<double> solveDiagSylvesterEq(const Vector &diagA) {
 }
 /* SAM_LISTING_END_0 */
 
-/* @brief Compute the Kronecker product $A\otimes A$.
- * \@param A, an $n\times n$ sparse matrix.
- * \@param B, the $n^2\times n^2$ sparse matrix $B=A\otimes A$
+/**
+ * @brief Compute the Kronecker product $A\otimes A$.
+ *
+ * @param M an $n\times n$ sparse matrix.
+ * @return Eigen::SparseMatrix<double> the $n^2\times n^2$ sparse matrix
+ * $B=A\otimes A$
  */
 /* SAM_LISTING_BEGIN_1 */
 Eigen::SparseMatrix<double> sparseKron(const Eigen::SparseMatrix<double> &M) {
@@ -38,7 +45,7 @@ Eigen::SparseMatrix<double> sparseKron(const Eigen::SparseMatrix<double> &M) {
   const int *JM = M.outerIndexPtr();
 
   // Define nnzColwiseM(j) = nnz( M.col(j) )
-  Eigen::VectorXd nnzColwiseM(n);
+  Eigen::VectorXi nnzColwiseM(n);
   for (int j = 0; j < n; j++) {
     nnzColwiseM(j) = JM[j + 1] - JM[j];
   }
@@ -46,7 +53,7 @@ Eigen::SparseMatrix<double> sparseKron(const Eigen::SparseMatrix<double> &M) {
   // B will be the Kronecker product of M with itself.
   Eigen::SparseMatrix<double> B(n * n, n * n);
 
-  // TO DO: Fill in the entries of B.
+  // TODO: (2-19.i) Fill in the entries of B.
   // Hint: You can use nnzColwiseM when reserving space for B.
   // Use M.valuePtr() and M.innerIndexPtr() to define arrays similar
   // to JM. Use those arrays to access the non-zero entries of M.
@@ -54,14 +61,16 @@ Eigen::SparseMatrix<double> sparseKron(const Eigen::SparseMatrix<double> &M) {
   // START
 
   // END
- 
+
   return B;
 }
 /* SAM_LISTING_END_1 */
 
-/* @brief Solve $XA^{-1}+AX=I$ for $X$ where $A$ is s.p.d.
- * \@param A, sparse s.p.d. matrix.
- * \@param X, the $n\times n$ sparse matrix that solves $X+AXA=A$.
+/**
+ * @brief Solve $XA^{-1}+AX=I$ for $X$ where $A$ is s.p.d.
+ *
+ * @param A sparse s.p.d. matrix.
+ * @return Eigen::MatrixXd the $n\times n$ sparse matrix that solves $X+AXA=A$.
  */
 /* SAM_LISTING_BEGIN_2 */
 Eigen::MatrixXd solveSpecialSylvesterEq(const Eigen::SparseMatrix<double> &A) {
@@ -69,12 +78,12 @@ Eigen::MatrixXd solveSpecialSylvesterEq(const Eigen::SparseMatrix<double> &A) {
   assert(n == A.cols() && "Matrix A must be square.");
   Eigen::MatrixXd X(n, n);
 
-  // TO DO: Solve the equation X*A^{-1} + A*X = I .
- 
+  // TODO: (2-19.j) Solve the equation X*A^{-1} + A*X = I .
+
   // START
-  
+
   // END
- 
+
   return X;
 }
 /* SAM_LISTING_END_2 */
