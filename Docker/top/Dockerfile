@@ -1,4 +1,4 @@
-from nmcse-dev-base
+from numcse_dev_base
 
 # ==== prepare repository ==========================================================
 
