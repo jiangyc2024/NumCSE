@@ -1,1 +1,0 @@
-Use these files to build clang-tidy from source worry-free. All you need is a fast machine with docker installed and an acceptable internet connection. A cloud computing instance with 8 cores is recommended. Copy these files over to your instance and run launch. A clang-tidy package will be output in your working directory.

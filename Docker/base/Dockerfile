@@ -1,4 +1,5 @@
-from gcc:11
+# digest aquired via `docker run mplatform/manifest-tool inspect gcc:11` on 2022-07-19 09:46
+from gcc:11@sha256:a5226837fed4f8e8e297c058d01b22db04612a4e341689289bbdcdf6f9b85627
 
 # ==== install cmake ===============================================================
 

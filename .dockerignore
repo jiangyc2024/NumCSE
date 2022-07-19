@@ -1,0 +1,7 @@
+# exclude from build context
+bin
+.git
+Docker
+! Docker/top/.bashrc
+! Docker/top/entrypoint.sh
+! Docker/top/numcse_path

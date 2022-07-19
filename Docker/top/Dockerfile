@@ -4,13 +4,18 @@ from nmcse-dev-base
 
 # preheat cmake build process
 
-copy . ./numcse
+copy . /numcse
 run mkdir /build && cd /build \
-      && cmake -DTIDY=0 /numcse \
-      && rm -r /numcse
+       && cmake -DTIDY=0 -DDOCKER=1 /numcse \
+       && mkdir -p /bin_cache \
+       && cp -r /numcse/bin/* /bin_cache \
+       && rm -r /numcse
 
 copy Docker/top/numcse_path /bin
 copy Docker/top/.bashrc /tmp/patch
 run cat /tmp/patch >> ~/.bashrc && rm /tmp/patch
+
+copy Docker/top/entrypoint.sh /entry
+entrypoint /entry
 
 workdir /build
