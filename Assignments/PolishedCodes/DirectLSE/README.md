@@ -8,7 +8,7 @@
 
 - ported to CodeExpert
 - wrapped the tabulation task (2-2.f) into a function and added plotting using matplotlibcpp
-- **TODO:** Generate a new eps file and include CPU specifications in LATEX.
+- **TODO**: Generate a new eps file
 
 ## BlockLU (2-3)
 - ported to CodeExpert
@@ -22,7 +22,6 @@
 ## EfficientBandMult (2-6)
 - ported to CodeExpert
 - changed the initialization for Vector c, d in solvelseA to be a loop because of Eigen assertions (type is templated...); this also conforms to the template requirements
-- **TODO:** There are some typos in the Latex
 
 ## Householder (2-7)
 - added division by squaredNorm() as requested by task description
@@ -43,7 +42,6 @@
 ## StructuredLSE (2-12)
 - ported to CodeExpert and added matplotlibcpp code
 - buildA: set matrix to zero because some entries are not touched
-- **TODO**: generate eps files
 - changed sizes to go from 16 to 512 instead of 16 to 4096 because of runtime issues on CodeExpert
 
 ## TripletToCRS (2-13)

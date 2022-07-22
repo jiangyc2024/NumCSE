@@ -20,7 +20,7 @@ void solvelse(const Eigen::MatrixXd& R, const Eigen::VectorXd& v,
   // size of R, which is size of u, v, and size of bb is n+1
   const unsigned int n = R.rows();
 
-  // TODO: (3-9.d)
+  // TODO: (2-9.d)
   // i) Use assert() to check that R, v, u, bb all have the appropriate sizes.
   // ii) Use (3-9.b) to solve the LSE.
   // Hint: Use R.triangularView<Eigen::Upper>() to make use of the triangular
@@ -64,7 +64,7 @@ bool testSolveLSE(const Eigen::MatrixXd& R, const Eigen::VectorXd& v,
                   Eigen::VectorXd& x) {
   bool areTheSame = false;
 
-  // TODO: (3-9.e)
+  // TODO: (2-9.e)
   // i) Create the system matrix A and solve the LSE, using
   // an Eigen LU-solver. Store the solution in x.
   // ii) Solve the LSE with solvelse(), and calculate the
