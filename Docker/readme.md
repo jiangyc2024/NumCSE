@@ -24,4 +24,4 @@ To increase container performance, you may be able to increase the number of CPU
 
 ## Code Expert tool
 
-It is currently not possible to run the Docker-based Code Expert tool from inside the container. Please run them **directly from your host**.
+It is currently not possible to run the Docker-based Code Expert tool from inside the container. Please run it **directly from your host**.
