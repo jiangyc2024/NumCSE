@@ -6,6 +6,7 @@ CMakeScripts
 cmake_install.cmake
 install_manifest.txt
 build
+bin
 third_party
 octave-workspace
 cmake_debug
