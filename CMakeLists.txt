@@ -1,5 +1,6 @@
 project (NumCSE)
-cmake_minimum_required(VERSION 2.8)
+# indicates that this project has been tested with newer versions and no deprecation warning is necessary
+cmake_minimum_required(VERSION 2.8...3.23)
 
 #
 # setup cmake
