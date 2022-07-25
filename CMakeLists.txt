@@ -26,10 +26,16 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMake/Modules/")
 # store binaries in ./bin
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 
+# change the binary path for Docker
+if(DOCKER)
+    message( "set up for docker" )
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY /numcse/bin)
+endif()
+
 # enable linting next to compile
 set(TIDY FALSE CACHE BOOL "whether to enable linting")
 if(TIDY)
-    set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-system-headers=0;-checks=*, \
+    set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-system-headers=0;-extra-arg=-I/usr/local/llvm/lib64/clang/15.0.0/include;-checks=*, \
         -llvmlibc-*, \
         -fuchsia-default-arguments-*, \
         -*-magic-numbers, \

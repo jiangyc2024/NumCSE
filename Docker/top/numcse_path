@@ -1,0 +1,6 @@
+#! /bin/bash
+
+( pwd | grep -oP '(?<=/numcse/bin).+' ) || 
+( pwd | grep -oP '(?<=/build).+' ) || 
+( pwd | grep -oP '(?<=/numcse).+' | grep -oP '^(?!/bin).+$' ) ||
+( echo 'warning: path not recognized, using default' >&2 && echo '/' )
