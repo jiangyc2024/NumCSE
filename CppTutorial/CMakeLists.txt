@@ -1,5 +1,4 @@
 project(CPPTutorial)
-cmake_minimum_required(VERSION 2.6.2)
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -g -Wall -Wextra -Wno-deprecated-declarations -pedantic" )
