@@ -1,5 +1,5 @@
 # digest aquired via `docker run mplatform/manifest-tool inspect gcc:11` on 2022-07-19 09:46
-from gcc:11@sha256:a5226837fed4f8e8e297c058d01b22db04612a4e341689289bbdcdf6f9b85627
+from gcc:11@sha256:a5226837fed4f8e8e297c058d01b22db04612a4e341689289bbdcdf6f9b85627 as stage_one
 
 # ==== install cmake ===============================================================
 
@@ -50,3 +50,17 @@ run mkdir -p "/eigen" cd "/eigen" \
 
 run curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
     && apt-get install -y nodejs
+
+# ==== install blas ================================================================
+
+run apt-get -y install libblas-dev
+
+# ==== install Intel MKL =========================================================
+
+from stage_one as stage_two_x86_64
+
+from stage_one as stage_two_arm64
+
+from stage_two_${TARGETARCH}
+
+
