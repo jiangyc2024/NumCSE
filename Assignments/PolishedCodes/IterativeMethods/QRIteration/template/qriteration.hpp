@@ -6,8 +6,6 @@
 #include <limits>
 #include <vector>
 
-using namespace Eigen;
-
 Eigen::Vector2d givens(Eigen::Vector2d a) {
   if (a[1] != 0.0) {
     double s;
@@ -32,13 +30,13 @@ std::pair<Eigen::VectorXd, Eigen::VectorXd> qrStep(const Eigen::VectorXd &dT,
   assert(uT.size() == n - 1);
   // Defining vectors for T' (Written as T_p)
   Eigen::VectorXd dT_p(n);
-  Eigen::VectorXd uT_p(n-1);
-  
-  // TO DO : Compute the defining vectors d(T') and u(T') of T':= RQ with O(n)  
+  Eigen::VectorXd uT_p(n - 1);
+
+  // TO DO : Compute the defining vectors d(T') and u(T') of T':= RQ with O(n)
   // asymptotic complexity, given the defining vectors d(T) and U(T) of T = QR
   // START
-  
+
   // END
-  
+
   return {dT_p, uT_p};
 }

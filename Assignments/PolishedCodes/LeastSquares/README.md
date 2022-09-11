@@ -20,10 +20,8 @@
 
 ## 3-6: Sparse Approximate Inverse (SPAI)
 - some cosmetics
-- **TODO**: Latex
 
 ## 3-7:
-- p. 192, just above 3-7.b) is a typo. It should be "matrix" instead of "metrix".
 - 3-7.b: The solution gives a condition when it is not full-rank, yet the
   question asks about the condition of it having full rank. Maybe one could
   improve it a bit.
