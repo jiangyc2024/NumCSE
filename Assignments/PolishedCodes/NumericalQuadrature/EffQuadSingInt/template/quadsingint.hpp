@@ -20,7 +20,7 @@ template <class Function>
 double quadsingint(const Function& f, const unsigned n) {
   double I = 0.;
 
-  // TODO: (8-9.c) Compute $\int_{-1}^1 \sqrt(1-t^2) f(t) dt$ using
+  // TODO: (7-9.c) Compute $\int_{-1}^1 \sqrt(1-t^2) f(t) dt$ using
   // Gauss-Legendre quadrature. Ensure asymptotic exponential convergence. START
 
   // END
@@ -41,7 +41,7 @@ void tabAndPlotQuadErr() {
   auto f = [](double t) { return 1. / (2. + std::exp(3. * t)); };
 
   plt::figure();
-  // TODO: (8-9.e) Tabulate and plot quadrature error for the given function.
+  // TODO: (7-9.e) Tabulate and plot quadrature error for the given function.
   // START
 
   // END

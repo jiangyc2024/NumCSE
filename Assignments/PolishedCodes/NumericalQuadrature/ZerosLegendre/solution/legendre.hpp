@@ -14,7 +14,7 @@ void legvals(const Eigen::VectorXd& x, Eigen::MatrixXd& Lx,
   const unsigned int n = Lx.cols() - 1;
   const unsigned int N = x.size();
 
-  // TODO: (8-10.c) Fill matrices Lx and DLx with values of the legendre
+  // TODO: (7-10.c) Fill matrices Lx and DLx with values of the legendre
   // polynomials at x, i.e. $\{P_k(x_j)\}_{jk}$ and $\{P'_k(x_j)\}_{jk}$ START
   assert(n >= 2);
   for (unsigned int j = 0; j < N; ++j) {
@@ -39,7 +39,7 @@ void legvals(const Eigen::VectorXd& x, Eigen::MatrixXd& Lx,
 double Pnx(const double x, const int n) {
   Eigen::VectorXd Px(n + 1);
 
-  // TODO: (8-10.d, optional) Evaluate $P_n(x)$ for a scalar $x$ and integer
+  // TODO: (7-10.d, optional) Evaluate $P_n(x)$ for a scalar $x$ and integer
   // $n$. START
   assert(n >= 1);
   Px(0) = 1.;
@@ -58,7 +58,7 @@ Eigen::MatrixXd gaussPts(const unsigned int n, const double rtol = 1e-10,
                          const double atol = 1e-12) {
   Eigen::MatrixXd zeros = Eigen::MatrixXd::Zero(n, n);
 
-  // TODO: (8-10.d) Find the zeros of the legendre polynomials using the secant
+  // TODO: (7-10.d) Find the zeros of the legendre polynomials using the secant
   // method. START
   double x0, x1, f0, f1, s;
   for (unsigned int k = 1; k <= n; ++k) {
@@ -101,7 +101,7 @@ Eigen::MatrixXd gaussPts_regulaFalsi(const unsigned int n,
                                      const double atol = 1e-12) {
   Eigen::MatrixXd zeros = Eigen::MatrixXd::Zero(n, n);
 
-  // TODO: (8-10.f) Find the zeros of the legendre polynomials using the secant
+  // TODO: (7-10.f) Find the zeros of the legendre polynomials using the secant
   // method with regula falsi. START
   double x0, x1, f0, f1, s;
   for (unsigned int k = 1; k <= n; ++k) {
