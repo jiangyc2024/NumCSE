@@ -56,11 +56,9 @@ Eigen::MatrixXd CompactStorageQR::matmult(const Eigen::MatrixXd &X) const {
   for (int k = n_ - 2; k >= 0; --k) {
     u.tail(n_ - k - 1) = M_.block(k + 1, k, n_ - k - 1, 1);
     u[k] = std::sqrt(1.0 - u.squaredNorm());
-    // std::cout<<"output u"<< u << std::endl;
     Y -= 2 * u * (u.transpose() * Y);
   }
   // END Student code
-  // std::cout<<"output Y"<< Y << std::endl;
   return Y;
 }
 /* SAM_LISTING_END_2 */
