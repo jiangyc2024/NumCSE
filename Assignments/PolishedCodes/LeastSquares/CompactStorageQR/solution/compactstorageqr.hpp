@@ -15,6 +15,7 @@
 #include <vector>
 
 // Wrapper class for compactly stored QR-factorization
+/* SAM_LISTING_BEGIN_1 */
 class CompactStorageQR {
  public:
   // Constructor taking raw data array, which has to be persistent
@@ -41,7 +42,9 @@ class CompactStorageQR {
   unsigned int n_;                       // Matrix dimensions
   Eigen::Map<const Eigen::MatrixXd> M_;  // Raw data wrapped into a matrix
 };
+/* SAM_LISTING_END_1 */
 
+/* SAM_LISTING_BEGIN_2 */
 Eigen::MatrixXd CompactStorageQR::matmult(const Eigen::MatrixXd &X) const {
   assert((X.rows() == n_) && "Wrong size of matrix factor");
   Eigen::MatrixXd Y(n_, X.rows());
@@ -60,7 +63,9 @@ Eigen::MatrixXd CompactStorageQR::matmult(const Eigen::MatrixXd &X) const {
   // std::cout<<"output Y"<< Y << std::endl;
   return Y;
 }
+/* SAM_LISTING_END_2 */
 
+/* SAM_LISTING_BEGIN_3 */
 Eigen::MatrixXd CompactStorageQR::solve(const Eigen::MatrixXd &B) const {
   assert((B.rows() == n_) && "Wrong size of right-hand side");
   Eigen::MatrixXd X{B};
@@ -100,7 +105,9 @@ Eigen::MatrixXd CompactStorageQR::solve(const Eigen::MatrixXd &B) const {
   // END student code
   return X;
 }
+/* SAM_LISTING_END_3 */
 
+/* SAM_LISTING_BEGIN_4 */
 double CompactStorageQR::det() const {
   double d;
   // START Student code
@@ -116,3 +123,5 @@ double CompactStorageQR::det() const {
   // END Student code
   return d;
 }
+
+/* SAM_LISTING_END_4 */
