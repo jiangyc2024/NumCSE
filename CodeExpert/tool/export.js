@@ -86,7 +86,8 @@ const permissions_strict = _ => ({
 //the cx environment info used for this task
 const env = {
 	
-	slug: "nmcse",
+  //slug: "nmcse",
+  slug: "generic-1",
 	lastUpdateCheck: date
 };
 
@@ -145,6 +146,9 @@ async function main( ) {
 	//copy necessary files into both projects
 	await assemble_project( "solution" );
 	await assemble_project( "template" );
+
+  //copy solution/tests.cpp to template/tests.cpp
+  await copy_file( `${ export_path }/template/tests.cpp`, `${ export_path }/solution`);
 
 	await fs.writeFile( `${ export_path }/export.json`, JSON.stringify( info_export, null, 2 ));
 
@@ -213,7 +217,7 @@ async function assemble_project( name ) {
 	await copy_file( `${ testing_path }/conf.yml`, project_path );
 	await copy_file( `${ testing_path }/doctest.h`, project_path );
 	await copy_file( `${ testing_path }/copy_and_tweak.py`, project_path );
-
+	
 	//find the master solution by finding the default student work file in the solution project. 
 	//solution.hpp is needed for the tests
 	const solution_path = await find_default_file( `${ export_path }/solution`, true );
