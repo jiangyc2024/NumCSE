@@ -229,3 +229,11 @@ Für nmcse habe ich gestern die Gitlab Pipeline auf unseren neuen Buildprozess u
 - derzeit benötigt es noch einen manuellen Schritt, um die Environment Images auch in Code Expert zu aktualisieren. Das soll in Zukunft noch automatisiert werden und Ihr werden das Update dann selbst auslösen können. 
 
 [...]
+
+###  2022/09/17 [Heinrich Grattenthaler](heinrich.grattenthaler@sam.math.ethz.ch):
+
+[...]
+
+We just encountered some issues with the new build pipeline. The pipeline failed with: Project `OU-LECTURERS/gitlab-templates` not found or access denied! Make sure any includes in the pipeline configuration are correctly defined.  Could you please have a look into it? Since the changes relative to the last working commit are minimal, I assume it is merely a permissions problem.
+
+[...]
