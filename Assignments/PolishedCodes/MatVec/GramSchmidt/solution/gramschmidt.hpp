@@ -22,7 +22,7 @@ Eigen::MatrixXd gram_schmidt(const Eigen::MatrixXd &A) {
   // The first vector just gets normalized
   Q.col(0).normalize();
 
-  // TO DO: (1-2.b) Implement the gram_schmidt procedure by iterating over all
+  // TO DO: (1-2.b) Implement the gram\_schmidt procedure by iterating over all
   // other columns of A. START
   for (unsigned int j = 1; j < A.cols(); ++j) {
     // See eigen documentation for usage of col and leftCols
@@ -55,7 +55,7 @@ double orthogonality_test() {
   Eigen::MatrixXd A, Q;
   A = Eigen::MatrixXd::Random(n, n);
 
-  // TO DO: (1-2.c) Use gram_schmidt() to compute an orthonormalization of A,
+  // TO DO: (1-2.c) Use gram\_schmidt() to compute an orthonormalization of A,
   // call it Q, and let err measure "how far Q is from being orthonormal".
   // START
   Q = gram_schmidt(A);
