@@ -8,7 +8,7 @@
 // TODO: (1-1.a) Include the needed header file for Eigen; Eigen/Dense includes
 // most Eigen submodules, but Eigen/Core suffices
 // START
-#include <Eigen/Dense>
+
 // END
 
 /**
