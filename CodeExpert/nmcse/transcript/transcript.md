@@ -237,3 +237,22 @@ Für nmcse habe ich gestern die Gitlab Pipeline auf unseren neuen Buildprozess u
 We just encountered some issues with the new build pipeline. The pipeline failed with: Project `OU-LECTURERS/gitlab-templates` not found or access denied! Make sure any includes in the pipeline configuration are correctly defined.  Could you please have a look into it? Since the changes relative to the last working commit are minimal, I assume it is merely a permissions problem.
 
 [...]
+
+###  2022/09/17 [Stefan Dröschler](expert@inf.ethz.ch):
+
+[...]
+
+Sorry for the inconvenience. I've added you to our project that contains the template files.
+Please try again and let me know if it works now.
+
+[...]
+
+###  2022/09/19 [Heinrich Grattenthaler](heinrich.grattenthaler@sam.math.ethz.ch):
+
+[...]
+
+I manually triggered a pipeline but it failed in the build stage. You can find the details in GitLab: https://gitlab.inf.ethz.ch/OU-LECTURERS/containers/cxenv/nmcse/-/jobs/646713. The daily builds triggered by your account have succeeded, though.
+
+Also, for now, could you please deploy the current image to code expert so we can be operational again?
+
+[...]
