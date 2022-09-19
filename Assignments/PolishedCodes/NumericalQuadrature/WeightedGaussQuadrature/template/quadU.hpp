@@ -21,7 +21,7 @@ double quadU(const Function& f, const unsigned int n) {
   // Value of integral
   double I = 0;
 
-  // TODO: (8-6.i) Integrate f using weighted Gauss quadrature
+  // TODO: (7-6.i) Integrate f using weighted Gauss quadrature
   // START
 
   // END
@@ -38,7 +38,7 @@ void testQuadU(unsigned int nmax = 20) {
 
   plt::figure();
 
-  // TODO: (8-6.j) Tabulate and plot the quadrature error.
+  // TODO: (7-6.j) Tabulate and plot the quadrature error.
   // START
 
   // END

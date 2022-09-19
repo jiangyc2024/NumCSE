@@ -54,7 +54,7 @@ void solvpermb_on3(const Eigen::MatrixXd& A, Eigen::VectorXd& b,
   const unsigned int n = b.size();
   assert(n == A.cols() && n == A.rows() && "Error: size mismatch!");
   // TODO: (2-11.c) Alter the above function such that it has asymptotic
-  // complexity O(n^3).
+  // complexity $\mathcal{O}(n^3)$.
   // START
 
   // END
