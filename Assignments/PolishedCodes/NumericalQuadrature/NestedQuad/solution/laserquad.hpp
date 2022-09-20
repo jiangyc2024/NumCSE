@@ -29,7 +29,7 @@ template <class Function>
 double evalquad(const double a, const double b, Function &&f,
                 const QuadRule &Q) {
   double I = 0.;
-  // TODO: (8-4.b) Use Q to approximate the integral of f over [a,b]
+  // TODO: (7-4.b) Use Q to approximate the integral of f over [a,b]
   // START
   // Loop over all nodes/weights pairs
   for (unsigned int i = 0; i < Q.weights.size(); ++i) {
@@ -52,7 +52,7 @@ double evalquad(const double a, const double b, Function &&f,
 template <class Function>
 double gaussquadtriangle(const Function &f, const unsigned N) {
   double I = 0.;
-  // TODO: (8-4.c) Use N-node gaussquad() to integrate f over
+  // TODO: (7-4.c) Use N-node gaussquad() to integrate f over
   // the triangle 0<=x,y, x+y<=1.
   // START
   // Get nodes/weights for integral over dx and dy
@@ -101,7 +101,7 @@ void convtest2DQuad(unsigned int nmax = 20) {
   // "Exact" integral
   constexpr double I_ex = 0.366046550000405;
   plt::figure();
-  // TODO: (8-4.d) Tabulate the error of gaussquadtriangle() for
+  // TODO: (7-4.d) Tabulate the error of gaussquadtriangle() for
   // a laser beam intensity, using n=1,2,3,...,nmax nodes.
   // START
   // Parameters

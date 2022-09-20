@@ -1,5 +1,6 @@
 #include <Eigen/Dense>
 #include <complex>
+#include <iomanip>
 
 #include "matplotlibcpp.h"
 #include "polyfit.hpp"

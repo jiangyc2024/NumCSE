@@ -2,6 +2,8 @@
 
 # Tests of Sylvester.hpp
 
+> The three functions are tested in `main.cpp` at your disposal.
+
 > `solveDiagSylvesterEq()` is tested for
 $
 A = diag([1, 2, 3, 4, 5, 6, 7, 8]) \in \mathbb{R}^{8,8}
@@ -46,3 +48,5 @@ The test is passed if the output is `X = `
   0.0055  -0.0013  8.7e-05 -2.3e-05  5.4e-06  3.9e-05      0.5 -0.00098
  0.00054  7.2e-05  1.5e-05 -0.00015 -0.00011  0.00019 -0.00098      0.5
 ```
+
+> Additionally, we provide tests against the solution of these functions.
