@@ -22,9 +22,9 @@ void plot(std::vector<double> &vec_size, std::vector<double> &elap_time,
   std::vector<double> vec_size_pow3(vec_size);
 
   for (unsigned int i = 0; i < n; i++) {
-    vec_size_lin[i] = vec_size[i] / vec_size[0] * elap_time[0];
+    vec_size_lin[i] = vec_size[i] / vec_size[0] * elap_time_eff[0];
     vec_size_pow3[i] =
-        pow(vec_size[i], 3) / pow(vec_size[0], 3) * elap_time_eff[0];
+        pow(vec_size[i], 3) / pow(vec_size[0], 3) * elap_time[0];
   }
 
   // make sure the sizes match

@@ -5,7 +5,7 @@
 
 // TODO: Include the appropriate header files
 // START
-#include <Eigen/Dense>
+
 // END
 
 // Eigen matrices have a range of methods that reduce them to a single number.
@@ -29,7 +29,7 @@ double average(const Eigen::MatrixXd& A) {
 
   // TODO: (1-3.a) Calculate the average of the entries of A.
   // START
-  m = A.sum() / A.size();
+
   // END
 
   return m;
@@ -58,8 +58,7 @@ double percent_zero(const Eigen::MatrixXd& A) {
   double ratio = 0.;
   // TODO: (1-3.b) Calculate the ratio of zero entries in A.
   // START
-  const unsigned int zeros = (Arr == 0).count();
-  ratio = (static_cast<double>(zeros)) / A.size();
+
   // END
 
   return ratio * 100;
@@ -88,7 +87,7 @@ bool has_zero_column(const Eigen::MatrixXd& A) {
   // TODO: (1-3.c) Check if any one of the norms is equal to zero.
   // Hint: Use an array to perform entry-wise comparison.
   // START
-  result = (norms.array() == 0).any();
+
   // END
 
   return result;
@@ -109,9 +108,7 @@ Eigen::MatrixXd columns_sum_to_zero(const Eigen::MatrixXd& A) {
   // TODO: (1-3.d) Replace the diagonal of B with values such that the columns
   // of B sum up to zero. Hint: Use diagonal(), rowwise(), and sum().
   // START
-  unsigned int p = std::min(B.rows(), B.cols());
-  B.diagonal() = Eigen::VectorXd::Zero(p);
-  B.diagonal() = -B.rowwise().sum();
+
   // END
 
   return B;

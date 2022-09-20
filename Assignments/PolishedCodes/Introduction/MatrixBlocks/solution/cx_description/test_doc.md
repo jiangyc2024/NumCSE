@@ -1,5 +1,4 @@
 
-
 # Tests of MatrixBlocks.hpp
 
 > There are three functions in MatrixBlocks.hpp and there is one test for each function.
