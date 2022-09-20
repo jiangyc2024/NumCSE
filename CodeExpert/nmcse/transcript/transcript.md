@@ -193,3 +193,123 @@ We did some more testing and it turns out that we require at least 20MB of file 
 File size has been increased to 20MB.
 
 [...]
+
+###  2022/08/29 [Stefan Dröschler](expert@inf.ethz.ch):
+
+[...]
+
+Vor einiger Zeit hatten wir die beiden Code Expert Environments nmcse und nmcse-dev für Euch eingerichtet. 
+Bislang wurden mit diesen Environments erst sehr wenige (nmcse) bzw. keine (nmcse-dev) Jobs auf expert.ethz.ch ausgeführt. 
+Da wir derzeit unseren Buildprozess für Environment Images umstellen, taucht nun die Frage auf, ob beide Environments in Zukunft noch genutzt werden sollen.
+
+Für eine kurze Info wäre ich dankbar.
+
+[...]
+
+###  2022/08/29 [Heinrich Grattenthaler](heinrich.grattenthaler@sam.math.ethz.ch):
+
+[...]
+
+Ja, das nmcse image wird in Zukunft genutzt. Wir haben dies bewusst im Frühlingssemester entwickelt, da der entsprechende Kurs immer im HS läuft.
+
+Das andere Environment (nmcse-dev) war ursprünglich für Entwicklungsarbeiten gedacht. Im Moment setzen wir da aber auf local builds, da das Image hauptsächlich für das NumCSE-Team von Relevanz ist und wir z.B. auch die aarch64-Architektur nativ unterstützen möchten. Es sieht also im Moment nicht danach aus, als würden wir für dieses Image in Zukunft noch den Buildprozess auf Code Expert benötigen.
+
+[...]
+
+###  2022/08/30 [Stefan Dröschler](expert@inf.ethz.ch):
+
+[...]
+
+Besten Dank für die Antwort. Ich habe soeben das nmcse-dev Environment entfernt und das zugehörige Repo in gitlab archiviert. 
+
+Für nmcse habe ich gestern die Gitlab Pipeline auf unseren neuen Buildprozess umgestellt: 
+- das Image wird automatisch gebaut, wenn ein neues git tag gepusht wird oder eine Pipeline via https://gitlab.inf.ethz.ch/OU-LECTURERS/containers/cxenv/nmcse > CI/CD > Run Pipeline über das Gitlab Webinterface gestartet wird.
+- alle Environment Images werden täglich automatisch aktualisiert und gebaut, um sie auf einem aktuellen Stand zu halten.
+- Environment Images werden immer mit 'latest'  und entweder dem git tag oder dem commit sha getaggt, z.B. cxhub.ethz.ch/cx/cxenv/nmcse:latest und cxhub.ethz.ch/cx/cxenv/nmcse:972285f9. 'latest' entspricht dann immer dem zuletzt gebauten Image.
+- derzeit benötigt es noch einen manuellen Schritt, um die Environment Images auch in Code Expert zu aktualisieren. Das soll in Zukunft noch automatisiert werden und Ihr werden das Update dann selbst auslösen können. 
+
+[...]
+
+###  2022/09/17 [Heinrich Grattenthaler](heinrich.grattenthaler@sam.math.ethz.ch):
+
+[...]
+
+We just encountered some issues with the new build pipeline. The pipeline failed with: Project `OU-LECTURERS/gitlab-templates` not found or access denied! Make sure any includes in the pipeline configuration are correctly defined.  Could you please have a look into it? Since the changes relative to the last working commit are minimal, I assume it is merely a permissions problem.
+
+[...]
+
+###  2022/09/17 [Stefan Dröschler](expert@inf.ethz.ch):
+
+[...]
+
+Sorry for the inconvenience. I've added you to our project that contains the template files.
+Please try again and let me know if it works now.
+
+[...]
+
+###  2022/09/19 [Heinrich Grattenthaler](heinrich.grattenthaler@sam.math.ethz.ch):
+
+[...]
+
+I manually triggered a pipeline but it failed in the build stage. You can find the details in GitLab: https://gitlab.inf.ethz.ch/OU-LECTURERS/containers/cxenv/nmcse/-/jobs/646713. The daily builds triggered by your account have succeeded, though.
+
+Also, for now, could you please deploy the current image to code expert so we can be operational again?
+
+[...]
+
+###  2022/09/19 [Stefan Dröschler](expert@inf.ethz.ch):
+
+[...]
+
+The current image has been deployed on Code Expert. 
+
+We're currently migrating our docker registry to a new server and you happened to push to it right at the moment when it was operating in read-only mode. Sorry for that. 
+
+[...]
+
+###  2022/09/19 [Stefan Dröschler](expert@inf.ethz.ch):
+
+[...]
+
+Just to keep you updated: the new docker registry does not yet work as expected. 
+Our ISG is working on it and it should be back to normal operation soon. 
+Please let me know if you require any urgent changes to the environment image. 
+
+I'll let you know once the problems are resolved. Sorry again for the inconveniences. 
+
+[...]
+
+###  2022/09/19 [Stefan Dröschler](expert@inf.ethz.ch):
+
+[...]
+
+Pushing to the registry should now be possible again. 
+Please let me know if you encounter any further problems.
+
+[...]
+
+###  2022/09/20 [Heinrich Grattenthaler](heinrich.grattenthaler@sam.math.ethz.ch):
+
+[...]
+
+Some time ago we tested our nmcse container as of mid April 2022 with all our assignments from last year and it went through without problems on code expert. We are now struggling to reproduce this stable behavior both locally and on code expert. There are two recurring issues: 
+
+First, the compilation for some of our assignments is killed, but only some of the time. This looks like a memory issue. I.e we observe something of the form `g++: fatal error: Killed signal terminated program cc1plus` and in the next run, it is all fine.
+
+Second, uploading the exact same project with a different stub configured, i.e. `generic-1` instead of `nmcse`, not only speeds up compilation by a factor of 5x, but also runs the job without any (observed) issues. Note that this could always have been the case, as we did not compare the two environments up until recently. For example, observe the difference between the test action for https://expert.ethz.ch/ide2/9svnsbhbGgGWSKdmR (nmcse based) and https://expert.ethz.ch/ide2/vrrzChv7LWZrjoZCQ (generic-1) based.
+
+The only explanation I have for this kind of difference is that our nmcse containers run with some resource constraints that generic-1 containers are not limited by. Could this be the case or did we really just do something fundamentally wrong with our installs? If so, could we have comparable "privileges“ for nmcse instances? 
+
+The way things are right now, I cannot justify using our custom environment for the course and we will have to fall back to generic-1.
+
+[...]
+
+###  2022/09/20 [Stefan Dröschler](expert@inf.ethz.ch):
+
+[...]
+
+your assumption was correct. The limits imposed on nmcse were a little stricter, i.e. 12 sec cpu time instead of 60 sec and 300 MB memory/swap instead of 1000 MB. 
+
+I've adjusted the limits for nmcse and they're equal to generic-1 now.
+
+[...]
