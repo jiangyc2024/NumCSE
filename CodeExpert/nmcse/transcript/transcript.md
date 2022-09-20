@@ -302,4 +302,14 @@ The only explanation I have for this kind of difference is that our nmcse contai
 
 The way things are right now, I cannot justify using our custom environment for the course and we will have to fall back to generic-1.
 
-[...] 
+[...]
+
+###  2022/09/20 [Stefan Dröschler](expert@inf.ethz.ch):
+
+[...]
+
+your assumption was correct. The limits imposed on nmcse were a little stricter, i.e. 12 sec cpu time instead of 60 sec and 300 MB memory/swap instead of 1000 MB. 
+
+I've adjusted the limits for nmcse and they're equal to generic-1 now.
+
+[...]

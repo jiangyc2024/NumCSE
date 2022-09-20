@@ -26,13 +26,13 @@ The latter is the most accurate/true-to-real-conditions test, since it is exactl
 
 ### Local Build
 
-For building and the image yourself, you have to `docker login -u<nethz> cxhub.ethz.ch` to the code expert registry, which enables you to pull the base image. You may have to ask the CodeExpert team for access to this registry first. Also, you need to be inside the ETH VPN, because the build process requires access an internal package repository.
+For building the image yourself, you have to `docker login -u<nethz> cxhub.ethz.ch` to the code expert registry, which enables you to pull the base image. You may have to ask the CodeExpert team for access to this registry first. Also, you need to be inside the ETH VPN, because the build process requires access an internal package repository.
 
 `cd` to your local clone of the *nmcse* repository and run the `build.sh` next to **this** file.
 
 ### Cloud Build
 
-If you want to use the cloud-built image, (after pushing to the *nmcse* repository) run `pull.sh`.
+If you want to use the cloud-built image, (after pushing to the *nmcse* repository) run `pull.sh`. You may have to manually trigger the build pipeline in GitLab. This might not work if you do not have access to `OU-LECTURERS/gitlab-templates` (see transcript).
 
 ### Local testing
 
@@ -46,7 +46,7 @@ Once in a while, you will want to clean up excess images and containers, especia
 
 ### Troubleshooting
 
-There are some environment variables in cx that may impact the containers behavior in non-obvious ways. For example, increasing MAXFILESIZE was necessary for writing files for the test action. See [here](https://docs.expert.ethz.ch/lecturers/#environment-variables).
+There are some environment variables in cx that may impact the containers behavior in non-obvious ways. The code expert team set some limits on CPU time and memory, for example (see transcript).
 
 ## Scripts directory
 
