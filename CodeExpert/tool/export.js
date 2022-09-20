@@ -86,7 +86,7 @@ const permissions_strict = _ => ({
 //the cx environment info used for this task
 const env = {
 	
-	slug: "nmcse",
+	slug: "nmcse", //change this to "generic-1" and contact the author if nmcse container has problems 
 	lastUpdateCheck: date
 };
 
