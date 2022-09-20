@@ -256,3 +256,50 @@ I manually triggered a pipeline but it failed in the build stage. You can find t
 Also, for now, could you please deploy the current image to code expert so we can be operational again?
 
 [...]
+
+###  2022/09/19 [Stefan Dröschler](expert@inf.ethz.ch):
+
+[...]
+
+The current image has been deployed on Code Expert. 
+
+We're currently migrating our docker registry to a new server and you happened to push to it right at the moment when it was operating in read-only mode. Sorry for that. 
+
+[...]
+
+###  2022/09/19 [Stefan Dröschler](expert@inf.ethz.ch):
+
+[...]
+
+Just to keep you updated: the new docker registry does not yet work as expected. 
+Our ISG is working on it and it should be back to normal operation soon. 
+Please let me know if you require any urgent changes to the environment image. 
+
+I'll let you know once the problems are resolved. Sorry again for the inconveniences. 
+
+[...]
+
+###  2022/09/19 [Stefan Dröschler](expert@inf.ethz.ch):
+
+[...]
+
+Pushing to the registry should now be possible again. 
+Please let me know if you encounter any further problems.
+
+[...]
+
+###  2022/09/20 [Heinrich Grattenthaler](heinrich.grattenthaler@sam.math.ethz.ch):
+
+[...]
+
+Some time ago we tested our nmcse container as of mid April 2022 with all our assignments from last year and it went through without problems on code expert. We are now struggling to reproduce this stable behavior both locally and on code expert. There are two recurring issues: 
+
+First, the compilation for some of our assignments is killed, but only some of the time. This looks like a memory issue. I.e we observe something of the form `g++: fatal error: Killed signal terminated program cc1plus` and in the next run, it is all fine.
+
+Second, uploading the exact same project with a different stub configured, i.e. `generic-1` instead of `nmcse`, not only speeds up compilation by a factor of 5x, but also runs the job without any (observed) issues. Note that this could always have been the case, as we did not compare the two environments up until recently. For example, observe the difference between the test action for https://expert.ethz.ch/ide2/9svnsbhbGgGWSKdmR (nmcse based) and https://expert.ethz.ch/ide2/vrrzChv7LWZrjoZCQ (generic-1) based.
+
+The only explanation I have for this kind of difference is that our nmcse containers run with some resource constraints that generic-1 containers are not limited by. Could this be the case or did we really just do something fundamentally wrong with our installs? If so, could we have comparable "privileges“ for nmcse instances? 
+
+The way things are right now, I cannot justify using our custom environment for the course and we will have to fall back to generic-1.
+
+[...] 

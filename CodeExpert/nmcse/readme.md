@@ -4,7 +4,7 @@ This directory is meant for development of our custom *nmcse* image on Code Expe
 
 ## Basics
 
-Code Expert (cx) is used for our student assignments. It uses Docker containers to run each student's code in an isolated environment. [See documentation](https://docs.expert.ethz.ch/lecturers/).
+Code Expert (cx) is used for our student assignments. It uses Docker containers to run each student's code in an isolated environment. [See documentation](https://docs.expert.ethz.ch/For-lecturers-f6e50060e8a949cc85b3903b0f0ed79e).
 
 ## History
 
