@@ -5,10 +5,10 @@
 
 #include <complex>
 
-// TODO: (1-1.a) Include the needed header file for Eigen; Eigen/Dense includes
+// TODO: (0-1.a) Include the needed header file for Eigen; Eigen/Dense includes
 // most Eigen submodules, but Eigen/Core suffices
 // START
-
+#include <Eigen/Core>
 // END
 
 /**
@@ -27,11 +27,8 @@ Eigen::Matrix<double, 2, 2> smallTriangular(double a, double b, double c) {
   // template class Eigen::Matrix.
   Eigen::Matrix<double, 2, 2> A;
 
-  // TODO: (1-1.b) Initialize the matrix A.
+  // TODO: (0-1.b) Initialize the matrix A.
   // START
-  // We have declared the variable A of the type Eigen::Matrix<double,2,2>,
-  // but we have not initialized its entries.
-  // We can do this using comma-initialization:
 
   // END
 
@@ -63,7 +60,7 @@ Eigen::MatrixXd constantTriangular(unsigned int n, double val) {
   // To get a triangular matrix, we must set the values above the diagonal to
   // val. This we can do by a nested for-loop.
   for (unsigned int row = 0; row < n; ++row) {
-    // TODO: (1-1.c) Write the inner for-loop to initialize A.
+    // TODO: (0-1.c) Write the inner for-loop to initialize A.
     // Hint: We can access and change the entries of A using parentheses, i.e.
     // A(row,col) = val; Note that indexing starts at the value 0 (as usual),
     // and not 1 (as in Matlab).
@@ -72,6 +69,9 @@ Eigen::MatrixXd constantTriangular(unsigned int n, double val) {
 
     // END
   }
+
+  // instead of the for-loop initialization, triangularView can be used
+  // A.triangularView<Eigen::Upper>() = Eigen::MatrixXd::Constant(n, n, val);
 
   return A;
 }
@@ -106,7 +106,7 @@ double casting() {
   v(1) = z1;
 
   double x = 0.0;
-  // TODO: (1-1.d) Calculate the inner product of u and v, and store the result
+  // TODO: (0-1.d) Calculate the inner product of u and v, and store the result
   // in x. Hint: The inner product of two vectors is given by u.dot(v), but
   // first we need to cast the "int" vector u to a "std::complex<double>"
   // vector. Use u.cast< NEW TYPE >() to achieve this. The result of the inner
@@ -143,7 +143,7 @@ Eigen::VectorXcd arithmetics(unsigned int n) {
   // Declare the n by n matrix B.
   Eigen::MatrixXcd B(n, n);
 
-  // TODO: (1-1.e) Fill in the matrix B such that B(k-1,l-1) = (k+l*i)/(k-l*i),
+  // TODO: (0-1.e) Fill in the matrix B such that B(k-1,l-1) = (k+l*i)/(k-l*i),
   // where i is the imaginary unity, i^2 = -1 and k,l=1,...,n.
   // START
 
@@ -161,7 +161,7 @@ Eigen::VectorXcd arithmetics(unsigned int n) {
   // Hence, all the same arithmetics work for vectors.
   Eigen::VectorXcd u, v;
 
-  // TODO: (1-1.e) Initialize the entries of u as the integers from 1 to n,
+  // TODO: (0-1.e) Initialize the entries of u as the integers from 1 to n,
   // multiply u by the matrix C, and store the result in v.
   // START
 
