@@ -1,5 +1,8 @@
 # Problem 0-2: Eigen block operations on matrices
 
+> For the task description of this exercise, please also refer to [NCSEFL_Problems.pdf](
+https://www.sam.math.ethz.ch/~grsam/NumMeth/HOMEWORK/NCSEFL_Problems.pdf). 
+
 > Eigen matrices have a range of methods to access their submatrices (blocks), instead of individual entries at a time. Suppose A is an `Eigen::MatrixXd object`, then a few useful methods are:
 * `A.row(i)`: the i-th row of A,
 * `A.col(j)`: the j-th column of A,

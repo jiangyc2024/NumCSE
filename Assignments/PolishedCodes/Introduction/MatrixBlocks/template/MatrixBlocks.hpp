@@ -7,7 +7,7 @@
 
 // TODO: Include the appropriate header files.
 // START
-
+#include <Eigen/Core>
 // END
 
 /**
@@ -41,7 +41,7 @@ Eigen::MatrixXd zero_row_col(const Eigen::MatrixXd& A, unsigned int p,
 
 /**
  * @brief Writing as a block matrix A = [B C], where B denotes the first p
- *        columns of A, and C denotes the q=(A.cols() - p) last columns, this 
+ *        columns of A, and C denotes the q=(A.cols() - p) last columns, this
  *        functions returns D = [C B].
  *
  * @param A The matrix whose columns should be swapped
@@ -112,16 +112,16 @@ Eigen::MatrixXd tridiagonal(unsigned int n, double a, double b, double c) {
   Eigen::MatrixXd A;
 
   // TODO: (0-2.c) Fill the matrix A with zeros. Then fill the subdiagonal with
-  // the value a, the diagonal with b and the superdiagonal with c. 
+  // the value a, the diagonal with b and the superdiagonal with c.
   // Hint: You can get the diagonal of A by A.diagonal(). Moreover, you can get
-  // the super- and subdiagonals by passing +1 or -1 as arguments to 
-  // A.diagonal(). Here, however, we can use templated access because the 
-  // distance to the diagonal is known at compile time. This method is usually 
+  // the super- and subdiagonals by passing +1 or -1 as arguments to
+  // A.diagonal(). Here, however, we can use templated access because the
+  // distance to the diagonal is known at compile time. This method is usually
   // faster.
   // START
 
   // END
-  
+
   return A;
 }
 /* SAM_LISTING_END_2 */
