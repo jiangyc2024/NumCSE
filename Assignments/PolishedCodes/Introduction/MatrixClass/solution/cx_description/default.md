@@ -1,5 +1,7 @@
-# Tutorial: part 1/3
-## The Eigen::Matrix template class
+# Problem 0-1: Simple operations with vectors and matrices in Eigen
+
+> For the task description of this exercise, please also refer to [NCSEFL_Problems.pdf](
+https://www.sam.math.ethz.ch/~grsam/NumMeth/HOMEWORK/NCSEFL_Problems.pdf). 
 
 > The purpose of this exercise is to learn to declare and initialize [Eigen::Matrix objects](https://eigen.tuxfamily.org/dox/group__TutorialMatrixClass.html), and to get familiar with some handy typedefs and methods.
 

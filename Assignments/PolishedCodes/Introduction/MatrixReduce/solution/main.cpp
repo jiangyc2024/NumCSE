@@ -1,5 +1,5 @@
 ///
-/// Minimal runner for (1-3)
+/// Minimal runner for (0-3)
 ///
 
 #include <iostream>

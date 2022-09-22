@@ -3,9 +3,9 @@
 
 // The purpose of this exercise is introduce reduction operations.
 
-// TODO: Include the appropriate header files
+// TODO: (0-3.a) Include the appropriate header files
 // START
-
+#include <Eigen/Dense>
 // END
 
 // Eigen matrices have a range of methods that reduce them to a single number.
@@ -27,7 +27,7 @@
 double average(const Eigen::MatrixXd& A) {
   double m = 0;
 
-  // TODO: (1-3.a) Calculate the average of the entries of A.
+  // TODO: (0-3.a) Calculate the average of the entries of A.
   // START
 
   // END
@@ -56,7 +56,7 @@ double percent_zero(const Eigen::MatrixXd& A) {
   Eigen::ArrayXXd Arr = A.array();
 
   double ratio = 0.;
-  // TODO: (1-3.b) Calculate the ratio of zero entries in A.
+  // TODO: (0-3.b) Calculate the ratio of zero entries in A.
   // START
 
   // END
@@ -84,7 +84,7 @@ bool has_zero_column(const Eigen::MatrixXd& A) {
   // sqrt(squaredNorm()) calculates a square root that is not necessary for our
   // purposes.
 
-  // TODO: (1-3.c) Check if any one of the norms is equal to zero.
+  // TODO: (0-3.c) Check if any one of the norms is equal to zero.
   // Hint: Use an array to perform entry-wise comparison.
   // START
 
@@ -105,7 +105,7 @@ bool has_zero_column(const Eigen::MatrixXd& A) {
 Eigen::MatrixXd columns_sum_to_zero(const Eigen::MatrixXd& A) {
   Eigen::MatrixXd B(A);
 
-  // TODO: (1-3.d) Replace the diagonal of B with values such that the columns
+  // TODO: (0-3.d) Replace the diagonal of B with values such that the columns
   // of B sum up to zero. Hint: Use diagonal(), rowwise(), and sum().
   // START
 
