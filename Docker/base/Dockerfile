@@ -40,8 +40,17 @@ arg eigen_version=3.4.0
 run apt-get update
 run apt-get -y install unzip
 run mkdir -p "/eigen" cd "/eigen" \
-      && curl -L https://gitlab.com/libeigen/eigen/-/archive/${eigen_version}/eigen-${eigen_version}.zip > ./eigen.zip \
-      && unzip eigen.zip \
-      && mv eigen-${eigen_version} /usr/include/eigen3 \
-      && rm -rf "/eigen" \
-      || exit 1
+    && curl -L https://gitlab.com/libeigen/eigen/-/archive/${eigen_version}/eigen-${eigen_version}.zip > ./eigen.zip \
+    && unzip eigen.zip \
+    && mv eigen-${eigen_version} /usr/include/eigen3 \
+    && rm -rf "/eigen" \
+    || exit 1
+
+# ==== install nodejs ==============================================================
+
+run curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
+    && apt-get install -y nodejs
+
+# ==== install blas ================================================================
+
+run apt-get -y install libblas-dev
