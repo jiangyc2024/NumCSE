@@ -18,30 +18,32 @@ struct TestData {
 TestData data;
 
 TEST_SUITE("Kronecker") {
-  TEST_CASE("void kron" * doctest::description("kron(A,B)*x")) {
+  TEST_CASE("Eigen::MatrixXd kron" * doctest::description("kron(A,B)")) {
     Eigen::MatrixXd C_sol;
     Eigen::MatrixXd C_stud;
-    kron(data.A, data.B, C_sol);
-    kron_TEST(data.A, data.B, C_stud);
+    C_sol = kron(data.A, data.B);
+    C_stud = kron_TEST(data.A, data.B);
     REQUIRE(C_sol.rows() == C_stud.rows());
     REQUIRE(C_sol.cols() == C_stud.cols());
     CHECK((C_sol - C_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
   }
 
-  TEST_CASE("void kron_mult" * doctest::description("kron_mult(A,B)*x")) {
+  TEST_CASE("Eigen::VectorXd kron_mult" *
+            doctest::description("kron_mult(A,B)*x")) {
     Eigen::VectorXd y_sol;
     Eigen::VectorXd y_stud;
-    kron_mult(data.A, data.B, data.x, y_sol);
-    kron_mult_TEST(data.A, data.B, data.x, y_stud);
+    y_sol = kron_mult(data.A, data.B, data.x);
+    y_stud = kron_mult_TEST(data.A, data.B, data.x);
     REQUIRE(y_sol.size() == y_stud.size());
     CHECK((y_sol - y_stud).norm() == doctest::Approx(0.).epsilon(1e-10));
   }
 
-  TEST_CASE("void kron_reshape" * doctest::description("kron_reshape(A,B)*x")) {
+  TEST_CASE("Eigen::VectorXd kron_reshape" *
+            doctest::description("kron_reshape(A,B)*x")) {
     Eigen::VectorXd y_sol;
     Eigen::VectorXd y_stud;
-    kron_reshape(data.A, data.B, data.x, y_sol);
-    kron_reshape_TEST(data.A, data.B, data.x, y_stud);
+    y_sol = kron_reshape(data.A, data.B, data.x);
+    y_stud = kron_reshape_TEST(data.A, data.B, data.x);
     REQUIRE(y_sol.size() == y_stud.size());
     CHECK((y_sol - y_stud).norm() == doctest::Approx(0.).epsilon(1e-10));
   }

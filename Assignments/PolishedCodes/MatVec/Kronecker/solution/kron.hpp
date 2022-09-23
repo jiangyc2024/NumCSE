@@ -19,7 +19,7 @@
 Eigen::MatrixXd kron(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B) {
   // Allocate enough space for the matrix
   Eigen::MatrixXd C = Eigen::MatrixXd(A.rows() * B.rows(), A.cols() * B.cols());
-  // TODO: (2-3.b) Fill in the entries of C.
+  // TODO: (1-3.b) Fill in the entries of C.
   // Hint: Use a nested for-loop and C.block().
   // START
   for (unsigned int i = 0; i < A.rows(); ++i) {
@@ -46,7 +46,7 @@ Eigen::MatrixXd kron(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B) {
  */
 /* SAM_LISTING_BEGIN_2 */
 Eigen::VectorXd kron_mult(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B,
-               const Eigen::VectorXd &x) {
+                          const Eigen::VectorXd &x) {
   assert(A.rows() == A.cols() && A.rows() == B.rows() && B.rows() == B.cols() &&
          "Matrices A and B must be square matrices with same size!");
   assert(x.size() == A.cols() * A.cols() &&
@@ -56,7 +56,7 @@ Eigen::VectorXd kron_mult(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B,
   // Allocate space for output
   Eigen::VectorXd y = Eigen::VectorXd::Zero(n * n);
 
-  // TODO: (2-3.d) Fill in the entires of y.
+  // TODO: (1-3.d) Fill in the entries of y.
   // Hint: Use a nested for-loop, x.segment(), and y.segment().
   // In the outer loop, you can perform a computation based on
   // B and x, and save the result in a variable that is reused in
@@ -94,12 +94,12 @@ Eigen::VectorXd kron_mult(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B,
  */
 /* SAM_LISTING_BEGIN_3 */
 Eigen::VectorXd kron_reshape(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B,
-                  const Eigen::VectorXd &x) {
+                             const Eigen::VectorXd &x) {
   assert(A.rows() == A.cols() && A.rows() == B.rows() && B.rows() == B.cols() &&
          "Matrices A and B must be square matrices with same size!");
   const unsigned int n = A.rows();
 
-  // TODO: (2-3.e) Fill in the entires of y.
+  // TODO: (1-3.e) Fill in the entires of y.
   // Hint: Use Eigen::MatrixXd::Map() to reshape x into a n by n matrix.
   // Then y is obtained by simple matrix multiplications and
   // another reshape.
@@ -142,7 +142,7 @@ void kron_runtime() {
         tm_kron.stop();
       }
 
-      // TODO: (2-3.f) Measure the runtime of kron_mult() and kron_reshape().
+      // TODO: (1-3.f) Measure the runtime of kron_mult() and kron_reshape().
       // START
 
       // Kron matrix-vector multiplication
