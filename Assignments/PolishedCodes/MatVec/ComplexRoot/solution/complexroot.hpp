@@ -8,10 +8,13 @@
 #include <complex>
 #include <iostream>
 
-// \brief Compute complex root
-// @param w complex number with non negative imaginary parts
-// @param the square root of w with non negative real and imaginary parts
-
+/**
+ * @brief Compute complex root
+ *
+ * @param w complex number with non negative imaginary parts
+ * @return std::complex<double> the square root of w with non negative real and
+ * imaginary parts
+ */
 /* SAM_LISTING_BEGIN_0 */
 std::complex<double> myroot(std::complex<double> w) {
   double x, y;
