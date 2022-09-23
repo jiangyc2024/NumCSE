@@ -13,6 +13,6 @@ int main() {
   // Orthonormality test
   std::cout << "Gram-Schmidt test of subproblem (c) returns for n = 2: "
             << testGramSchmidt(2) << std::endl;
-  std::cout << "Gram-Schmidt test of subproblem (c) return for n = 10: "
+  std::cout << "Gram-Schmidt test of subproblem (c) returns for n = 10: "
             << testGramSchmidt(10) << std::endl;
 }
