@@ -117,11 +117,18 @@ async function contains_todo( path ) {
 	}
 }
 
+//helper to determine whether this is a c/c++ header file
+function is_header( path ) {
+
+	return path.endsWith( ".h" ) || path.endsWith( ".hpp" );
+}
+
 //detection logic for whether a file is marked as readable by students in cx
 async function is_readable( path ) {
 
 	if( await is_editable( path )) return true;
-	if(( path.endsWith( ".h" ) || path.endsWith( ".hpp" )) && ! path.endsWith( "solution.hpp" )) return true;
+	if( path.endsWith( "tests.cpp" )) return true;
+	if( is_header( path ) && ! path.endsWith( "solution.hpp" ) && ! path.endsWith( "doctest.h" )) return true;
 }
 
 //paths of c++ files that are added to the projects by default, relative to the repository root
