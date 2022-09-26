@@ -129,7 +129,7 @@ async function is_readable( path ) {
 }
 
 //the default configuration for this tool
-//keys can altered for each assignment with a 'cxtool.json' file
+//keys can altered for each assignment with a 'cxtool.json' file in the assignment directory
 const default_config = {
 
 	//paths of c++ files that are added to the projects, relative to the repository root	
