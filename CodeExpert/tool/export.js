@@ -209,8 +209,10 @@ async function main( ) {
 
 async function assemble_project( name ) {
 
+	const assignment_path = `${ repo_root }/${ assignment_path_rel }`;
+
 	//copy the project directory into our task
-	await copy_dir( `${ repo_root }/${ assignment_path_rel }/${ name }`, `${ export_path }` );
+	await copy_dir( `${ assignment_path }/${ name }`, `${ export_path }` );
 	
 	const project_path = `${ export_path }/${ name }`;
 	const testing_path = `${ repo_root }/Testing`;
@@ -223,8 +225,11 @@ async function assemble_project( name ) {
 
 	//find the master solution by finding the default student work file in the solution project. 
 	//solution.hpp is needed for the tests
-	const solution_path = await find_default_file( `${ export_path }/solution`, true );
+	const solution_path = await find_default_file( `${ assignment_path }/solution`, true );
 	await copy_file( solution_path, `${ project_path }/solution.hpp` );
+
+	//always take the tests file from the template project to avoid inconsistencies
+	await copy_file( `${ assignment_path }/template/tests.cpp`, project_path );
 
 	//just a parallel for-loop, copy default library files
 	await Promise.all( default_includes.map( async file => {
