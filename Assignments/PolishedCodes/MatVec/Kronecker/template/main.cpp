@@ -18,7 +18,7 @@ int main() {
   Eigen::VectorXd x = Eigen::VectorXd::Random(4);
   Eigen::VectorXd y;
 
-  kron(A, B, C);
+  C = kron(A, B);
   std::cout << std::setprecision(4) << "kron(A,B) = " << std::endl
             << C << std::endl;
 
@@ -34,9 +34,9 @@ int main() {
     case 0:
       y = C * x;
       std::cout << "Using kron: y =\n" << y << std::endl;
-      kron_mult(A, B, x, y);
+      y = kron_mult(A, B, x);
       std::cout << "Using kron_mult: y =\n" << y << std::endl;
-      kron_reshape(A, B, x, y);
+      y = kron_reshape(A, B, x);
       std::cout << "Using kron_reshape: y =\n" << y << std::endl;
       kron_runtime();
       break;
@@ -45,11 +45,11 @@ int main() {
       std::cout << "Using kron: y =\n" << y << std::endl;
       break;
     case 2:
-      kron_mult(A, B, x, y);
+      y = kron_mult(A, B, x);
       std::cout << "Using kron_mult: y =\n" << y << std::endl;
       break;
     case 3:
-      kron_reshape(A, B, x, y);
+      y = kron_reshape(A, B, x);
       std::cout << "Using kron_reshape: y =\n" << y << std::endl;
       break;
     case 4:

@@ -8,5 +8,6 @@ add_executable_numcse(template template/main.cpp)
 get_target_name_numcse(template TEMPLATE)
 target_compile_definitions(${TEMPLATE} PRIVATE SOLUTION=0 INTERNAL=1)
 
-file(MAKE_DIRECTORY ${TARGET_RUNTIME_OUTPUT_DIRECTORY}/cx_out)
+add_tests_numcse(tests template/tests.cpp)
 
+file(MAKE_DIRECTORY ${TARGET_RUNTIME_OUTPUT_DIRECTORY}/cx_out)
