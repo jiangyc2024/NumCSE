@@ -14,7 +14,7 @@ TestData data;
 TEST_SUITE("ComplexRoot") {
   TEST_CASE("std::complex<double> myroot" *
             doctest::description("ComplexRoot")) {
-    const double eps = 1e-6;
+    constexpr double eps = 1e-8;
 
     data.w = std::complex<double>(1e20, 5);
     auto sol = myroot(data.w);
