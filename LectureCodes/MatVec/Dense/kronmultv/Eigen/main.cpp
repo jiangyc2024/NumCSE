@@ -21,8 +21,7 @@ int main () {
 	Eigen::MatrixXd C;
 	Eigen::VectorXd x(n*k);
 	x << 1, 3, 8, 13, 7, 4, 42, 343;
-	Eigen::VectorXd y;
-	kronmultv(A,B,x,y);
+	Eigen::VectorXd y = kronmultv(A,B,x);
 	std::cout << "kron(A,B)*x = " << std::endl << y << std::endl;
 	Eigen::VectorXd y_matlab(m*l);
 	y_matlab << 6377,9645,12937,19573,19497,29501;

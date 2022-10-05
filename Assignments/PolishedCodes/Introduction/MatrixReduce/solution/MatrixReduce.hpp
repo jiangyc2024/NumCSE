@@ -107,13 +107,15 @@ Eigen::MatrixXd columns_sum_to_zero(const Eigen::MatrixXd& A) {
   Eigen::MatrixXd B(A);
 
   // TODO: (0-3.d) Replace the diagonal of B with values such that the columns
-  // of B sum up to zero. Hint: Use diagonal(), rowwise(), and sum().
+  // of B sum up to zero. Hint: Use diagonal(), colwise(), and sum().
   // START
-  unsigned int p = std::min(B.rows(), B.cols());
+  assert((B.rows() == B.cols()) && "Matrix must be square");
+  unsigned int p = B.rows();
+  // Set diagonal elements to zero to avoid including them in sum
   B.diagonal() = Eigen::VectorXd::Zero(p);
-  B.diagonal() = -B.rowwise().sum();
+  // Set diagonal entries to negative column sums all at once
+  B.diagonal() = -B.colwise().sum();
   // END
-
   return B;
 }
 /* SAM_LISTING_END_3 */

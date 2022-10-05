@@ -1,11 +1,15 @@
+/* **********************************************************************
+ * Course "Numerical Methods for CSE", R. Hiptmair, SAM, ETH Zurich
+ * Author: R. Hiptmair
+ * Date: 2019
+ */
+
 #include <Eigen/Dense>
 #include <Eigen/QR>
-using Eigen::MatrixXd;
-using Eigen::VectorXd;
 
 /* SAM_LISTING_BEGIN_1 */
-template <class Function, class Jacobian>
-VectorXd gn(const Eigen::VectorXd &init, Function &&F, Jacobian &&J,
+template <typename FUNCTION, typename JACOBIAN>
+Eigen::VectorXd gn(const Eigen::VectorXd &init, FUNCTION &&F, JACOBIAN &&J,
             double rtol = 1.0E-6, double atol = 1.0E-8) {
   Eigen::VectorXd x = init; // Vector for iterates $\cob{\Vx^{(k)}}$
   // Vector for Gauss-Newton correction $\cob{\Vs}$
