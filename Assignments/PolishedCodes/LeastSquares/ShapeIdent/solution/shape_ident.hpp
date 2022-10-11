@@ -4,7 +4,7 @@
 #include <Eigen/Dense>
 
 /*!
- * @bref shape_ident_matrix Build matrix $\mathbf{B}$.
+ * @brief shape_ident_matrix Build matrix $\mathbf{B}$.
  * Build the overdetermined system matrix arising from the
  * point $\mathbf{x}^i$.
  * @param[in] X A $2 \times n$ matrix with model points.
