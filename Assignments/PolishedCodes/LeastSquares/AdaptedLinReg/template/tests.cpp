@@ -27,7 +27,7 @@ TEST_SUITE("AdaptedLinReg") {
     stud = linReg_TEST(data.t, y);
 
     REQUIRE(sol.size() == stud.size());
-    CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+    CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-8));
   }
 
   TEST_CASE("Eigen::VectorXd expFit" * doctest::description("expFit()")) {
@@ -39,6 +39,6 @@ TEST_SUITE("AdaptedLinReg") {
     stud = expFit_TEST(data.t, y);
 
     REQUIRE(sol.size() == stud.size());
-    CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+    CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-8));
   }
 }

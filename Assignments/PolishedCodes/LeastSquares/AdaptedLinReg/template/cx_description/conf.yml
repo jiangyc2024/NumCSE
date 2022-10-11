@@ -1,6 +1,6 @@
 descriptions:
   default:
-    name: Default
+    name: Problem
     default: true
   test_doc:
     name: Tests
