@@ -1,3 +1,4 @@
+set(USE_MKL ON)
 find_package(MKL)
 
 get_target_name_numcse(ncse_denselinalg target_name)

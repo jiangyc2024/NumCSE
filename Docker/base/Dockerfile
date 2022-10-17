@@ -1,5 +1,5 @@
 # digest aquired via `docker run mplatform/manifest-tool inspect gcc:11` on 2022-07-19 09:46
-from gcc:11@sha256:a5226837fed4f8e8e297c058d01b22db04612a4e341689289bbdcdf6f9b85627 as stage_one
+from gcc:11@sha256:a5226837fed4f8e8e297c058d01b22db04612a4e341689289bbdcdf6f9b85627 as vanilla
 
 # ==== install cmake ===============================================================
 
@@ -55,12 +55,20 @@ run curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
 
 run apt-get -y install libblas-dev
 
-# ==== install Intel MKL =========================================================
+# ==== install acceleration ========================================================
 
-from stage_one as stage_two_x86_64
+from vanilla as accelerated_amd64
 
-from stage_one as stage_two_arm64
+# see https://github.com/docker-library/gcc/issues/57
+run dpkg-divert --remove /usr/bin/gfortran && dpkg-divert --divert /usr/bin/gfortran.orig --rename /usr/local/bin/gfortran \
+    && echo "deb http://deb.debian.org/debian bullseye non-free" >> /etc/apt/sources.list \
+    && apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get -y install intel-mkl-full
 
-from stage_two_${TARGETARCH}
+from vanilla as accelerated_arm64
+
+# there is currently no comparable library for this architecture. see https://stackoverflow.com/q/71048560 for updates
+
+from accelerated_${TARGETARCH}
 
 
