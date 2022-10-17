@@ -16,7 +16,7 @@
  */
 /* SAM_LISTING_BEGIN_1 */
 Eigen::MatrixXd make_A(const Eigen::VectorXd &t) {
-  size_t n = b.size();
+  size_t n = t.size();
   Eigen::MatrixXd A(n, 4);
   // TODO (3-3.a) Build the matrix A
   // Hint: Evaluate the functions \phi_j at the time points defined in b
