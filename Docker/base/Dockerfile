@@ -19,7 +19,7 @@ env PATH="/usr/bin/cmake/bin:${PATH}"
 # ==== install python ==============================================================
 
 run apt-get update
-run apt-get install -y python3 python3-dev python3-numpy python3-matplotlib
+run apt-get install -y python python3 python3-dev python3-numpy python3-matplotlib
 
 # ==== install clang-tidy ==========================================================
 
@@ -71,4 +71,4 @@ from vanilla as accelerated_arm64
 
 from accelerated_${TARGETARCH}
 
-
+env numcse_is_docker=true
