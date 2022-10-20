@@ -78,6 +78,7 @@ Eigen::VectorXd kron_reshape(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B,
   assert(A.rows() == A.cols() && A.rows() == B.rows() && B.rows() == B.cols() &&
          "Matrices A and B must be square matrices with same size!");
   const unsigned int n = A.rows();
+  Eigen::VectorXd y = Eigen::VectorXd::Zero(n * n);
 
   // TODO: (1-3.e) Fill in the entires of y.
   // Hint: Use Eigen::MatrixXd::Map() to reshape x into a n by n matrix.
