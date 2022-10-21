@@ -5,8 +5,9 @@
 #include <Eigen/Dense>
 #include <iostream>
 
-using namespace Eigen;
-using namespace std;
+using Eigen::MatrixXd;
+using std::cout;
+using std::endl;
 
 /** Demo for initialization of dense matrices */
 
@@ -34,7 +35,7 @@ void initDense(size_t const rows, size_t const cols) {
   cout << endl << "I = " << endl << I << endl;
 }
 
-int main(int argc, char **argv) {
+int main() {
   cout << "initDense(3, 2)" << endl << endl;
   initDense(3, 2);
 }

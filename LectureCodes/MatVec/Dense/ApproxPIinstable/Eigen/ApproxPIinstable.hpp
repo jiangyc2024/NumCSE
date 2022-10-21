@@ -8,17 +8,24 @@
 
 #pragma once
 
-#include <cmath>
 #include <Eigen/Dense>
-using namespace std;
-using namespace Eigen;
+#include <cmath>
 
+namespace ApproxPIinstable {
+
+
+using std::sqrt;
+using Eigen::MatrixXd;
+
+inline
 /* SAM_LISTING_BEGIN_0 */
 //! Approximation of Pi by approximating the circumference of a
 //! regular polygon
-MatrixXd ApproxPIinstable(double tol = 1e-8, int maxIt = 50){
-  double s=sqrt(3)/2.; double An=3.*s;// initialization (hexagon case)
-  unsigned int n = 6, it = 0;				
+MatrixXd ApproxPIinstable(double tol = 1e-8, unsigned int maxIt = 50){
+  double s=sqrt(3)/2.; 
+  double An=3.*s;// initialization (hexagon case)
+  unsigned int n = 6;
+  unsigned int it = 0;				
   MatrixXd res(maxIt,4);	// matrix for storing results
   res(it,0) = n; res(it,1) = An;
   res(it,2) = An - M_PI; res(it,3)=s;
@@ -32,3 +39,6 @@ MatrixXd ApproxPIinstable(double tol = 1e-8, int maxIt = 50){
   return res.topRows(it);
 }
 /* SAM_LISTING_END_0 */
+
+
+} //namespace ApproxPIinstable

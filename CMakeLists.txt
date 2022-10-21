@@ -36,14 +36,7 @@ endif()
 # enable linting next to compile
 set(TIDY FALSE CACHE BOOL "whether to enable linting")
 if(TIDY)
-    set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-system-headers=0;-extra-arg=-I/usr/local/llvm/lib64/clang/15.0.0/include;-checks=*, \
-        -llvmlibc-*, \
-        -fuchsia-default-arguments-*, \
-        -*-magic-numbers, \
-        -modernize-use-trailing-return-type, \
-        -cppcoreguidelines-pro-bounds-array-to-pointer-decay, \
-        -google-runtime-references"
-    )
+    set(CMAKE_CXX_CLANG_TIDY "clang-tidy" "-extra-arg=-I/usr/local/llvm/lib64/clang/15.0.0/include" "-header-filter=." "-system-headers=0" "-checks=*, -llvmlibc-*, -fuchsia-default-arguments-*, -*-magic-numbers, -modernize-use-trailing-return-type, -cppcoreguidelines-pro-bounds-array-to-pointer-decay, -google-runtime-references, -fuchsia-overloaded-operator, -cert-dcl21-cpp, -llvm-header-guard, -readability-identifier-length, -altera-id-dependent-backward-branch, -altera-unroll-loops" "-config-file=${CMAKE_SOURCE_DIR}/Clang-tidy/config" )
     message( "clang-tidy enabled" )
 else()
     message( "clang-tidy disabled" )
@@ -121,7 +114,7 @@ else()
   message("-- Downloading Eigen3")
   ExternalProject_Add(
       Eigen
-      URL https://gitlab.com/libeigen/eigen/-/archive/3.3.7/eigen-3.3.7.zip
+      URL https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.zip
       SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/Eigen
       INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/Eigen_install
       DOWNLOAD_NO_PROGRESS 1

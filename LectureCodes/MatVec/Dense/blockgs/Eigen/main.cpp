@@ -6,9 +6,8 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
-
 #include <Eigen/Dense>
+#include <iostream>
 
 #include "blockgs.hpp"
 
@@ -22,7 +21,7 @@ int main () {
 	Eigen::MatrixXd Ab(n,n+1);
 	Ab << A, b;
 	std::cout << "[A,b]=\n" << Ab << std::endl;
-	blockgs(Ab);
+	blockgs::blockgs(Ab);
 	std::cout << "After gaussian elimination: Ab=\n" << Ab << std::endl;
 	return 0;
 }

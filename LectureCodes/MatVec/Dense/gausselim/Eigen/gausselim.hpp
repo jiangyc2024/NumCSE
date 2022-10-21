@@ -10,15 +10,20 @@
 
 #include <Eigen/Dense>
 
-using namespace Eigen;
+namespace gausselimsolvemult {
 
+
+using Eigen::MatrixXd;
+
+inline
 /* SAM_LISTING_BEGIN_0 */
 //! Gauss elimination without pivoting, $\VX = \VA^{-1}\VB$
 //! \texttt{A} must be an \Blue{$n\times n$}-matrix, \texttt{B} an \Blue{$n\times m$}-matrix
 //! Result is returned in matrix \texttt{X}
 void gausselimsolvemult(const MatrixXd &A, const MatrixXd& B,
 			MatrixXd& X) {
-  int n = A.rows(), m = B.cols();
+  int n = A.rows();
+  int m = B.cols();
   MatrixXd AB(n, n+m); // Augmented matrix \Blue{$[\VA,\VB]$}
   AB << A, B;
   // Forward elimination, do not forget the B part of the Matrix
@@ -40,3 +45,6 @@ void gausselimsolvemult(const MatrixXd &A, const MatrixXd& B,
   X = AB.rightCols(m);
 }
 /* SAM_LISTING_END_0 */
+
+
+} //namespace gausselimsolvemult

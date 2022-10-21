@@ -6,16 +6,15 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
-#include <iomanip>
-
 #include <Eigen/Dense>
+#include <iomanip>
+#include <iostream>
 
 #include "apprpistable.hpp"
 
 int main () {
-	std::cout << setprecision(15) << std::fixed;
-	Eigen::MatrixXd res = apprpistable();
+	std::cout << std::setprecision(15) << std::fixed;
+	Eigen::MatrixXd res = apprpistable::apprpistable();
 	std::cout << res << std::endl;
 	return 0;
 }

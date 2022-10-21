@@ -8,11 +8,13 @@
 
 #pragma once
 
+#include <Eigen/Dense>
 #include <cmath>
 
-#include <Eigen/Dense>
+namespace zerosquadpol {
 
-using namespace Eigen;
+
+using Eigen::Vector2d;
 
 /* SAM_LISTING_BEGIN_0 */
 //! C++ function computing the zeros of a quadratic polynomial
@@ -20,16 +22,20 @@ using namespace Eigen;
 //! formula $\xi_{1,2} = \frac{1}{2}(-\alpha\pm\sqrt{\alpha^2-4\beta})$. However
 //! this implementation is \emph{vulnerable to round-off}! The zeros are
 //! returned in a column vector
-Vector2d zerosquadpol(double alpha, double beta) {
+inline Vector2d zerosquadpol(double alpha, double beta) {
   Vector2d z;
   double D = std::pow(alpha, 2) - 4 * beta; // discriminant
-  if (D < 0)
-    throw "no real zeros";
-  else {
+  if (D >= 0) {
     // The famous discriminant formula
     double wD = std::sqrt(D);
     z << (-alpha - wD) / 2, (-alpha + wD) / 2; // \Label[line]{zsq:1}
   }
+  else {
+    throw std::runtime_error( "no real zeros" );
+  }
   return z;
 }
 /* SAM_LISTING_END_0 */
+
+
+} //namespace zerosquadpol

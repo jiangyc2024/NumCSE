@@ -5,8 +5,13 @@
 #include <Eigen/Dense>
 #include <iostream>
 
-using namespace Eigen;
-using namespace std;
+using Eigen::MatrixXd;
+using Eigen::Upper;
+using Eigen::Lower;
+
+using std::cout;
+using std::endl;
+using std::min;
 
 /** @brief Access to a matrix block
     @tparam Matrix any Eigen matrix compatible type
@@ -28,14 +33,16 @@ void blockAccess(Eigen::MatrixBase<MatType> &M) {
 
   cout << "Matrix M = " << endl << M << endl << endl;  // Print matrix
   // Block size half the size of the matrix
-  int p = nrows / 2, q = ncols / 2;
+  int p = nrows / 2;
+  int q = ncols / 2;
   // Output submatrix with left upper entry at position \texttt{(i,i)}
-  for (index_t i = 0; i < min(p, q); i++)
+  for (index_t i = 0; i < min(p, q); i++) {
     cout << "Block (" << i << ',' << i << ',' << p << ',' << q << ") = " << endl
          << M.block(i, i, p, q) << endl
          << endl;
+  }
   // l-value access: Modify sub-matrix by adding a constant
-  M.block(1, 1, p, q) += MatrixXd::Constant(p, q, (entry_t)1);
+  M.block(1, 1, p, q) += MatrixXd::Constant(p, q, static_cast<entry_t>(1));
   cout << "With modified block (1,1," << p << ',' << q << "): M = " << endl
        << M << endl
        << endl;
@@ -59,16 +66,19 @@ void blockAccess(Eigen::MatrixBase<MatType> &M) {
   cout << "Upper triangular part = " << endl << T << endl << endl;
 
   // l-value access to upper triangular part
-  M.template triangularView<Lower>() *= (entry_t)-1.5;
+  M.template triangularView<Lower>() *= static_cast<entry_t>(-1.5);
   cout << "Matrix M = " << endl << M << endl << endl;
 }
 /* SAM_LISTING_END_4 */
 
-int main(int argc, char **argv) {
+int main() {
   MatrixXd M(6, 7);
   // Fill matrix by accessing entries directly
-  for (int i = 0; i < M.rows(); i++)
-    for (int j = 0; j < M.cols(); j++) M(i, j) = i - j;
+  for (int i = 0; i < M.rows(); i++) {
+    for (int j = 0; j < M.cols(); j++) {
+      M(i, j) = i - j;
+    } 
+  }
 
   cout << "blockAccess(M)" << endl << endl;
   blockAccess(M);
