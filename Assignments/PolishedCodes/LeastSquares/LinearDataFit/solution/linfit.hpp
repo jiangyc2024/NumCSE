@@ -15,15 +15,16 @@
  * @return A $n \times 4$ matrix
  */
 /* SAM_LISTING_BEGIN_1 */
-Eigen::MatrixXd make_A(const Eigen::VectorXd &b) {
-  size_t n = b.size();
+Eigen::MatrixXd make_A(const Eigen::VectorXd &t) {
+  size_t n = t.size();
   Eigen::MatrixXd A(n, 4);
   // TODO (3-3.a) Build the matrix A
   // Hint: Evaluate the functions \phi_j at the time points defined in b
 
   // START
   for (size_t i = 0; i < n; i++) {
-    double t_vec = b(i);
+    double t_vec = t[i];
+    // Initialize row i of the matrix
     A(i, 0) = 1.0 / t_vec;
     A(i, 1) = 1.0 / (t_vec * t_vec);
     A(i, 2) = std::exp(-(t_vec - 1.0));

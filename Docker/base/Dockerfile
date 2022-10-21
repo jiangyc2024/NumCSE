@@ -1,5 +1,5 @@
 # digest aquired via `docker run mplatform/manifest-tool inspect gcc:11` on 2022-07-19 09:46
-from gcc:11@sha256:a5226837fed4f8e8e297c058d01b22db04612a4e341689289bbdcdf6f9b85627
+from gcc:11@sha256:a5226837fed4f8e8e297c058d01b22db04612a4e341689289bbdcdf6f9b85627 as vanilla
 
 # ==== install cmake ===============================================================
 
@@ -19,7 +19,7 @@ env PATH="/usr/bin/cmake/bin:${PATH}"
 # ==== install python ==============================================================
 
 run apt-get update
-run apt-get install -y python3 python3-dev python3-numpy python3-matplotlib
+run apt-get install -y python python3 python3-dev python3-numpy python3-matplotlib
 
 # ==== install clang-tidy ==========================================================
 
@@ -40,8 +40,35 @@ arg eigen_version=3.4.0
 run apt-get update
 run apt-get -y install unzip
 run mkdir -p "/eigen" cd "/eigen" \
-      && curl -L https://gitlab.com/libeigen/eigen/-/archive/${eigen_version}/eigen-${eigen_version}.zip > ./eigen.zip \
-      && unzip eigen.zip \
-      && mv eigen-${eigen_version} /usr/include/eigen3 \
-      && rm -rf "/eigen" \
-      || exit 1
+    && curl -L https://gitlab.com/libeigen/eigen/-/archive/${eigen_version}/eigen-${eigen_version}.zip > ./eigen.zip \
+    && unzip eigen.zip \
+    && mv eigen-${eigen_version} /usr/include/eigen3 \
+    && rm -rf "/eigen" \
+    || exit 1
+
+# ==== install nodejs ==============================================================
+
+run curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
+    && apt-get install -y nodejs
+
+# ==== install blas ================================================================
+
+run apt-get -y install libblas-dev
+
+# ==== install acceleration ========================================================
+
+from vanilla as accelerated_amd64
+
+# see https://github.com/docker-library/gcc/issues/57
+run dpkg-divert --remove /usr/bin/gfortran && dpkg-divert --divert /usr/bin/gfortran.orig --rename /usr/local/bin/gfortran \
+    && echo "deb http://deb.debian.org/debian bullseye non-free" >> /etc/apt/sources.list \
+    && apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get -y install intel-mkl-full
+
+from vanilla as accelerated_arm64
+
+# there is currently no comparable library for this architecture. see https://stackoverflow.com/q/71048560 for updates
+
+from accelerated_${TARGETARCH}
+
+env numcse_is_docker=true

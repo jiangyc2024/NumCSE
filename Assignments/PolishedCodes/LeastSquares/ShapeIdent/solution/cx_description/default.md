@@ -1,7 +1,7 @@
 # Problem 3-7 Shape identificaion
 
-> For the task description of this exercise, please refer to [NCSE21_Problems.pdf](
-https://www.sam.math.ethz.ch/~grsam/NCSE21/HOMEWORK/NCSE21_Problems.pdf). 
+> For the task description of this exercise, please refer to [NCSEFL_Problems.pdf](
+https://www.sam.math.ethz.ch/~grsam/NumMeth/HOMEWORK/NCSEFL_Problems.pdf). 
 
 > Open `shape_ident.hpp` and fill in the missing code in between the delimiters `// START` and `// END` according to the instructions preceded by `// TO DO:`.
 

@@ -1,5 +1,6 @@
 project (NumCSE)
-cmake_minimum_required(VERSION 2.8)
+# indicates that this project has been tested with newer versions and no deprecation warning is necessary
+cmake_minimum_required(VERSION 2.8...3.23)
 
 #
 # setup cmake
@@ -60,12 +61,12 @@ include_directories(Testing)
 # use c++17
 if(CMAKE_VERSION VERSION_GREATER 3.1.0 OR CMAKE_VERSION VERSION_EQUAL 3.1.0)
     # only valid for new platforms
-    set(CMAKE_CXX_STANDARD 17)
+    set(CMAKE_CXX_STANDARD 20)
 else()
     if (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
         # for older cmake versions
         # (note, this CXX flag is only valid for clang and gcc, for MSVC it is not needed)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
     endif()
 endif()
 

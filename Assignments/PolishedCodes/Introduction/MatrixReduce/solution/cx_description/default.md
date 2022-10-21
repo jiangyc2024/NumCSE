@@ -1,7 +1,7 @@
+#  Problem 0-3: Eigen’s reduction operations on matrices
 
-# Tutorial: part 3/3
-## Matrix reductions
-
+> For the task description of this exercise, please also refer to [NCSEFL_Problems.pdf](
+https://www.sam.math.ethz.ch/~grsam/NumMeth/HOMEWORK/NCSEFL_Problems.pdf). 
 
 > Eigen matrices have a range of methods that reduce them to a single number. Suppose A is an Eigen::MatrixXd object, then a few useful methods are:
 * `A.size()`: the number of entries in A,

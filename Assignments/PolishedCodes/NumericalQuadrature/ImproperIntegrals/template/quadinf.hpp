@@ -25,7 +25,7 @@ template <class Function>
 double quad(Function &&f, const Eigen::VectorXd &w, const Eigen::VectorXd &x,
             double a, double b) {
   double I = 0.;
-  // TODO: (8-3.e) implement transformation of quadrature rule
+  // TODO: (7-3.e) implement transformation of quadrature rule
   // START
 
   // END
@@ -44,7 +44,7 @@ double quad(Function &&f, const Eigen::VectorXd &w, const Eigen::VectorXd &x,
 template <class Function>
 double quadinf(const int n, Function &&f) {
   double I = 0.;
-  // TODO: (8-3.e) define the function quadinf that integrates the input
+  // TODO: (7-3.e) define the function quadinf that integrates the input
   // lambda f over the real axis. First, transform the integrand with a change
   // of variables and then use an n point Gauss quadrature.
   // Hint 1: lambda functions can take parameters inside the [] brackets
@@ -65,7 +65,7 @@ void cvgQuadInf(void) {
   // Number of max Gauss pts.
   constexpr int N = 100;
   plt::figure();
-  // TODO: (8-3.f) plot convergence errors against number of integration nodes
+  // TODO: (7-3.f) plot convergence errors against number of integration nodes
   // START
 
   // END

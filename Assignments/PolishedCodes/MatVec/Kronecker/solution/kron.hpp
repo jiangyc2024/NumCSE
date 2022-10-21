@@ -16,11 +16,10 @@
  * @param C Kronecker product of A and B of dim $n^2 \times n^2$
  */
 /* SAM_LISTING_BEGIN_1 */
-void kron(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B,
-          Eigen::MatrixXd &C) {
+Eigen::MatrixXd kron(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B) {
   // Allocate enough space for the matrix
-  C = Eigen::MatrixXd(A.rows() * B.rows(), A.cols() * B.cols());
-  // TODO: (2-3.b) Fill in the entries of C.
+  Eigen::MatrixXd C = Eigen::MatrixXd(A.rows() * B.rows(), A.cols() * B.cols());
+  // TODO: (1-3.b) Fill in the entries of C.
   // Hint: Use a nested for-loop and C.block().
   // START
   for (unsigned int i = 0; i < A.rows(); ++i) {
@@ -32,6 +31,8 @@ void kron(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B,
     }
   }
   // END
+
+  return C;
 }
 /* SAM_LISTING_END_1 */
 
@@ -44,8 +45,8 @@ void kron(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B,
  * @param y Vector y = kron(A,B)*x
  */
 /* SAM_LISTING_BEGIN_2 */
-void kron_mult(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B,
-               const Eigen::VectorXd &x, Eigen::VectorXd &y) {
+Eigen::VectorXd kron_mult(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B,
+                          const Eigen::VectorXd &x) {
   assert(A.rows() == A.cols() && A.rows() == B.rows() && B.rows() == B.cols() &&
          "Matrices A and B must be square matrices with same size!");
   assert(x.size() == A.cols() * A.cols() &&
@@ -53,9 +54,9 @@ void kron_mult(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B,
   const unsigned int n = A.rows();
 
   // Allocate space for output
-  y = Eigen::VectorXd::Zero(n * n);
+  Eigen::VectorXd y = Eigen::VectorXd::Zero(n * n);
 
-  // TODO: (2-3.d) Fill in the entires of y.
+  // TODO: (1-3.d) Fill in the entries of y.
   // Hint: Use a nested for-loop, x.segment(), and y.segment().
   // In the outer loop, you can perform a computation based on
   // B and x, and save the result in a variable that is reused in
@@ -76,6 +77,8 @@ void kron_mult(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B,
     }
   }
   // END
+
+  return y;
 }
 /* SAM_LISTING_END_2 */
 
@@ -90,20 +93,22 @@ void kron_mult(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B,
  * @param y Vector y = kron(A,B)*x
  */
 /* SAM_LISTING_BEGIN_3 */
-void kron_reshape(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B,
-                  const Eigen::VectorXd &x, Eigen::VectorXd &y) {
+Eigen::VectorXd kron_reshape(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B,
+                             const Eigen::VectorXd &x) {
   assert(A.rows() == A.cols() && A.rows() == B.rows() && B.rows() == B.cols() &&
          "Matrices A and B must be square matrices with same size!");
   const unsigned int n = A.rows();
 
-  // TODO: (2-3.e) Fill in the entires of y.
+  // TODO: (1-3.e) Fill in the entires of y.
   // Hint: Use Eigen::MatrixXd::Map() to reshape x into a n by n matrix.
   // Then y is obtained by simple matrix multiplications and
   // another reshape.
   // START
   Eigen::MatrixXd t = B * Eigen::MatrixXd::Map(x.data(), n, n) * A.transpose();
-  y = Eigen::MatrixXd::Map(t.data(), n * n, 1);
+  Eigen::VectorXd y = Eigen::MatrixXd::Map(t.data(), n * n, 1);
   // END
+
+  return y;
 }
 /* SAM_LISTING_END_3 */
 
@@ -132,22 +137,22 @@ void kron_runtime() {
       if (M < (1 << 6)) {
         // Kron using direct implementation
         tm_kron.start();
-        kron(A, B, C);
+        C = kron(A, B);
         y = C * x;
         tm_kron.stop();
       }
 
-      // TODO: (2-3.f) Measure the runtime of kron_mult() and kron_reshape().
+      // TODO: (1-3.f) Measure the runtime of kron_mult() and kron_reshape().
       // START
 
       // Kron matrix-vector multiplication
       tm_kron_mult.start();
-      kron_mult(A, B, x, y);
+      y = kron_mult(A, B, x);
       tm_kron_mult.stop();
 
       // Kron using reshape
       tm_kron_map.start();
-      kron_reshape(A, B, x, y);
+      y = kron_reshape(A, B, x);
       tm_kron_map.stop();
 
       // END

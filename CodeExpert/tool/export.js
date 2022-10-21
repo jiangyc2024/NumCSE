@@ -15,7 +15,7 @@ Disambiguation:
 
 Usage: 
 
-	node export.js <repo_root> <assignment_path_rel> [<default_file>] [--keep]
+	node export.js <repo_root> <assignment_path_rel> [<default_file>] [--keep] [--verbose]
 
 This script reverse-engineers the cx task export format for automating part of the process of 
 uploading assignments to the cx platform. It produces a .tar archive ready for import in cx. 
@@ -42,6 +42,9 @@ const default_file = process.argv[ 4 ];
 //whether to keep the export directory (unzipped)
 const keep = process.argv.includes( "--keep" );
 
+//whether to print verbose output
+const verbose = process.argv.includes( "--verbose" );
+
 //display name of the task
 const display_name = basename( assignment_path_rel );
 
@@ -53,12 +56,6 @@ const date = ( new Date( )).toISOString( );
 
 //some random cx user id, likely not important
 const user_id = "au4g3HpKS9AbksWyF";
-
-//for name-based creation of links between solution and template
-const key_cache = { };
-
-//for finding the default file
-const default_cache = { };
 
 //version info supplied to cx about the imported data format
 const info_export = {
@@ -86,7 +83,7 @@ const permissions_strict = _ => ({
 //the cx environment info used for this task
 const env = {
 	
-	slug: "nmcse",
+	slug: "nmcse", //change this to "generic-1" and contact the author if nmcse container has problems 
 	lastUpdateCheck: date
 };
 
@@ -117,27 +114,55 @@ async function contains_todo( path ) {
 	}
 }
 
+//helper to determine whether this is a c/c++ header file
+function is_header( path ) {
+
+	return path.endsWith( ".h" ) || path.endsWith( ".hpp" );
+}
+
 //detection logic for whether a file is marked as readable by students in cx
 async function is_readable( path ) {
 
 	if( await is_editable( path )) return true;
-	if(( path.endsWith( ".h" ) || path.endsWith( ".hpp" )) && ! path.endsWith( "solution.hpp" )) return true;
+	if( path.endsWith( "tests.cpp" )) return true;
+	if( is_header( path ) && ! path.endsWith( "solution.hpp" ) && ! path.endsWith( "doctest.h" )) return true;
 }
 
-//paths of c++ files that are added to the projects by default, relative to the repository root
-const default_includes = [ 
+//the default configuration for this tool
+//keys can altered for each assignment with a 'cxtool.json' file in the assignment directory
+const default_config = {
 
-	"MatplotlibC++/matplotlibcpp.h",
-	"Utils/timer.h"
-];
+	//paths of c++ files that are added to the projects, relative to the repository root	
+	includes: [ 
+
+		"MatplotlibC++/matplotlibcpp.h",
+		"Utils/timer.h"
+	]
+};
 
 //-------------------- BUSINESS LOGIC --------------------//
+
+//for name-based creation of links between solution and template
+const key_cache = { };
+
+//for finding the default file
+const default_cache = { };
+
+//absolute path to the assignment directory
+const assignment_path = `${ repo_root }/${ assignment_path_rel }`;
 
 const solution_project_id = uid( );
 const template_project_id = uid( );
 
+let config;
+
 async function main( ) {
 	
+	//load configuration
+	const user_config = JSON.parse( await fs.readFile( `${ assignment_path }/cxtool.json` ).catch( _ => "{}" ));
+	config = { ...default_config, ...user_config };
+	if( verbose ) console.log( "using configuration:", config );
+
 	//clean directory if existing
 	await fs.rm( export_path, { recursive: true, force: true });
 	await fs.mkdir( export_path );
@@ -203,7 +228,7 @@ async function main( ) {
 async function assemble_project( name ) {
 
 	//copy the project directory into our task
-	await copy_dir( `${ repo_root }/${ assignment_path_rel }/${ name }`, `${ export_path }` );
+	await copy_dir( `${ assignment_path }/${ name }`, `${ export_path }` );
 	
 	const project_path = `${ export_path }/${ name }`;
 	const testing_path = `${ repo_root }/Testing`;
@@ -216,11 +241,15 @@ async function assemble_project( name ) {
 
 	//find the master solution by finding the default student work file in the solution project. 
 	//solution.hpp is needed for the tests
-	const solution_path = await find_default_file( `${ export_path }/solution`, true );
+	const solution_path = await find_default_file( `${ assignment_path }/solution`, true );
+	if( verbose ) console.log( "default file found:", solution_path );
 	await copy_file( solution_path, `${ project_path }/solution.hpp` );
 
-	//just a parallel for-loop, copy default library files
-	await Promise.all( default_includes.map( async file => {
+	//always take the tests file from the template project to avoid inconsistencies
+	await copy_file( `${ assignment_path }/template/tests.cpp`, project_path );
+
+	//just a parallel for-loop, copy custom files
+	await Promise.all( config.includes.map( async file => {
 
 		await copy_file( `${ repo_root }/${ file }`, project_path );
 	}));

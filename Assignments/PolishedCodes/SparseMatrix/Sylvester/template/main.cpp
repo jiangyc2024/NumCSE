@@ -29,7 +29,7 @@ Eigen::MatrixXd sparseSPD(int n) {
   
   // A is symmetric and strictly diagonally dominant.
   Eigen::MatrixXd A = B + B.transpose() + Eigen::MatrixXd::Identity(n, n);
-
+  
   return A;
 }
 
