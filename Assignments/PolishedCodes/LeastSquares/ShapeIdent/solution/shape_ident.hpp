@@ -78,9 +78,9 @@ double solve_lsq(const Eigen::MatrixXd &X, const Eigen::MatrixXd &P,
           2, 2)
           .transpose();
 
-  // Residual: must reshape P
+  // Residual
   norm_of_residual =
-      (Eigen::Map<const Eigen::MatrixXd>(P.data(), 2, n) - A * X).norm();
+      (P - A * X).norm();
   // END
 
   return norm_of_residual;

@@ -122,9 +122,9 @@ Eigen::VectorXd solvelseA(const Eigen::VectorXd& a, const Eigen::VectorXd& b,
   // vector $c$
   for (unsigned int i = 0; i < n - 2; ++i) {
     c(i + 1) = -b(i) / d(i) * a(i);
-    d(i + 1) -= c(i) / d(i) * a(i);
-    y(i + 1) -= c(i) / d(i) * y(i);
     y(i + 2) -= b(i) / d(i) * y(i);
+    d(i + 2) -= c(i+1) / d(i+1) * a(i+1);
+    y(i + 2) -= c(i+1)/ d(i+1) * y(i+1);
   }
 
   x(n - 1) = y(n - 1) / d(n - 1);
