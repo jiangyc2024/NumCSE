@@ -48,8 +48,8 @@ std::tuple<Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd> eco_svd_concat(
   // the results in U, s and V.
   // START
 
-  // Computation of \cor{economical
-  // QR-decompositions} of B-factors Incurs a computational effort of
+  // Computation of \cor{economical QR-decompositions} of B-factors
+  // incurs a computational effort of
   // $\cob{O(nk^2)}$
   Eigen::HouseholderQR<Eigen::MatrixXd> qrB1(B1);  // \Label{cmr:a}
   const Eigen::MatrixXd Q1{qrB1.householderQ() *
