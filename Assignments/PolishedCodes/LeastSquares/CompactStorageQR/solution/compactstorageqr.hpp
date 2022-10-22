@@ -17,17 +17,17 @@
 #include <vector>
 
 /**
- * @brief wrapper for compactly stored QR-factorization
+ * \brief wrapper for compactly stored QR-factorization
  *
  */
 /* SAM_LISTING_BEGIN_1 */
 class CompactStorageQR {
  public:
   /**
-   * @brief Construct a new CompactStorageQR object
+   * \brief Construct a new CompactStorageQR object
    *
-   * @param data raw array which has to be persistent
-   * @param n number of rows/columns of encoded matrix
+   * \param data raw array which has to be persistent
+   * \param n number of rows/columns of encoded matrix
    */
   CompactStorageQR(const double *data, unsigned int n) : n_(n), M_(data, n, n) {
     for (unsigned int k = 0; k < n_ - 1; ++k) {
@@ -44,25 +44,25 @@ class CompactStorageQR {
   }
 
   /**
-   * @brief Determinant of the matrix
+   * \brief Determinant of the matrix
    *
-   * @return double the determinant
+   * \return double the determinant
    */
   double det() const;
 
   /**
-   * @brief  Right multiplication with another matrix
+   * \brief  Right multiplication with another matrix
    *
-   * @param X matrix to multiply
-   * @return Eigen::MatrixXd product
+   * \param X matrix to multiply
+   * \return Eigen::MatrixXd product
    */
   Eigen::MatrixXd matmult(const Eigen::MatrixXd &X) const;
 
   /**
-   * @brief Solution of linear systems of equations
+   * \brief Solution of linear systems of equations
    *
-   * @param B right hand side
-   * @return Eigen::MatrixXd solution matrix
+   * \param B right hand side
+   * \return Eigen::MatrixXd solution matrix
    */
   Eigen::MatrixXd solve(const Eigen::MatrixXd &B) const;
 
@@ -78,7 +78,7 @@ Eigen::MatrixXd CompactStorageQR::matmult(const Eigen::MatrixXd &X) const {
   Eigen::MatrixXd Y = Eigen::MatrixXd::Zero(n_, X.rows());
 
   // TODO: (3-16.a) Implement matrix multiplication with computational cost at
-  // most O(n^2k)
+  // most $O(n^2k)$
   // START
   // Multiplication with R-factor
   Y = M_.template triangularView<Eigen::Upper>() * X;
@@ -101,7 +101,7 @@ Eigen::MatrixXd CompactStorageQR::solve(const Eigen::MatrixXd &B) const {
   Eigen::MatrixXd X{B};
 
   // TODO: (3-16.b) Solve the linear system of equations given by AX = B with
-  // complexity O(n^2k).
+  // complexity $O(n^2k)$.
   // START
   // Check invertibility by inspecting diagonal
   // elements of R-factor
