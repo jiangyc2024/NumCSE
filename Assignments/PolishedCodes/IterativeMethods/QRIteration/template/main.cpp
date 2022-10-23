@@ -1,11 +1,11 @@
-#include "qriteration.hpp"
 #include <Eigen/Dense>
 #include <algorithm>
 #include <iostream>
 #include <vector>
 
-int main(int /*argc*/, char ** /*argv*/) {
+#include "qriteration.hpp"
 
+int main() {
   {
     std::cout << "Givens rotation for [3,4]" << std::endl;
     Eigen::Vector2d a(3.0, 4.0);
@@ -16,22 +16,20 @@ int main(int /*argc*/, char ** /*argv*/) {
     std::cout << "G*a = " << a.transpose() << std::endl << std::endl;
   }
 
-  unsigned n = 5;
+  constexpr unsigned int n = 5;
   Eigen::VectorXd dT = Eigen::VectorXd::LinSpaced(n, 1, n);
   Eigen::VectorXd uT = 0.1 * Eigen::VectorXd::LinSpaced(n - 1, 1, n - 1);
   Eigen::MatrixXd T = Eigen::MatrixXd::Zero(n, n);
-  for (int i = 0; i < n - 1; ++i) {
+  for (unsigned int i = 0; i < n - 1; ++i) {
     T(i, i) = dT[i];
     T(i, i + 1) = T(i + 1, i) = uT[i];
   }
   T(n - 1, n - 1) = dT[n - 1];
-  std::cout << "Symmetric tridiagonal matrix T:= \n"
-            << T << std::endl;
+  std::cout << "Symmetric tridiagonal matrix T:= \n" << T << std::endl;
 
-  Eigen::VectorXd dTp, uTp;
-  std::tie(dTp, uTp) = qrStep(dT, uT);
+  auto [dTp, uTp] = qrStep(dT, uT);
   Eigen::MatrixXd Tp = Eigen::MatrixXd::Zero(n, n);
-  for (int i = 0; i < n - 1; ++i) {
+  for (unsigned int i = 0; i < n - 1; ++i) {
     Tp(i, i) = dTp[i];
     Tp(i, i + 1) = Tp(i + 1, i) = uTp[i];
   }
@@ -43,9 +41,9 @@ int main(int /*argc*/, char ** /*argv*/) {
   const Eigen::MatrixXd Rfull =
       qr.matrixQR().template triangularView<Eigen::Upper>();
 
-  const ::Eigen::MatrixXd Qfull =
+  const Eigen::MatrixXd Qfull =
       qr.householderQ() * Eigen::MatrixXd::Identity(n, n);
-  const ::Eigen::MatrixXd Tpfull = Rfull * Qfull;
+  const Eigen::MatrixXd Tpfull = Rfull * Qfull;
 
   // NOTE: The matrices obtained from qrStep() and QR decomposition may agree
   //       only in absolute values.

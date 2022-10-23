@@ -2,17 +2,17 @@
 #include "doctest.h"
 
 // includes for test data
-#include "qriteration.hpp"
 #include <Eigen/Dense>
 #include <cmath>
 
-TEST_SUITE("QR-Iteration") {
+#include "qriteration.hpp"
 
+TEST_SUITE("QR-Iteration") {
   TEST_CASE("qrStep()" *
             doctest::description(
                 "Checking the returned vectors for a random symmetric "
                 "tridiagonal matrix (Not testing efficiency)")) {
-    unsigned n = 5;
+    constexpr unsigned int n = 5;
     Eigen::VectorXd diag = Eigen::VectorXd::Random(n);
     Eigen::VectorXd sub_diag = Eigen::VectorXd::Random(n - 1);
 
@@ -28,8 +28,7 @@ TEST_SUITE("QR-Iteration") {
     Eigen::VectorXd diag_p = T_p.diagonal();
     Eigen::VectorXd sub_diag_p = T_p.diagonal(1);
 
-    Eigen::VectorXd v1, v2;
-    std::tie(v1, v2) = qrStep(diag, sub_diag);
+    auto [v1, v2] = qrStep(diag, sub_diag);
 
     CHECK((v1.cwiseAbs() - diag_p.cwiseAbs()).norm() ==
           doctest::Approx(0.).epsilon(1e-10));
