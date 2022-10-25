@@ -4,7 +4,9 @@
 
 #include <Eigen/Dense>
 #include <cassert>
+#include <cstdint>
 #include <iostream>
+#include <span>
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -86,18 +88,19 @@ void invpowitdriver(double tol = 1E-3, Eigen::Index n = 7)
   cout << "ev/av = [" << (ev.array()/av.array()).transpose() << "]" << endl;
 }
 
-void fn(const Eigen::Matrix<double,Eigen::Dynamic, Eigen::Dynamic,Eigen::RowMajor> &A,
+void fn( Eigen::Matrix<double,Eigen::Dynamic, Eigen::Dynamic,Eigen::RowMajor> &A,
 	const Eigen::VectorXd &v,Eigen::VectorXd &w) {
-  using scalar_t = double;
   using index_t = Eigen::Index;
-  const scalar_t *a = A.data();
-  const index_t n = A.rows();
+  const index_t n = A.cols();
+  const index_t m = A.rows();
+  Eigen::Map<VectorXd> data( A.data( ), n * m );
+  index_t idx = 0;
   assert((n==v.size()) && (n == w.size()));
   for (index_t i=0;i<n;i++) {
-    a += i;
+    idx += i;
     for (index_t j=i;j<n;j++) {
-      w(i) += (*a)*v(j);
-      a++;
+      w(i) += data[idx]*v(j);
+      idx++;
     }
   }
 }
@@ -106,9 +109,12 @@ void fndriver()
 {
   const int n = 10;
   Eigen::Matrix<double,Eigen::Dynamic, Eigen::Dynamic,Eigen::RowMajor> A(n,n);
-  Eigen::VectorXd v(n),w(n);
+  Eigen::VectorXd v(n);
+  Eigen::VectorXd w(n);
   for (int i=0;i<n;i++) {
-    for(int j=0;j<n;j++) A(i,j) = (i+1.0)/(j+1.0);
+    for(int j=0;j<n;j++) {
+      A(i,j) = (i+1.0)/(j+1.0);
+    }
     v(i) = i+1.0;
   }
   std::cout << "A = " << std::endl << A << std::endl;
@@ -120,20 +126,22 @@ void fndriver()
 
 int main(int argc,char **argv)
 {
+  const std::span args(argv, argc);
+  int code = 0;
   cout << "EIGEN DENSE LINEAR ALGEBRA CODES" << endl;
-  if (argc != 2) {
-    cerr << "Usage: " << argv[0] << " <selection>" << endl;
-    return(-1L);
-  }
-  else {
-    const int sel = atoi(argv[1]);
+  if (argc == 2) {
+    const int64_t sel = std::strtol(args[1], nullptr, 10);
     switch (sel) {
-    case 1: { lsesolve(); break; }
-    case 2: { reuselu(); break; }
-    case 3: { invpowitdriver(); break; }
-    case 4: { fndriver(); break; }
-    default: { cerr << "Invalid selection" << endl; exit(-1L); }
+      case 1: { lsesolve(); break; }
+      case 2: { reuselu(); break; }
+      case 3: { invpowitdriver(); break; }
+      case 4: { fndriver(); break; }
+      default: { std::cerr << "Invalid selection" << endl; code = -1; }
     }
   }
-  return(0);
+  else {
+    std::cerr << "Usage: " << args[0] << " <selection>" << endl;
+    code = -1;
+  }
+  return code;
 }
