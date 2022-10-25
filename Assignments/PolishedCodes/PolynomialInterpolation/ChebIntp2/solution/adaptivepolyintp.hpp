@@ -27,7 +27,7 @@ namespace plt = matplotlibcpp;
 /* SAM_LISTING_BEGIN_1 */
 template <class Function>
 Eigen::VectorXd adaptivepolyintp(Function&& f, double a, double b, double tol,
-                                 int N,
+                                 unsigned int N,
                                  std::vector<double>* errortab = nullptr) {
   // Generate sampling points and evaluate $f$ there
   Eigen::VectorXd sampling_points = Eigen::VectorXd::LinSpaced(N, a, b),
@@ -70,7 +70,7 @@ Eigen::VectorXd adaptivepolyintp(Function&& f, double a, double b, double tol,
     // Step 4: add this node to our set of nodes
     t.push_back(sampling_points(idx));
     y.push_back(fvals_at_sampling_points(idx));
-    // (7-3.b): save error
+    // (6-3.b): save error
     if (errortab != nullptr) {
       errortab->push_back(max);
     }
