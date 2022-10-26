@@ -9,9 +9,6 @@
 #include <vector>
 
 #include "chebpolmult.hpp"
-#include "matplotlibcpp.h"
-
-namespace plt = matplotlibcpp;
 
 /**
  * @brief Check the orthogonality of Chebychev polynomials
