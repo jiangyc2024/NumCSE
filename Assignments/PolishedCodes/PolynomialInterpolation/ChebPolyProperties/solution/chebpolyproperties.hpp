@@ -8,34 +8,10 @@
 #include <limits>
 #include <vector>
 
+#include "chebpolmult.hpp"
 #include "matplotlibcpp.h"
 
 namespace plt = matplotlibcpp;
-
-/**
- * @brief Computes the values of the Chebychev polynomials
- * \Blue{$T_{0},\ldots,T_{d}$}, \Blue{$d\geq 2$} using the 3-term recursion.
- *
- * @param d maximal order of polynomials
- * @param x evaluation points
- * @param V values \Blue{$T_k(x_j)$} are returned in row \Blue{$k+1$}
- */
-/* SAM_LISTING_BEGIN_3 */
-void chebpolmult(const unsigned int d, const Eigen::RowVectorXd& x,
-                 Eigen::MatrixXd& V) {
-  const unsigned int n = x.size();
-  V = Eigen::MatrixXd::Ones(d + 1, n);  // \Blue{$T_0 \equiv 1$}
-  if (d > 0) {
-    V.block(1, 0, 1, n) = x;  // \Blue{$T_1(x) = x$}
-    for (unsigned int k = 1; k < d; ++k) {
-      const Eigen::RowVectorXd p = V.block(k, 0, 1, n);      // $p = T_{k}$
-      const Eigen::RowVectorXd q = V.block(k - 1, 0, 1, n);  // $q = T_{k-1}$
-      V.block(k + 1, 0, 1, n) =
-          2 * x.cwiseProduct(p) - q;  // \Magenta{3-term recursion}
-    }
-  }
-}
-/* SAM_LISTING_END_3 */
 
 /**
  * @brief Check the orthogonality of Chebychev polynomials
@@ -138,17 +114,14 @@ std::vector<double> testBestPolyChebNodes(unsigned int n) {
 
   for (unsigned int m = 0; m < n + 1; ++m) {
     Eigen::VectorXd alpha = bestpolchebnodes(f, m, m);
-    auto qm = [&alpha, m](double x) {
-      Eigen::RowVectorXd x_{{x}};
-      Eigen::MatrixXd V;
-      chebpolmult(m, x_, V);
-      return alpha.dot(V.col(0));
-    };
-    double err_max = std::abs(f(X(0)) - qm(X(0)));
-    for (unsigned int i = 1; i < 1e6; ++i) {
-      err_max = std::max(err_max, std::abs(f(X(i)) - qm(X(i))));
-    }
-    errors[m] = err_max;
+
+    Eigen::MatrixXd V;
+    chebpolmult(m, X, V);
+
+    Eigen::VectorXd qm = V.transpose() * alpha;
+    Eigen::VectorXd f_eval = X.unaryExpr(f);
+
+    double err_max = (f_eval - qm).lpNorm<Eigen::Infinity>();
 
     // tabulate errors
     std::cout << std::setw(2) << m << std::setw(2) << " "

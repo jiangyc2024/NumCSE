@@ -6,10 +6,6 @@
 #include "doctest.h"
 
 TEST_SUITE("ChebPolyProperties") {
-  TEST_CASE("void chebpolmult" *
-            doctest::description("given multiplication function") *
-            doctest::skip()) {}
-
   TEST_CASE("bool checkDiscreteOrthogonality" *
             doctest::description("Check orthogonality of polynomials")) {
     MESSAGE("This function wasn't tested. Run the program to see its output.");
