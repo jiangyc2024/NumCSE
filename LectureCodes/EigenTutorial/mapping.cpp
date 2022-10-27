@@ -18,7 +18,7 @@ template <class Functor> void applyMap(MatrixXd &m, Functor &&f) {
 
 void mapping(MatrixXd &m1, const MatrixXd &m2) {
   // Apply a (lambda) function to all entries of a matrix
-  double z(5.0);
+  const double z(5.0);
   // Capture z
   auto f = [z](double x) { return x + z / x; };
   m1 = m1.unaryExpr(f);

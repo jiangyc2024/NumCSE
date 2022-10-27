@@ -21,7 +21,7 @@ void accessColRow(int nrows = 6, int ncols = 7) {
   // Initialization by direct component access
   for (index_t i = 0; i < m.rows(); i++) {
     for (index_t j = 0; j < m.cols(); j++) { 
-      m(i, j) = i + j; 
+      m(i, j) = static_cast<double>(i + j); 
     }
   }
   // Print matrix to standard output
@@ -35,8 +35,8 @@ void accessColRow(int nrows = 6, int ncols = 7) {
     cout << "Col " << l << " = " << endl << m.col(l) << endl << endl;
   }
   // Access rows and columns as vectors
-  RowVectorXd row1(m.row(1));
-  VectorXd col1(m.col(1));
+  const RowVectorXd row1(m.row(1));
+  const VectorXd col1(m.col(1));
 
   cout << "Tensor product m.col(1) * m.row(1) = " << endl
        << col1 * row1 << endl

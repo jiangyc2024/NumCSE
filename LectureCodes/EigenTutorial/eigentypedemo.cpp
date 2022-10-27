@@ -38,7 +38,7 @@ void eigenTypeDemo(unsigned int const dim) {
   rowvec[dim - 1] = static_cast<entry_t>(2.718);
 
   // Form tensor product, a matrix, see Section 1.3.1
-  dynMat_t vecprod = colvec * rowvec;
+  const dynMat_t vecprod = colvec * rowvec;
   const int nrows = vecprod.rows();
   const int ncols = vecprod.cols();
 
