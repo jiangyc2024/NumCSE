@@ -20,8 +20,8 @@ using namespace Eigen;
 //! formula $\xi_{1,2} = \frac{1}{2}(-\alpha\pm\sqrt{\alpha^2-4\beta})$.
 //! This is a stable implementation based on Vieta's theorem.
 //! The zeros are returned in a column vector
-VectorXd zerosquadpolstab(double alpha, double beta) {
-  Vector2d z(2);
+Eigen::VectorXd zerosquadpolstab(double alpha, double beta) {
+  Eigen::Vector2d z(2);
   double D = std::pow(alpha, 2) - 4 * beta; // discriminant
   if (D < 0)
     throw "no real zeros";
