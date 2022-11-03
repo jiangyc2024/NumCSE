@@ -21,7 +21,7 @@ void planerot(const Eigen::Vector2d& a, Eigen::Matrix2d& G,
   int sign{1};
   if (a[1] != 0.0) {
     double t, s, c;  // s $\leftrightarrow$ $\cob{\sigma}$, c $\leftrightarrow$ $\cob{\gamma}$
-    if (std::abs(a[1]) > std::abs(a[0])) {  // Avoid cancellation/overflow
+    if (std::abs(a[1]) > std::abs(a[0])) {  // Avoid overflow
       t = -a[0] / a[1];
       s = 1.0 / std::sqrt(1.0 + t * t);
       c = s * t;
