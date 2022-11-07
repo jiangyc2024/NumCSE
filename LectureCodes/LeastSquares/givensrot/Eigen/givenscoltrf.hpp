@@ -23,7 +23,7 @@ using namespace Eigen;
 void givenscoltrf(const VectorXd &aIn, MatrixXd &Q, VectorXd &aOut) {
   const int n = aIn.size();
   // Assemble rotations in a dense matrix $\cob{\VQ}$
-  // For (more efficient) alternatives see Rem.~\cref{rem:storeQ}
+  // For (more efficient) alternatives see \cref{rem:storeQ}
   Q.setIdentity(); // Start from $\cob{\VQ=\VI}$
   Matrix2d G;
   aOut = aIn;
@@ -32,7 +32,7 @@ void givenscoltrf(const VectorXd &aIn, MatrixXd &Q, VectorXd &aOut) {
     // Determine entries of 2D rotation matrix, see Code~\ref{cpp:planerot}
     double s, c; // s $\leftrightarrow$ $\cob{\sigma}$, c $\leftrightarrow$ $\cob{\gamma}$
     if (a1 != 0.0) {
-      if (std::abs(a1) > std::abs(a0)) { // Avoid cancellation/overflow
+      if (std::abs(a1) > std::abs(a0)) { // Avoid overflow
         double t = -a0 / a1;
         s = 1.0 / std::sqrt(1.0 + t * t);
         c = s * t;
