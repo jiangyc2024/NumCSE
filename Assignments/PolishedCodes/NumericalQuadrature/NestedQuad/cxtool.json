@@ -1,0 +1,6 @@
+{
+  "includes": [
+    "MatplotlibC++/matplotlibcpp.h",
+    "LectureCodes/NumQuad/gaussquad/Eigen/gaussquad.hpp"
+  ]
+}

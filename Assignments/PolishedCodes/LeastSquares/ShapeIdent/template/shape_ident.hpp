@@ -4,7 +4,7 @@
 #include <Eigen/Dense>
 
 /*!
- * @bref shape_ident_matrix Build matrix $\mathbf{B}$.
+ * @brief shape_ident_matrix Build matrix $\mathbf{B}$.
  * Build the overdetermined system matrix arising from the
  * point $\mathbf{x}^i$.
  * @param[in] X A $2 \times n$ matrix with model points.
@@ -20,7 +20,7 @@ Eigen::MatrixXd shape_ident_matrix(const Eigen::MatrixXd &X) {
   // TODO: (3-7.c) Build system matrix $\mathbf{B}$.
 
   // START
-  
+
   // END
 
   return B;
@@ -51,7 +51,7 @@ double solve_lsq(const Eigen::MatrixXd &X, const Eigen::MatrixXd &P,
   // residual
 
   // START
-  
+
   // END
 
   return norm_of_residual;
@@ -78,7 +78,7 @@ Shape identify(const Eigen::MatrixXd Xstop, const Eigen::MatrixXd Xpriority,
   // road sign.
 
   // START
-  
+
   // END
 }
 /* SAM_LISTING_END_2 */

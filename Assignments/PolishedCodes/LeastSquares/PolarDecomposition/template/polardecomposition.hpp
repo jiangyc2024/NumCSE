@@ -8,7 +8,7 @@
 #include <iostream>
 
 class PolarDecomposition {
-public:
+ public:
   explicit PolarDecomposition(const Eigen::MatrixXd &X) { initialize(X); }
   PolarDecomposition(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B);
   PolarDecomposition(const PolarDecomposition &) = default;
@@ -18,23 +18,23 @@ public:
   void applyQ(Eigen::MatrixXd &Y) const { Y.applyOnTheLeft(Q_); }
   // Left multiplication of M with the M-factor of the polar decomposition
   void applyM(Eigen::MatrixXd &Y) const { Y.applyOnTheLeft(M_); }
-  
+
   int Qcols() { return Q_.cols(); }
   int Mcols() { return M_.cols(); }
 
-private:
+ private:
   void initialize(const Eigen::MatrixXd &X);
-  Eigen::MatrixXd Q_; // factor Q
-  Eigen::MatrixXd M_; // factor M
+  Eigen::MatrixXd Q_;  // factor Q
+  Eigen::MatrixXd M_;  // factor M
 };
 
 /* SAM_LISTING_BEGIN_1 */
 void PolarDecomposition::initialize(const Eigen::MatrixXd &X) {
   assert(X.rows() >= X.cols());
-  // TO DO: Implement a method to initialize the data members Q_ and M_ 
+  // TODO: (3-12.c) Implement a method to initialize the data members Q_ and M_
   // corresponding to Q and M in Theorem 0.3.1, where X = QM
   // START
-  
+
   // END
 }
 /* SAM_LISTING_END_1 */
@@ -49,13 +49,12 @@ PolarDecomposition::PolarDecomposition(const Eigen::MatrixXd &A,
   assert(m >= n);
   assert(k < n);
   assert(B.cols() == k);
-  // TO DO: Implement a method to initialize the data members Q_ and M_
+  // TODO: (3-12.d) Implement a method to initialize the data members Q_ and M_
   // for X := AB^T = QM, with optimal complexity
   // START
-  
+
   // END
 }
 /* SAM_LISTING_END_7 */
-
 
 #endif

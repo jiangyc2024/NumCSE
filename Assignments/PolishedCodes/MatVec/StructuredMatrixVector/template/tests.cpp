@@ -16,7 +16,6 @@ struct TestData {
 };
 
 TestData data;
-constexpr double eps = 1e-10;
 
 TEST_SUITE("StructuredMatrixVector") {
   TEST_CASE("void multAminSlow" * doctest::description("skipped") *
@@ -29,7 +28,7 @@ TEST_SUITE("StructuredMatrixVector") {
     multAmin_TEST(data.xa, stud);
 
     REQUIRE(sol.size() == stud.size());
-    CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(eps));
+    CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-10));
   }
 
   TEST_CASE("void multAmin_runtime" *
@@ -46,6 +45,6 @@ TEST_SUITE("StructuredMatrixVector") {
 
     REQUIRE(sol.rows() == stud.rows());
     REQUIRE(sol.cols() == stud.cols());
-    CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(eps));
+    CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-7));
   }
 }

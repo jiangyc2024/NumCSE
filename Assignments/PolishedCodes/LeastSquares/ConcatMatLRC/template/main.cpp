@@ -3,15 +3,8 @@
  * Author: R. Hiptmair
  * Date: January 2022
  */
- 
-#ifdef NICEBACKTRACE
-#include "backtrace.hpp"
-#endif
 
-#include "concatmatlrc.hpp"
 #include <Eigen/Dense>
-#include <Eigen/QR>
-#include <Eigen/SVD>
 #include <cassert>
 #include <cmath>
 #include <iostream>
@@ -19,17 +12,15 @@
 #include <tuple>
 #include <vector>
 
-#ifdef NICEBACKTRACE
-#include "backtrace.hpp"
-#endif
+#include "concatmatlrc.hpp"
 
-int main(int /*argc*/, char ** /*argv*/) {
+int main() {
   std::cout << "Economical SVD of concatenated matrices" << std::endl;
   {
     // Test data
-    const int m = 7;
-    const int n = 5;
-    const int k = 2;
+    constexpr unsigned int m = 7;
+    constexpr unsigned int n = 5;
+    constexpr unsigned int k = 2;
     std::cout << "CASE I" << std::endl;
     std::cout << "#################################" << std::endl;
     std::cout << "Printing the matrices A1,B1,A2,B2 \n" << std::endl;
@@ -48,32 +39,32 @@ int main(int /*argc*/, char ** /*argv*/) {
     std::cout << "\nA2 = " << std::endl << A2 << std::endl;
     std::cout << "\nB2 = " << std::endl << B2 << std::endl;
     auto [U, s, V] = eco_svd_concat(A1, B1, A2, B2);
-    std::cout << "\nSingular values = " << s.transpose() << std::endl;
-    std::cout << "\nFactor U = " << std::endl << U << std::endl;
-    std::cout << "\nFactor V = " << std::endl << V << std::endl;
-    std::cout << "\ntest_eco_svd_concat() result: "
-              << (test_eco_svd_concat(A1, B1, A2, B2) ? "success\n"
-                                                      : "failure\n")
-              << std::endl;
+    // std::cout << "\nSingular values = " << s.transpose() << std::endl;
+    // std::cout << "\nFactor U = " << std::endl << U << std::endl;
+    // std::cout << "\nFactor V = " << std::endl << V << std::endl;
+    // std::cout << "\ntest_eco_svd_concat() result: "
+    //           << (test_eco_svd_concat(A1, B1, A2, B2) ? "success\n"
+    //                                                   : "failure\n")
+    //           << std::endl;
   }
 
   {
-    const int m = 200;
-    const int n = m / 2;
-    const int k = 20;
+    constexpr unsigned int m = 200;
+    constexpr unsigned int n = m / 2;
+    constexpr unsigned int k = 20;
     Eigen::MatrixXd A1(m, k);
     Eigen::MatrixXd A2(m, k);
     Eigen::MatrixXd B1(n, k);
     Eigen::MatrixXd B2(n, k);
 
-    for (int i = 0; i < m; ++i) {
-      for (int j = 0; j < k; ++j) {
+    for (unsigned int i = 0; i < m; ++i) {
+      for (unsigned int j = 0; j < k; ++j) {
         A1(i, j) = 1.0 / (i + j + 1.0);
         A2(i, j) = 1.0 / (i + j + 3.0);
       }
     }
-    for (int i = 0; i < n; ++i) {
-      for (int j = 0; j < k; ++j) {
+    for (unsigned int i = 0; i < n; ++i) {
+      for (unsigned int j = 0; j < k; ++j) {
         B1(i, j) = 1.0 / (i + j + 2.0);
         B2(i, j) = 1.0 / (i + j + 4.0);
       }
@@ -87,7 +78,7 @@ int main(int /*argc*/, char ** /*argv*/) {
 
     std::cout << "Low rank approximation result \n" << std::endl;
     double tol = 0.5;
-    for (int k = 0; k < 6; ++k) {
+    for (unsigned int k = 0; k < 6; ++k) {
       auto [AM, BM] = concat_low_rank_best(A1, B1, A2, B2, tol);
       Eigen::MatrixXd X(m, 2 * n);
       X.block(0, 0, m, n) = A1 * B1.transpose();

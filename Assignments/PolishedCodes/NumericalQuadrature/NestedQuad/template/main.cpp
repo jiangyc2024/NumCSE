@@ -9,10 +9,10 @@
 int main() {
   auto f = [](double x) { return x * x * x * std::log(std::abs(x) + 1); };
   QuadRule Q;
-  Q.nodes.resize(5);
-  Q.nodes << -1., -std::sqrt(3. / 7.), 0, std::sqrt(3. / 7.), 1.;
-  Q.weights.resize(5);
-  Q.weights << 0.1, 49. / 90., 32. / 45., 49. / 90., 0.1;
+  Q.nodes_.resize(5);
+  Q.nodes_ << -1., -std::sqrt(3. / 7.), 0, std::sqrt(3. / 7.), 1.;
+  Q.weights_.resize(5);
+  Q.weights_ << 0.1, 49. / 90., 32. / 45., 49. / 90., 0.1;
   std::cout << "Test of evalquad() for log(|x|+1)*x^3: "
             << evalquad(-2, 3, f, Q) << "\n\n";
 

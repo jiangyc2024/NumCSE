@@ -1,10 +1,10 @@
-#include "discreteconvolution.hpp"
 #include <Eigen/Dense>
 #include <iomanip>
 #include <iostream>
 
-int main(int /*argc*/, char ** /*argv*/) {
+#include "discreteconvolution.hpp"
 
+int main() {
   std::cout << "\nPeriodic convolution: naive vs. fast implementation"
             << std::endl;
   Eigen::VectorXd p(6);

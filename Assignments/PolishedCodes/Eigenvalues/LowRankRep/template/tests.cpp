@@ -35,13 +35,13 @@ constexpr double eps = 1e-6;
 TEST_SUITE("LowRankRep") {
   TEST_CASE("std::pair<Eigen::MatrixXd, Eigen::MatrixXd> factorize_X_AB" *
             doctest::description("factor")) {
-    auto stud = factorize_X_AB_TEST(data.X, data.k);
+    auto [p, q] = factorize_X_AB_TEST(data.X, data.k);
 
-    REQUIRE(stud.first.rows() == 3);
-    REQUIRE(stud.first.cols() == data.k);
-    REQUIRE(stud.second.rows() == 2);
-    REQUIRE(stud.second.cols() == data.k);
-    Eigen::MatrixXd X = stud.first * stud.second.transpose();
+    REQUIRE(p.rows() == 3);
+    REQUIRE(p.cols() == data.k);
+    REQUIRE(q.rows() == 2);
+    REQUIRE(q.cols() == data.k);
+    Eigen::MatrixXd X = p * q.transpose();
     CHECK((X - data.X).norm() == doctest::Approx(0.).epsilon(eps));
   }
 
@@ -49,15 +49,9 @@ TEST_SUITE("LowRankRep") {
   TEST_CASE("std::tuple<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::MatrixXd> svd_AB" *
       doctest::description("svd U, S, V")) {
     // clang-format on
-    auto sol = svd_AB(data.A, data.B);
-    auto stud = svd_AB_TEST(data.A, data.B);
+    auto [sol0, sol1, sol2] = svd_AB(data.A, data.B);
+    auto [stud0, stud1, stud2] = svd_AB_TEST(data.A, data.B);
 
-    auto sol0 = std::get<0>(sol);
-    auto stud0 = std::get<0>(stud);
-    auto sol1 = std::get<1>(sol);
-    auto stud1 = std::get<1>(stud);
-    auto sol2 = std::get<2>(sol);
-    auto stud2 = std::get<2>(stud);
     REQUIRE(sol0.rows() == stud0.rows());
     REQUIRE(sol0.cols() == stud0.cols());
     REQUIRE(sol1.rows() == stud1.rows());
@@ -71,15 +65,15 @@ TEST_SUITE("LowRankRep") {
 
   TEST_CASE("std::pair<Eigen::MatrixXd, Eigen::MatrixXd> rank_k_approx" *
             doctest::description("approx Z")) {
-    auto sol = rank_k_approx(data.Ax, data.Ay, data.Bx, data.By);
-    auto stud = rank_k_approx_TEST(data.Ax, data.Ay, data.Bx, data.By);
+    auto [sol_p, sol_q] = rank_k_approx(data.Ax, data.Ay, data.Bx, data.By);
+    auto [stud_p, stud_q] =
+        rank_k_approx_TEST(data.Ax, data.Ay, data.Bx, data.By);
 
-    REQUIRE(sol.first.rows() == stud.first.rows());
-    REQUIRE(sol.second.rows() == stud.second.rows());
-    REQUIRE(sol.first.cols() == stud.first.cols());
-    REQUIRE(sol.second.cols() == stud.second.cols());
-    CHECK((sol.first - stud.first).norm() == doctest::Approx(0.).epsilon(eps));
-    CHECK((sol.second - stud.second).norm() ==
-          doctest::Approx(0.).epsilon(eps));
+    REQUIRE(sol_p.rows() == stud_p.rows());
+    REQUIRE(sol_q.rows() == stud_q.rows());
+    REQUIRE(sol_p.cols() == stud_p.cols());
+    REQUIRE(sol_q.cols() == stud_q.cols());
+    CHECK((sol_p - stud_p).norm() == doctest::Approx(0.).epsilon(eps));
+    CHECK((sol_q - stud_q).norm() == doctest::Approx(0.).epsilon(eps));
   }
 }

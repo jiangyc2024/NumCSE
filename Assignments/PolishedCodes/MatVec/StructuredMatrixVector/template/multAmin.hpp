@@ -32,7 +32,7 @@ void multAminSlow(const Eigen::VectorXd &x, Eigen::VectorXd &y) {
  */
 /* SAM_LISTING_BEGIN_2 */
 void multAmin(const Eigen::VectorXd &x, Eigen::VectorXd &y) {
-  unsigned int n = x.size();
+  const unsigned int n = x.size();
   y = Eigen::VectorXd::Zero(n);
 
   // TODO: (1-7.b) Fill in the entries of y.

@@ -1,4 +1,4 @@
-# Problem X-X: QR Iteration
+# Problem 3-13: QR-Iteration
 
 > For the task description of this exercise, please refer to [NCSEFL_Problems.pdf](
 https://www.sam.math.ethz.ch/~grsam/NumMeth/HOMEWORK/NCSEFL_Problems.pdf). 

@@ -1,9 +1,10 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "concatmatlrc.hpp"
-#include "doctest.h"
 #include <Eigen/Dense>
 #include <iomanip>
 #include <random>
+
+#include "concatmatlrc.hpp"
+#include "doctest.h"
 
 struct TestData {
   TestData() {
@@ -103,13 +104,12 @@ struct TestData {
 TestData data;
 
 TEST_SUITE("Low-rank approximation of concatenated matrices") {
-
   TEST_CASE("eco_svd_concat()" *
             doctest::description(
                 "Testing output assuming the matrices are ordered based on "
                 "descending singular values. Not testing efficiency")) {
     // Calling the function to be tested
-    unsigned m{8},n{7},k{3};
+    constexpr unsigned int m{8}, n{7}, k{3};
     Eigen::VectorXd sigma;
     Eigen::MatrixXd U, V;
     std::tie(U, sigma, V) = eco_svd_concat(data.A1, data.B1, data.A2, data.B2);
@@ -121,9 +121,9 @@ TEST_SUITE("Low-rank approximation of concatenated matrices") {
     REQUIRE(V.cols() == 2 * k);
     REQUIRE(sigma.size() == 2 * k);
 
-    CHECK(abs(U.norm()-data.U.norm()) == doctest::Approx(0.).epsilon(1e-10));
-    CHECK(abs(V.norm()-data.V.norm()) == doctest::Approx(0.).epsilon(1e-10));
-    CHECK((sigma-data.sigma).norm() == doctest::Approx(0.).epsilon(1e-10));
+    CHECK(abs(U.norm() - data.U.norm()) == doctest::Approx(0.).epsilon(1e-10));
+    CHECK(abs(V.norm() - data.V.norm()) == doctest::Approx(0.).epsilon(1e-10));
+    CHECK((sigma - data.sigma).norm() == doctest::Approx(0.).epsilon(1e-10));
   }
 
   TEST_CASE("test_eco_svd_concat()" *
@@ -133,14 +133,14 @@ TEST_SUITE("Low-rank approximation of concatenated matrices") {
             doctest::description("Testing correct sizes and norm, not checking "
                                  "if the best approximation is returned")) {
     // Generating random matrices for test
-    unsigned k(3), m(7), n(6);
+    constexpr unsigned int k{3}, m{7}, n{6};
     Eigen::MatrixXd A1 = Eigen::MatrixXd::Random(m, k);
     Eigen::MatrixXd A2 = Eigen::MatrixXd::Random(m, k);
     Eigen::MatrixXd B1 = Eigen::MatrixXd::Random(n, k);
     Eigen::MatrixXd B2 = Eigen::MatrixXd::Random(n, k);
 
     // Calling the function to be implemented
-    double tol = 1e-5;
+    constexpr double tol = 1e-5;
     Eigen::MatrixXd A_M, B_M;
     std::tie(A_M, B_M) = concat_low_rank_best(A1, B1, A2, B2, tol);
     Eigen::MatrixXd M = A_M * B_M.transpose();

@@ -1,0 +1,6 @@
+{
+  "includes": [
+    "MatplotlibC++/matplotlibcpp.h",
+    "LectureCodes/Interpolation/barycentricformula/Eigen/intpolyval.hpp"
+  ]
+}

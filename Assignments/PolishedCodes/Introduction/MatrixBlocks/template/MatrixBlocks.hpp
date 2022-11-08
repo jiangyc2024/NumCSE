@@ -7,7 +7,7 @@
 
 // TODO: Include the appropriate header files.
 // START
-#include <Eigen/Core>
+#include <Eigen/Dense>
 // END
 
 /**
@@ -29,7 +29,7 @@ Eigen::MatrixXd zero_row_col(const Eigen::MatrixXd& A, unsigned int p,
   Eigen::MatrixXd Anew(A);
 
   // TODO: (0-2.a) Set the entries of row number p and column number q to zero.
-  // Hint: We can access rows and columns of A by A.row() and A.col().
+  // Hint: We can access rows and columns of Anew by Anew.row() and Anew.col().
   // The method setZero() is useful here.
   // START
 
@@ -57,25 +57,14 @@ Eigen::MatrixXd swap_left_right_blocks(const Eigen::MatrixXd& A,
   // We can use .rows() and .cols() to get the number of rows and columns in A.
   unsigned int q = A.cols() - p;
 
-  // A.block( i, j, m, n ) returns the m by n block that has its top-left corner
-  // at the index (i,j) in A. Hence, the first p columns of A can be accessed in
-  // the following way:
-  B = A.block(0, 0, A.rows(), p);
-
-  // TODO: (0-2.b) Use A.block() to define C as the matrix containing the last q
-  // columns of A.
-  // START
-
-  // END
-
   // Make a copy of A.
   Eigen::MatrixXd Anew(A);
-  // The block() method can access arbitrary blocks within a matrix.
-  // For our purposes, it is actually simpler to use leftCols() and rightCols().
-  Anew.leftCols(q) = C;
 
-  // TODO: (1-2.b) Use A.rightCols() to fill in the remaining columns of the new
-  // matrix A.
+  // TODO: (0-2.b) Swap the first p columns of A with the rightmost q columns
+  // and write them in Anew. The methods block(), leftCols()/rightCols() may
+  // come in handy.
+  // Hint: A.block( i, j, m, n ) returns the m by n block that has its top-left
+  // corner at the index (i,j) in A.
   // START
 
   // END
