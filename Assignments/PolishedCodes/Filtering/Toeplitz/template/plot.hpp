@@ -39,7 +39,7 @@ void plot(std::vector<double> &vec_size, std::vector<double> &elap_time1,
   // Multiplication with ten to shift the plots
   plt::loglog(vec_size, elap_time1, "+", {{"label", label1}});
   plt::loglog(vec_size, elap_time2, "+", {{"label", label2}});
-  plt::loglog(vec_size, vec_size_lin, "k--",
+  plt::loglog(vec_size, vec_size_lin, "--",
               {{"label", "O(n)"}, {"color", "grey"}});
   plt::loglog(vec_size, vec_size_pow2, "-",
               {{"label", "O(n²)"}, {"color", "dimgrey"}});
