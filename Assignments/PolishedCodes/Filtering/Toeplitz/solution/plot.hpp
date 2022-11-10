@@ -9,15 +9,17 @@
 
 namespace plt = matplotlibcpp;
 
-/* DO_NOT_CHANGE */
-/* @brief plot the vector sizes against the needed time to compute them
+/**
+ * @brief plot the vector sizes against the needed time to compute them
  * in loglog-plot
+ *
  */
+/* SAM_LISTING_BEGIN_0 */
 void plot(std::vector<double> &vec_size, std::vector<double> &elap_time1,
           std::vector<double> &elap_time2, const std::string &fig_name,
           const std::string &label1, const std::string &label2) {
-  unsigned int n = vec_size.size();
-  // lines for the comparison of convergenz order
+  const unsigned int n = vec_size.size();
+  // lines for the comparison of convergence order
   std::vector<double> vec_size_lin(vec_size);
   std::vector<double> vec_size_pow2(vec_size);
   std::vector<double> vec_size_pow3(vec_size);
@@ -52,5 +54,6 @@ void plot(std::vector<double> &vec_size, std::vector<double> &elap_time1,
   // note figname needs to have the right path: which is './cx_out/figname'
   plt::savefig(fig_name);
 }
+/* SAM_LISTING_END_0 */
 
 #endif

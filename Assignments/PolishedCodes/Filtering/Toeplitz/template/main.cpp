@@ -1,12 +1,11 @@
 #include <Eigen/Dense>
 #include <iostream>
 
-#include "timer.h"
 #include "toeplitz.hpp"
 
 int main() {
   // Initialization
-  int n = 3;
+  unsigned int n = 3;
   Eigen::VectorXd c(n), r(n), x(n);
   c << 1, 2, 3;
   r << 1, 4, 5;
@@ -42,7 +41,6 @@ int main() {
 
   // call runtime computation
   runtime_toeplitz();
-  runtime_toeplitz_with_chrono();
 
   // Test ttsolve
   std::cout << "Testing ttsolve:" << std::endl;
