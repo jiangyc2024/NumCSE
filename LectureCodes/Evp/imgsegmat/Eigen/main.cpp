@@ -1,22 +1,23 @@
+#include "imgsegmat.hpp"
+#include "imread.hpp"
 #include <Eigen/Dense>
 #include <iostream>
 #include <libgen.h>
-#include "imgsegmat.hpp"
-#include "imread.hpp"
+#include <span>
 
-
-int main(int arc, char** argv)
+int main(int argc, char** argv)
 {
-	std::string path = std::string(dirname(argv[0])) +	"/eth.bmp";
+	const std::span args( argv, argc );
+	const std::string path = std::string(dirname(args[0])) + "/eth.bmp"; //NOLINT(concurrency-mt-unsafe)
 
-	auto img = readBMP(path);
-	Eigen::MatrixXd P = greyscale(img);
+	auto img = imread::readBMP(path);
+	const Eigen::MatrixXd P = imread::greyscale(img);
 
 	Eigen::SparseMatrix<double> D;
 	Eigen::SparseMatrix<double> A;
 
-	auto Sfun = [](double a, double b) { return 1; };
+	auto Sfun = [](double, double) { return 1; };
 
-	std::tie(A,D) = imgsegmat(P, Sfun);
+	std::tie(A,D) = imgsegmat::imgsegmat(P, Sfun);
 
 }

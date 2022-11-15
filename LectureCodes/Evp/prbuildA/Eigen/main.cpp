@@ -1,16 +1,18 @@
-#include <Eigen/Dense>
-#include <Eigen/Sparse>
-#include <iostream>
 #include "prbuildA.hpp"
 #include "../../utils/graphMarketMatrixLoader.hpp"
+#include <Eigen/Dense>
+#include <Eigen/Sparse>
+#include <cstring>
+#include <iostream>
 #include <libgen.h>
-#include <string.h>
+#include <span>
 
 int main(int argc, char** argv)
 {
+	const std::span args(argv, argc);
 	Eigen::MatrixXi G;
-	std::string path = std::string(dirname(argv[0])) +	"/Harvard500.mtx";
+	const std::string path = std::string(dirname(args[0])) + "/Harvard500.mtx"; //NOLINT(concurrency-mt-unsafe)
 	loadGraphMarketMatrix(G, path);
 
-	Eigen::MatrixXd M = prbuildA(G, 0.15);
+	const Eigen::MatrixXd M = prbuilda::prbuildA(G, 0.15);
 }
