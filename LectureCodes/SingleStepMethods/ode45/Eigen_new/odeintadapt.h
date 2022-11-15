@@ -11,9 +11,7 @@
 /* SAM_LISTING_BEGIN_0 */
 // Auxiliary function: default norm for an \eigen vector type
 template <class State>
-double _norm(const State &y) {
-  return y.norm();
-}
+double _norm(const State &y) { return y.norm(); }
 
 // Adaptive numerical integrator based on local-in-time stepsize control
 template <class DiscEvolOp, class State,
@@ -25,29 +23,18 @@ std::vector<std::pair<double, State>> odeintadapt(
   double t = 0;   // initial time $\cob{t_0=0}$\Label[line]{odeintadapt:1}
   State y = y0;   // current state
   double h = h0;  // timestep to start with
-  std::vector<std::pair<double, State>>
-      states;                // vector of times/computed states:
-                             // $\cob{\left(t_k,\Vy_k\right)_k}$
+  // vector of times/computed states: $\cob{\left(t_k,\Vy_k\right)_k}$
+  std::vector<std::pair<double, State>> states;               
   states.push_back({t, y});  // initial time and state
-
-  while ((states.back().first < T) &&
-         (h >= hmin)) {  // \Label[line]{odeintadapt:2}
-    State yh = Psihigh(
-        h, y);  // high order discrete evolution \Blue{$\widetilde{\Psibf}^h$}
-                // \Label[line]{odeintadapt:3}
-    State yH = Psilow(h, y);  // low order discrete evolution
-                              // \Blue{${\Psibf}^h$} \Label[line]{odeintadapt:4}
-    double est =
-        norm(yH - yh);  // local error estimate
-                        // \Blue{$\mathrm{EST}_k$}\Label[line]{odeintadapt:5}
-
-    if (est <
-        std::max(
-            reltol * norm(y),
-            abstol)) {  // step \Magenta{accepted} \Label[line]{odeintadapt:6}
+  // Main timestepping loop 
+  while ((states.back().first < T) && (h >= hmin)) {  // \Label[line]{odeintadapt:2}
+    State yh = Psihigh(h, y); // high-order discrete evolution \Blue{$\widetilde{\Psibf}^h$}\Label[line]{odeintadapt:3}
+    State yH = Psilow(h, y); // low-order discrete evolution \Blue{${\Psibf}^h$}\Label[line]{odeintadapt:4}
+    double est = norm(yH - yh);  // local error estimate \Blue{$\mathrm{EST}_k$}\Label[line]{odeintadapt:5}
+    if (est < std::max(reltol * norm(y), abstol)) {  // step \Magenta{accepted} \Label[line]{odeintadapt:6}
       y = yh;           // use high order approximation
       t = t + std::min(T - t, h);  // next time \Blue{$t_k$}
-      states.push_back({t, y});    // \Label[line]{odeintadapt:7}
+      states.push_back({t, y});    // store approximate state\Label[line]{odeintadapt:7}
       h = 1.1 * h;  // try with increased stepsize \Label[line]{odeintadapt:8}
     } else {        // step \Magenta{rejected}
       h = h / 2;    // try with half the stepsize \Label[line]{odeintadapt:9}
@@ -55,12 +42,11 @@ std::vector<std::pair<double, State>> odeintadapt(
     // Numerical integration has ground to a halt !
     if (h < hmin) {
       std::cerr << "Warning: Failure at t=" << states.back().first
-                << ". Unable to meet integration tolerances without reducing "
-                   "the step "
-                << "size below the smallest value allowed (" << hmin
-                << ") at time t." << std::endl;
+        << ". Unable to meet integration tolerances without reducing "
+	<< "the step size below the smallest value allowed (" << hmin
+        << ") at time t = " << t << "." << std::endl;
     }
-  }
-  return states;
+  } // end main loop 
+  return states; // ok thanks to \href{https://stackoverflow.com/questions/12953127/what-are-copy-elision-and-return-value-optimization}{return value optimization} (RVO)
 }
 /* SAM_LISTING_END_0 */
