@@ -460,10 +460,13 @@ async function get_file_description( path, project_id, cx_path ) {
 //you export a task
 async function mime_type( path ) {
 
-	return new Promise( resolve => {
+	const detected = await new Promise( resolve => {
 
 		exec( `file --mime-type -b "${ path }"`, ( _, stdout ) => resolve( stdout.replaceAll( "\n", "" )));
 	});
+
+	if( path.endsWith( ".md" )) return "text/markdown";
+	return detected;
 }
 
 //generate a unique identifier with the same format as cx's uids
