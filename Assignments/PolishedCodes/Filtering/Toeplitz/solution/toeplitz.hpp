@@ -7,29 +7,30 @@
 #include <iostream>
 #include <unsupported/Eigen/FFT>
 
-#include "matplotlibcpp.h"
 #include "pconvfft.hpp"
 #include "plot.hpp"
 #include "timer.h"
 
-/* @brief Build a Toeplitz matrix $\VT$ from $\Vc$ and $\Vr$
- * @param[in] c An $m$-dimensional vector, first column of $\VT$
- * @param[in] r An $n$-dimensional vector, first row of $\VT$
- * @return T The $m \times n$ Toeplitz matrix from $\Vc$ and $\Vr$
+/**
+ * @brief Build a Toeplitz matrix $\VT$ from $\Vc$ and $\Vr$
+ *
+ * @param c An $m$-dimensional vector, first column of $\VT$
+ * @param r An $n$-dimensional vector, first row of $\VT$
+ * @return Eigen::MatrixXd The $m \times n$ Toeplitz matrix from $\Vc$ and $\Vr$
  */
 /* SAM_LISTING_BEGIN_5 */
 Eigen::MatrixXd toeplitz(const Eigen::VectorXd &c, const Eigen::VectorXd &r) {
   // Find size of Toeplitz matrix
-  const int m = c.size();
-  const int n = r.size();
-  Eigen::MatrixXd T(m, n);
+  const unsigned int m = c.size();
+  const unsigned int n = r.size();
+  Eigen::MatrixXd T = Eigen::MatrixXd::Zero(m, n);
 
-  // TODO: build Toeplitz matrix $\VT$
+  // TODO: (4-4.b) Build Toeplitz matrix $\VT$
   // START
-  for (int i = 0; i < n; ++i) {
+  for (unsigned int i = 0; i < n; ++i) {
     T.col(i).tail(m - i) = c.head(m - i);
   }
-  for (int i = 0; i < m; ++i) {
+  for (unsigned int i = 0; i < m; ++i) {
     T.row(i).tail(n - i - 1) = r.segment(1, n - i - 1);
   }  // Do not reassign the diagonal!
   // END
@@ -38,11 +39,13 @@ Eigen::MatrixXd toeplitz(const Eigen::VectorXd &c, const Eigen::VectorXd &r) {
 }
 /* SAM_LISTING_END_5 */
 
-/* @brief Do something...
- * @param[in] c An $n$-dimensional vector
- * @param[in] r An $n$-dimensional vector
- * @param[in] x An $n$-dimensional vector
- * @return y An $n$-dimensional vector
+/**
+ * @brief Do something...
+ *
+ * @param c An $n$-dimensional vector
+ * @param r An $n$-dimensional vector
+ * @param x An $n$-dimensional vector
+ * @return Eigen::VectorXd An $n$-dimensional vector
  */
 /* SAM_LISTING_BEGIN_0 */
 Eigen::VectorXd toepmatmult(const Eigen::VectorXd &c, const Eigen::VectorXd &r,
@@ -53,18 +56,20 @@ Eigen::VectorXd toepmatmult(const Eigen::VectorXd &c, const Eigen::VectorXd &r,
 }
 /* SAM_LISTING_END_0 */
 
-/* @brief Do something...
- * @param[in] c An $n$-dimensional vector
- * @param[in] r An $n$-dimensional vector
- * @param[in] x An $n$-dimensional vector
- * @return y An $n$-dimensional vector
+/**
+ * @brief Do something...
+ *
+ * @param c An $n$-dimensional vector
+ * @param r An $n$-dimensional vector
+ * @param x An $n$-dimensional vector
+ * @return Eigen::VectorXd An $n$-dimensional vector
  */
 /* SAM_LISTING_BEGIN_1 */
 Eigen::VectorXd toepmult(const Eigen::VectorXd &c, const Eigen::VectorXd &r,
                          const Eigen::VectorXd &x) {
   assert(c.size() == r.size() && c.size() == x.size() &&
          "c, r, x have different lengths!");
-  int n = c.size();
+  const unsigned int n = c.size();
 
   // Complex arithmetic required here
   Eigen::VectorXcd cr_tmp = c.cast<std::complex<double>>();
@@ -87,15 +92,17 @@ Eigen::VectorXd toepmult(const Eigen::VectorXd &c, const Eigen::VectorXd &r,
 }
 /* SAM_LISTING_END_1 */
 
-/* @brief Do something...
- * @param[in] h An $n$-dimensional vector
- * @param[in] y An $n$-dimensional vector
- * @return x An $n$-dimensional vector
+/**
+ * @brief Do something...
+ *
+ * @param h An $n$-dimensional vector
+ * @param y An $n$-dimensional vector
+ * @return Eigen::VectorXd An $n$-dimensional vector
  */
 /* SAM_LISTING_BEGIN_2 */
 Eigen::VectorXd ttmatsolve(const Eigen::VectorXd &h, const Eigen::VectorXd &y) {
   assert(h.size() == y.size() && "h and y have different lengths!");
-  int n = h.size();
+  const unsigned int n = h.size();
 
   Eigen::VectorXd h_tmp = Eigen::VectorXd::Zero(n);
   h_tmp(0) = h(0);
@@ -108,11 +115,13 @@ Eigen::VectorXd ttmatsolve(const Eigen::VectorXd &h, const Eigen::VectorXd &y) {
 }
 /* SAM_LISTING_END_2 */
 
-/* @brief Do something...
- * @param[in] h An $n$-dimensional vector
- * @param[in] y An $n$-dimensional vector
- * @param[in] l An integer
- * @return x An $n$-dimensional vector
+/**
+ * @brief Do something...
+ *
+ * @param h An $n$-dimensional vector
+ * @param y An $n$-dimensional vector
+ * @param l An integer
+ * @return Eigen::VectorXd An $n$-dimensional vector
  */
 /* SAM_LISTING_BEGIN_3 */
 Eigen::VectorXd ttrecsolve(const Eigen::VectorXd &h, const Eigen::VectorXd &y,
@@ -147,22 +156,24 @@ Eigen::VectorXd ttrecsolve(const Eigen::VectorXd &h, const Eigen::VectorXd &y,
 }
 /* SAM_LISTING_END_3 */
 
-/* @brief Wrapper for 'ttrecsolve' for any size $n$
- * @param[in] h An $n$-dimensional vector
- * @param[in] y An $n$-dimensional vector
- * @return x An $n$-dimensional vector
+/**
+ * @brief Wrapper for 'ttrecsolve' for any size $n$
+ *
+ * @param h An $n$-dimensional vector
+ * @param y An $n$-dimensional vector
+ * @return Eigen::VectorXd An $n$-dimensional vector
  */
 /* SAM_LISTING_BEGIN_4 */
 Eigen::VectorXd ttsolve(const Eigen::VectorXd &h, const Eigen::VectorXd &y) {
   assert(h.size() == y.size() && "h and y have different lengths!");
-  int n = h.size();
+  const unsigned int n = h.size();
 
   Eigen::VectorXd x;
 
-  // TODO: wrap 'ttrecsolve' for any size $n$
+  // TODO: (4-4.i) Wrap 'ttrecsolve' for any size $n$
   // START
-  int l = std::ceil(std::log2(n));
-  int m = std::pow(2, l);
+  const unsigned int l = std::ceil(std::log2(n));
+  const unsigned int m = std::pow(2, l);
 
   Eigen::VectorXd h_tmp = h;
   h_tmp.conservativeResize(m);
@@ -180,9 +191,11 @@ Eigen::VectorXd ttsolve(const Eigen::VectorXd &h, const Eigen::VectorXd &y) {
 }
 /* SAM_LISTING_END_4 */
 
-/* @brief Compute the runtime comparison of
+/**
+ * @brief Compute the runtime comparison of
  * toepmatmult vs toepmult and ttmatsolve vs ttrecsolve
  * Repeat tests 10 times, and output the minimal runtime amongst all times.
+ *
  */
 /* SAM_LISTING_BEGIN_6 */
 void runtime_toeplitz() {
@@ -203,14 +216,14 @@ void runtime_toeplitz() {
     vec_size.push_back(n);
 
     // number of repetitions
-    unsigned int repeats = 3;
+    constexpr unsigned int repeats = 3;
+    Timer tm_matmult, tm_mult, tm_ttmat, tm_ttrec;
     // TODO: (4-4.g) Perform a runtime comparison by repeating time computation
     // 'repeats' times
     // START
-    Timer tm_matmult, tm_mult, tm_ttmat, tm_ttrec;
     // repeat test 'repeats' times
     for (unsigned int rr = 0; rr < repeats; ++rr) {
-      // create runtime test using randome vectors and given vector h
+      // create runtime test using random vectors and given vector h
       Eigen::VectorXd h = Eigen::VectorXd::LinSpaced(n, 1, n).cwiseInverse();
       Eigen::VectorXd c = Eigen::VectorXd::Random(n);
       Eigen::VectorXd r = Eigen::VectorXd::Random(n);
@@ -252,7 +265,7 @@ void runtime_toeplitz() {
     elap_time_ttmat.push_back(tm_ttmat.min());
     elap_time_ttrec.push_back(tm_ttrec.min());
   }
-  /* DO NOT CHANGE */
+
   // create plot
   plot(vec_size, elap_time_mult, elap_time_matmult, "./cx_out/fig1.png",
        "toepmult", "toepmatmult");
@@ -261,18 +274,26 @@ void runtime_toeplitz() {
 }
 /* SAM_LISTING_END_6 */
 
-// Additional
+/*
+*****************************************************************************
+* Additional
+*****************************************************************************
+*/
 
 // rename long variable name to duration_t (easy to change)
 using duration_t = std::chrono::nanoseconds;
 
-/* \brief Compute runtime of $F$, repeating test "repeats" times
+/**
+ * @brief Compute runtime of $F$, repeating test "repeats" times
  * Will return minimal runtime.
- * This function uses "crhono".
- * \tparam Function type of F, must have an operator()
- * \param[in] F Function for which you want to measure runtime.
- * \param[in] repeats Number of repetitions.
+ * This function uses "chrono".
+ *
+ * @tparam Function type of F, must have an operator()
+ * @param F Function for which you want to measure runtime.
+ * @param repeats Number of repetitions.
+ * @return duration_t minimal runtime over repeats
  */
+/* SAM_LISTING_BEGIN_7 */
 template <class Function>
 duration_t timing(const Function &F, int repeats = 10) {
   // Shortcut for time_point
@@ -297,10 +318,14 @@ duration_t timing(const Function &F, int repeats = 10) {
 
   return min_elapsed;
 }
+/* SAM_LISTING_END_7 */
 
-/* \brief Compute timing using chrono
+/**
+ * @brief Compute timing using chrono
  * Also demonstrate use of lambda functions
+ *
  */
+/* SAM_LISTING_BEGIN_8 */
 void runtime_toeplitz_with_chrono() {
   // table header
   std::cout << std::setw(8) << "n" << std::setw(15) << "toepmatmult"
@@ -343,5 +368,6 @@ void runtime_toeplitz_with_chrono() {
               << std::endl;
   }
 }
+/* SAM_LISTING_END_8 */
 
 #endif

@@ -1,0 +1,7 @@
+{
+  "includes": [
+    "Utils/timer.h",
+    "LectureCodes/Filtering/pconv/Eigen/pconvfft.hpp",
+    "MatplotlibC++/matplotlibcpp.h"
+  ]
+}

@@ -100,7 +100,7 @@ bool sample_nonlinear_solver(const StepFunction& step, Vector& x,
  *
  */
 /* SAM_LISTING_BEGIN_2 */
-void mod_newt_ord(void) {
+void mod_newt_ord() {
   // Setting up values, functions and jacobian
   constexpr double a = 0.123;
   auto f = [](double x) {
@@ -267,7 +267,7 @@ Eigen::VectorXd mod_newt_sys(const Eigen::MatrixXd& A, const Eigen::VectorXd& c,
  *
  */
 /* SAM_LISTING_BEGIN_6 */
-void mod_newt_sys_test(void) {
+void mod_newt_sys_test() {
   Eigen::MatrixXd A(4, 4);
   A << 2., -1., 0., 0., -1., 2., -1., 0., 0., -1., 2., -1., 0., 0., -1., 2.;
   Eigen::VectorXd c(4);
