@@ -1,10 +1,11 @@
-#include <iostream>
-#include <Eigen/Dense>
 #include "cosinetransform.hpp"
+
+#include <Eigen/Dense>
+#include <iostream>
 
 int main()
 {
-	Eigen::VectorXd y = Eigen::VectorXd::LinSpaced(9, 0, 1);
+	const Eigen::VectorXd y = Eigen::VectorXd::LinSpaced(9, 0, 1);
 	Eigen::VectorXd c;
 
 	cosinetransform(y, c);
