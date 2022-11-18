@@ -1,5 +1,5 @@
 ///
-/// Minimal runner for (9-9)
+/// Minimal runner for (8-9)
 ///
 
 #include "modnewt.hpp"

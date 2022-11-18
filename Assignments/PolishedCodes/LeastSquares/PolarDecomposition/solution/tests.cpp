@@ -2,16 +2,16 @@
 #include "doctest.h"
 
 // includes for test data
-#include "polardecomposition.hpp"
 #include <Eigen/Dense>
 #include <cmath>
 
-TEST_SUITE("Polar Decomposition") {
+#include "polardecomposition.hpp"
 
-  TEST_CASE("initialize()" *
+TEST_SUITE("Polar Decomposition") {
+  TEST_CASE("void initialize" *
             doctest::description("Checking the initialized factors Q and M")) {
-    unsigned m = 5;
-    unsigned n = 4;
+    constexpr unsigned int m = 5;
+    constexpr unsigned int n = 4;
     // Random m X n matrix
     Eigen::MatrixXd X = Eigen::MatrixXd::Random(m, n);
     PolarDecomposition polardecomp(X);
@@ -31,12 +31,12 @@ TEST_SUITE("Polar Decomposition") {
           doctest::Approx(0.).epsilon(1e-10));
   }
 
-  TEST_CASE("PolarDecomposition(A,B)" *
+  TEST_CASE("PolarDecomposition" *
             doctest::description(
                 "Checking the factors Q and M, not the efficiency")) {
-    unsigned m = 11;
-    unsigned n = 7;
-    unsigned k = 3;
+    constexpr unsigned int m = 11;
+    constexpr unsigned int n = 7;
+    constexpr unsigned int k = 3;
     Eigen::MatrixXd A = Eigen::MatrixXd::Random(m, k);
     Eigen::MatrixXd B = Eigen::MatrixXd::Random(n, k);
     Eigen::MatrixXd X = A * B.transpose();

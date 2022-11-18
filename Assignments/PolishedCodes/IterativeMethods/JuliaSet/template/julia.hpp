@@ -2,6 +2,7 @@
 #define JULIA_HPP
 
 #include <Eigen/Dense>
+
 #include "matplotlibcpp.h"
 
 namespace plt = matplotlibcpp;
@@ -9,10 +10,10 @@ namespace plt = matplotlibcpp;
 /* SAM_LISTING_BEGIN_0 */
 Eigen::Vector2d juliaF(const Eigen::Vector2d &z) {
   Eigen::Vector2d Fz = Eigen::Vector2d::Zero();
-  // TODO: (9-8.c) Implement the function $F:R^2\to R^2$ such that F(z)=0 is
+  // TODO: (8-8.c) Implement the function $F:R^2\to R^2$ such that F(z)=0 is
   // equivalent to z^3 = 1 (interpreting z as a complex number).
   // START
-  
+
   // END
   return Fz;
 }
@@ -21,9 +22,9 @@ Eigen::Vector2d juliaF(const Eigen::Vector2d &z) {
 /* SAM_LISTING_BEGIN_1 */
 Eigen::Matrix2d juliaDF(const Eigen::Vector2d &z) {
   Eigen::Matrix2d DFz = Eigen::Matrix2d::Zero();
-  // TODO: (9-8.c) Implement the Jacobian of F at z.
+  // TODO: (8-8.c) Implement the Jacobian of F at z.
   // START
-  
+
   // END
   return DFz;
 }
@@ -50,15 +51,15 @@ void julia(void) {
   // C(i,j) is the color assigned to the (i,j)-th point on the grid.
   Eigen::MatrixXd C(res, res);
 
-  // TODO: (9-8.d) Fill C with real numbers, such that each entry C(i,j) corresponds to
-  // which of the roots (z1, z2, or z3) Newton's method converges
+  // TODO: (8-8.d) Fill C with real numbers, such that each entry C(i,j)
+  // corresponds to which of the roots (z1, z2, or z3) Newton's method converges
   // (if it converges), when using Z(i,j) as a starting point.
   // The values in C will be interpreted as colors below.
   // Additional: You may choose different shades of each color to indicate
   // how many iterations were needed to reach the tolerance.
   // Hint: To speed up runtimes, start with a low value for the parameter res.
   // START
-  
+
   // END
   // Axis labels
   std::vector<double> ticks(5);

@@ -18,7 +18,7 @@
 double rankoneinvit(const Eigen::VectorXd& d, const double& tol) {
   // Initialization
   double lmin = 0, lnew = 0;
-  // TODO: (2-10.a) Port the pseudocode in algorithm (3.10.1) to C++-code.
+  // TODO: (2-10.a) Port the pseudocode in algorithm (2.10.1) to C++-code.
   // START
   Eigen::VectorXd ev = d;
   lnew = d.cwiseAbs().minCoeff();

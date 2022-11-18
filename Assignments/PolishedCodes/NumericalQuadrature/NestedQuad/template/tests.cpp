@@ -10,10 +10,10 @@ struct TestData {
 
     g = [](double x, double y) { return x * (y - 1) * std::sin(6 * x * y); };
 
-    Q.nodes.resize(5);
-    Q.nodes << -1., -std::sqrt(3. / 7.), 0, std::sqrt(3. / 7.), 1.;
-    Q.weights.resize(5);
-    Q.weights << 0.1, 49. / 90., 32. / 45., 49. / 90., 0.1;
+    Q.nodes_.resize(5);
+    Q.nodes_ << -1., -std::sqrt(3. / 7.), 0, std::sqrt(3. / 7.), 1.;
+    Q.weights_.resize(5);
+    Q.weights_ << 0.1, 49. / 90., 32. / 45., 49. / 90., 0.1;
 
     a = -2.;
     b = 3.;

@@ -9,14 +9,14 @@
 #include "matplotlibcpp.h"
 namespace plt = matplotlibcpp;
 
-/*!
- * \brief integrate Compute integral given quadrature rule.
+/**
+ * @brief integrate Compute integral given quadrature rule.
  * Compute the integral $\int_a^b f(x) dx \approx \sum_{i=1}^n w_i f(c_i)$
  * for given quadrature rule $\{(w_i, x_i)\}_{i=1}^n$
- * \tparam Function A function object with operator()(double)
- * \param qr A QuadRule object passing nodes and weights
- * \param f A function handle passing the integrand
- * \return Value of integral of $f$ using quadrature rule Q
+ * @tparam Function A function object with operator()(double)
+ * @param qr A QuadRule object passing nodes and weights
+ * @param f A function handle passing the integrand
+ * @return Value of integral of $f$ using quadrature rule Q
  */
 /* SAM_LISTING_BEGIN_0 */
 template <class Function>
@@ -28,7 +28,7 @@ double integrate(const QuadRule& qr, const Function& f) {
 
   // Compute weighted sum of function values according to
   // the concept of a generic quadrature formula
-  for (unsigned i = 0; i < qr.weights_.size(); ++i) {
+  for (unsigned int i = 0; i < qr.weights_.size(); ++i) {
     I += qr.weights_(i) * f(qr.nodes_(i));
   }
 
@@ -37,17 +37,17 @@ double integrate(const QuadRule& qr, const Function& f) {
 }
 /* SAM_LISTING_END_0 */
 
-/*!
- * \brief gaussConv Approximte the integral $\int_{-1}^1 \arcsin(x) f(x) dx$
+/**
+ * @brief gaussConv Approximte the integral $\int_{-1}^1 \arcsin(x) f(x) dx$
  *
- * \tparam Function A function object with operator()(double)
- * \param fh Will pass the integrand
- * \param I_ex Exact value of integral
- * \return Value of integral
+ * @tparam Function A function object with operator()(double)
+ * @param fh Will pass the integrand
+ * @param I_ex Exact value of integral
+ * @return Value of integral
  */
 /* SAM_LISTING_BEGIN_1 */
 template <class Function>
-double gaussConv(const Function& fh, const double I_ex, const unsigned N) {
+double gaussConv(const Function& fh, const double I_ex, const unsigned int N) {
   std::vector<double> evals,  // used to save no.\ of quad nodes
       error,                  // used to save the error
       evals_ref;  // used to plot reference line of order of convergence
@@ -63,7 +63,7 @@ double gaussConv(const Function& fh, const double I_ex, const unsigned N) {
   auto f = [fh](double x) { return std::asin(x) * fh(x); };
 
   double I;
-  for (unsigned n = 1; n <= N; ++n) {
+  for (unsigned int n = 1; n <= N; ++n) {
     QuadRule qr = gaussquad(n);  // Create quadrature rule
 
     I = integrate(qr, f);  // Compute integral
@@ -92,18 +92,18 @@ double gaussConv(const Function& fh, const double I_ex, const unsigned N) {
 }
 /* SAM_LISTING_END_1 */
 
-/*!
- * \brief gaussConv Approximte the integral $\int_{-1}^1 \arcsin(x) f(x) dx$
+/**
+ * @brief gaussConv Approximte the integral $\int_{-1}^1 \arcsin(x) f(x) dx$
  * Ensures that convergenge is expoenential using appropriate transformation,
  * provided $f$ is a smooth function.
- * \tparam Function A function object with operator()(double)
- * \param fh Will pass the integrand
- * \param I_ex Exact value of integral
- * \return Value of integral
+ * @tparam Function A function object with operator()(double)
+ * @param fh Will pass the integrand
+ * @param I_ex Exact value of integral
+ * @return Value of integral
  */
 /* SAM_LISTING_BEGIN_2 */
 template <class Function>
-double gaussConvCV(const Function& f, const double I_ex, const unsigned N) {
+double gaussConvCV(const Function& f, const double I_ex, const unsigned int N) {
   std::vector<double> evals,  // Used to save no. of quad nodes
       error;                  // Used to save the error
 
@@ -120,7 +120,7 @@ double gaussConvCV(const Function& f, const double I_ex, const unsigned N) {
   auto g = [f](double x) { return x * f(std::sin(x)) * std::cos(x); };
 
   double I;
-  for (unsigned n = 1; n <= N; ++n) {
+  for (unsigned int n = 1; n <= N; ++n) {
     QuadRule qr = gaussquad(n);  // Obtain quadrature rule
 
     // Transform nodes and weights to new interval

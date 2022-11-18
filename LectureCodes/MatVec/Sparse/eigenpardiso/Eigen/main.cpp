@@ -49,7 +49,7 @@ void solveSparsePardiso(size_t n) {
   // directly passing the matrix M to the solver Pardiso is part of the Intel
   // MKL library, see also \cref{ex:mmeigenmkl}
   Eigen::PardisoLU<SpMat> solver(M);
-  // The checks of \cref{cpp:sparselseexample} are omitted
+  // The checks of \cref{cpp:sparselseexamples} are omitted
   // solve the LSE
   x = solver.solve(b);
 }

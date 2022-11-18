@@ -1,4 +1,4 @@
-# Problem X-X: Polar Decomposition
+#  Problem 3-12: Polar Decomposition of Matrices
 
 > For the task description of this exercise, please refer to [NCSEFL_Problems.pdf](
 https://www.sam.math.ethz.ch/~grsam/NumMeth/HOMEWORK/NCSEFL_Problems.pdf). 

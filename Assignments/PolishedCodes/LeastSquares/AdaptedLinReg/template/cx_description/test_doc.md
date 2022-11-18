@@ -3,9 +3,8 @@
 
 > To test `linReg()` we define 
 ```
-  n = 25;
+  n = 50;
   t = VectorXd::LinSpaced(n,0.0,1.0);
-  std::srand(41);
   noise = VectorXd::Random(n);
 ```
 and use `linReg()` to fit a line to `(t,y)` where

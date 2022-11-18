@@ -16,8 +16,8 @@ int main() {
   std::cout << "Original: " << y << std::endl;
 
   // Compute $y = A*A^{-1}*y$
-  solvelseAupper(a, y, x);
-  multAx(a, b, x, y);
+  x = solvelseAupper(a, y);
+  y = multAx(a, b, x);
 
   // Should be the same as before
   std::cout << "Upper: " << y << std::endl;
@@ -26,15 +26,15 @@ int main() {
   b = Eigen::VectorXd::Random(n - 2);
 
   // Compute $y = A*A^{-1}*y$
-  solvelseA(a, b, y, x);
-  multAx(a, b, x, y);
+  x = solvelseA(a, b, y);
+  y = multAx(a, b, x);
 
   // Should be the same as before
   std::cout << "Own: " << y << std::endl;
 
   // Compute $y = A*A^{-1}*y$
-  solvelseAEigen(a, b, y, x);
-  multAx(a, b, x, y);
+  x = solvelseASparse(a, b, y);
+  y = multAx(a, b, x);
 
   // Should be the same as before
   std::cout << "Eigen: " << y << std::endl;

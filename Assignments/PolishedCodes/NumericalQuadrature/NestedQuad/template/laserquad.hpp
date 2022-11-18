@@ -16,14 +16,17 @@
 #include "matplotlibcpp.h"
 namespace plt = matplotlibcpp;
 
-//! @brief Compute $\int_a^b f(x) dx \approx \sum w_i f(x_i)$ (with scaling of w
-//! and x)
-//! @tparam func template type for function handle f (e.g.\ lambda function)
-//! @param[in] a left boundary in [a,b]
-//! @param[in] b right boundary in [a,b]
-//! @param[in] f integrand
-//! @param[in] Q quadrature rule
-//! @return Approximation of integral $\int_a^b f(x) dx$
+/**
+ * @brief Compute $\int_a^b f(x) dx \approx \sum w_i f(x_i)$ (with scaling of w
+ * and x)
+ *
+ * @tparam Function template type for function handle f (e.g.\ lambda function)
+ * @param a left boundary in [a,b]
+ * @param b right boundary in [a,b]
+ * @param f integrand
+ * @param Q quadrature rule
+ * @return double Approximation of integral $\int_a^b f(x) dx$
+ */
 /* SAM_LISTING_BEGIN_1 */
 template <class Function>
 double evalquad(const double a, const double b, Function &&f,
@@ -37,13 +40,16 @@ double evalquad(const double a, const double b, Function &&f,
 }
 /* SAM_LISTING_END_1 */
 
-//! @brief Compute double integral $\int_\Delta f(x,y) dx dy$.
-//! Use nested Gauss quadrature.
-//! @tparam func Template type for function handle f (e.g.\ lambda function),
-//! having operator (double x, double y) -> double
-//! @param[in] f integrand, f(x,y) must be defined
-//! @param[in] N number of quadrature points (in each direction)
-//! @return Approximation of integral $\int_\Delta f(x,b) dx dy$
+/**
+ * @brief Compute double integral $\int_\Delta f(x,y) dx dy$.
+ * Use nested Gauss quadrature.
+ *
+ * @tparam Function Template type for function handle f (e.g.\ lambda function),
+ * having operator (double x, double y) -> double
+ * @param f integrand, f(x,y) must be defined
+ * @param N number of quadrature points (in each direction)
+ * @return double Approximation of integral $\int_\Delta f(x,b) dx dy$
+ */
 /* SAM_LISTING_BEGIN_2 */
 template <class Function>
 double gaussquadtriangle(const Function &f, const unsigned N) {

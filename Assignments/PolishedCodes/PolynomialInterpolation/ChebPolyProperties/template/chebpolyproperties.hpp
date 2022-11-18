@@ -8,34 +8,7 @@
 #include <limits>
 #include <vector>
 
-#include "matplotlibcpp.h"
-
-namespace plt = matplotlibcpp;
-
-/**
- * @brief Computes the values of the Chebychev polynomials
- * \Blue{$T_{0},\ldots,T_{d}$}, \Blue{$d\geq 2$} using the 3-term recursion.
- *
- * @param d maximal order of polynomials
- * @param x evaluation points
- * @param V values \Blue{$T_k(x_j)$} are returned in row \Blue{$k+1$}
- */
-/* SAM_LISTING_BEGIN_3 */
-void chebpolmult(const unsigned int d, const Eigen::RowVectorXd& x,
-                 Eigen::MatrixXd& V) {
-  const unsigned int n = x.size();
-  V = Eigen::MatrixXd::Ones(d + 1, n);  // \Blue{$T_0 \equiv 1$}
-  if (d > 0) {
-    V.block(1, 0, 1, n) = x;  // \Blue{$T_1(x) = x$}
-    for (unsigned int k = 1; k < d; ++k) {
-      const Eigen::RowVectorXd p = V.block(k, 0, 1, n);      // $p = T_{k}$
-      const Eigen::RowVectorXd q = V.block(k - 1, 0, 1, n);  // $q = T_{k-1}$
-      V.block(k + 1, 0, 1, n) =
-          2 * x.cwiseProduct(p) - q;  // \Magenta{3-term recursion}
-    }
-  }
-}
-/* SAM_LISTING_END_3 */
+#include "chebpolmult.hpp"
 
 /**
  * @brief Check the orthogonality of Chebychev polynomials

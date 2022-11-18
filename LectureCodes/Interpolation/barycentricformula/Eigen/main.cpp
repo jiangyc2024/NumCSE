@@ -5,18 +5,18 @@
 /// Repository: https://gitlab.math.ethz.ch/NumCSE/NumCSE/
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
-# include <iostream>
-# include <figure/figure.hpp>
-# include "./intpolyval.hpp"
+#include <figure/figure.hpp>
+#include <iostream>
 
-int main () {
+#include "./intpolyval.hpp"
+
+int main() {
   VectorXd t = VectorXd::LinSpaced(10, -5, 5),
-           y = (1./(1 + t.array()*t.array())).matrix();
+           y = (1. / (1 + t.array() * t.array())).matrix();
 
-  VectorXd x = VectorXd::LinSpaced(100, -5, 5),
-           p;
+  VectorXd x = VectorXd::LinSpaced(100, -5, 5), p;
 
-  intpolyval(t, y, x, p);
+  p = intpolyval(t, y, x);
 
   mgl::Figure fig;
   fig.plot(t, y, " *n").label("Data");

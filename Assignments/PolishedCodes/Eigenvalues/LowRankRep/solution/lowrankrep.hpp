@@ -155,12 +155,7 @@ std::pair<Eigen::MatrixXd, Eigen::MatrixXd> rank_k_approx(
   Eigen::MatrixXd B(Bx.rows(), Bx.cols() + By.cols());
   B << Bx, By;
   // U: m x 2k; S: 2k x 2k; V: n x 2k
-  Eigen::MatrixXd U, S, V;
-  std::tuple<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::MatrixXd> svd_tuple =
-      svd_AB(A, B);
-  U = std::get<0>(svd_tuple);
-  S = std::get<1>(svd_tuple);
-  V = std::get<2>(svd_tuple);
+  auto [U, S, V] = svd_AB(A, B);
   std::size_t k = Ax.cols();
   Az = U.leftCols(k) * S.topLeftCorner(k, k);
   Bz = V.leftCols(k);

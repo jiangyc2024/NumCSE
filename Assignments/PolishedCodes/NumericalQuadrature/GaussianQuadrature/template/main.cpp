@@ -5,7 +5,7 @@
 
 int main() {
   // Max. number of nodes
-  constexpr unsigned N = 50;
+  constexpr unsigned int N = 50;
 
   // "Exact" value of integral
   constexpr double I_ex = 0.870267525725852642;

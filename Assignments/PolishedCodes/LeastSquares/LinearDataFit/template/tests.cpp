@@ -36,7 +36,7 @@ TEST_SUITE("LinearDataFit") {
 
     REQUIRE(data.gamma1.size() == gamma_stud.size());
     CHECK((data.gamma1 - gamma_stud).norm() ==
-          doctest::Approx(0.).epsilon(1e-6));
+          doctest::Approx(0.).epsilon(1e-8));
   }
 
   TEST_CASE("Eigen::VectorXd data_fit_qr" * doctest::description("qr")) {
@@ -44,7 +44,7 @@ TEST_SUITE("LinearDataFit") {
 
     REQUIRE(data.gamma2.size() == gamma_stud.size());
     CHECK((data.gamma2 - gamma_stud).norm() ==
-          doctest::Approx(0.).epsilon(1e-6));
+          doctest::Approx(0.).epsilon(1e-8));
   }
 
   TEST_CASE("Eigen::VectorXd fitted_function" *
@@ -53,13 +53,13 @@ TEST_SUITE("LinearDataFit") {
     Eigen::VectorXd yl_stud = fitted_function_TEST(data.gamma1, data.tl);
 
     REQUIRE(yl_sol.size() == yl_stud.size());
-    CHECK((yl_sol - yl_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+    CHECK((yl_sol - yl_stud).norm() == doctest::Approx(0.).epsilon(1e-8));
 
     yl_sol = fitted_function(data.gamma2, data.tl);
     yl_stud = fitted_function_TEST(data.gamma2, data.tl);
 
     REQUIRE(yl_sol.size() == yl_stud.size());
-    CHECK((yl_sol - yl_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+    CHECK((yl_sol - yl_stud).norm() == doctest::Approx(0.).epsilon(1e-8));
   }
 
   TEST_CASE("Eigen::VectorXd fitting_error" *
@@ -68,12 +68,12 @@ TEST_SUITE("LinearDataFit") {
     Eigen::VectorXd err_stud = fitting_error_TEST(data.gamma1);
 
     REQUIRE(err_sol.size() == err_stud.size());
-    CHECK((err_sol - err_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+    CHECK((err_sol - err_stud).norm() == doctest::Approx(0.).epsilon(1e-8));
 
     err_sol = fitting_error(data.gamma2);
     err_stud = fitting_error_TEST(data.gamma2);
 
     REQUIRE(err_sol.size() == err_stud.size());
-    CHECK((err_sol - err_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+    CHECK((err_sol - err_stud).norm() == doctest::Approx(0.).epsilon(1e-8));
   }
 }

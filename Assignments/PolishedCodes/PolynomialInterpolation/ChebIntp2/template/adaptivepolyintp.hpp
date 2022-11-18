@@ -27,7 +27,7 @@ namespace plt = matplotlibcpp;
 /* SAM_LISTING_BEGIN_1 */
 template <class Function>
 Eigen::VectorXd adaptivepolyintp(Function&& f, double a, double b, double tol,
-                                 int N,
+                                 unsigned int N,
                                  std::vector<double>* errortab = nullptr) {
   // Generate sampling points and evaluate $f$ there
   Eigen::VectorXd sampling_points = Eigen::VectorXd::LinSpaced(N, a, b),
@@ -61,7 +61,6 @@ void plotInterpolationError() {
   // START
 
   // END
-
 
   plt::savefig("./cx_out/intperrplot.png");
 }
