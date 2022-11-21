@@ -1,0 +1,51 @@
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include "doctest.h"
+
+#include "copy.hpp"
+
+#include <Eigen/Dense>
+
+using namespace Eigen;
+
+struct TestData {
+  TestData() {
+    h = .1;
+    Y0 << 1;
+  }
+
+  double h;
+  Eigen::MatrixXd Y0;
+};
+
+TestData data;
+
+double f(const Eigen::VectorXd &y) { return y(0) * (1.0 - y(0)); }
+Eigen::MatrixXd df(const Eigen::VectorXd &y) {
+  Eigen::MatrixXd dfy(1, 1);
+  dfy << 1.0 - 2.0 * y(0);
+  return dfy;
+}
+
+TEST_SUITE("ExponentialIntegrator") {
+  TEST_CASE("Eigen::VectorXd exponentialEulerStep" *
+            doctest::description("Check value after step")) {
+    Eigen::MatrixXd sol = exponentialEulerStep(data.Y0, f, df, data.h);
+    Eigen::MatrixXd stud = exponentialEulerStep_TEST(data.Y0, f, df, data.h);
+
+    bool samesize = sol.rows() == stud.rows() && sol.cols() == stud.cols();
+    CHECK(samesize);
+    if (samesize) {
+      CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+    }
+  }
+
+  TEST_CASE("Eigen::MatrixXd phim" *
+            doctest::description("phim()")) {
+    MESSAGE("This function wasn't tested. Run the program to see its output.");
+  }
+
+  TEST_CASE("void testExpEulerLogODE" *
+            doctest::description("testExpEulerLogODE()")) {
+    MESSAGE("This function wasn't tested. Run the program to see its output.");
+  }
+}
