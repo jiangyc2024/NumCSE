@@ -20,7 +20,7 @@ struct TestData {
 TestData data;
 
 TEST_SUITE("InitCondLV") {
-  TEST_CASE("std::pair<Eigen::Vector2d, Eigen::Matrix2d> PhiAndW" *
+  TEST_CASE("std::pair<Vector2d, Matrix2d> PhiAndW" *
             doctest::description("Test of PhiAndW")) {
     std::pair<Eigen::Vector2d, Eigen::Matrix2d> PaW_sol =
         PhiAndW(data.u0, data.v0, data.T);
@@ -38,7 +38,7 @@ TEST_SUITE("InitCondLV") {
     CHECK((W_sol - W_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
   }
 
-  TEST_CASE("Eigen::Vector2d findInitCond" *
+  TEST_CASE("Vector2d findInitCond" *
             doctest::description("findInitCond: y")) {
     Eigen::Vector2d sol = findInitCond();
     Eigen::Vector2d stud = findInitCond_TEST();
