@@ -32,12 +32,17 @@ Eigen::MatrixXd phim(const Eigen::MatrixXd &Z) {
 template <class Function, class Jacobian>
 Eigen::VectorXd exponentialEulerStep(const Eigen::VectorXd &y0, Function &&f,
                                      Jacobian &&df, double h) {
+  // TO DO: 12-5.d
+  // START
   return y0 + h * phim(h * df(y0)) * f(y0);
+  // END
 }
 /* SAM_LISTING_END_0 */
 
 /* SAM_LISTING_BEGIN_1 */
 void testExpEulerLogODE() {
+  // TO DO: 12-5.e
+  // START
   // Final time
   double T = 1.0;
   // Initial value
@@ -75,7 +80,8 @@ void testExpEulerLogODE() {
     } else
       std::cout << std::endl;
   }
-  /* SAM_LISTING_END_1 */
+  // END
 }
+/* SAM_LISTING_END_1 */
 
-#endif  // #ifndef EXPONENTIALINTEGRATOR_H_
+#endif // #ifndef EXPONENTIALINTEGRATOR_H_

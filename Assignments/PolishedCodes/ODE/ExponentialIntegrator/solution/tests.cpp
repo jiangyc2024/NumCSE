@@ -10,7 +10,8 @@ using namespace Eigen;
 struct TestData {
   TestData() {
     h = .1;
-    Y0 << 1;
+    Y0.resize(1,1);
+    Y0 << 0.7;
   }
 
   double h;

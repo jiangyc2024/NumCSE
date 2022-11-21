@@ -23,7 +23,7 @@ struct TestData {
 			return J;
 		};
 	}
-	
+
 	double T;
 	int N;
 	Vector3d y0;
@@ -34,27 +34,13 @@ struct TestData {
 TestData data;
 
 TEST_SUITE("CrossProduct") {
-	TEST_CASE("std::vector<VectorXd> solve_imp_mid" * doctest::description("Implicit midpoint")) {
-		std::vector<VectorXd> impl_mid_sol = solve_imp_mid(data.f, data.Jf, data.T, data.y0, data.N);
-		std::vector<VectorXd> impl_mid_stud = solve_imp_mid_TEST(data.f, data.Jf, data.T, data.y0, data.N);
-
-		auto sol = impl_mid_sol.back();
-		auto stud = impl_mid_stud.back();
-		
-		bool samesize = sol.size() == stud.size();
-		CHECK(samesize);
-		if (samesize) {
-			CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
-		}
-	}
-
 	TEST_CASE("std::vector<VectorXd> solve_lin_mid" * doctest::description("Implicit linear midpoint")) {
 		std::vector<VectorXd> impl_lin_mid_sol = solve_lin_mid(data.f, data.Jf, data.T, data.y0, data.N);
 		std::vector<VectorXd> impl_lin_mid_stud = solve_lin_mid_TEST(data.f, data.Jf, data.T, data.y0, data.N);
 
 		auto sol = impl_lin_mid_sol.back();
 		auto stud = impl_lin_mid_stud.back();
-		
+
 		bool samesize = sol.size() == stud.size();
 		CHECK(samesize);
 		if (samesize) {
@@ -66,4 +52,3 @@ TEST_SUITE("CrossProduct") {
 		MESSAGE("This function wasn't tested. Run the program to see its output.");
 	}
 }
-

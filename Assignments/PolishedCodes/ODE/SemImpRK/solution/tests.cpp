@@ -13,7 +13,8 @@ struct TestData {
   TestData() {
     T = 1.1;
     n = 30;
-    Y0 << 1, 1, 0, 0, 3, 2, 1, 5, 2;
+    Y0.resize(1,1);
+    Y0 << 1;
   }
 
   double T;
@@ -36,6 +37,7 @@ Vec df(Vec x) {
 TEST_SUITE("SemImpRK") {
   TEST_CASE("std::vector<VectorXd> solveRosenbrock" *
             doctest::description("Check solution at final time")) {
+    std::cout << "check" << std::endl;
     auto sol = solveRosenbrock(f, df, data.Y0, data.n, data.T);
     auto stud = solveRosenbrock_TEST(f, df, data.Y0, data.n, data.T);
 
