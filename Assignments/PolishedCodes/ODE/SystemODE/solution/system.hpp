@@ -1,3 +1,6 @@
+#ifndef SYSTEM_HPP
+#define SYSTEM_HPP
+
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 #include <iomanip>
@@ -5,12 +8,20 @@
 
 #include "polyfit.hpp"
 
-using namespace Eigen;
-
+/**
+ * @brief Performs a single step of classical Runge-Kutta method of order 4.
+ *
+ * @tparam Function providing operator()
+ * @tparam State vector overloaded with basic operations
+ * @param odefun The function describing the ODE
+ * @param h step size
+ * @param y0 initial state
+ * @param y1 next state
+ */
 /* SAM_LISTING_BEGIN_1 */
 template <class Function, class State>
 void rk4step(Function &&odefun, double h, const State &y0, State &y1) {
-  // TO DO: (11-4.c) Implement a single step of RK4 for
+  // TODO: (11-4.c) Implement a single step of RK4 for
   // the ODE y' = odefun(y), starting from y0 and using
   // the step size h. Save the result in y1.
   // START
@@ -27,39 +38,39 @@ void rk4step(Function &&odefun, double h, const State &y0, State &y1) {
 /* SAM_LISTING_BEGIN_0 */
 double testcvgRK4() {
   // Parameters and initial values:
-  double T = 1;
-  int n = 5;
-  VectorXd y0(2 * n);
-  for (int i = 0; i < n; ++i) {
+  constexpr double T = 1;
+  constexpr unsigned int n = 5;
+  Eigen::VectorXd y0(2 * n);
+  for (unsigned int i = 0; i < n; ++i) {
     y0(i) = (i + 1.) / n;
     y0(i + n) = -1;
   }
 
-  // TO DO: (11-4.d) Implement the function f from (12-4.a) as a lambda
+  // TODO: (11-4.d) Implement the function f from (12-4.a) as a lambda
   // function, i.e. the right hand side of the system of first order ODEs.
   // START
   // Define the relevant tridiagonal matrix.
   Eigen::SparseMatrix<double> C(n, n);
   // Each column has at most 3 non-zero entries.
-  C.reserve(VectorXi::Constant(n, 3));
+  C.reserve(Eigen::VectorXi::Constant(n, 3));
   C.insert(0, 0) = 2;
-  for (int i = 1; i < n; ++i) {
+  for (unsigned int i = 1; i < n; ++i) {
     C.insert(i, i) = 2;
     C.insert(i, i - 1) = -1;
     C.insert(i - 1, i) = -1;
   }
   C.makeCompressed();
 
-  auto f = [n, C](VectorXd y) {
+  auto f = [n, C](Eigen::VectorXd y) {
     // The system of ODEs is y' = f(y) with y = [u;v],
     // and f(y) = f([u;v]) = [v;C^{-1}g(u)]
-    VectorXd fy(2 * n);
+    Eigen::VectorXd fy(2 * n);
     fy.head(n) = y.tail(n);
 
-    VectorXd g(n);
+    Eigen::VectorXd g(n);
     g(0) = y(0) * (y(1) + y(0));
     g(n - 1) = y(n - 1) * (y(n - 1) + y(n - 2));
-    for (int i = 1; i < n - 1; ++i) {
+    for (unsigned int i = 1; i < n - 1; ++i) {
       g(i) = y(i) * (y(i - 1) + y(i + 1));
     }
 
@@ -74,7 +85,7 @@ double testcvgRK4() {
   // Table header
   std::cout << std::setw(8) << "N" << std::setw(20) << "Error" << std::endl;
 
-  // TO DO: (11-4.d) Tabulate the error at time T=1, using
+  // TODO: (11-4.d) Tabulate the error at time T=1, using
   // N=2,4,...,1024 RK4 steps. Use $N=2^{12}$ steps to calculate
   // the "exact" solution. Then, estimate the algebraic convergence
   // rate of the errors.
@@ -82,27 +93,29 @@ double testcvgRK4() {
   // START
 
   // For reference, calculate solution using $N=2^{12}$ steps.
-  int N_exact = std::pow(2, 12);
-  double h = T / N_exact; // step size
-  VectorXd yT_exact = y0;
-  for (int step = 0; step < N_exact; step++) {
+  const unsigned int N_exact = std::pow(2, 12);
+  const double h = T / N_exact;  // step size
+  Eigen::VectorXd yT_exact = y0;
+  for (unsigned int step = 0; step < N_exact; step++) {
     // yT_exact is the solution at time t=h*step
-    VectorXd y_tmp;
-    rk4step<std::function<VectorXd(VectorXd)>, VectorXd>(f, h, yT_exact, y_tmp);
+    Eigen::VectorXd y_tmp;
+    rk4step<std::function<Eigen::VectorXd(Eigen::VectorXd)>, Eigen::VectorXd>(
+        f, h, yT_exact, y_tmp);
     yT_exact = y_tmp;
   }
 
-  int kmax = 10;
-  VectorXd Error(kmax);
-  for (int k = 0; k < kmax; k++) {
-    int N = std::pow(2, k + 1); // number of steps
-    double h = T / N;           // step size
-    VectorXd yT = y0;
+  constexpr unsigned int kmax = 10;
+  Eigen::VectorXd Error(kmax);
+  for (unsigned int k = 0; k < kmax; k++) {
+    const unsigned int N = std::pow(2, k + 1);  // number of steps
+    const double h = T / N;                     // step size
+    Eigen::VectorXd yT = y0;
     // Take N RK4 steps:
-    for (int step = 0; step < N; step++) {
+    for (unsigned int step = 0; step < N; step++) {
       // yT is the solution at time t=h*step
-      VectorXd y_tmp;
-      rk4step<std::function<VectorXd(VectorXd)>, VectorXd>(f, h, yT, y_tmp);
+      Eigen::VectorXd y_tmp;
+      rk4step<std::function<Eigen::VectorXd(Eigen::VectorXd)>, Eigen::VectorXd>(
+          f, h, yT, y_tmp);
       yT = y_tmp;
     }
     Error(k) = (yT - yT_exact).norm();
@@ -111,11 +124,14 @@ double testcvgRK4() {
 
   // Estimate convergence rate
   // Get natural logarithm of N by log(N) = log(2)*log2(N).
-  VectorXd logN = std::log(2) * VectorXd::LinSpaced(kmax, 1, kmax);
-  VectorXd coeffs = polyfit(logN, Error.array().log(), 1);
+  Eigen::VectorXd logN =
+      std::log(2) * Eigen::VectorXd::LinSpaced(kmax, 1, kmax);
+  Eigen::VectorXd coeffs = polyfit(logN, Error.array().log(), 1);
   conv_rate = -coeffs(0);
   // END
 
   return conv_rate;
 }
 /* SAM_LISTING_END_0 */
+
+#endif
