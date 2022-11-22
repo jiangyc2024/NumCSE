@@ -1,7 +1,7 @@
 #include "rk3prey.hpp"
 #include "rkintegrator.hpp"
 
-int main(void) {
+int main() {
   Eigen::MatrixXd A(2, 2);
   A << 0, 0, 1, 0;
   Eigen::VectorXd b(2);
