@@ -1,15 +1,16 @@
 #include <Eigen/Dense>
 #include <unsupported/Eigen/FFT>
 
+inline
 /* SAM_LISTING_BEGIN_0 */
 void sinetransform2d(const Eigen::MatrixXd& Y, Eigen::MatrixXd& S)
 {
-	int m = Y.rows();
-	int n = Y.cols();
+	const Eigen::Index m = Y.rows();
+	const Eigen::Index n = Y.cols();
 
 	Eigen::VectorXcd c;
 	Eigen::FFT<double> fft;
-	std::complex<double> i(0,1);
+	const std::complex<double> i(0,1);
 
 	Eigen::MatrixXcd C(2*m+2,n);
 	C.row(0) = Eigen::VectorXcd::Zero(n);

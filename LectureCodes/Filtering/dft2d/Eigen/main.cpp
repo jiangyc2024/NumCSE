@@ -5,25 +5,33 @@
 /// Repository: https://gitlab.math.ethz.ch/NumCSE/NumCSE/
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
-#include <iostream>
 #include "dft2d.hpp"
 #include "freqbasmatgen.hpp"
+#include <iostream>
 
-using namespace std;
-using namespace Eigen;
+using std::cout;
+using std::endl;
 
+using Eigen::MatrixXcd;
+using Eigen::MatrixXd;
+using Eigen::VectorXcd;
+using Eigen::VectorXd;
+
+//NOLINTBEGIN(bugprone-exception-escape)
 /* SAM_LISTING_BEGIN_0 */
-int main() {
-  using Comp = complex<double>;
-  const VectorXcd::Index m=7,n = 5;
+int main() { 
+  using Comp = std::complex<double>;
+  const VectorXcd::Index m = 7;
+  const VectorXcd::Index n = 5;
 
   cout << "(I) Testing 2D DFT and convolution" << endl;
   {
     // Testing Fourier basis martrices
     cout << "DFT of Fourier basis matrices" << endl;
     cout << "(Mapped to unit vectors by inverse DFT)" << endl;
-    int k=5,l=3;
-    MatrixXcd B = freqbasmatgen(m,n,k,l);
+    const int k = 5;
+    const int l = 3;
+    const MatrixXcd B = freqbasmatgen(m,n,k,l);
     MatrixXcd C(m,n); ifft2(C,B);
     cout << "B = " << endl << B << endl;
     cout << "C = " << endl << C << endl;
@@ -36,12 +44,14 @@ int main() {
     cout << "(both should return the same result except for roundoff)" << endl;
     MatrixXd Y(m,n);
     MatrixXcd X(m,n);
-    MatrixXcd Z1(m,n),Z2(m,n);
-    for (int k=0;k<m;k++)
+    MatrixXcd Z1(m,n);
+    MatrixXcd Z2(m,n);
+    for (int k=0;k<m;k++) {
       for (int j=0;j<n;j++) {
-	Y(k,j) = (double)std::min(k,j);
-	X(k,j) = std::complex<double>(1.0,1.0)*(double)(k+j);
+          Y(k,j) = static_cast<double>(std::min(k,j));
+          X(k,j) = std::complex<double>(1.0,1.0)*static_cast<double>(k+j);
       }
+    }
 
     /*
     MatrixXcd Y(m,n), X(m,n);
@@ -63,9 +73,13 @@ int main() {
   // Initialize matrix for testing 2D DFT
   // MATLAB: Y = triu((1:m)'*(1:n))+i*(ones(m,n));
   MatrixXcd Y = MatrixXcd::Constant(m,n,Comp(0.0,1.0));
-  for (int k=0;k<m;k++)
-    for (int j=0;j<n;j++)
-      { if (k<=j) Y(k,j) += Comp(k*j,0.0); }
+  for (int k=0;k<m;k++) {
+    for (int j=0;j<n;j++) { 
+      if (k<=j) {
+        Y(k,j) += Comp(k*j,0.0); 
+      }
+    }
+  }
 
   MatrixXcd C(m,n);
   fft2(C,Y);
@@ -76,6 +90,7 @@ int main() {
   }
 }
 /* SAM_LISTING_END_0 */
+//NOLINTEND(bugprone-exception-escape)
 
 /* Test code in MATLAB for 2D DFT
 % Testing script for 2D dft

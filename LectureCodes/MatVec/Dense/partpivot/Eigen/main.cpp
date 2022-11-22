@@ -27,8 +27,8 @@ int main() {
   A = D * A;
   b = D * b;
   VectorXd x1 = A.fullPivLu().solve(b);
-  gausselimsolve(A, b, x2); // see Code~\ref{cpp:gausselim}
-  auto [L, U] = lufak(A); // see Code~\ref{cpp:lufak}
+  gausselimsolve::gausselimsolve(A, b, x2); // see Code~\ref{cpp:gausselim}
+  auto [L, U] = lufak::lufak(A); // see Code~\ref{cpp:lufak}
   VectorXd z = L.lu().solve(b);
   VectorXd x3 = U.lu().solve(z);
   cout << "x1 = \n"

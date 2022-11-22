@@ -14,7 +14,7 @@
 // The following includes the entire input/output standard Library
 #include <iostream>
 
-// Import all std::XXX functions/objects, so that you do not have to
+// This would import all std::XXX functions/objects, so that you do not have to
 // use them with std::XXX but simply using XXX instead.
 // WARNING: This is fine, but potentially dangerous:
 // if you or somebody else defines an ojbect/function with name
@@ -22,7 +22,12 @@
 // The standard library contains common names such as vector, list, min, etc.
 // So it is not so uncommon to have conflicting names
 // Pro tip: do not use this, you will thank me in the future
-using namespace std;
+//
+// using namespace std;
+//
+// Instead, only import some identifiers from std that are frequently used
+using std::cout;
+using std::endl;
 
 // Later we will
 // using namespace Eigen;
@@ -91,8 +96,8 @@ int multiplyBy6(int b) {
 // and multiply it by 60, also we print "Double"
 // to proof that we called this function
 // and not the above
-int multiplyBy6(double b) {
-    std::cout << "Double" << std::endl;
+double multiplyBy6(double b) {
+    cout << "Double" << endl;
     // Multiply and return
     return 60*b;
 }
@@ -143,8 +148,8 @@ int main() {
 
     // << is an *operator*, it will "push" string and other types
     // to the standard output
-    std::cout << "This is my string!" << "\n"
-              << "This is another string!" << std::endl // same as "\n"
+    cout << "This is my string!" << "\n"
+              << "This is another string!" << endl // same as "\n"
               << a << " " << b; // can pass int, float, double, etc.
     // Explanation of "<<":
     //    an operator is a special kind of function
@@ -179,9 +184,9 @@ int main() {
     my_function();
 
     // Test functions
-    std::cout << "Multiply by 6: " << multiplyBy6(8) << std::endl;
+    cout << "Multiply by 6: " << multiplyBy6(8) << endl;
     // The following is actually calling the double version:
-    std::cout << "Multiply by 6: " << multiplyBy6(8.312) << std::endl;
+    cout << "Multiply by 6: " << multiplyBy6(8.312) << endl;
 
     //////////////////////////////
     // References
@@ -189,9 +194,9 @@ int main() {
     int I = 10;
     increment(I); // here I is copied to a new variable I_prime
     // I has not changed
-    std::cout << "I = " << I << std::endl; // prints 10
+    cout << "I = " << I << endl; // prints 10
     increment_really(I);
-    std::cout << "I = " << I << std::endl; // prints 15
+    cout << "I = " << I << endl; // prints 15
 
     const int J = 9; // I promise that I won't modify J
     multiplyBy7(J); // Valid, passed by reference but primising "const"
@@ -201,8 +206,8 @@ int main() {
     // Reference type
     int & alias_to_I = I; // I is now another name for alias_to_I
     alias_to_I = 90; // this also changes I
-    std::cout << "Alias_to_I: " << alias_to_I << std::endl; // prints 90
-    std::cout << "I = " << I << std::endl; // prints 90
+    cout << "Alias_to_I: " << alias_to_I << endl; // prints 90
+    cout << "I = " << I << endl; // prints 90
 
     //////////////////////////////
     //// Pointers
@@ -216,16 +221,16 @@ int main() {
     *ptr = 60; // *prt is "the value pointed by ptr"
     // this is the same as: var = 60;
 
-    std::cout << "var =  " << var << endl;
-    std::cout << "*ptr = " << *ptr << endl; //< prints the address of var
-    std::cout << "ptr =  " << ptr << std::endl;
+    cout << "var =  " << var << endl;
+    cout << "*ptr = " << *ptr << endl; //< prints the address of var
+    cout << "ptr =  " << ptr << endl;
 
     //////////////////////////////
     // Structures and classes (object oriented programming)
     //////////////////////////////
 
     // Create a structure, call default constructor
-    MyStruct S;
+    MyStruct S {};
     S.a;
     // S.private_double; // Cannot access private member here
 }
@@ -235,12 +240,12 @@ void function_b();
 
 // A calls function_b, and I promised to define function_b somewhere
 // this is fine
-void function_a() {
+void function_a() { //NOLINT(misc-no-recursion)
     function_b();
 }
 
 // Function_a is defined, no issue here
-void function_b() {
+void function_b() { //NOLINT(misc-no-recursion)
     function_a();
 }
 

@@ -5,16 +5,19 @@
 #include <Eigen/Dense>
 #include <iostream>
 
-using namespace Eigen;
-using namespace std;
+using Eigen::MatrixXd;
+using std::cout;
+using std::endl;
 
 void matArray(int nrows, int ncols) {
-  MatrixXd m1(nrows, ncols), m2(nrows, ncols);
-  for (int i = 0; i < m1.rows(); i++)
+  MatrixXd m1(nrows, ncols);
+  MatrixXd m2(nrows, ncols);
+  for (int i = 0; i < m1.rows(); i++) {
     for (int j = 0; j < m1.cols(); j++) {
-      m1(i, j) = (double)(i + 1) / (j + 1);
-      m2(i, j) = (double)(j + 1) / (i + 1);
+      m1(i, j) = static_cast<double>(i + 1) / (j + 1);
+      m2(i, j) = static_cast<double>(j + 1) / (i + 1);
     }
+  }
 
   // Entry-wise product, not a matrix product
   MatrixXd m3 = (m1.array() * m2.array()).matrix();
@@ -28,7 +31,7 @@ void matArray(int nrows, int ncols) {
   cout << (m1.array() > 3).count() << " entries of m1 > 3" << endl;
 }
 
-int main(int argc, char **argv) {
+int main() {
   cout << "matArray(6, 7)" << endl << endl;
   matArray(6, 7);
 }

@@ -5,8 +5,9 @@
 #include <Eigen/Dense>
 #include <iostream>
 
-using namespace Eigen;
-using namespace std;
+using Eigen::MatrixXd;
+using std::cout;
+using std::endl;
 
 double g(double x) { return x * x; }
 
@@ -17,7 +18,7 @@ template <class Functor> void applyMap(MatrixXd &m, Functor &&f) {
 
 void mapping(MatrixXd &m1, const MatrixXd &m2) {
   // Apply a (lambda) function to all entries of a matrix
-  double z(5.0);
+  const double z(5.0);
   // Capture z
   auto f = [z](double x) { return x + z / x; };
   m1 = m1.unaryExpr(f);
@@ -46,11 +47,12 @@ int main() {
   MatrixXd m1(6, 7);
   MatrixXd m2(6, 7);
 
-  for (int i = 0; i < m1.rows(); i++)
+  for (int i = 0; i < m1.rows(); i++) {
     for (int j = 0; j < m1.cols(); j++) {
       m1(i, j) = i - j;
       m2(i, j) = j - i;
     }
+  }
 
   cout << "mapping(m1, m2)" << endl << endl;
   mapping(m1, m2);

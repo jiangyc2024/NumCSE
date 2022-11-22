@@ -7,14 +7,17 @@
 //////////////////////////////////////////////////////////////////////////
 #include "compatibility.hpp" // compatibility fixes for std::defaultfloat, std::hexfloat
 /* SAM_LISTING_BEGIN_0 */
-#include <limits>
-#include <iostream>
-#include <iomanip>
 
-using namespace std;
+#include <iomanip>
+#include <iostream>
+#include <limits>
+
+using std::cout;
+using std::endl;
+using std::numeric_limits;
 
 int main(){
-	cout << std::numeric_limits<double>::is_iec559 << endl 
+	cout << numeric_limits<double>::is_iec559 << endl 
 	<< std::defaultfloat << numeric_limits<double>::min() << endl
 	<< std::hexfloat << numeric_limits<double>::min() << endl 
 	<< std::defaultfloat << numeric_limits<double>::max() << endl 

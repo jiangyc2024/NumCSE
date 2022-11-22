@@ -1,5 +1,9 @@
-# include <complex>
-# include <Eigen/Dense>
+#include <Eigen/Dense>
+#include <complex>
+
+namespace foursumnaive {
+
+
 using Eigen::VectorXd; using Eigen::VectorXcd;
 
 //! Approximate direct evaluation of Fourier sum according to \eqref{eq:fourtrunc}
@@ -8,13 +12,13 @@ using Eigen::VectorXd; using Eigen::VectorXcd;
 //  \texttt{N} is the number of equidistant evaluation points for \Blue{$c$} in \Blue{$[0,1[$}
 template <class Function>
 VectorXcd foursumnaive(const Function& signal, int M, int N) {
-  std::complex<double> i(0,1); // imaginary unit
+  const std::complex<double> i(0,1); // imaginary unit
   // Evaluation points for Fourier sum \Blue{$c$}
   VectorXd t = VectorXd::LinSpaced(N,0,1-1./N); 
   VectorXcd c(N); c.setConstant(signal(0));
-  VectorXcd omega = (-2.*M_PI*i*t.array()).exp().matrix(),
-            omp = omega, 
-            omm = VectorXcd::Ones(N).cwiseQuotient(omega);
+  const VectorXcd omega = (-2.*M_PI*i*t.array()).exp().matrix();
+  VectorXcd omp = omega;
+  VectorXcd omm = VectorXcd::Ones(N).cwiseQuotient(omega);
 
   // Inefficient direct summation of Fourier series
   for (int k = 1; k <= M; ++k) {
@@ -24,3 +28,6 @@ VectorXcd foursumnaive(const Function& signal, int M, int N) {
   }
   return c;
 }
+
+
+} //namespace foursumnaive

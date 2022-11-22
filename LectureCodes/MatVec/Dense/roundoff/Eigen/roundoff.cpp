@@ -9,7 +9,10 @@
 #include <iostream>
 int main(){
 	std::cout.precision(15);
-	double a = 4.0/3.0, b = a-1, c = 3*b, e = 1-c;
+	double a = 4.0/3.0; 
+	double b = a-1;
+	double c = 3*b;
+	double e = 1-c;
 	std::cout << e << std::endl;
 	a = 1012.0/113.0; b = a-9; c = 113*b; e = 5+c;
 	std::cout << e << std::endl;

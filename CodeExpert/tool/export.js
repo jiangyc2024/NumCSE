@@ -29,6 +29,15 @@ const fs = require( "fs/promises" );
 const { exec } = require( "child_process" );
 const { basename } = require( "path" );
 
+//whether to keep the export directory (unzipped)
+const keep = process.argv.includes( "--keep" );
+
+//whether to print verbose output
+const verbose = process.argv.includes( "--verbose" );
+
+//filter out flags to parse positional args
+process.argv = process.argv.filter( arg => ! arg.startsWith( "--" ));
+
 //absolute path to root of the repository
 const repo_root = process.argv[ 2 ];
 
@@ -38,12 +47,6 @@ const assignment_path_rel = process.argv[ 3 ]
 //the basename of the default student work file (optional, only needed if the auto-detection fails 
 //and you get an error)
 const default_file = process.argv[ 4 ];
-
-//whether to keep the export directory (unzipped)
-const keep = process.argv.includes( "--keep" );
-
-//whether to print verbose output
-const verbose = process.argv.includes( "--verbose" );
 
 //display name of the task
 const display_name = basename( assignment_path_rel );
@@ -90,7 +93,7 @@ const env = {
 //detection logic for whether this is the default student work file
 async function is_default_file( path ) {
 
-	return ( default_file && basename( path ) == basename( default_file )) ? true : await contains_todo( path );
+	return default_file ? basename( path ) == basename( default_file ) : await contains_todo( path );
 }
 
 //detection logic for whether a file is marked as writable by students in cx
@@ -460,10 +463,13 @@ async function get_file_description( path, project_id, cx_path ) {
 //you export a task
 async function mime_type( path ) {
 
-	return new Promise( resolve => {
+	const detected = await new Promise( resolve => {
 
 		exec( `file --mime-type -b "${ path }"`, ( _, stdout ) => resolve( stdout.replaceAll( "\n", "" )));
 	});
+
+	if( path.endsWith( ".md" )) return "text/markdown";
+	return detected;
 }
 
 //generate a unique identifier with the same format as cx's uids

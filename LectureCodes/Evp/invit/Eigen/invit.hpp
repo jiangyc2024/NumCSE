@@ -1,11 +1,14 @@
 #include <Eigen/Dense>
 
+namespace invit {
+
+
 // inverse iteration for computing \Blue{$\lambda_{\min}(\VA)$} and associated eigenvector
-std::pair<double, Eigen::VectorXd> invit(const Eigen::MatrixXd &A, double tol = 1e-6)
+inline std::pair<double, Eigen::VectorXd> invit(const Eigen::MatrixXd &A, double tol = 1e-6)
 {
 	auto lu = A.lu(); // Magenta{single} intial LU-factorization, see Rem.~\ref{rem:seqsolvelse}
 
-	int n = A.rows();
+	const Eigen::Index n = A.rows();
 	Eigen::VectorXd x = Eigen::VectorXd::Random(n); // random initial guess
 	x.normalize();
 
@@ -25,3 +28,6 @@ std::pair<double, Eigen::VectorXd> invit(const Eigen::MatrixXd &A, double tol = 
 
 	return std::make_pair(lmin, y);
 }
+
+
+} //namespace invit

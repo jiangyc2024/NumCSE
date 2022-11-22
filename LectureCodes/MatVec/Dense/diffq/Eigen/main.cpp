@@ -9,6 +9,6 @@
 #include "diffq.hpp"
 
 int main() {
-  diffq();
+  diffq::diffq();
   return 0;
 }
