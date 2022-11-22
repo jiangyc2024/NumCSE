@@ -1,10 +1,9 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "doctest.h"
-
-#include "copy.hpp"
-
 #include <Eigen/Dense>
 #include <vector>
+
+#include "copy.hpp"
+#include "doctest.h"
 
 struct TestData {
   TestData() {
@@ -18,7 +17,7 @@ struct TestData {
     Y0 = Eigen::MatrixXd::Identity(n, n);
   }
 
-  int n;
+  unsigned int n;
   std::vector<double> h;
   Eigen::MatrixXd A;
   Eigen::MatrixXd Y0;
@@ -28,7 +27,7 @@ TestData data;
 
 TEST_SUITE("MatODE") {
   TEST_CASE("Eigen::MatrixXd eeulstep" * doctest::description("explicit eul")) {
-    for (int i = 0; i < data.h.size(); i++) {
+    for (unsigned int i = 0; i < data.h.size(); i++) {
       Eigen::MatrixXd sol = eeulstep(data.A, data.Y0, data.h[i]);
       Eigen::MatrixXd stud = eeulstep_TEST(data.A, data.Y0, data.h[i]);
 
@@ -37,7 +36,7 @@ TEST_SUITE("MatODE") {
   }
 
   TEST_CASE("Eigen::MatrixXd ieulstep" * doctest::description("implicit eul")) {
-    for (int i = 0; i < data.h.size(); i++) {
+    for (unsigned int i = 0; i < data.h.size(); i++) {
       Eigen::MatrixXd sol = ieulstep(data.A, data.Y0, data.h[i]);
       Eigen::MatrixXd stud = ieulstep_TEST(data.A, data.Y0, data.h[i]);
 
@@ -47,7 +46,7 @@ TEST_SUITE("MatODE") {
 
   TEST_CASE("Eigen::MatrixXd impstep" *
             doctest::description("implicit midpoint")) {
-    for (int i = 0; i < data.h.size(); i++) {
+    for (unsigned int i = 0; i < data.h.size(); i++) {
       Eigen::MatrixXd sol = impstep(data.A, data.Y0, data.h[i]);
       Eigen::MatrixXd stud = impstep_TEST(data.A, data.Y0, data.h[i]);
 
@@ -55,14 +54,13 @@ TEST_SUITE("MatODE") {
     }
   }
 
-  TEST_CASE("std::tuple<double,double,double> checkOrthogonality" *
+  TEST_CASE("std::tuple<double, double, double> checkOrthogonality" *
             doctest::description("orthogonal")) {
-    std::tuple<double, double, double> sol = checkOrthogonality();
-    std::tuple<double, double, double> stud = checkOrthogonality_TEST();
+    auto [sol_0, sol_1, sol_2] = checkOrthogonality();
+    auto [stud_0, stud_1, stud_2] = checkOrthogonality_TEST();
 
-    CHECK(std::abs(std::get<0>(sol) - std::get<0>(stud)) +
-              std::abs(std::get<1>(sol) - std::get<1>(stud)) +
-              std::abs(std::get<2>(sol) - std::get<2>(stud)) ==
+    CHECK(std::abs(sol_0 - stud_0) + std::abs(sol_1 - stud_1) +
+              std::abs(sol_2 - stud_2) ==
           doctest::Approx(0.).epsilon(1e-6));
   }
 }
