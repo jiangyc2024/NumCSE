@@ -143,7 +143,12 @@ def codeexpert():
     copy.write("#ifndef COPY_HPP\n")
     copy.write("#define COPY_HPP\n")
 
+    # complicated but for backward compatibility needed
     copy.write('#include "solution.hpp"\n')
+    
+    if len(files) > 1:
+        for i in range(1, len(files)):
+            copy.write('#include "solution{}.hpp"\n'.format(i + 1))
 
     parseWriteChange(student_sol, copy, tests)
 

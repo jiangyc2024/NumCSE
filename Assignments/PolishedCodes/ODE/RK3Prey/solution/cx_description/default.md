@@ -1,4 +1,4 @@
-# Problem 11-2: Problem 11-2: Explicit Runge-Kutta methods
+# Problem 11-2: Explicit Runge-Kutta methods
 
 > For the task description of this exercise, please refer to [NCSEFL_Problems.pdf](
 https://www.sam.math.ethz.ch/~grsam/NumMeth/HOMEWORK/NCSEFL_Problems.pdf). 
