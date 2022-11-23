@@ -1,8 +1,8 @@
 #pragma once
+#include <vector>
 #include <Eigen/Sparse>
 #include <algorithm>
-#include <vector>
-
+using namespace Eigen;
 /* SAM_LISTING_BEGIN_0 */
 /**
  * @brief Equivalent to MATLAB function A = spdiags(B,d,m,n)
@@ -12,25 +12,29 @@
  * @param d A vector of length p whose integer components specify the diagonals in A.
  * @param m number of rows of output
  * @param n number of columnss of output
- * @return m x n Eigen::SparseMatrix by taking the columns of B and placing them along the diagonals specified by d.
+ * @return m x n SparseMatrix by taking the columns of B and placing them along the diagonals specified by d.
  */
 template <class numeric_t> 
-Eigen::SparseMatrix<numeric_t> spdiags(const Eigen::Matrix<numeric_t,-1,-1> &B, 
-					const Eigen::VectorXi &d, const Eigen::Index m, const Eigen::Index n) {					
-	typedef Eigen::Triplet<numeric_t> triplet_t;
+SparseMatrix<numeric_t> spdiags(const Matrix<numeric_t,-1,-1> &B, 
+					const VectorXi &d, const int m, const int n) {					
+	typedef Triplet<numeric_t> triplet_t;
 	std::vector<triplet_t> triplets;
 	triplets.reserve(std::min(m,n)*d.size());
-	for (Eigen::Index k = 0; k < d.size(); ++k) {
-		const int diag = d(k);	// get diagonal
-		const int i_start = std::max(-diag, 0); // get row of 1st element
-		const Eigen::Index i_end = std::min(m, m-diag-(m-n)); // get row of last element
+	for (int k = 0; k < d.size(); ++k) {
+		int diag = d(k);	// get diagonal
+		int i_start = std::max(-diag, 0); // get row of 1st element
+		int i_end = std::min(m, m-diag-(m-n)); // get row of last element
 		int j = -std::min(0, -diag); // get col of 1st element
-		Eigen::Index B_i = m < n ? std::max(-diag,0) : std::max(0,diag); // start index i in matrix B
+		int B_i; // start index i in matrix B
+		if(m < n)
+			B_i = std::max(-diag,0); // m < n
+		else
+			B_i = std::max(0,diag); // m >= n
 		for(int i = i_start; i < i_end; ++i, ++j, ++B_i){
-			triplets.emplace_back(i, j, B(B_i,k));
+			triplets.push_back( {i, j,  B(B_i,k)} );
 		}
 	}
-	Eigen::SparseMatrix<numeric_t> A(m,n);
+	SparseMatrix<numeric_t> A(m,n);
 	A.setFromTriplets(triplets.begin(), triplets.end());
 	A.makeCompressed();
 	return A;

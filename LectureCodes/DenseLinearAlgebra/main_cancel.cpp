@@ -3,7 +3,7 @@
 // operations.
 // **********************************************************************
 
-#include <cassert>
+#include <assert.h>
 #include <cmath>
 #include <iostream>
 
@@ -59,7 +59,7 @@ double f4(double x) {
 double f4c(double x) { return std::abs(std::sin(x)); }
 /* SAM_LISTING_END_D */
 
-int main() {
+int main(int argc, char **argv) {
   std::cout << "f1(1.0)= " << f1(1.0) << "<-> f1c(1.0)= " << f1c(1.0)
             << std::endl;
   std::cout << "f2(1.0)= " << f2(1.0) << "<-> f2c(1.0)= " << f2c(1.0)

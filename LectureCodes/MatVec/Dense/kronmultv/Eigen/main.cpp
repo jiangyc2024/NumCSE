@@ -13,8 +13,7 @@
 #include "kronmultv.hpp"
 
 int main () {
-	unsigned int m = 3; unsigned int n = 2;
-	unsigned int l = 2; unsigned int k = 4;
+	unsigned int m = 3, n = 2, l = 2, k = 4;
 	Eigen::MatrixXd A(m,n);
 	A << 1, 2, 3, 4, 5, 6;
 	Eigen::MatrixXd B(l,k);

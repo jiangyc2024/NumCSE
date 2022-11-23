@@ -5,16 +5,8 @@
 #include <Eigen/Dense>
 #include <iostream>
 
-using Eigen::Matrix;
-using Eigen::VectorXd;
-using Eigen::MatrixXd;
-using Eigen::Dynamic;
-using Eigen::ColMajor;
-using Eigen::RowMajor;
-using Eigen::Map;
-
-using std::cout;
-using std::endl;
+using namespace Eigen;
+using namespace std;
 
 /** Explores internal matrix storage format of Eigen */
 /* SAM_LISTING_BEGIN_5 */
@@ -24,31 +16,22 @@ void storageOrder(int nrows = 6, int ncols = 7) {
   // Template parameter \texttt{RowMajor} selects row major data layout
   Matrix<double, Dynamic, Dynamic, RowMajor> mrm(nrows, ncols);
   // Direct initialization; lazy option: use \texttt{int} as index type
-  for (int l = 1, i = 0; i < nrows; i++) {
-    for (int j = 0; j < ncols; j++, l++) {
-      mcm(i, j) = mrm(i, j) = l;
-    }
-  }
+  for (int l = 1, i = 0; i < nrows; i++)
+    for (int j = 0; j < ncols; j++, l++) mcm(i, j) = mrm(i, j) = l;
 
   cout << "Matrix mrm = " << endl << mrm << endl << endl;
   cout << "mcm linear = ";
-  for (int l = 0; l < mcm.size(); l++) {
-    cout << mcm(l) << ' ';
-  }
+  for (int l = 0; l < mcm.size(); l++) cout << mcm(l) << ' ';
   cout << endl << endl;
 
   cout << "mrm linear = ";
-  for (int l = 0; l < mrm.size(); l++) {
-    cout << mrm(l) << ' ';
-  }
+  for (int l = 0; l < mrm.size(); l++) cout << mrm(l) << ' ';
   cout << endl << endl;
 
   // Retrieve pointer to raw matrix data
   double *mdat = mcm.data();
   cout << "mcm raw data layout in memory = ";
-  for (int l = 0; l < mcm.size(); l++) {
-    cout << mdat[l] << ' '; //NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
-  }
+  for (int l = 0; l < mcm.size(); l++) cout << mdat[l] << ' ';
   cout << endl << endl;
 
   // Creates a map referencing the raw data of mcm
@@ -66,7 +49,7 @@ void storageOrder(int nrows = 6, int ncols = 7) {
 }
 /* SAM_LISTING_END_5 */
 
-int main() {
+int main(int argc, char **argv) {
   cout << "storageOrder(6, 7)" << endl;
   cout << "Demonstrating different storage orders for Eigen matrices" << endl
        << endl;

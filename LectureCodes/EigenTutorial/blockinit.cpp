@@ -5,10 +5,8 @@
 #include <Eigen/Dense>
 #include <iostream>
 
-using Eigen::MatrixXd;
-
-using std::cout;
-using std::endl;
+using namespace Eigen;
+using namespace std;
 
 /** Demo for block initialization of matrices */
 /* SAM_LISTING_BEGIN_2 */
@@ -27,9 +25,7 @@ void blockInit(int size = 6) {
 
   // Set all matrix entries to their column-major order
   MatrixXd botRows(size / 2, size);
-  for (int l = 0; l < botRows.size(); ++l) {
-    botRows(l) = l;
-  }
+  for (int l = 0; l < botRows.size(); ++l) botRows(l) = l;
 
   // Blocks can have different shapes
   mat << MatrixXd::Zero(size / 2, size / 2),
@@ -51,7 +47,7 @@ void blockInit(int size = 6) {
 }
 /* SAM_LISTING_END_2 */
 
-int main() {
+int main(int argc, char **argv) {
   cout << "blockInit(6)" << endl << endl;
   blockInit(6);
 }

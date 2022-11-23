@@ -1,17 +1,11 @@
-#include "blur.hpp"
-
-#include <Eigen/Dense>
-#include <iostream>
-
-using Eigen::MatrixXd;
-using Eigen::Index;
+# include <iostream>
+# include "./blur.hpp"
 
 int main() {
-  const Index n = 11;
-  const Index N = 7;
-  const MatrixXd P = MatrixXd::Ones(n, n);
-  const MatrixXd S = MatrixXd::Ones(N, N);
-  const MatrixXd C = blur::blur(P, S);
+  const long n = 11, N = 7;
+  MatrixXd P = MatrixXd::Ones(n, n),
+           S = MatrixXd::Ones(N, N),
+           C = blur(P, S);
   std::cout << "C:\n" << C << "\n";
   return 0;
 }

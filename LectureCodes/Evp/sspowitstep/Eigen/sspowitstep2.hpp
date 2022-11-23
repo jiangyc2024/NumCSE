@@ -1,6 +1,6 @@
 #include <Eigen/Dense>
 
-inline void sspowitstep2(Eigen::VectorXd &v, Eigen::VectorXd &w)
+void sspowitstep2(Eigen::VectorXd &v, Eigen::VectorXd &w)
 {
 	Eigen::MatrixXd A = Eigen::MatrixXd::Zero(v.rows(), 2);
 	A.col(0) = v;

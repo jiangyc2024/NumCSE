@@ -12,6 +12,6 @@
 
 int main () {
   Eigen::MatrixXd M = (10*Eigen::MatrixXd::Random(4,4)).cast<int>().cast<double>();
-  blockops::blockAccess(M);
+  blockAccess(M);
   return 0;
 }

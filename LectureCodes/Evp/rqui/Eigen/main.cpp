@@ -1,13 +1,13 @@
-#include "rqui.hpp"
-
 #include <Eigen/Dense>
 #include <Eigen/Eigenvalues>
 #include <Eigen/QR>
 #include <iostream>
+#include "rqui.hpp"
+
 
 int main()
 {
-	const int n = 10;
+	int n = 10;
 	Eigen::VectorXd d = Eigen::VectorXd::LinSpaced(n,1,n);
 
 	// This is for producing matrix A from vector d
@@ -19,9 +19,9 @@ int main()
 	A = A*A.transpose();
 	Eigen::SparseMatrix<double> As = A.sparseView();
 
-	double lmin = NAN;
+	double lmin;
 	Eigen::VectorXd y;
-	std::tie(y, lmin) = rqui::rqui(As);
+	std::tie(y, lmin) = rqui(As);
 
 	std::cout << "lmin = " << lmin << std::endl;
 	std::cout << "y = " << std::endl << y << std::endl;
@@ -29,8 +29,8 @@ int main()
 
 	// compare with eigensolver
 	std::cout << "EigenSolver eigenvector = " << std::endl;
-	const Eigen::EigenSolver<Eigen::MatrixXd> solver(A);
-	int minIndex = -1;
+	Eigen::EigenSolver<Eigen::MatrixXd> solver(A);
+	int minIndex;
 	solver.eigenvalues().real().minCoeff(&minIndex);	
 	std::cout << solver.eigenvectors().col(minIndex).real() << std::endl;
 }

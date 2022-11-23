@@ -11,14 +11,13 @@ void meshgrid(const Eigen::Matrix<Scalar, -1, 1>& x,
               const Eigen::Matrix<Scalar, -1, 1>& y,
               Eigen::Matrix<Scalar, -1, -1>& X,
               Eigen::Matrix<Scalar, -1, -1>& Y) {
-  const Eigen::Index nx = x.size();
-  const Eigen::Index ny = y.size();
+  const long nx = x.size(), ny = y.size();
   X.resize(ny, nx);
   Y.resize(ny, nx);
-  for (Eigen::Index i = 0; i < ny; ++i) {
+  for (long i = 0; i < ny; ++i) {
     X.row(i) = x.transpose();
   }
-  for (Eigen::Index j = 0; j < nx; ++j) {
+  for (long j = 0; j < nx; ++j) {
     Y.col(j) = y;
   }
 }
@@ -32,7 +31,7 @@ void meshgrid(const Eigen::Matrix<Scalar, 1, -1>& x,
               const Eigen::Matrix<Scalar, 1, -1>& y,
               Eigen::Matrix<Scalar, -1, -1>& X,
               Eigen::Matrix<Scalar, -1, -1>& Y) {
-  Eigen::Matrix<Scalar, -1, 1> xt = x.transpose();
-  Eigen::Matrix<Scalar, -1, 1> yt = y.transpose();
+  Eigen::Matrix<Scalar, -1, 1> xt = x.transpose(),
+                               yt = y.transpose();
   meshgrid(xt, yt, X, Y);
 }

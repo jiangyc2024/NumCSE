@@ -12,23 +12,13 @@
 #include <iomanip>
 #include <iostream>
 
-namespace diffq {
+using namespace std;
 
-
-using std::cout;
-using std::setprecision;
-using std::fixed;
-using std::setw;
-using std::abs;
-using std::endl;
-
-inline
 /* SAM_LISTING_BEGIN_0 */
 // Difference quotient approximation
 // of the derivative of $\exp$
 void diffq() {
-  double h = 0.1; 
-  double x = 0.0;
+  double h = 0.1, x = 0.0;
   for (int i = 1; i <= 16; ++i) {
     double df = (exp(x + h) - exp(x)) / h;
     cout << setprecision(14) << fixed;
@@ -37,6 +27,3 @@ void diffq() {
   }
 }
 /* SAM_LISTING_END_0 */
-
-
-} //namespace diffq

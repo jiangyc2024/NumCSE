@@ -8,9 +8,12 @@
 
 #pragma once
 
-#include <Eigen/Dense>
-#include <cassert>
 #include <numeric>
+#include <cassert>
+
+#include <Eigen/Dense>
+
+using namespace Eigen;
 
 /* SAM_LISTING_BEGIN_0 */
 //! Computation of $\Vy = \operatorname{triu}(\VA\VB^{T})\Vx$
@@ -18,12 +21,11 @@
 //! (partial\_sum)
 template<class Vec, class Mat>
 void lrtrimulteff(const Mat& A, const Mat& B, const Vec& x, Vec& y){
-  const int n = A.rows();
-  const int p = A.cols();
-  assert( n == B.rows() && p == B.cols()); // size mismatch
+  const int n = A.rows(), p = A.cols();
+  assert( n == B.rows() && p == B.cols()); // size missmatch
   for(int l = 0; l < p; ++l){
     Vec tmp = (B.col(l).array() * x.array()).matrix().reverse();
-    std::partial_sum(tmp.begin(), tmp.end(), tmp.begin());
+    std::partial_sum(tmp.data(), tmp.data()+n, tmp.data());
     y += (A.col(l).array() * tmp.reverse().array()).matrix();
   }
 }

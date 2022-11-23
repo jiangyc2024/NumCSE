@@ -1,11 +1,9 @@
 #include <Eigen/Dense>
 
-namespace prbuilda {
 
-
-inline Eigen::MatrixXd prbuildA(const Eigen::MatrixXi &G, double d) 
+Eigen::MatrixXd prbuildA(const Eigen::MatrixXi &G, double d) 
 {
-	const Eigen::Index N = G.rows();
+	int N = G.rows();
 
 	Eigen::VectorXi sum = G.colwise().sum();
 
@@ -16,8 +14,8 @@ inline Eigen::MatrixXd prbuildA(const Eigen::MatrixXi &G, double d)
 	{
 		if (sum(i) > 0)
 		{
-			ds(i) = d/static_cast<double>(N);
-			s(i) = d/static_cast<double>(N);
+			ds(i) = d/N;
+			s(i) = d/N;
 		}
 	}
 
@@ -27,6 +25,3 @@ inline Eigen::MatrixXd prbuildA(const Eigen::MatrixXi &G, double d)
 
 	return A;
 }
-
-
-} //namespace prbuilda

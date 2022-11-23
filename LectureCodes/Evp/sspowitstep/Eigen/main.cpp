@@ -1,11 +1,9 @@
+#include <iostream>
+#include <Eigen/Dense>
 #include "sspowitstep.hpp"
 #include "sspowitstep1.hpp"
 #include "sspowitstep2.hpp"
 #include "sspowitstepg.hpp"
-
-#include <Eigen/Dense>
-#include <iostream>
-
 
 void printVectors(const Eigen::VectorXd &v, const Eigen::VectorXd &w)
 {
@@ -17,11 +15,9 @@ void printVectors(const Eigen::VectorXd &v, const Eigen::VectorXd &w)
 
 int main()
 {
-	const int n = 6;
-	Eigen::VectorXd v;
-	Eigen::VectorXd w;
-	Eigen::VectorXd v0;
-	Eigen::VectorXd w0;
+	int n = 6;
+	Eigen::VectorXd v, w;
+	Eigen::VectorXd v0, w0;
 	v0 = Eigen::VectorXd::Random(n);
 	w0 = Eigen::VectorXd::Random(n);
 
@@ -45,8 +41,8 @@ int main()
 	sspowitstep2(v,w);
 	printVectors(v,w);
 
-	const Eigen::MatrixXd B = Eigen::MatrixXd::Random(n,n);
-	const Eigen::MatrixXd V = sspowitstepg(A, B);
+	Eigen::MatrixXd B = Eigen::MatrixXd::Random(n,n);
+	Eigen::MatrixXd V = sspowitstepg(A, B);
 }
 
 

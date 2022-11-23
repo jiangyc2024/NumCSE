@@ -29,12 +29,12 @@ template <class Matrix> Matrix gramschmidt(const Matrix &A) {
                 (Q.leftCols(j).adjoint() * A.col(j)); // \Label{gscpp:op}
     // Normalize vector, if possible.
     // Otherwise colums of A must have been linearly dependent
-    if (Q.col(j).norm() > 10e-9 * A.col(j).norm()) { // \Label{gscpp:1}
-      Q.col(j).normalize(); // Line 7 of \eqref{GS}
-    } else {
+    if (Q.col(j).norm() <= 10e-9 * A.col(j).norm()) { // \Label{gscpp:1}
       std::cerr << "Gram-Schmidt failed: A has lin. dep columns." << std::endl;
       break;
-    } 
+    } else {
+      Q.col(j).normalize();
+    } // Line 7 of \eqref{GS}
   }
   return Q;
 }

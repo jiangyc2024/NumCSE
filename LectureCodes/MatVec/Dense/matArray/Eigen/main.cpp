@@ -8,6 +8,6 @@
 
 #include "./matArray.hpp"
 int main () {
-  matarray::matArray(6,6);
+  matArray(6,6);
   return 0;
 }

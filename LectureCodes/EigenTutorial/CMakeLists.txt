@@ -16,4 +16,4 @@ add_executable_numcse (ncse_eigenreductions eigenreductions.cpp)
 add_executable_numcse (ncse_eigenoptiming eigenoptiming.cpp)
 add_executable_numcse (commainitialization commainitialization.cpp)
 # This is the old code 
-#add_executable (ncse_eigentutorial main.cpp)
+add_executable (ncse_eigentutorial main.cpp)

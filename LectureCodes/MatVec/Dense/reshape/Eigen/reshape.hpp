@@ -8,16 +8,12 @@
 
 #pragma once
 
-#include <Eigen/Dense>
 #include <iostream>
 
-namespace reshape {
+#include <Eigen/Dense>
 
-
-using std::cout;
-using std::endl;
-using Eigen::Map;
-using Eigen::Dynamic;
+using namespace std;
+using namespace Eigen;
 
 /* SAM_LISTING_BEGIN_0 */
 template<typename MatType>
@@ -47,6 +43,3 @@ void reshapetest(MatType &M)
    }
 }
 /* SAM_LISTING_END_0 */
-
-
-} //namespace reshape

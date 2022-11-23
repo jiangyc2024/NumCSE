@@ -3,16 +3,13 @@
 
 #include "fft2.hpp"  // contains our implementation of Matlab's fft2
 // typedef to avoid writing the whole type
-using complex = std::complex<double>;
+typedef std::complex<double> complex;
 
-inline
 /* SAM_LISTING_BEGIN_0 */
 Eigen::MatrixXd deblur(const Eigen::MatrixXd &C, const Eigen::MatrixXd &S,
                        const double tol = 1e-3) {
-  typedef Eigen::Index index_t;
-  auto dimensions = std::make_tuple(C.rows(), C.cols(), S.rows(), S.cols());
-  const auto [ m, n, M, N ] = dimensions; 
-  const index_t L = (M - 1) / 2;
+  const long m = C.rows(), n = C.cols(), M = S.rows(), N = S.cols();
+  const long L = (M - 1) / 2;
   if (M != N) {
     throw std::runtime_error("Error: S not quadratic!");
   }
@@ -23,7 +20,7 @@ Eigen::MatrixXd deblur(const Eigen::MatrixXd &C, const Eigen::MatrixXd &S,
   Spad.block(0, n - L, L + 1, L) = S.block(L, 0, L + 1, L);
   Spad.block(m - L, 0, L, L + 1) = S.block(0, L, L, L + 1);
   // Inverse of blurring operator (fft2 expects a complex matrix)
-  const Eigen::MatrixXcd SF = fft2(Spad.cast<complex>());
+  Eigen::MatrixXcd SF = fft2(Spad.cast<complex>());
   // Test for invertibility
   if (SF.cwiseAbs().minCoeff() < tol * SF.cwiseAbs().maxCoeff()) {
     std::cerr << "Error: Deblurring impossible!\n";

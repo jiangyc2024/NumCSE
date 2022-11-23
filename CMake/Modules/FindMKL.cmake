@@ -129,7 +129,7 @@ if (USE_MKL)
             set(INTEL_ILP_SUFFIX "_ilp64")
         endif()
 
-        find_library(MKL_LP_LIBRARY mkl_intel${INTEL_LP_SUFFIX} PATHS ${MKL_LIBRARY_LOCATIONS})
+        find_library(MKL_LP_LIBRARY mkl_intel%{INTEL_LP_SUFFIX} PATHS ${MKL_LIBRARY_LOCATIONS})
         find_library(MKL_ILP_LIBRARY mkl_intel${INTEL_ILP_SUFFIX} PATHS ${MKL_LIBRARY_LOCATIONS})
 
         # Lapack

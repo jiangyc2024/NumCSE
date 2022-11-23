@@ -9,7 +9,6 @@
  * as this header is left intact.                                      *
  ***********************************************************************/
 
-#include <cmath>
 // Header for basic IO
 #include <iostream>
 // Provides random acccess container class
@@ -19,8 +18,7 @@
 // Miscellaneous utilities
 #include <tuple>
 
-using std::cout;
-using std::endl;
+using namespace std;
 
 template <typename T>
 std::tuple<T, T, std::vector<T>> extcumsum(const std::vector<T> &v) {
@@ -42,15 +40,13 @@ void tietuple() {
   // initialize a vector from an initializer list
   std::vector<double> v({1.2, 2.3, 3.4, 4.5, 5.6, 6.7, 7.8});
   // Variables for return values
-  double minv = NAN;
-  double maxv = NAN;      // Extremal elements
+  double minv, maxv;      // Extremal elements
   std::vector<double> cs; // Cumulative sums
   std::tie(minv, maxv, cs) = extcumsum(v);
   cout << "min = " << minv << ", max = " << maxv << endl;
   cout << "cs = [ ";
-  for (double x : cs) {
+  for (double x : cs)
     cout << x << ' ';
-  }
   cout << "]" << endl;
 }
 
@@ -61,9 +57,8 @@ void compoundreturn() {
   auto [minv, maxv, cs] = extcumsum(v);
   cout << "min = " << minv << ", max = " << maxv << endl;
   cout << "cs = [ ";
-  for (double x : cs) {
+  for (double x : cs)
     cout << x << ' ';
-  }
   cout << "]" << endl;
 }
 

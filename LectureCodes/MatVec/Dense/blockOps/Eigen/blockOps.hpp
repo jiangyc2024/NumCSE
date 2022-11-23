@@ -8,36 +8,29 @@
 
 #pragma once
 
-#include <Eigen/Dense>
 #include <iostream>
 
-namespace blockops {
+#include <Eigen/Dense>
 
-
-using std::cout;
-using std::endl;
-
-using Eigen::MatrixXd;
-using Eigen::Upper;
-using Eigen::Lower;
+using namespace std;
+using namespace Eigen;
 
 /* SAM_LISTING_BEGIN_0 */
 template<typename MatType>
 void blockAccess(Eigen::MatrixBase<MatType> &M)
 {
   using index_t = typename Eigen::MatrixBase<MatType>::Index;
+  using entry_t = typename Eigen::MatrixBase<MatType>::Scalar;
   const index_t nrows(M.rows()); // No. of rows 
   const index_t ncols(M.cols()); // No. of columns
   
   cout << "Matrix M = " << endl << M << endl; // Print matrix
   // Block size half the size of the matrix
-  index_t p = nrows/2;
-  index_t q = ncols/2; 
+  index_t p = nrows/2,q = ncols/2; 
   // Output submatrix with left upper entry at position {\sf (i,i)}
-  for(index_t i=0; i < std::min(p,q); i++) {
+  for(index_t i=0; i < min(p,q); i++)
     cout << "Block (" << i << ',' << i << ',' << p << ',' << q 
          << ") = " << M.block(i,i,p,q) <<  endl;
-  }
   // l-value access: modify sub-matrix by adding a constant
   M.block(1,1,p,q) += Eigen::MatrixBase<MatType>::Constant(p,q,1.0);
   cout << "M = " << endl << M << endl;
@@ -57,6 +50,3 @@ void blockAccess(Eigen::MatrixBase<MatType> &M)
   cout << "Matrix M = " << endl << M << endl;
 }
 /* SAM_LISTING_END_0 */
-
-
-} //namespace blockops

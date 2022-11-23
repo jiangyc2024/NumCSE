@@ -5,28 +5,26 @@
 #include <Eigen/Dense>
 #include <iostream>
 
-using Eigen::MatrixXd;
-using Eigen::Index;
-using std::cout;
-using std::endl;
+using namespace Eigen;
+using namespace std;
 
 /** Demo for initialization of dense matrices */
 
-void initDense(Index const rows, Index const cols) {
+void initDense(size_t const rows, size_t const cols) {
   // Just allocate space for matrix, no initialisation; No guarantee for
   // zero-entries
-  const MatrixXd A(rows, cols);
+  MatrixXd A(rows, cols);
   // Zero matrix. Similar to matlab command zeros(rows, cols);
-  const MatrixXd B = MatrixXd::Zero(rows, cols);
+  MatrixXd B = MatrixXd::Zero(rows, cols);
   // Ones matrix. Similar to matlab command ones(rows, cols);
-  const MatrixXd C = MatrixXd::Ones(rows, cols);
+  MatrixXd C = MatrixXd::Ones(rows, cols);
   // Matrix with all entries same as value.
-  const double value(3.14);
-  const MatrixXd D = MatrixXd::Constant(rows, cols, value);
+  double value(3.14);
+  MatrixXd D = MatrixXd::Constant(rows, cols, value);
   // Random matrix, entries uniformly distributed in [0, 1]
-  const MatrixXd E = MatrixXd::Random(rows, cols);
+  MatrixXd E = MatrixXd::Random(rows, cols);
   // (Generalized) identity matrix, 1 on main diagonal
-  const MatrixXd I = MatrixXd::Identity(rows, cols);
+  MatrixXd I = MatrixXd::Identity(rows, cols);
 
   cout << "size of A = (" << A.rows() << ',' << A.cols() << ')' << endl;
   cout << endl << "B = " << endl << B << endl;
@@ -36,7 +34,7 @@ void initDense(Index const rows, Index const cols) {
   cout << endl << "I = " << endl << I << endl;
 }
 
-int main() {
+int main(int argc, char **argv) {
   cout << "initDense(3, 2)" << endl << endl;
   initDense(3, 2);
 }

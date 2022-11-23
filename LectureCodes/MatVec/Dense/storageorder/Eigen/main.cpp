@@ -9,6 +9,6 @@
 #include "./storageOrder.hpp"
 
 int main () {
-  storageorder::storageOrder(3,3);
+  storageOrder(3,3);
   return 0;
 }

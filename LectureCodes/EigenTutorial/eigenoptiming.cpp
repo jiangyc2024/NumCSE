@@ -10,14 +10,12 @@
 #include <iostream>
 #include <string>
 #include <vector>
-
-using std::chrono::high_resolution_clock;
-using std::chrono::microseconds;
-using std::chrono::duration_cast;
+using namespace std::chrono;
 
 /* SAM_LISTING_BEGIN_T */
 void eigenoptiming(std::vector<int> &&nvals, const char *filename,
                    unsigned int Nrep = 10) {
+  assert(!nvals.empty());
   // Vector for collecting runtimes
   std::vector<std::tuple<int, double, double, double>> times{};
   for (int n : nvals) {
@@ -56,7 +54,7 @@ void eigenoptiming(std::vector<int> &&nvals, const char *filename,
         t_mm = (duration < t_mm) ? duration : t_mm;
       }
     }
-    times.emplace_back( n, t_dotp, t_mv, t_mm );
+    times.push_back({n, t_dotp, t_mv, t_mm});
   }
   // Output to file
   std::ofstream outfile(filename);
@@ -70,7 +68,7 @@ void eigenoptiming(std::vector<int> &&nvals, const char *filename,
 
 /* SAM_LISTING_END_T */
 
-int main() {
+int main(int /*argc*/, char ** /*argv*/) {
   eigenoptiming({10, 20, 40, 80, 160, 320, 640, 1280}, "eigenoptimings.csv");
   return 0;
 }

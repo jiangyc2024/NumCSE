@@ -6,8 +6,9 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 
-#include <Eigen/Dense>
 #include <iostream>
+
+#include <Eigen/Dense>
 
 #include "gausselimsolve.hpp"
 
@@ -18,10 +19,10 @@ int main () {
 	A << 	1, 0, 2,
 			-1, 4, 1,
 			-2, 1, 2;
-	Eigen::VectorXd b = Eigen::VectorXd::LinSpaced(n,0,2);
+	Eigen::VectorXd b = VectorXd::LinSpaced(n,0,2);
 	std::cout << "A=\n" << A << std::endl << "b=\n"<< b << std::endl;
-	Eigen::VectorXd x(n);
-	gausselimsolve::gausselimsolve(A, b, x);
+	VectorXd x(n);
+	gausselimsolve(A, b, x);
 	std::cout << "x=\n" << x << std::endl;
 	return 0;
 }

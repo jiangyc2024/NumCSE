@@ -1,7 +1,6 @@
 #include <Eigen/Sparse>
-#include <assert.h>
 #include <vector>
-
+#include <assert.h>
 
 /**
  * @brief Equvalent to MATLAB function A = speye(m,n)
@@ -11,17 +10,15 @@
  * @return m x n idenity SparseMatrix
  */
 template <class T>
-Eigen::SparseMatrix<T> speye(Eigen::Index m, Eigen::Index n = -1)
+Eigen::SparseMatrix<T> speye(int m, int n = -1)
 {
-	if (n == -1) { 
-		n = m;
-	}
+	if (n == -1) n = m;
 	assert(m > 0 && n > 0);
 
 	std::vector<Eigen::Triplet<T>> triplets;
-	const Eigen::Index ndiag = std::min(m,n);
+	int ndiag = std::min(m,n);
 	triplets.reserve(ndiag);
-	for (Eigen::Index i=0; i<ndiag; ++i)
+	for (int i=0; i<ndiag; ++i)
 	{
 		triplets.push_back(Eigen::Triplet<T>(i,i,1));
 	}

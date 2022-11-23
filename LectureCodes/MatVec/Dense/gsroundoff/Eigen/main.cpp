@@ -21,6 +21,6 @@ int main () {
     }
   }
   //std::cout << H << std::endl;
-  gsroundoff::gsroundoff(H);
+  gsroundoff(H);
   return 0;
 }

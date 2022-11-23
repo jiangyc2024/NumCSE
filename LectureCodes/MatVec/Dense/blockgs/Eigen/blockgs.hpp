@@ -10,10 +10,8 @@
 
 #include <Eigen/Dense>
 
-namespace blockgs {
-  
+using namespace Eigen;
 
-inline
 /* SAM_LISTING_BEGIN_0 */
 //! in-situ Gaussian elimination, no pivoting
 //! right hand side in rightmost column of \Blue{$\VA$}
@@ -27,6 +25,3 @@ void blockgs(Eigen::MatrixXd &A){
   }
 }
 /* SAM_LISTING_END_0 */
-
-
-} //namespace blockgs

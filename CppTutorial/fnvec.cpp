@@ -19,14 +19,14 @@
 // Definition of functions
 double binop(double arg1,double arg2) { return (arg1/arg2); }
 
-void stdfunctiontest() {
+void stdfunctiontest(void) {
   // Vector of objects of a particular signature
   std::vector<std::function<double(double,double)>> fnvec;
   // Store reference to a regular function
-  fnvec.emplace_back(binop);
+  fnvec.push_back(binop);
   // Store are lambda function
-  fnvec.emplace_back([] (double x,double y)  -> double { return y/x; });
-  for (auto const & fn : fnvec) { std::cout << fn(3,2) << std::endl; }
+  fnvec.push_back([] (double x,double y)  -> double { return y/x; });
+  for (auto fn : fnvec) { std::cout << fn(3,2) << std::endl; }
 }
 
 int main() {

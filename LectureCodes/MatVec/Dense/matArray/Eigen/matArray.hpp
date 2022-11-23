@@ -8,25 +8,21 @@
 
 #pragma once
 
-#include <Eigen/Dense>
 #include <iostream>
 
-namespace matarray {
+#include <Eigen/Dense>
 
-
-using std::cout;
-using std::endl;
+using namespace std;
+using namespace Eigen;
 
 /* SAM_LISTING_BEGIN_0 */
-void inline matArray(int nrows,int ncols){
-  Eigen::MatrixXd m1(nrows,ncols);
-  Eigen::MatrixXd m2(nrows,ncols);
-  for(int i = 0; i < m1.rows(); i++) {
-    for(int j = 0; j < m1.cols(); j++) {  
-      m1(i,j) = static_cast<double>((i+1))/(j+1); 
-      m2(i,j) = static_cast<double>((j+1))/(i+1); 
+void matArray(int nrows,int ncols){
+  Eigen::MatrixXd m1(nrows,ncols),m2(nrows,ncols);
+  for(int i = 0; i < m1.rows(); i++)
+    for(int j=0; j < m1.cols(); j++) {  
+      m1(i,j) = (double)(i+1)/(j+1); 
+      m2(i,j) = (double)(j+1)/(i+1); 
     }
-  }
   // \com{Entry-wise} product, not a matrix product
   Eigen::MatrixXd m3 = (m1.array() * m2.array()).matrix();
   // Explicit entry-wise operations on matrices are possible
@@ -37,6 +33,3 @@ void inline matArray(int nrows,int ncols){
   cout << (m1.array() > 3).count() << " entries of m1 > 3" << endl;
 }
 /* SAM_LISTING_END_0 */
-
-
-} //namespace matarray

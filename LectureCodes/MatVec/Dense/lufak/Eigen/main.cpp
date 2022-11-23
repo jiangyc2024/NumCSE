@@ -20,8 +20,8 @@ lufak_eigen(const Eigen::MatrixXd &A) {
   // The LU-factors are computed by in-situ LU-decomposition,
   // see \cref{rem:insitulu}, and are stored in a dense matrix of
   // the same size as A 
-  Eigen::MatrixXd L { ludec.matrixLU().triangularView<Eigen::UnitLower>() };
-  Eigen::MatrixXd U { ludec.matrixLU().triangularView<Eigen::Upper>() };
+  MatrixXd L { ludec.matrixLU().triangularView<Eigen::UnitLower>() };
+  MatrixXd U { ludec.matrixLU().triangularView<Eigen::Upper>() };
   // \eigen employs partial pivoting, see \cref{alg:GEp}, which can be viewed
   // as a prior permutation of the rows of A. We apply the inverse of this
   // permutation to the L-factor in order to achieve \cob{$\VA=\VL\VU$}. 
@@ -37,7 +37,7 @@ int main() {
   A << 1, 0, 2, -1, 4, 1, -2, 1, 2;
   {
     std::cout << "(1) Hand-made LU factorization" << std::endl;
-    auto [L,U] = lufak::lufak(A);
+    auto [L,U] = lufak(A);
     std::cout << "L=\n" << L << std::endl << "U=\n" << U
 	     << "|A-L*U| = " << (A-L*U).norm() << std::endl;
   }

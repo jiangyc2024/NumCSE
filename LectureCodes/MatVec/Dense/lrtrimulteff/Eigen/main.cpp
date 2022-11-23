@@ -20,8 +20,7 @@ int main(){
   B << 9,8,7,6,5,4,3,2,1;
   Eigen::VectorXd x(n);
   x << 4,5,6;
-  Eigen::VectorXd y(n);
-  Eigen::VectorXd y_eff(n);
+  Eigen::VectorXd y(n), y_eff(n);
 /* SAM_LISTING_BEGIN_0 */
 Eigen::MatrixXd AB = A*B.transpose();
 y = AB.triangularView<Eigen::Upper>()*x;

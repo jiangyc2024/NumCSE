@@ -6,12 +6,12 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 
-#include <Eigen/Dense>
 #include <iostream>
+#include <Eigen/Dense>
 
 #include "gramschmidt.hpp"
 
-using Eigen::MatrixXd;
+using namespace Eigen;
 
 /* SAM_LISTING_BEGIN_1 */
 int main () { /* SAM_SOLUTION_BEGIN */

@@ -10,7 +10,6 @@
 // **********************************************************************
 
 #include <cmath>
-#include <cstdint>
 #include <exception>
 #include <iomanip>
 #include <iostream>
@@ -20,13 +19,6 @@
 using std::cout;
 using std::endl;
 
-//using gsl::owner without actual Guideline Support Library
-namespace gsl { 
-
-  template<class T>
-  using owner = T; 
-} //namespace gsl
-
 namespace myvec {
 class MyVector {
 public:
@@ -34,24 +26,24 @@ public:
   // Constructor creating constant vector, also default constructor
   explicit MyVector(std::size_t n = 0, double val = 0.0);
   // Constructor: initialization from an STL container
-  template <typename Container> explicit MyVector(const Container &v);
+  template <typename Container> MyVector(const Container &v);
   // Constructor: initialization from an STL iterator range
   template <typename Iterator> MyVector(Iterator first, Iterator last);
   // Copy constructor, computational cost O(n)
   MyVector(const MyVector &mv);
   // Move constructor, computational cost O(1)
-  MyVector(MyVector &&mv) noexcept;
+  MyVector(MyVector &&mv);
   // Assignment operator, computational cost O(n)
   MyVector &operator=(const MyVector &mv);
   // Move assignment operator, computational cost O(1)
-  MyVector &operator=(MyVector &&mv) noexcept;
+  MyVector &operator=(MyVector &&mv);
   // Destructor
-  virtual ~MyVector();
+  virtual ~MyVector(void);
   // Type conversion to STL vector
-  explicit operator std::vector<double>() const;
+  operator std::vector<double>() const;
 
   // Returns length of vector
-  [[nodiscard]] std::size_t size() const { return n; }
+  std::size_t size(void) const { return n; }
   // Access operators: rvalue \& lvalue, with range check
   double operator[](std::size_t i) const;
   double &operator[](std::size_t i);
@@ -76,21 +68,20 @@ public:
   MyVector operator-(const MyVector &mv) const;
   // Scalar multiplication from right and left: x = a*y; x = y*a
   MyVector operator*(double alpha) const;
-  friend MyVector operator*(double alpha, const MyVector &mv);
+  friend MyVector operator*(double alpha, const MyVector &);
   // Scalar divsion: x = y/a;
   MyVector operator/(double alpha) const;
   // Euclidean norm
-  [[nodiscard]] double norm() const;
+  double norm(void) const;
   // Euclidean inner product
-  double operator*(const MyVector &mv)const;
+  double operator*(const MyVector &)const;
   // Output function
-  friend std::ostream &operator<<(std::ostream &o, const MyVector &mv);
+  friend std::ostream &operator<<(std::ostream &, const MyVector &mv);
 
-  // Flag for verbose output
-  static bool dbg; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+  static bool dbg; // Flag for verbose output
 private:
   std::size_t n; // Length of vector
-  gsl::owner<double *> data {nullptr};  // data array (standard C array)
+  double *data;  // data array (standard C array)
 };
 } // namespace myvec
 
@@ -99,97 +90,84 @@ private:
 // **********************************************************************
 
 namespace myvec {
-bool MyVector::dbg = true; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+bool MyVector::dbg = true;
 
 // Implementation of member functions
-MyVector::MyVector(std::size_t _n, double val) : n(_n) {
-  if (dbg) {
+MyVector::MyVector(std::size_t _n, double _a) : n(_n), data(nullptr) {
+  if (dbg)
     cout << "{Constructor MyVector(" << _n << ") called" << '}' << endl;
-  }
-  if (n > 0) {
+  if (n > 0)
     data = new double[_n];
-  }
-  for (std::size_t l = 0; l < n; ++l) {
-    data[l] = val;
-  }
+  for (std::size_t l = 0; l < n; ++l)
+    data[l] = _a;
 }
 
 template <typename Container>
-MyVector::MyVector(const Container &v) : n(v.size()) {
-  if (dbg) {
+MyVector::MyVector(const Container &v) : n(v.size()), data(nullptr) {
+  if (dbg)
     cout << "{MyVector(length " << n << ") constructed from container" << '}'
          << endl;
-  }
   if (n > 0) {
-    data = new double[n];
-    size_t i = 0;
-    for (auto x : v) {
-      data[i++] = x;
-    }
+    double *tmp = (data = new double[n]);
+    for (auto i : v)
+      *tmp++ = i;
   }
 }
 
 template <typename Iterator>
-MyVector::MyVector(Iterator first, Iterator last) : n(0) {
+MyVector::MyVector(Iterator first, Iterator last) : n(0), data(nullptr) {
   n = std::distance(first, last);
-  if (dbg) {
+  if (dbg)
     cout << "{MyVector(length " << n << ") constructed from range" << '}'
          << endl;
-  }
   if (n > 0) {
     data = new double[n];
     std::copy(first, last, data);
   }
 }
 
-MyVector::MyVector(const MyVector &mv) : n(mv.n) {
-  if (dbg) {
+MyVector::MyVector(const MyVector &mv) : n(mv.n), data(nullptr) {
+  if (dbg)
     cout << "{Copy construction of MyVector(length " << n << ")" << '}' << endl;
-  }
   if (n > 0) {
     data = new double[n];
     std::copy_n(mv.data, n, data);
   }
 }
 
-MyVector::MyVector(MyVector &&mv) noexcept : n(mv.n), data(mv.data) {
-  if (dbg) {
+MyVector::MyVector(MyVector &&mv) : n(mv.n), data(mv.data) {
+  if (dbg)
     cout << "{Move construction of MyVector(length " << n << ")" << '}' << endl;
-  }
   mv.data = nullptr;
   mv.n = 0;
 }
 
 MyVector &MyVector::operator=(const MyVector &mv) {
-  if (dbg) {
+  if (dbg)
     cout << "{Copy assignment of MyVector(length " << n << "<-" << mv.n << ")"
          << '}' << endl;
-  }
-  if (this == &mv) {
+  if (this == &mv)
     return (*this);
-  }
   if (n != mv.n) {
     n = mv.n;
-    delete[] data;
-    if (n > 0) {
+    if (data != nullptr)
+      delete[] data;
+    if (n > 0)
       data = new double[n];
-    }
-    else {
+    else
       data = nullptr;
-    }
   }
-  if (n > 0) {
+  if (n > 0)
     std::copy_n(mv.data, n, data);
-  }
   return (*this);
 }
 
-MyVector &MyVector::operator=(MyVector &&mv) noexcept {
-  if (dbg) {
+MyVector &MyVector::operator=(MyVector &&mv) {
+  if (dbg)
     cout << "{Move assignment of MyVector(length " << n << "<-" << mv.n << ")"
          << '}' << endl;
-  }
-  delete[] data;
+  if (data != nullptr)
+    delete[] data;
   n = mv.n;
   data = mv.data;
   mv.n = 0;
@@ -197,193 +175,160 @@ MyVector &MyVector::operator=(MyVector &&mv) noexcept {
   return (*this);
 }
 
-MyVector::~MyVector() {
-  if (dbg) {
+MyVector::~MyVector(void) {
+  if (dbg)
     cout << "{Destructor for MyVector(length = " << n << ")" << '}' << endl;
-  }
-  delete[] data;
+  if (data != nullptr)
+    delete[] data;
 }
 
 MyVector::operator std::vector<double>() const {
-  if (dbg) {
+  if (dbg)
     cout << "{Conversion to std::vector, length = " << n << '}' << endl;
-  }
   return (std::vector<double>(data, data + n));
 }
 
 double MyVector::operator[](std::size_t i) const {
-  if (i >= n) {
+  if (i >= n)
     throw(std::logic_error("[] out of range"));
-  }
   return data[i];
 }
 
 double &MyVector::operator[](std::size_t i) {
-  if (i >= n) {
+  if (i >= n)
     throw(std::logic_error("[] out of range"));
-  }
   return data[i];
 }
 
 bool MyVector::operator==(const MyVector &mv) const {
-  bool isEqual = true;
-  if (dbg) {
+  if (dbg)
     cout << "{Comparison ==: " << n << " <-> " << mv.n << '}' << endl;
-  }
-  if (n != mv.n) {
-    isEqual = false;
-  }
+  if (n != mv.n)
+    return (false);
   else {
-    for (std::size_t l = 0; l < n; ++l) {
-      if (data[l] != mv.data[l]) {
-        isEqual = false;
-        break;
-      }
-    }
+    for (std::size_t l = 0; l < n; ++l)
+      if (data[l] != mv.data[l])
+        return (false);
   }
-  return isEqual;
+  return (true);
 }
 
 bool MyVector::operator!=(const MyVector &mv) const { return !(*this == mv); }
 
 template <typename Functor> MyVector &MyVector::transform(Functor &&f) {
-  for (std::size_t l = 0; l < n; ++l) {
+  for (std::size_t l = 0; l < n; ++l)
     data[l] = f(data[l]);
-  }
   return (*this);
 }
 
 MyVector &MyVector::operator+=(const MyVector &mv) {
-  if (dbg) {
+  if (dbg)
     cout << "{operator +=, MyVector of length " << n << '}' << endl;
-  }
-  if (n != mv.n) {
+  if (n != mv.n)
     throw(std::logic_error("+=: vector size mismatch"));
-  }
-  for (std::size_t l = 0; l < n; ++l) {
+  for (std::size_t l = 0; l < n; ++l)
     data[l] += mv.data[l];
-  }
   return (*this);
 }
 
 MyVector &MyVector::operator-=(const MyVector &mv) {
-  if (dbg) {
+  if (dbg)
     cout << "{operator -=, MyVector of length " << n << '}' << endl;
-  }
-  if (n != mv.n) {
+  if (n != mv.n)
     throw(std::logic_error("-=: vector size mismatch"));
-  }
-  for (std::size_t l = 0; l < n; ++l) {
+  for (std::size_t l = 0; l < n; ++l)
     data[l] -= mv.data[l];
-  }
   return (*this);
 }
 
 MyVector &MyVector::operator*=(double alpha) {
-  if (dbg) {
+  if (dbg)
     cout << "{operator *=, MyVector of length " << n << '}' << endl;
-  }
-  for (std::size_t l = 0; l < n; ++l) {
+  for (std::size_t l = 0; l < n; ++l)
     data[l] *= alpha;
-  }
   return (*this);
 }
 
 MyVector &MyVector::operator/=(double alpha) {
-  if (dbg) {
+  if (dbg)
     cout << "{operator *=, MyVector of length " << n << '}' << endl;
-  }
-  for (std::size_t l = 0; l < n; ++l) {
+  for (std::size_t l = 0; l < n; ++l)
     data[l] /= alpha;
-  }
   return (*this);
 }
 
 MyVector MyVector::operator+(MyVector mv) const {
-  if (dbg) {
+  if (dbg)
     cout << "{operator +, MyVector of length " << n << '}' << endl;
-  }
-  if (n != mv.n) {
+  if (n != mv.n)
     throw(std::logic_error("+: vector size mismatch"));
-  }
   mv += *this;
   return (mv);
 }
 
 MyVector MyVector::operator-(const MyVector &mv) const {
-  if (dbg) {
+  if (dbg)
     cout << "{operator +, MyVector of length " << n << '}' << endl;
-  }
-  if (n != mv.n) {
+  if (n != mv.n)
     throw(std::logic_error("+: vector size mismatch"));
-  }
   MyVector tmp(*this);
   tmp -= mv;
   return (tmp);
 }
 
 MyVector MyVector::operator*(double alpha) const {
-  if (dbg) {
+  if (dbg)
     cout << "{operator *a, MyVector of length " << n << '}' << endl;
-  }
   MyVector tmp(*this);
   tmp *= alpha;
   return (tmp);
 }
 
 MyVector operator*(double alpha, const MyVector &mv) {
-  if (MyVector::dbg) {
+  if (MyVector::dbg)
     cout << "{operator a*, MyVector of length " << mv.n << '}' << endl;
-  }
   MyVector tmp(mv);
   tmp *= alpha;
   return (tmp);
 }
 
 MyVector MyVector::operator/(double alpha) const {
-  if (dbg) {
+  if (dbg)
     cout << "{operator /, MyVector of length " << n << '}' << endl;
-  }
   MyVector tmp(*this);
   tmp /= alpha;
   return (tmp);
 }
 
-double MyVector::norm() const {
-  if (dbg) {
+double MyVector::norm(void) const {
+  if (dbg)
     cout << "{norm: MyVector of length " << n << '}' << endl;
-  }
   double s = 0;
-  for (std::size_t l = 0; l < n; ++l) {
+  for (std::size_t l = 0; l < n; ++l)
     s += (data[l] * data[l]);
-  }
   return (std::sqrt(s));
 }
 
 double MyVector::operator*(const MyVector &mv) const {
-  if (dbg) {
+  if (dbg)
     cout << "{dot *, MyVector of length " << n << '}' << endl;
-  }
-  if (n != mv.n) {
+  if (n != mv.n)
     throw(std::logic_error("dot: vector size mismatch"));
-  }
   double s = 0;
-  for (std::size_t l = 0; l < n; ++l) {
+  for (std::size_t l = 0; l < n; ++l)
     s += (data[l] * mv.data[l]);
-  }
   return (s);
 }
 
 std::ostream &operator<<(std::ostream &o, const MyVector &mv) {
   o << "[ ";
-  for (std::size_t l = 0; l < mv.n; ++l) {
+  for (std::size_t l = 0; l < mv.n; ++l)
     o << mv.data[l] << (l == mv.n - 1 ? ' ' : ',');
-  }
   return (o << "]");
 }
 } // namespace myvec
 
-using myvec::MyVector;
+using namespace myvec;
 
 template <typename Vec>
 std::vector<Vec> gramschmidt(const std::vector<Vec> &A, double eps = 1E-14) {
@@ -394,9 +339,8 @@ std::vector<Vec> gramschmidt(const std::vector<Vec> &A, double eps = 1E-14) {
   std::vector<Vec> Q({A[0] / A[0].norm()}); // output vectors
   for (int j = 1; (j < k) && (j < n); ++j) {
     Q.push_back(A[j]);
-    for (int l = 0; l < j; ++l) {
+    for (int l = 0; l < j; ++l)
       Q.back() -= (A[j] * Q[l]) * Q[l];
-    }
     if (Q.back().norm() < eps * A[j].norm()) { // premature termination ?
       Q.pop_back();
       break;
@@ -410,9 +354,9 @@ std::vector<Vec> gramschmidt(const std::vector<Vec> &A, double eps = 1E-14) {
 template <typename Functor>
 std::vector<MyVector> initvectors(std::size_t n, std::size_t k, Functor &&f) {
   std::vector<MyVector> A{};
-  for (int j = 0; j < static_cast<int>(k); ++j) {
-    A.emplace_back(MyVector(n));
-    for (int i = 0; i < static_cast<int>(n); ++i) {
+  for (int j = 0; j < (int)k; ++j) {
+    A.push_back(MyVector(n));
+    for (int i = 0; i < (int)n; ++i) {
       (A.back())[i] = f(i, j);
     }
   }
@@ -420,33 +364,28 @@ std::vector<MyVector> initvectors(std::size_t n, std::size_t k, Functor &&f) {
 }
 
 struct SimpleFunction {
-  explicit SimpleFunction(double _a = 1.0) : a(_a) {}
+  SimpleFunction(double _a = 1.0) : cnt(0), a(_a) {}
   double operator()(double x) {
     cnt++;
     return (x + a);
   }
-  [[nodiscard]] int count() const{ 
-    return cnt; 
-  }
-  private:
-    int cnt {0};        // internal counter
-    const double a; // increment value
+  int cnt;        // internal counter
+  const double a; // increment value
 };
 
 int main(int argc, char **argv) {
-  int code = 0;
   cout << "MyVector class implementation" << endl;
   if (argc != 2) {
-    std::cerr << "Usage: " << argv[0] << " <selection>" << endl; //NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+    std::cerr << "Usage: " << argv[0] << " <selection>" << endl;
     std::cerr << "1 : plain allocatiobn" << std::endl;
     std::cerr << "2 : initialization from list" << std::endl;
     std::cerr << "3 : initialization from container" << std::endl;
     std::cerr << "4 : entrywise operation" << std::endl;
     std::cerr << "5 : Gram-Schmidt" << std::endl;
-    code = -1L;
+    return (-1L);
   } else {
     try {
-      const int64_t sel = std::strtol(argv[1], nullptr, 10); //NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+      const int sel = atoi(argv[1]);
       switch (sel) {
       case 1: {
         MyVector mv(std::size_t(10));
@@ -480,7 +419,7 @@ int main(int argc, char **argv) {
             std::vector<double>({1.2, 2.3, 3.4, 4.5, 5.6, 6.7, 7.8, 8.9}));
         myvec::MyVector v2(2.0 * v1);
         myvec::MyVector v3(std::move(v1));
-        cout << "v1 = " << v1 << endl; //NOLINT(bugprone-use-after-move,hicpp-invalid-access-moved)
+        cout << "v1 = " << v1 << endl;
         cout << "v2 = " << v2 << endl;
         cout << "v3 = " << v3 << endl;
         break;
@@ -507,7 +446,7 @@ int main(int argc, char **argv) {
         cout << cnt << " operations, mv transformed = " << mv << endl;
         SimpleFunction trf(a);
         mv.transform(trf);
-        cout << trf.count() << " operations, mv transformed = " << mv << endl;
+        cout << trf.cnt << " operations, mv transformed = " << mv << endl;
         mv.transform(SimpleFunction(-4.0));
         cout << "Final vector = " << mv << endl;
         break;
@@ -529,9 +468,8 @@ int main(int argc, char **argv) {
         }
         cout << "Testing orthogonality:" << endl;
         for (const auto &qi : Q) {
-          for (const auto &qj : Q) {
+          for (const auto &qj : Q)
             cout << std::setprecision(3) << std::setw(9) << qi * qj << ' ';
-          }
           cout << endl;
         }
         break;
@@ -546,5 +484,5 @@ int main(int argc, char **argv) {
       std::cerr << "ERROR: " << e.what() << endl;
     }
   }
-  return code;
+  return (0);
 }

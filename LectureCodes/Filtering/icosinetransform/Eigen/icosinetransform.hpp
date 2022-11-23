@@ -1,17 +1,17 @@
-#include <Eigen/Dense>
 #include <cmath>
+#include <Eigen/Dense>
 #include <unsupported/Eigen/FFT>
 
 /* SAM_LISTING_BEGIN_0 */
-inline void icosinetransform(const Eigen::VectorXd& c, Eigen::VectorXd& y)
+void icosinetransform(const Eigen::VectorXd& c, Eigen::VectorXd& y)
 {
-	const Eigen::Index n = c.size();
+	size_t n = c.size();
 	
-	const std::complex<double> i(0,1);
+	std::complex<double> i(0,1);
 	Eigen::VectorXcd c_1(n);
 	c_1(0) = sqrt(2)*c(0);
-	for(Eigen::Index j=1; j<n; ++j) {
-		c_1(j) = pow(exp(-i*M_PI/(2*static_cast<double>(n))), j) * c(j);
+	for(size_t j=1; j<n; ++j) {
+		c_1(j) = pow(exp(-i*M_PI/(2*(double)n)), j) * c(j);
 	}
 	
 	Eigen::VectorXcd c_2(2*n);
