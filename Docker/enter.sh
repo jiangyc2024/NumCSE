@@ -15,7 +15,7 @@ if [ ! "$( docker ps | grep $container_name )" ]; then
 	docker build -t numcse_dev_base "$parent_dir/base"
 
 	# build 'last-mile' top image locally with altered build context
-	cd "$repo_root" && cp "$parent_dir/top/Dockerfile" . && docker build -t numcse_dev_top . && rm Dockerfile
+	cd "$repo_root" && docker build -t numcse_dev_top -f "$parent_dir/top/Dockerfile" .
 
 	# launch container and bind mount the numcse repository for developing codes
 	docker run --name $container_name --rm -it -v "$repo_root:/numcse" numcse_dev_top
