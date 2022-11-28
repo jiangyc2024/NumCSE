@@ -6,7 +6,7 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 /* SAM_LISTING_BEGIN_0 */
-#include <cmath> //define _USE_MATH_DEFINES to access M_PI
+#include <cmath> //define \_USE\_MATH\_DEFINES to access M\_PI
 #include <iostream>
 #include <limits> 
 
