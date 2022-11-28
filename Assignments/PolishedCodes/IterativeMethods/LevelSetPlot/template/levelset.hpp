@@ -27,7 +27,7 @@ Eigen::Vector2d pointLevelSet(Functor&& f, const Eigen::Vector2d& d, double c,
                               double atol = 1e-16) {
   Eigen::Vector2d intersect = Eigen::VectorXd::Zero(2);
 
-  // TODO: (9-13.c) Use the secant method to find the intersection.
+  // TODO: (8-13.c) Use the secant method to find the intersection.
   // START
 
   // END
@@ -54,7 +54,7 @@ double areaLevelSet(Functor&& f, unsigned int n, double c) {
   // define initial guesses
   Eigen::Vector2d x0 = {1, 0};
 
-  // TODO: (9-13.d) Compute the "Archimedean approximation" of the area of the
+  // TODO: (8-13.d) Compute the "Archimedean approximation" of the area of the
   // level set.
   // START
   // END
