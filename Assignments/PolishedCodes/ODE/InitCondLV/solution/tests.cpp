@@ -1,9 +1,8 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "doctest.h"
+#include <Eigen/Dense>
 
 #include "copy.hpp"
-
-#include <Eigen/Dense>
+#include "doctest.h"
 
 struct TestData {
   TestData() {
@@ -20,29 +19,21 @@ struct TestData {
 TestData data;
 
 TEST_SUITE("InitCondLV") {
-  TEST_CASE("std::pair<Vector2d, Matrix2d> PhiAndW" *
+  TEST_CASE("std::pair<Eigen::Vector2d, Eigen::Matrix2d> PhiAndW" *
             doctest::description("Test of PhiAndW")) {
-    std::pair<Eigen::Vector2d, Eigen::Matrix2d> PaW_sol =
-        PhiAndW(data.u0, data.v0, data.T);
-    std::pair<Eigen::Vector2d, Eigen::Matrix2d> PaW_stud =
-        PhiAndW_TEST(data.u0, data.v0, data.T);
-
-    Eigen::Vector2d phi_sol = PaW_sol.first;
-    Eigen::Vector2d phi_stud = PaW_stud.first;
+    auto [phi_sol, W_sol] = PhiAndW(data.u0, data.v0, data.T);
+    auto [phi_stud, W_stud] = PhiAndW_TEST(data.u0, data.v0, data.T);
 
     CHECK((phi_sol - phi_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
-
-    Eigen::Matrix2d W_sol = PaW_sol.second;
-    Eigen::Matrix2d W_stud = PaW_stud.second;
-
     CHECK((W_sol - W_stud).norm() == doctest::Approx(0.).epsilon(1e-6));
   }
 
-  TEST_CASE("Vector2d findInitCond" *
-            doctest::description("findInitCond: y")) {
-    Eigen::Vector2d sol = findInitCond();
-    Eigen::Vector2d stud = findInitCond_TEST();
+  TEST_CASE("std::pair<double, double> findInitCond" *
+            doctest::description("findInitCond")) {
+    auto [u0_sol, v0_sol] = findInitCond();
+    auto [u0_stud, v0_stud] = findInitCond_TEST();
 
-    CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
+    CHECK(u0_sol == doctest::Approx(u0_stud).epsilon(1e-6));
+    CHECK(v0_sol == doctest::Approx(v0_stud).epsilon(1e-6));
   }
 }
