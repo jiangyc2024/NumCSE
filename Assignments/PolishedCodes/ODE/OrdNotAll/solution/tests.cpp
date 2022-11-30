@@ -1,11 +1,10 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "doctest.h"
-
-#include "copy.hpp"
-
 #include <Eigen/Dense>
 
-TEST_SUITE("NLMatODE") {
+#include "copy.hpp"
+#include "doctest.h"
+
+TEST_SUITE("OrdNotAll") {
   TEST_CASE("double testCvgRKSSM" *
             doctest::description(
                 "Compute convergence rate of an RK Single-Step method")) {

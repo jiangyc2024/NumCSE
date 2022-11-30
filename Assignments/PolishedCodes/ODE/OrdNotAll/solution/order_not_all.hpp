@@ -9,17 +9,18 @@
 #include "polyfit.hpp"
 #include "rkintegrator.hpp"
 
-/*!
- * \brief errors Approximates the order of convergence of a scheme.
+/**
+ * @brief errors Approximates the order of convergence of a scheme.
  * The scheme is a Runge Kutta scheme defined by A and b when applied
  * to the first order system y'=f(y), y(0)=y0.
  * The function ouputs error of the solutions at the time T.
- * \tparam Function Type for r.h.s function f.
- * \param f The r.h.s function for the ODE.
- * \param T Final time.
- * \param y0 Initial data.
- * \param A Butcher matrix $A$.
- * \param b Butcher vector $b$.
+ *
+ * @tparam Function Type for r.h.s function f.
+ * @param f The r.h.s function for the ODE.
+ * @param T Final time.
+ * @param y0 Initial data.
+ * @param A Butcher matrix $A$.
+ * @param b Butcher vector $b$.
  */
 /* SAM_LISTING_BEGIN_1 */
 template <class Function>
@@ -28,7 +29,8 @@ double testCvgRKSSM(const Function &f, double T, double y0,
   // Helper object carrying out the actual explicit RK-SSM
   RKIntegrator<double> rk(A, b);
   double conv_rate = 0;
-  // TO DO: 11-6.a
+  // TODO: (11-6.a) Print the errors at each final time point and estimate the
+  // convergence rate.
   // START
 
   // Vector for collecting errors
@@ -37,15 +39,15 @@ double testCvgRKSSM(const Function &f, double T, double y0,
   Eigen::VectorXd timesteps(12);
 
   double sum = 0;
-  int count = 0;
+  unsigned int count = 0;
   bool test = true;
 
   // Reference numerical solution obtained with $2^{15}$ timesteps
   std::vector<double> y_exact = rk.solve(f, T, y0, std::pow(2, 15));
 
-  for (int k = 0; k < 12; k++) {
+  for (unsigned int k = 0; k < 12; k++) {
     // Number of timesteps
-    int M = std::pow(2, k + 1);
+    const unsigned int M = std::pow(2, k + 1);
     timesteps(k) = M;
     // Solve IVP
     std::vector<double> y1 = rk.solve(f, T, y0, M);
@@ -60,7 +62,7 @@ double testCvgRKSSM(const Function &f, double T, double y0,
       test = false;
     }
     if (k > 0 && test) {
-      double rk = std::log2(error(k - 1) / error(k));
+      const double rk = std::log2(error(k - 1) / error(k));
       std::cout << std::left << std::setfill(' ') << std::setw(10)
                 << "Approximated order = " << rk << std::endl;
       sum += rk;
@@ -80,15 +82,17 @@ double testCvgRKSSM(const Function &f, double T, double y0,
 }
 /* SAM_LISTING_END_1 */
 
-/*!
- * \brief This function compares the convergence rates of four RK single step
+/**
+ * @brief This function compares the convergence rates of four RK single step
  * methods: explicit Euler, trapezoidal rule, RK order 3 and classical RK
  * order 4. Comparison is done for two ODEs: 1. ODE y' = (1-y)y, y(0)=.5 and 2.
  * ODE y' = |1.1 - y| + 1, y(0)=1.
+ *
  */
 /* SAM_LISTING_BEGIN_2 */
 void cmpCvgRKSSM() {
-  // TO DO: 11-6.c
+  // TODO: (11-6.c) Print the convergence rates of four RK single step methods
+  // on the two given ODEs.
   // START
   // Construct data for Butcher schemes
   Eigen::MatrixXd A1 = Eigen::MatrixXd::Zero(1, 1);
@@ -118,7 +122,7 @@ void cmpCvgRKSSM() {
   std::cout << std::endl
             << "1. ODE y' = (1-y)y, y(0)=.5" << std::endl
             << std::endl;
-  double T = 1;
+  constexpr double T = 1;
   auto f = [](double y) { return (1. - y) * y; };
   double y0 = .5;
   double rate;
