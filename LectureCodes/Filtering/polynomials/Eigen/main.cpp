@@ -45,11 +45,12 @@ std::pair<RetVec, RetVec> polyDiv(pVec p, const uVec &u) {
   // Fetch degrees of input polynomials
   const int degp = p.size() - 1;
   int degu = u.size() - 1;
-  assert(("Degree of p must be >= degree of u", degp >= degu));
+  assert(degp >= degu && "Degree of p must be >= degree of u");
   // Effective degree of u
-  while (u[degu] == uScalar(0))
+  while (u[degu] == static_cast<uScalar>(0)) {
     degu--;
-  assert(("u != 0 required", degu > 0));
+  }
+  assert(degu > 0 && "u != 0 required");
   // Degree of result of division
   const int degv = degp - degu;
   RetVec v(degv + 1);
@@ -82,8 +83,8 @@ template <typename Vec> void polyOut(const Vec &v) {
 
 int main(int /*argc*/, char ** /*argv*/) {
   std::cout << "Polynomial multiplication and division" << std::endl;
-  std::vector<double> u{1.0, 2.0, 3.0};
-  std::vector<double> v{4.0, 5.0};
+  const std::vector<double> u{1.0, 2.0, 3.0};
+  const std::vector<double> v{4.0, 5.0};
   auto p = Polynomials::polyMult<std::vector<double>>(u, v);
   std::cout << "p = ";
   Polynomials::polyOut(p);
