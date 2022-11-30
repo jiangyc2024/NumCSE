@@ -6,11 +6,14 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 /* SAM_LISTING_BEGIN_0 */
+#include <cmath> //define \_USE\_MATH\_DEFINES to access M\_PI
 #include <iostream>
-#define _USE_MATH_DEFINES
-#include <cmath>
 #include <limits> 
-using namespace std;
+
+using std::cout;
+using std::numeric_limits;
+using std::endl;
+
 int main(){	
 	cout.precision(15);
 	double min = numeric_limits<double>::min();

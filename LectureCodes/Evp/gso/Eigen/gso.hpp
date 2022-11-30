@@ -1,11 +1,14 @@
 #include <Eigen/Dense>
 
+namespace gso {
+
+
 /* \Hyperlink{GSO}{Gram-Schmidt orthonormalization} of the columns of \Blue{$\VV\in\bbR^{n,m}$}, see
  * \eqref{eq:GSO}. The vectors \Blue{$\Vq_1,\ldots,\Vq_m$} are returned as the columns of
  * the \Magenta{\emph{orthogonal}} matrix \Blue{$\VQ$}. */
-Eigen::MatrixXd gso(const Eigen::MatrixXd &V)
+inline Eigen::MatrixXd gso(const Eigen::MatrixXd &V)
 {
-	int m = V.cols();
+	const Eigen::Index m = V.cols();
 	Eigen::MatrixXd Q(V.rows(),m);
 
 	// first vector is will only be normalized
@@ -13,7 +16,7 @@ Eigen::MatrixXd gso(const Eigen::MatrixXd &V)
 	q.normalize();
 	Q.col(0) = q;
 
-	for (int l=1; l<m; ++l)
+	for (Eigen::Index l=1; l<m; ++l)
 	{
 		q = V.col(l);
 
@@ -29,3 +32,6 @@ Eigen::MatrixXd gso(const Eigen::MatrixXd &V)
 
 	return Q;
 }
+
+
+} //namespace gso

@@ -1,10 +1,10 @@
-# include <iostream>
-# include "./psf.hpp"
+#include "psf.hpp"
+#include <iostream>
 
 int main() {
-  MatrixXd S;
+  Eigen::MatrixXd S;
   const long L = 2;
-  psf(L, S);
+  psf::psf(L, S);
   std::cout << "S:\n" << S << "\n";
   return 0;
 }

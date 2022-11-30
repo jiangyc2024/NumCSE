@@ -1,16 +1,18 @@
-#include <libgen.h>
 #include "seg.hpp"
+#include <libgen.h>
+#include <span>
 
-//TODO: test with MKL (without Eigen is too slow)
+//TODO(hgratten): test with MKL (without Eigen is too slow)
 
 //1st stage of segmentation of grayscale image
 int main(int argc, char** argv)
 {
-	std::string path = std::string(dirname(argv[0])) +	"/test.bmp";
+	const std::span args(argv, argc);
+	const std::string path = std::string(dirname(args[0])) + "/test.bmp"; //NOLINT(concurrency-mt-unsafe)
 
-	auto img = readBMP(path);
-	Eigen::MatrixXd P = greyscale(img);
+	auto img = imread::readBMP(path);
+	Eigen::MatrixXd P = imread::greyscale(img);
 
-	seg(P);
+	seg::seg(P);
 
 }

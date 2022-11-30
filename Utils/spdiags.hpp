@@ -1,8 +1,8 @@
 #pragma once
-#include <vector>
 #include <Eigen/Sparse>
 #include <algorithm>
-using namespace Eigen;
+#include <vector>
+
 /* SAM_LISTING_BEGIN_0 */
 /**
  * @brief Equivalent to MATLAB function A = spdiags(B,d,m,n)
@@ -12,29 +12,25 @@ using namespace Eigen;
  * @param d A vector of length p whose integer components specify the diagonals in A.
  * @param m number of rows of output
  * @param n number of columnss of output
- * @return m x n SparseMatrix by taking the columns of B and placing them along the diagonals specified by d.
+ * @return m x n Eigen::SparseMatrix by taking the columns of B and placing them along the diagonals specified by d.
  */
 template <class numeric_t> 
-SparseMatrix<numeric_t> spdiags(const Matrix<numeric_t,-1,-1> &B, 
-					const VectorXi &d, const int m, const int n) {					
-	typedef Triplet<numeric_t> triplet_t;
+Eigen::SparseMatrix<numeric_t> spdiags(const Eigen::Matrix<numeric_t,-1,-1> &B, 
+					const Eigen::VectorXi &d, const Eigen::Index m, const Eigen::Index n) {					
+	typedef Eigen::Triplet<numeric_t> triplet_t;
 	std::vector<triplet_t> triplets;
 	triplets.reserve(std::min(m,n)*d.size());
-	for (int k = 0; k < d.size(); ++k) {
-		int diag = d(k);	// get diagonal
-		int i_start = std::max(-diag, 0); // get row of 1st element
-		int i_end = std::min(m, m-diag-(m-n)); // get row of last element
+	for (Eigen::Index k = 0; k < d.size(); ++k) {
+		const int diag = d(k);	// get diagonal
+		const int i_start = std::max(-diag, 0); // get row of 1st element
+		const Eigen::Index i_end = std::min(m, m-diag-(m-n)); // get row of last element
 		int j = -std::min(0, -diag); // get col of 1st element
-		int B_i; // start index i in matrix B
-		if(m < n)
-			B_i = std::max(-diag,0); // m < n
-		else
-			B_i = std::max(0,diag); // m >= n
+		Eigen::Index B_i = m < n ? std::max(-diag,0) : std::max(0,diag); // start index i in matrix B
 		for(int i = i_start; i < i_end; ++i, ++j, ++B_i){
-			triplets.push_back( {i, j,  B(B_i,k)} );
+			triplets.emplace_back(i, j, B(B_i,k));
 		}
 	}
-	SparseMatrix<numeric_t> A(m,n);
+	Eigen::SparseMatrix<numeric_t> A(m,n);
 	A.setFromTriplets(triplets.begin(), triplets.end());
 	A.makeCompressed();
 	return A;

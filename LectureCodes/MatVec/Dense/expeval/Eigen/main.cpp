@@ -6,12 +6,12 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
+#include <Eigen/Dense>
 #include <algorithm>
 #include <cmath>
 #include <iomanip>
 #include <ios>
-#include <Eigen/Dense>
+#include <iostream>
 
 #include "expeval.hpp"
 
@@ -21,7 +21,7 @@ int main () {
 	Eigen::MatrixXd res(n+1,4);
 	for(int i = 0; i <= n; ++i){
 		res(i,0) = x(i);
-		res(i,1) = expeval(x(i));
+		res(i,1) = expeval::expeval(x(i));
 		res(i,2) = std::exp(x(i));
 		res(i,3) = std::abs(res(i,2)-res(i,1))/res(i,2);
 		// printing

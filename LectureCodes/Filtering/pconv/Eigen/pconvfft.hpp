@@ -1,8 +1,8 @@
 #pragma once
 #include <Eigen/Dense>
 #include <unsupported/Eigen/FFT>
-using Eigen::VectorXcd;
 
+inline
 /* SAM_LISTING_BEGIN_0 */
 Eigen::VectorXcd pconvfft(const Eigen::VectorXcd &u,
                           const Eigen::VectorXcd &x) {

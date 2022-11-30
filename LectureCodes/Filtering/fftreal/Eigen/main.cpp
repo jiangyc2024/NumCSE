@@ -1,11 +1,11 @@
-# include <iostream>
-# include "fftreal.hpp"
+#include "fftreal.hpp"
+#include <iostream>
 
 int main() {
-  Eigen::VectorXd y = Eigen::VectorXd::LinSpaced(10, 0, 1);
+  const Eigen::VectorXd y = Eigen::VectorXd::LinSpaced(10, 0, 1);
   Eigen::VectorXcd c;
 
-  fftreal(y, c);
+  fftreal::fftreal(y, c);
   std::cout << "c:\n" << c << "\n";
   return 0;
 }

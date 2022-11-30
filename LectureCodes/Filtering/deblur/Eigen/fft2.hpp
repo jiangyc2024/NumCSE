@@ -10,16 +10,16 @@
  * \return A complex matrix, whose columns are transformed
  * under DFT.
  */
-Eigen::MatrixXcd fft(const Eigen::MatrixXcd& X) {
-    const long m = X.rows(),
-               n = X.cols();
+inline Eigen::MatrixXcd fft(const Eigen::MatrixXcd& X) {
+    const Eigen::Index m = X.rows();
+    const Eigen::Index n = X.cols();
 
     Eigen::MatrixXcd Y(m, n);
 
     Eigen::FFT<double> fft;
 
-    for (long j = 0; j < n; ++j) {
-        Eigen::VectorXcd Xj = X.col(j);
+    for (Eigen::Index j = 0; j < n; ++j) {
+        const Eigen::VectorXcd Xj = X.col(j);
         Y.col(j) = fft.fwd(Xj);
     }
     return Y;
@@ -33,16 +33,16 @@ Eigen::MatrixXcd fft(const Eigen::MatrixXcd& X) {
  * \return A complex matrix, whose columns are transformed
  * under inverse DFT.
  */
-Eigen::MatrixXcd ifft(const Eigen::MatrixXcd& X) {
-    const long m = X.rows(),
-               n = X.cols();
+inline Eigen::MatrixXcd ifft(const Eigen::MatrixXcd& X) {
+    const Eigen::Index m = X.rows();
+    const Eigen::Index n = X.cols();
 
     Eigen::MatrixXcd Y(m, n);
 
     Eigen::FFT<double> fft;
 
-    for (long j = 0; j < n; ++j) {
-        Eigen::VectorXcd Xj = X.col(j);
+    for (Eigen::Index j = 0; j < n; ++j) {
+        const Eigen::VectorXcd Xj = X.col(j);
         Y.col(j) = fft.inv(Xj);
     }
     return Y;
@@ -55,7 +55,7 @@ Eigen::MatrixXcd ifft(const Eigen::MatrixXcd& X) {
  * \param X A complex matrix.
  * \return A complex matrix, with Fourier coeffficients of X.
  */
-Eigen::MatrixXcd fft2(const Eigen::MatrixXcd& X) {
+inline Eigen::MatrixXcd fft2(const Eigen::MatrixXcd& X) {
     return fft(fft(X).transpose()).transpose();
 }
 
@@ -66,7 +66,7 @@ Eigen::MatrixXcd fft2(const Eigen::MatrixXcd& X) {
  * \param X A complex matrix.
  * \return A complex matrix, with Fourier coeffficients of X.
  */
-Eigen::MatrixXcd ifft2(const Eigen::MatrixXcd& X) {
+inline Eigen::MatrixXcd ifft2(const Eigen::MatrixXcd& X) {
     return ifft(ifft(X).transpose()).transpose();
 }
 
@@ -78,16 +78,16 @@ Eigen::MatrixXcd ifft2(const Eigen::MatrixXcd& X) {
  * \return A complex matrix, whose columns are transformed
  * under inverse DFT.
  */
-Eigen::MatrixXcd fftr(const Eigen::MatrixXd& X) {
-    const long m = X.rows(),
-               n = X.cols();
+inline Eigen::MatrixXcd fftr(const Eigen::MatrixXd& X) {
+    const Eigen::Index m = X.rows();
+    const Eigen::Index n = X.cols();
 
     Eigen::MatrixXcd Y(m, n);
 
     Eigen::FFT<double> fft;
 
-    for (long j = 0; j < n; ++j) {
-        Eigen::VectorXd Xj = X.col(j);
+    for (Eigen::Index j = 0; j < n; ++j) {
+        const Eigen::VectorXd Xj = X.col(j);
         Y.col(j) = fft.fwd(Xj);
     }
 
@@ -102,16 +102,16 @@ Eigen::MatrixXcd fftr(const Eigen::MatrixXd& X) {
  * \return A complex matrix, whose columns are transformed
  * under inverse DFT.
  */
-Eigen::MatrixXd ifftr(const Eigen::MatrixXcd& X) {
-    const long m = X.rows(),
-               n = X.cols();
+inline Eigen::MatrixXd ifftr(const Eigen::MatrixXcd& X) {
+    const Eigen::Index m = X.rows();
+    const Eigen::Index n = X.cols();
 
     Eigen::MatrixXd Y(m, n);
 
     Eigen::FFT<double> fft;
 
-    for (long j = 0; j < n; ++j) {
-      Eigen::VectorXcd Xj = X.col(j);
+    for (Eigen::Index j = 0; j < n; ++j) {
+      const Eigen::VectorXcd Xj = X.col(j);
       Y.col(j) = fft.inv(Xj);
     }
 
@@ -125,7 +125,7 @@ Eigen::MatrixXd ifftr(const Eigen::MatrixXcd& X) {
  * \param X A real matrix.
  * \return A complex matrix, with Fourier coeffficients of X.
  */
-Eigen::MatrixXcd fft2r(const Eigen::MatrixXd& X) {
+inline Eigen::MatrixXcd fft2r(const Eigen::MatrixXd& X) {
     return fft(fftr(X).transpose()).transpose();
 }
 
@@ -137,6 +137,6 @@ Eigen::MatrixXcd fft2r(const Eigen::MatrixXd& X) {
  * real DFT (hermitian).
  * \return A real matrix, with Fourier coeffficients of X.
  */
-Eigen::MatrixXd ifft2r(const Eigen::MatrixXcd& X) {
+inline Eigen::MatrixXd ifft2r(const Eigen::MatrixXcd& X) {
     return ifftr(ifft(X).transpose()).transpose();
 }

@@ -29,6 +29,15 @@ const fs = require( "fs/promises" );
 const { exec } = require( "child_process" );
 const { basename } = require( "path" );
 
+//whether to keep the export directory (unzipped)
+const keep = process.argv.includes( "--keep" );
+
+//whether to print verbose output
+const verbose = process.argv.includes( "--verbose" );
+
+//filter out flags to parse positional args
+process.argv = process.argv.filter( arg => ! arg.startsWith( "--" ));
+
 //absolute path to root of the repository
 const repo_root = process.argv[ 2 ];
 
@@ -38,12 +47,6 @@ const assignment_path_rel = process.argv[ 3 ]
 //the basename of the default student work file (optional, only needed if the auto-detection fails 
 //and you get an error)
 const default_file = process.argv[ 4 ];
-
-//whether to keep the export directory (unzipped)
-const keep = process.argv.includes( "--keep" );
-
-//whether to print verbose output
-const verbose = process.argv.includes( "--verbose" );
 
 //display name of the task
 const display_name = basename( assignment_path_rel );
@@ -90,19 +93,19 @@ const env = {
 //detection logic for whether this is the default student work file
 async function is_default_file( path ) {
 
-	return ( default_file && basename( path ) == basename( default_file )) ? true : await contains_todo( path );
+	return default_file ? basename( path ) == basename( default_file ) : await is_student_work_file( path );
 }
 
 //detection logic for whether a file is marked as writable by students in cx
 async function is_editable( path ) {
 
 	if( await is_default_file( path )) return true;
-	if( await contains_todo( path )) return true;
+	if( await is_student_work_file( path )) return true;
 	if( path.includes( "/written_solution.md" ) || path.includes( "main.cpp" )) return true;
 }
 
 //helper to determine whether this is a c++ file containing work for students
-async function contains_todo( path ) {
+async function is_student_work_file( path ) {
 
 	if( path.includes( ".hpp" ) && ! path.endsWith( "solution.hpp" )) {
 
@@ -239,11 +242,33 @@ async function assemble_project( name ) {
 	await copy_file( `${ testing_path }/doctest.h`, project_path );
 	await copy_file( `${ testing_path }/copy_and_tweak.py`, project_path );
 
-	//find the master solution by finding the default student work file in the solution project. 
-	//solution.hpp is needed for the tests
-	const solution_path = await find_default_file( `${ assignment_path }/solution`, true );
-	if( verbose ) console.log( "default file found:", solution_path );
-	await copy_file( solution_path, `${ project_path }/solution.hpp` );
+	//find the master solution(s) by finding the student work files in the solution project. 
+	const student_work_files = await find_student_work_files( `${ assignment_path }/solution` );
+
+	//just a parallel for-loop
+	await Promise.all( student_work_files.map( async ( path, i ) => {
+
+		//copy over the solution files needed in the tests, the order does not matter
+		await copy_file( path, `${ project_path }/${ i > 0 ? `solution${ i + 1 }.hpp` : "solution.hpp" }` );
+		if( verbose ) console.log( "student work file found:", path );
+	}));
+
+	//filter out default file candidates, assumes that the default file is also a student work file
+	const default_files = await async_filter( student_work_files, is_default_file );
+
+	//there is no unique candidate for the default file
+	if( default_files.length == 0 ) {
+
+		//clean up and exit with error
+		await fs.rm( export_path, { recursive: true });
+		console.error( `Error: Could not find any suitable default file. Please specify it explicitly in the arguments!` );
+		process.exit( 1 );
+	} 
+	else if( default_files.length > 1 ) {
+
+		//only warn, but we can continue without major problems
+		console.error( `Warning: Found multiple suitable default files. You can also specify it explicitly in the arguments!` );
+	}
 
 	//always take the tests file from the template project to avoid inconsistencies
 	await copy_file( `${ assignment_path }/template/tests.cpp`, project_path );
@@ -282,19 +307,11 @@ function zip( dir ) {
 	});
 }
 
-//tries to find the default student work file in a directory
-async function find_default_file( path, is_top_level = false ) {
+//tries to find the student work files in a directory
+async function find_student_work_files( path ) {
 
-	var result = undefined;
+	const work_files = [ ];
 	const children = await fs.readdir( path, { withFileTypes: true });
-	
-	//clean up and exit with error
-	const fail = async _ => {
-
-		await fs.rm( export_path, { recursive: true });
-		console.error( "Error: Auto-detection of default file failed. Please specify it explicitly in the arguments" );
-		process.exit( 1 );
-	};
 
 	//just a parallel for-loop
 	await Promise.all( children.map( async child => {
@@ -303,24 +320,15 @@ async function find_default_file( path, is_top_level = false ) {
 
 		if( child.isDirectory( )) {
 
-			const sub_result = await find_default_file( child_path );
-			if( result && sub_result ) await fail( );
-			if( sub_result ) result = sub_result;
+			work_files.push( ...await find_student_work_files( child_path ));
 		}
-		else {
+		else if( await is_student_work_file( child_path )) {
 
-			if( await is_default_file( child_path )) {
-
-				//duplicate found
-				if( result ) await fail( );
-			 	result = child_path;
-			}
+			work_files.push( child_path );
 		}
 	}));
-
-	//none found in the whole recursive search
-	if( ! result && is_top_level ) await fail( );
-	return result;
+	
+	return work_files;
 }
 
 //builds a directory description in cx format, cx_path is the project-relative path used by the
@@ -435,7 +443,7 @@ async function get_file_description( path, project_id, cx_path ) {
 	}
 
 	//save the info about the default file for each project, so the projects can point to this file 
-	//as default file
+	//as default file. if there are multiple candidates matching this criterion, any is selected
 	if( await is_default_file( path )) default_cache[ project_id ] = info.key;
 	
 	if( await is_editable( path )) {
@@ -460,10 +468,13 @@ async function get_file_description( path, project_id, cx_path ) {
 //you export a task
 async function mime_type( path ) {
 
-	return new Promise( resolve => {
+	const detected = await new Promise( resolve => {
 
 		exec( `file --mime-type -b "${ path }"`, ( _, stdout ) => resolve( stdout.replaceAll( "\n", "" )));
 	});
+
+	if( path.endsWith( ".md" )) return "text/markdown";
+	return detected;
 }
 
 //generate a unique identifier with the same format as cx's uids
@@ -479,6 +490,12 @@ function uid( ) {
 	}
 
 	return str;
+}
+
+async function async_filter( xs, predicate ) {
+	
+	const keep = await Promise.all( xs.map( predicate ));
+	return xs.filter(( _, i ) => keep[ i ]);
 }
 
 main( );

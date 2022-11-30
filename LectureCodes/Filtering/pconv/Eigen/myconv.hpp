@@ -1,7 +1,9 @@
 #include "pconvfft.hpp"
+
 #include <algorithm>
 #include <cassert>
 
+inline
 // Discrete convolution of two vectors of equal length by periodic convolution
 /* SAM_LISTING_BEGIN_0 */
 Eigen::VectorXcd fastconv(const Eigen::VectorXcd &h,
@@ -18,14 +20,16 @@ Eigen::VectorXcd fastconv(const Eigen::VectorXcd &h,
 }
 /* SAM_LISTING_END_0 */
 
+inline
 // General discrete convolution: double loop implementation 
 /* SAM_LISTING_BEGIN_1 */
 Eigen::VectorXcd dconv(const Eigen::VectorXcd &h, const Eigen::VectorXcd &x) {
-  const int n = h.size();
-  const int m = x.size();
+  using idx_t = Eigen::Index;
+  const idx_t n = h.size();
+  const idx_t m = x.size();
   Eigen::VectorXcd y{Eigen::VectorXcd::Zero(n + m - 1)};
-  for (int k = 0; k < n + m - 1; ++k) {
-    for (int j = std::max(0, k - n + 1); j < std::min(m, k + 1); ++j) {
+  for (idx_t k = 0; k < n + m - 1; ++k) {
+    for (idx_t j = std::max(0L, k - n + 1); j < std::min(m, k + 1); ++j) {
       y[k] += h[k - j] * x[j];
     }
   }

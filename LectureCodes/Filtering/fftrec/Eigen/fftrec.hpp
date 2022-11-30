@@ -2,37 +2,52 @@
 #include <complex>
 #include <iostream>
 #include <unsupported/Eigen/FFT>
+
+namespace fftrec {
+
+
 using Eigen::VectorXcd;
 
+//NOLINTBEGIN(misc-no-recursion)
+inline
 /* SAM_LISTING_BEGIN_0 */
 // Recursive DFT for vectors of length \Blue{$n=2^L$}
 VectorXcd fftrec(const VectorXcd &y) {
   const VectorXcd::Index n = y.size();
   
   // Nothing to do for DFT of length 1
-  if (n == 1) return y;
-  if (n % 2 != 0) throw std::runtime_error("size(y) must be even!");
+  if (n == 1) {
+    return y;
+  }
+  if (n % 2 != 0) {
+    throw std::runtime_error("size(y) must be even!");
+  }
   
   // Even/odd splitting by rearranging the vector components into a $n/2 \times 2$ matrix!
   // See \cref{rem:eigrs} for use of \cppclass{Eigen::Map}
   const Eigen::Map<const Eigen::Matrix<std::complex<double>, Eigen::Dynamic,
                                        Eigen::Dynamic, Eigen::RowMajor>>
       Y(y.data(), n / 2, 2);
-  const VectorXcd c1 = fftrec(Y.col(0)), c2 = fftrec(Y.col(1));
+  const VectorXcd c1 = fftrec(Y.col(0));
+  const VectorXcd c2 = fftrec(Y.col(1));
   // Root of unity \Blue{$\omega_n$}
   const std::complex<double> omega =
-      std::exp(-2 * M_PI / n * std::complex<double>(0, 1));
+      std::exp(-2 * M_PI / static_cast<double>(n) * std::complex<double>(0, 1));
   // Factor in \eqref{fft:rec}
   std::complex<double> s(1.0, 0.0);
   VectorXcd c(n);
   // Scaling of DFT of odd components plus periodic continuation of c1, c2
-  for (long k = 0; k < n; ++k) {
+  for (Eigen::Index k = 0; k < n; ++k) {
     c(k) = c1(k % (n / 2)) + c2(k % (n / 2)) * s;
     s *= omega;
   }
   return c;
 }
 /* SAM_LISTING_END_0 */
+//NOLINTEND(misc-no-recursion)
+
+
+} //namespace fftrec
 
 /*
   Eigen::FFT<double> fft;
