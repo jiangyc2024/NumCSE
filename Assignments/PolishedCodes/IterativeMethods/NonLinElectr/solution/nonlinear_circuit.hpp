@@ -66,8 +66,8 @@ void plotU() {
 
   plt::plot(Uin, Uout);
   plt::title("Nonlinear dependence caused by a diode");
-  plt::xlabel("U_in");
-  plt::ylabel("U_out");
+  plt::xlabel("$U_{in}$");
+  plt::ylabel("$U_{out}$");
   // END
   plt::savefig("./cx_out/Udiode.png");
 }

@@ -41,7 +41,6 @@ int main() {
 
   // call runtime computation
   runtime_toeplitz();
-  runtime_toeplitz_with_chrono();
 
   // Test ttsolve
   std::cout << "Testing ttsolve:" << std::endl;
