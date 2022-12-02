@@ -13,8 +13,8 @@
  * @return The $n$-dimensional vector $y = Ax$
  */
 /* SAM_LISTING_BEGIN_0 */
-Eigen::VectorXd multAx(Eigen::VectorXd& a, const Eigen::VectorXd& b,
-                       const Eigen::VectorXd& x) {
+Eigen::VectorXd multAx(Eigen::VectorXd &a, const Eigen::VectorXd &b,
+                       const Eigen::VectorXd &x) {
   const unsigned int n = x.size();
   Eigen::VectorXd y = Eigen::VectorXd::Zero(n);
   if (a.size() < n - 1 || b.size() < n - 2) {
@@ -45,7 +45,8 @@ Eigen::VectorXd multAx(Eigen::VectorXd& a, const Eigen::VectorXd& b,
   }
 
   // Last row special case
-  if (n > 2) y(n - 1) = 2 * x(n - 1) + b(n - 3) * x(n - 3);
+  if (n > 2)
+    y(n - 1) = 2 * x(n - 1) + b(n - 3) * x(n - 3);
   // END
   return y;
 }
@@ -60,8 +61,8 @@ Eigen::VectorXd multAx(Eigen::VectorXd& a, const Eigen::VectorXd& b,
  * @return The $n$-dimensional vector from $Ax = r$
  */
 /* SAM_LISTING_BEGIN_1 */
-Eigen::VectorXd solvelseAupper(const Eigen::VectorXd& a,
-                               const Eigen::VectorXd& r) {
+Eigen::VectorXd solvelseAupper(const Eigen::VectorXd &a,
+                               const Eigen::VectorXd &r) {
   // Set up dimensions
   const unsigned int n = r.size();
   Eigen::VectorXd x = Eigen::VectorXd::Zero(n);
@@ -93,8 +94,8 @@ Eigen::VectorXd solvelseAupper(const Eigen::VectorXd& a,
  * @return The $n$-dimensional vector from $Ax = r$
  */
 /* SAM_LISTING_BEGIN_2 */
-Eigen::VectorXd solvelseA(const Eigen::VectorXd& a, const Eigen::VectorXd& b,
-                          const Eigen::VectorXd& r) {
+Eigen::VectorXd solvelseA(const Eigen::VectorXd &a, const Eigen::VectorXd &b,
+                          const Eigen::VectorXd &r) {
   // Set up dimensions
   const unsigned int n = r.size();
   Eigen::VectorXd x = Eigen::VectorXd::Zero(n);
@@ -106,30 +107,55 @@ Eigen::VectorXd solvelseA(const Eigen::VectorXd& a, const Eigen::VectorXd& b,
   // TODO: (2-6.d) Compute the solution to A*x=r by Gaussian elimination and
   // without the help of Eigen's solvers.
   // START
-  Eigen::VectorXd c, d, y;
-  c.resize(n - 1);
-  d.resize(n);
-  for (unsigned int i = 0; i < n - 1; ++i) {
-    c(i) = 0;
-    d(i) = 2;
-  }
-  d(n - 1) = 2;
-  x = r;
-  y = r;
+  // Initializing vectors for the diagonal and lower off-diagonal
+  Eigen::VectorXd d = Eigen::VectorXd::Constant(n, 2);
+  Eigen::VectorXd c = Eigen::VectorXd::Constant(n - 1, 0);
 
-  // Plain vectors are enough
-  // Fill-in is confined to a single lower off-diagonal, which can be held in
-  // vector $c$
-  for (unsigned int i = 0; i < n - 2; ++i) {
-    c(i + 1) = -b(i) / d(i) * a(i);
-    y(i + 2) -= b(i) / d(i) * y(i);
-    d(i + 2) -= c(i+1) / d(i+1) * a(i+1);
-    y(i + 2) -= c(i+1)/ d(i+1) * y(i+1);
-  }
+  // A modifiable RHS vector
+  Eigen::VectorXd R(r);
 
-  x(n - 1) = y(n - 1) / d(n - 1);
+  // Performing Gaussian elimination
+  // We only need to update the vectors c and d!
+  for (unsigned i = 0; i < n - 2; ++i) {
+    /*
+
+      ... d(i)  a(i)     0       0      ...
+      ... c(i)  d(i+1)   a(i+1)  0      ...
+      ... b(i)  c(i+1)   d(i+2)  a(i+2) 0
+
+                    ===>
+
+      ... d(i)  a(i)                    0       0      ...
+      ... 0     d(i+1)-c(i)/d(i)*a(i)   a(i+1)  0      ...
+      ... b(i)  c(i+1)                  d(i+2)  a(i+2) 0
+    */
+    d(i + 1) -= c(i) / d(i) * a(i);
+    // Modifying the RHS accordingly
+    R(i + 1) -= c(i) / d(i) * R(i);
+
+    /*
+      ... d(i)  a(i)                    0       0      ...
+      ... 0     d(i+1)-c(i)/d(i)*a(i)   a(i+1)  0      ...
+      ... b(i)  c(i+1)                  d(i+2)  a(i+2) 0
+
+                    ===>
+
+      ... d(i)  a(i)                    0       0      ...
+      ... 0     d(i+1)-c(i)/d(i)*a(i)   a(i+1)  0      ...
+      ... 0     c(i+1)-b(i)/d(i)*a(i)   d(i+2)  a(i+2) 0
+    */
+    c(i + 1) -= b(i) / d(i) * a(i);
+    // Modifying the RHS accordingly
+    R(i + 2) -= b(i) / d(i) * R(i);
+  }
+  // Last row
+  d(n - 1) -= c(n - 2) / d(n - 2) * a(n - 2);
+  R(n - 1) -= c(n - 2) / d(n - 2) * R(n - 2);
+
+  // Backward substitution
+  x(n - 1) = R(n - 1) / d(n - 1);
   for (int i = n - 2; i >= 0; --i) {
-    x(i) = (y(i) - a(i) * x(i + 1)) / d(i);
+    x(i) = (R(i) - a(i) * x(i + 1)) / d(i);
   }
   // END
   return x;
@@ -145,9 +171,9 @@ Eigen::VectorXd solvelseA(const Eigen::VectorXd& a, const Eigen::VectorXd& b,
  * @return The $n$-dimensional vector from $Ax = r$
  */
 /* SAM_LISTING_BEGIN_3 */
-Eigen::VectorXd solvelseASparse(const Eigen::VectorXd& a,
-                                const Eigen::VectorXd& b,
-                                const Eigen::VectorXd& r) {
+Eigen::VectorXd solvelseASparse(const Eigen::VectorXd &a,
+                                const Eigen::VectorXd &b,
+                                const Eigen::VectorXd &r) {
   // Set up dimensions
   const unsigned int n = r.size();
   Eigen::VectorXd x = Eigen::VectorXd::Zero(n);
@@ -164,8 +190,10 @@ Eigen::VectorXd solvelseASparse(const Eigen::VectorXd& a,
   A.reserve(3);
   for (unsigned int i = 0; i < n; ++i) {
     A.insert(i, i) = 2;
-    if (i < n - 1) A.insert(i, i + 1) = a(i);
-    if (i >= 2) A.insert(i, i - 2) = b(i - 2);
+    if (i < n - 1)
+      A.insert(i, i + 1) = a(i);
+    if (i >= 2)
+      A.insert(i, i - 2) = b(i - 2);
   }
   A.makeCompressed();
 
