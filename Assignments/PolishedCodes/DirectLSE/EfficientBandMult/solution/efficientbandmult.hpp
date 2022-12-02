@@ -187,7 +187,7 @@ Eigen::VectorXd solvelseASparse(const Eigen::VectorXd &a,
   // Fill in matrix:
   // We reserve three nonzero entries per row for Gaussian fill-in
   Eigen::SparseMatrix<double> A(n, n);
-  A.reserve(3);
+  A.reserve(3*n);
   for (unsigned int i = 0; i < n; ++i) {
     A.insert(i, i) = 2;
     if (i < n - 1)
