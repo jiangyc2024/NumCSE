@@ -1,6 +1,6 @@
-#include "cross.hpp"
+#include <iostream>
 
-using namespace Eigen;
+#include "cross.hpp"
 
 int main() {
   std::cout << "Running tab_crossprod()" << std::endl;
