@@ -1,11 +1,8 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "doctest.h"
-
-#include "copy.hpp"
-
 #include <Eigen/Dense>
 
-using namespace Eigen;
+#include "copy.hpp"
+#include "doctest.h"
 
 struct TestData {
   TestData() {
@@ -22,16 +19,14 @@ struct TestData {
 TestData data;
 
 TEST_SUITE("STABRK3") {
-  TEST_CASE("Eigen::Vector2d PredPrey" *
-            doctest::description("Check output")) {
+  TEST_CASE("Eigen::Vector2d PredPrey" * doctest::description("Check output")) {
     Eigen::Vector2d sol = PredPrey(data.Y0, data.T, data.n);
     Eigen::Vector2d stud = PredPrey_TEST(data.Y0, data.T, data.n);
 
-    bool samesize = sol.rows() == stud.rows() && sol.cols() == stud.cols();
-    CHECK(samesize);
-    if (samesize) {
-      CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
-    }
+    const bool samesize =
+        sol.rows() == stud.rows() && sol.cols() == stud.cols();
+    REQUIRE(samesize);
+    CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
   }
 
   TEST_CASE("void SimulatePredPrey" *
