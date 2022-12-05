@@ -1,5 +1,6 @@
-#include "SDIRK.hpp"
+#include <iostream>
 
+#include "SDIRK.hpp"
 
 int main() {
   double rate = cvgSDIRK();

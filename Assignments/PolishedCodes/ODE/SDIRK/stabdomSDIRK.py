@@ -8,7 +8,7 @@ output_file = str(sys.argv[1])
 if len(sys.argv) == 3:
     input_gamma = sys.argv[2]
 else:
-    input_gamma = 1.0;
+    input_gamma = 1.0
 
 # Stability function
 S = lambda z, gamma=1.0: (1.0 + z * (1.0 - 2.0 * gamma) + z**2 * (gamma**2 - 2.0 * gamma + 0.5)) / (1.0 - gamma * z)**2

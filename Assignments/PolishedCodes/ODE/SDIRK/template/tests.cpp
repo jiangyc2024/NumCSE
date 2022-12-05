@@ -1,10 +1,9 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "doctest.h"
-
-#include "copy.hpp"
-
 #include <Eigen/Dense>
 #include <vector>
+
+#include "copy.hpp"
+#include "doctest.h"
 
 struct TestData {
   TestData() {
@@ -25,11 +24,11 @@ TestData data;
 
 TEST_SUITE("SDIRK") {
   TEST_CASE("Eigen::Vector2d sdirkStep" * doctest::description("sdirkStep")) {
-    for (int i = 0; i < data.gamma.size(); i++) {
-      for (int j = 0; j < data.T.size(); j++) {
-        for (int k = 0; k < data.N.size(); k++) {
+    for (unsigned int i = 0; i < data.gamma.size(); i++) {
+      for (unsigned int j = 0; j < data.T.size(); j++) {
+        for (unsigned int k = 0; k < data.N.size(); k++) {
           // Use equidistant timesteps
-          double h = data.T[j] / data.N[k];
+          const double h = data.T[j] / data.N[k];
 
           Eigen::Vector2d sol = sdirkStep(data.z0, h, data.gamma[i]);
           Eigen::Vector2d stud = sdirkStep_TEST(data.z0, h, data.gamma[i]);

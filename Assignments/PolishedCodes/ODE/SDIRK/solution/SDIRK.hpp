@@ -1,26 +1,28 @@
 #ifndef SDIRK_HPP
 #define SDIRK_HPP
 
-#include "polyfit.hpp"
 #include <Eigen/Dense>
 #include <cmath>
 #include <iomanip>
 #include <iostream>
 #include <vector>
 
-//! \brief One step of autonomous IVP y'' + y' + y = 0, [y(0), y'(0)] = z0 using
-//! SDIRK method Use SDIRK method for first order ode z' = f(z). Steps of size
-//! h.
-//! \tparam Eigen::VectorXd type of solution space y and initial data y0
-//! \param[in] z0 initial data z(0)
-//! \param[in] h size of the step
-//! \param[in] gamma parameter
-//! \return next step z1
+#include "polyfit.hpp"
+
+/**
+ * \brief One step of autonomous IVP y'' + y' + y = 0, [y(0), y'(0)] = z0 using
+ * SDIRK method Use SDIRK method for first order ode z' = f(z). Steps of size
+ * h.
+ *
+ * \param z0 initial data z(0)
+ * \param h size of the step
+ * \param gamma parameter
+ * \return Eigen::Vector2d next step z1
+ */
 /* SAM_LISTING_BEGIN_0 */
 Eigen::Vector2d sdirkStep(const Eigen::Vector2d &z0, double h, double gamma) {
-
-  Eigen::Vector2d res;
-  // TO DO (12-3.f): compute one timestep of the ODE
+  Eigen::Vector2d res = z0;
+  // TODO: (12-3.f) compute one timestep of the ODE
   // START
   // Matrix A for evaluation of f
   Eigen::Matrix2d A;
@@ -41,22 +43,21 @@ Eigen::Vector2d sdirkStep(const Eigen::Vector2d &z0, double h, double gamma) {
 /* SAM_LISTING_END_0 */
 
 /* SAM_LISTING_BEGIN_9 */
-double cvgSDIRK(void) {
-
-  double conv_rate;
-  // TO DO (12-3.g) study the convergence rate of the method.
-  // START
+double cvgSDIRK() {
+  double conv_rate = 0.;
   // Initial data z0 = [y(0), y'(0)]
   Eigen::Vector2d z0;
   z0 << 1, 0;
   // Final time
-  const double T = 10;
+  constexpr double T = 10;
   // Parameter
   const double gamma = (3. + std::sqrt(3.)) / 6.;
   // Mesh sizes
   Eigen::ArrayXd err(10);
   Eigen::ArrayXd N(10);
   N << 20, 40, 80, 160, 320, 640, 1280, 2560, 5120, 10240;
+  // TODO: (12-3.g) Study the convergence rate of the method.
+  // START
 
   // Exact solution (only y(t)) given z0 = [y(0), y'(0)] and t
   auto yex = [&z0](double t) {
@@ -72,7 +73,7 @@ double cvgSDIRK(void) {
             << std::setw(15) << "rate" << std::endl;
   // Loop over all meshes
   for (unsigned int i = 0; i < N.size(); ++i) {
-    int n = N(i);
+    unsigned int n = N(i);
     // Get solution
     std::vector<Eigen::Vector2d> sol(n + 1);
     // Equidistant step size
@@ -88,8 +89,7 @@ double cvgSDIRK(void) {
 
     // Print table
     std::cout << std::setw(15) << n << std::setw(15) << err(i);
-    if (i > 0)
-      std::cout << std::setw(15) << std::log2(errold / err(i));
+    if (i > 0) std::cout << std::setw(15) << std::log2(errold / err(i));
     std::cout << std::endl;
 
     // Store old error
@@ -99,7 +99,7 @@ double cvgSDIRK(void) {
   conv_rate = -coeffs(0);
   // END
   return conv_rate;
-  /* SAM_LISTING_END_9 */
 }
+/* SAM_LISTING_END_9 */
 
 #endif
