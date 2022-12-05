@@ -1,49 +1,50 @@
+#include <Eigen/Dense>
+#include <iomanip>
+#include <iostream>
+
 #include "implicit_rkintegrator.hpp"
 
-using namespace Eigen;
-
-int main(void) {
-
+int main() {
   /* SAM_LISTING_BEGIN_2 */
   // Definition of coefficients in Butcher scheme
-  unsigned int s = 2;
-  MatrixXd A(s, s);
-  VectorXd b(s);
+  constexpr unsigned int s = 2;
+  Eigen::MatrixXd A(s, s);
+  Eigen::VectorXd b(s);
   // What method is this?
   A << 5. / 12., -1. / 12., 3. / 4., 1. / 4.;
   b << 3. / 4., 1. / 4.;
   // Initialize implicit RK with Butcher scheme
-  implicit_RKIntegrator RK(A, b);
+  implicitRKIntegrator RK(A, b);
   /* SAM_LISTING_END_2 */
 
   /* SAM_LISTING_BEGIN_1 */
   // Coefficients and handle for prey/predator model
-  double alpha1 = 3.;
-  double alpha2 = 2.;
-  double beta1 = 0.1;
-  double beta2 = 0.1;
-  auto f = [&alpha1, &alpha2, &beta1, &beta2](const VectorXd &y) {
+  constexpr double alpha1 = 3.;
+  constexpr double alpha2 = 2.;
+  constexpr double beta1 = 0.1;
+  constexpr double beta2 = 0.1;
+  auto f = [](const Eigen::VectorXd &y) {
     auto temp = y;
     temp(0) *= alpha1 - beta1 * y(1);
     temp(1) *= -alpha2 + beta2 * y(0);
     return temp;
   };
 
-  auto Jf = [&alpha1, &alpha2, &beta1, &beta2](const VectorXd &y) {
-    MatrixXd temp(2, 2);
+  auto Jf = [](const Eigen::VectorXd &y) {
+    Eigen::MatrixXd temp(2, 2);
     temp << alpha1 - beta1 * y(1), -beta1 * y(0), beta2 * y(1),
         -alpha2 + beta2 * y(0);
     return temp;
   };
 
   // Dimension of state space
-  unsigned int d = 2;
+  constexpr unsigned int d = 2;
 
   // Final time for model
-  double T = 10.;
+  constexpr double T = 10.;
 
   // Initial value for model
-  VectorXd y0(d);
+  Eigen::VectorXd y0(d);
   y0 << 100, 5;
 
   // Array of number of steps (for convergence study)
@@ -51,7 +52,7 @@ int main(void) {
                                  4096, 8192, 16384, 32768, 65536};
 
   // Exact value y(10) at final time T = 10 (approximated)
-  VectorXd yex(d);
+  Eigen::VectorXd yex(d);
   yex << 0.319465882659820, 9.730809352326228;
 
   // Start convergence study
