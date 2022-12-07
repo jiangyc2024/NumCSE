@@ -1,19 +1,16 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "doctest.h"
-
-#include "copy.hpp"
-
 #include <Eigen/Dense>
 
-using namespace Eigen;
+#include "copy.hpp"
+#include "doctest.h"
 
-typedef Eigen::Matrix<double,1,1> Vec;
+typedef Eigen::Matrix<double, 1, 1> Vec;
 
 struct TestData {
   TestData() {
     T = 1.1;
     n = 30;
-    Y0.resize(1,1);
+    Y0.resize(1, 1);
     Y0 << 1;
   }
 
@@ -24,9 +21,7 @@ struct TestData {
 
 TestData data;
 
-Vec f(Vec x) {
-  return x;
-}
+Vec f(Vec x) { return x; }
 
 Vec df(Vec x) {
   Vec out;
@@ -35,19 +30,16 @@ Vec df(Vec x) {
 }
 
 TEST_SUITE("SemImpRK") {
-  TEST_CASE("std::vector<VectorXd> solveRosenbrock" *
+  TEST_CASE("std::vector<Eigen::VectorXd> solveRosenbrock" *
             doctest::description("Check solution at final time")) {
-    std::cout << "check" << std::endl;
     auto sol = solveRosenbrock(f, df, data.Y0, data.n, data.T);
     auto stud = solveRosenbrock_TEST(f, df, data.Y0, data.n, data.T);
 
-    bool samesize = sol.back().rows() == stud.back().rows() &&
-                    sol.back().cols() == stud.back().cols();
-    CHECK(samesize);
-    if (samesize) {
-      CHECK((sol.back() - stud.back()).norm() ==
-            doctest::Approx(0.).epsilon(1e-6));
-    }
+    const bool samesize = sol.back().rows() == stud.back().rows() &&
+                          sol.back().cols() == stud.back().cols();
+    REQUIRE(samesize);
+    CHECK((sol.back() - stud.back()).norm() ==
+          doctest::Approx(0.).epsilon(1e-6));
   }
 
   TEST_CASE("double cvgRosenbrock" * doctest::description("cvgRosenbrock()")) {

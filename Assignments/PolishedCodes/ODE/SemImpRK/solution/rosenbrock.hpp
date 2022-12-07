@@ -1,49 +1,56 @@
-#include <Eigen/Dense>
+#ifndef ROSENBROCK_HPP
+#define ROSENBROCK_HPP
 
-#include "polyfit.hpp"
+#include <Eigen/Dense>
 #include <iomanip>
 #include <iostream>
 #include <vector>
 
-using namespace Eigen;
+#include "polyfit.hpp"
 
-//! \brief Solve the autonomous IVP y' = f(y), y(0) = y0 using Rosenbrock method
-//! Use semi-implicit Rosenbrock method using Jacobian evaluation. Equidistant
-//! steps of size T/N. \tparam Function function type for r.h.s. f \tparam
-//! Jacobian function type for Jacobian df \param[in] f r.h.s. func f \param[in]
-//! df Jacobian df of f \param[in] y0 initial data y(0) \param[in] N number of
-//! equidistant steps \param[in] T final time \return vector of y_k for each
-//! step k from 0 to N
+/**
+ * \brief Solve the autonomous IVP y' = f(y), y(0) = y0 using Rosenbrock method
+ * Use semi-implicit Rosenbrock method using Jacobian evaluation. Equidistant
+ * steps of size T/N.
+ *
+ * \tparam Function function type for r.h.s. f
+ * \tparam Jacobian function type for Jacobian df
+ * \param f r.h.s. func f
+ * \param df Jacobian df of f
+ * \param y0 initial data y(0)
+ * \param N number of equidistant steps
+ * \param T final time
+ * \return std::vector<Eigen::VectorXd> of y_k for each step k from 0 to N
+ */
 /* SAM_LISTING_BEGIN_0 */
 template <class Function, class Jacobian>
-std::vector<VectorXd> solveRosenbrock(Function &&f, Jacobian &&df,
-                                      const VectorXd &y0, unsigned int N,
-                                      double T) {
-
+std::vector<Eigen::VectorXd> solveRosenbrock(Function &&f, Jacobian &&df,
+                                             const Eigen::VectorXd &y0,
+                                             unsigned int N, double T) {
   // Will contain all time steps
-  std::vector<VectorXd> res(N + 1);
+  std::vector<Eigen::VectorXd> res(N + 1);
 
-  // TO DO: (12-4.e) Implement the Rosenbrock method. Note that the function
+  // TODO: (12-4.e) Implement the Rosenbrock method. Note that the function
   // f should take as argument an Eigen::VectorXd, and return one as well.
   // The Jacobian df should take as argument an Eigen::VectorXd, but return
   // a square Eigen::MatrixXd.
   // START
 
-  res.at(0) = y0; // Push initial data
+  res.at(0) = y0;  // Push initial data
   const double h = T / N;
   const double a = 1. / (std::sqrt(2) + 2.);
 
   // Some temporary variables
-  VectorXd k1, k2;
-  MatrixXd J, W;
+  Eigen::VectorXd k1, k2;
+  Eigen::MatrixXd J, W;
 
   // Main loop: *up to N (performs N steps)*
   for (unsigned int i = 1; i <= N; ++i) {
-    VectorXd &yprev = res.at(i - 1);
+    Eigen::VectorXd &yprev = res.at(i - 1);
 
     // Jacobian computation
     J = df(yprev);
-    W = MatrixXd::Identity(J.rows(), J.cols()) - a * h * J;
+    W = Eigen::MatrixXd::Identity(J.rows(), J.cols()) - a * h * J;
 
     // Reuse factorization for each step
     auto W_lu = W.partialPivLu();
@@ -63,32 +70,31 @@ std::vector<VectorXd> solveRosenbrock(Function &&f, Jacobian &&df,
 
 /* SAM_LISTING_BEGIN_1 */
 double cvgRosenbrock() {
-
   double cvgRate = 0;
-  // TO DO: (12-4.f) Use polyfit() to estimate the rate of convergence
+  // TODO: (12-4.f) Use polyfit() to estimate the rate of convergence
   // for solveRosenbrock().
   // START
 
   // Final time
-  const double T = 10;
+  constexpr double T = 10;
   // Mesh sizes h=2^{-k} for k in K.
-  const ArrayXd K = ArrayXd::LinSpaced(7, 4, 10);
+  const Eigen::ArrayXd K = Eigen::ArrayXd::LinSpaced(7, 4, 10);
 
   // Initial data
-  Vector2d y0;
+  Eigen::Vector2d y0;
   y0 << 1., 1.;
   // Parameter and useful matrix for f
-  const double lambda = 1;
-  Matrix2d R;
+  constexpr double lambda = 1;
+  Eigen::Matrix2d R;
   R << 0., -1., 1., 0.;
 
   // Function and its Jacobian
-  auto f = [&R, &lambda](const Vector2d &y) {
+  auto f = [&R](const Eigen::Vector2d &y) {
     return R * y + lambda * (1. - y.squaredNorm()) * y;
   };
-  auto df = [&lambda](const Vector2d &y) {
+  auto df = [](const Eigen::Vector2d &y) {
     double x = 1 - y.squaredNorm();
-    Matrix2d J;
+    Eigen::Matrix2d J;
     J << lambda * x - 2 * lambda * y(0) * y(0), -1 - 2 * lambda * y(1) * y(0),
         1 - 2 * lambda * y(1) * y(0), lambda * x - 2 * lambda * y(1) * y(1);
     return J;
@@ -99,7 +105,7 @@ double cvgRosenbrock() {
   // Reference solution
   auto solref = solveRosenbrock(f, df, y0, N_ref, T);
 
-  ArrayXd Error(K.size());
+  Eigen::ArrayXd Error(K.size());
   std::cout << std::setw(15) << "N" << std::setw(16) << "maxerr\n";
   // Main loop: loop over all meshes
   for (unsigned int i = 0; i < K.size(); ++i) {
@@ -123,3 +129,5 @@ double cvgRosenbrock() {
   return cvgRate;
 }
 /* SAM_LISTING_END_1 */
+
+#endif

@@ -1,17 +1,16 @@
-
-#include "rosenbrock.hpp"
 #include <Eigen/Dense>
 #include <iostream>
-using namespace Eigen;
+
+#include "rosenbrock.hpp"
 
 int main() {
-  auto f = [](const Vector3d y) {
-    Vector3d fy;
+  auto f = [](const Eigen::Vector3d y) {
+    Eigen::Vector3d fy;
     fy << y(0) * y(1), y(1) * y(2), y(2) - y(0);
     return fy;
   };
-  auto df = [](const Vector3d y) {
-    Matrix3d J;
+  auto df = [](const Eigen::Vector3d y) {
+    Eigen::Matrix3d J;
     J << y(1), y(0), 0, 0, y(2), y(1), -1, 0, 1;
     return J;
   };
