@@ -2,11 +2,11 @@
 #define EXPONENTIALINTEGRATOR_H_
 
 /**
- * @file exponentialintegrator.cc
- * @brief NPDE homework ExponentialIntegrator code
- * @author Unknown, Oliver Rietmann
- * @date 04.04.2021
- * @copyright Developed at ETH Zurich
+ * \file exponentialintegrator.hpp
+ * \brief NPDE homework ExponentialIntegrator code
+ * \author Unknown, Oliver Rietmann
+ * \date 04.04.2021
+ * \copyright Developed at ETH Zurich
  */
 
 #include <Eigen/Core>
@@ -20,34 +20,46 @@
 // Function $\phi$ used in the Exponential Euler
 // single step method for an autonomous ODE.
 Eigen::MatrixXd phim(const Eigen::MatrixXd &Z) {
-  int n = Z.cols();
+  unsigned int n = Z.cols();
   assert(n == Z.rows() && "Matrix must be square.");
   Eigen::MatrixXd C(2 * n, 2 * n);
   C << Z, Eigen::MatrixXd::Identity(n, n), Eigen::MatrixXd::Zero(n, 2 * n);
   return C.exp().block(0, n, n, n);
 }
 
-// Calculate a single step of the exponential Euler method.
+/**
+ * \brief Calculate a single step of the exponential Euler method.
+ *
+ * \tparam Function function handle
+ * \tparam Jacobian function handle for the Jacobian
+ * \param y0 initial data
+ * \param f function f
+ * \param df Jacobian df
+ * \param h step size
+ * \return Eigen::VectorXd next step
+ */
 /* SAM_LISTING_BEGIN_0 */
 template <class Function, class Jacobian>
 Eigen::VectorXd exponentialEulerStep(const Eigen::VectorXd &y0, Function &&f,
                                      Jacobian &&df, double h) {
-  // TO DO: 12-5.d
+  Eigen::VectorXd y1 = y0;
+  // TODO: (12-5.d) Implement one step of the exponential Euler method.
   // START
-  return y0 + h * phim(h * df(y0)) * f(y0);
+  y1 = y0 + h * phim(h * df(y0)) * f(y0);
   // END
+  return y1;
 }
 /* SAM_LISTING_END_0 */
 
 /* SAM_LISTING_BEGIN_1 */
 void testExpEulerLogODE() {
-  // TO DO: 12-5.e
-  // START
   // Final time
-  double T = 1.0;
+  constexpr double T = 1.0;
   // Initial value
   Eigen::VectorXd y0(1);
   y0 << 0.1;
+  // TODO: (12-5.e)
+  // START
   // Function and Jacobian and exact solution
   auto f = [](const Eigen::VectorXd &y) { return y(0) * (1.0 - y(0)); };
   auto df = [](const Eigen::VectorXd &y) {
@@ -61,11 +73,11 @@ void testExpEulerLogODE() {
   std::vector<double> error(15);
 
   // Test many step sizes
-  for (int j = 0; j < 15; ++j) {
-    int M = std::pow(2, j + 1);
+  for (unsigned int j = 0; j < 15; ++j) {
+    const unsigned int M = std::pow(2, j + 1);
     Eigen::VectorXd y = y0;
-    double h = T / M;
-    for (int k = 0; k < M; ++k) {
+    const double h = T / M;
+    for (unsigned int k = 0; k < M; ++k) {
       y = exponentialEulerStep(y, f, df, h);
     }
 
@@ -84,4 +96,4 @@ void testExpEulerLogODE() {
 }
 /* SAM_LISTING_END_1 */
 
-#endif // #ifndef EXPONENTIALINTEGRATOR_H_
+#endif  // #ifndef EXPONENTIALINTEGRATOR_H_

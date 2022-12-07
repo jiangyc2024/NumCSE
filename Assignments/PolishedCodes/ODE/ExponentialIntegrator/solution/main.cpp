@@ -1,9 +1,9 @@
 /**
- * @file exponentialintegrator_main.cc
- * @brief NPDE homework ExponentialIntegrator code
- * @author Unknown, Oliver Rietmann
- * @date 04.04.2021
- * @copyright Developed at ETH Zurich
+ * \file main.cpp
+ * \brief NPDE homework ExponentialIntegrator code
+ * \author Unknown, Oliver Rietmann
+ * \date 04.04.2021
+ * \copyright Developed at ETH Zurich
  */
 
 #include "exponentialintegrator.hpp"
