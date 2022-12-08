@@ -91,27 +91,28 @@ def searchStudentSolution(main):
     return return_list
 
 
-def cmake(path_string):
+def cmake(source_dir, build_dir):
     """
     Will perform the copy and tweak operation if called from a cmake build system inside a build folder.
     The tweaked copy is named 'copy.hpp'.
     Will also put header guards into the file.
     """
-    main = open(path_string + "/main.cpp", "r")
+    main = open(source_dir + "/template/main.cpp", "r")
     files = searchStudentSolution(main)
     main.close()
     student_sol = []
     for file in files:
-        student_sol.append(open(path_string + "/" + file, "r"))
+        student_sol.append(open(source_dir + "/template/" + file, "r"))
 
-    copy = open(path_string + "/copy.hpp", "w")
-    tests = open(path_string + "/tests.cpp", "r")
+    copy = open(build_dir + "/copy.hpp", "w")
+    tests = open(source_dir + "/template/tests.cpp", "r")
 
     copy.write("#ifndef COPY_HPP\n")
     copy.write("#define COPY_HPP\n")
 
     for el in files:
-        copy.write('#include "../solution/{}"\n'.format(el))
+        # ../../../../../build/bin/Assignments/PolishedCodes/Introduction/MatrixBlocks/
+        copy.write('#include "{}/solution/{}"\n'.format(source_dir, el))
 
     parseWriteChange(student_sol, copy, tests)
 
@@ -161,7 +162,7 @@ def codeexpert():
 
 
 if __name__ == "__main__":
-    if len(sys.argv) == 2:
-        cmake(str(sys.argv[1]))
+    if len(sys.argv) == 3:
+        cmake(str(sys.argv[1]), str(sys.argv[2]))
     else:
         codeexpert()
