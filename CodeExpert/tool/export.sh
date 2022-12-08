@@ -7,7 +7,17 @@
 parent_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")"; pwd -P)"
 src="node:16.15.0-buster" 
 assignment_path="Assignments/PolishedCodes/$1"
+run_cmd="node export.js /numcse $assignment_path ${@:2}"
+wd="/numcse/CodeExpert/tool"
 
-docker pull $src && \
-	docker image tag $src cx-tool && \
-	docker run -it -w /numcse/CodeExpert/tool -v "$parent_dir/../..:/numcse" cx-tool node export.js /numcse $assignment_path ${@:2}
+if [ "$numcse_is_docker" = true ]; then
+
+	cd $wd && $run_cmd
+
+else
+
+	docker pull $src && \
+		docker image tag $src cx-tool && \
+		docker run -it -w $wd -v "$parent_dir/../..:/numcse" cx-tool $run_cmd
+
+fi
