@@ -22,8 +22,8 @@ Scalar bisect(Func&& F, Scalar a, Scalar b, Scalar tol)
   int v=F(a) < 0 ? 1 : -1;
   Scalar x = (a+b)/2; // determine midpoint
   // termination, relies on machine arithmetic if tol = 0
-  while (b-a > tol) { // \Label[line]{bs:2}
-    assert(a<=x && x<=b); // assert invariant
+  while (b-a > tol) { 
+    assert(a<=x && x<=b); // assert invariant \Label[line]{bs:2}
     // \Blue{$\operatorname{sgn}(f(x)) = \operatorname{sgn}(f(b))$}, then use x as next right boundary
     if (v*F(x) > 0) b=x;
     // \Blue{$\operatorname{sgn}(f(x)) = \operatorname{sgn}(f(a))$}, then use x as next left boundary
