@@ -19,8 +19,6 @@
 #include <unsupported/Eigen/FFT>
 #include <vector>
 
-// #include "helper_functions.hpp"
-
 /**
  * \brief Evaluation of a trigonometric polynomials in M equidistant points
  * $\cob{M\geq N}$
