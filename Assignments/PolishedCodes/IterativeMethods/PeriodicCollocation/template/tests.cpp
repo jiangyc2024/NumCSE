@@ -1,12 +1,8 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "doctest.h"
-#include "helper_functions.hpp"
-#include <cmath>
-#include <iomanip>
-#include <utility>
-
-// includes for test data
 #include <Eigen/Dense>
+
+#include "doctest.h"
+#include "periodiccollocation.hpp"
 
 struct TestData {
   TestData() {
@@ -132,32 +128,42 @@ struct TestData {
 TestData data;
 
 TEST_SUITE("PeriodicCollocation") {
-
-  TEST_CASE("eval_uN()" *
+  TEST_CASE("Eigen::VectorXd eval_uN" *
             doctest::description("Testing output, not efficiency")) {
     // Comparing result with solution
     Eigen::VectorXd res = eval_uN(data.X, data.m);
+    REQUIRE(res.size() == data.res.size());
     CHECK((res - data.res).norm() == doctest::Approx(0).epsilon(1e-10));
 
     Eigen::VectorXd res1 = eval_uN(data.X1, data.m1);
+    REQUIRE(res1.size() == data.res1.size());
     CHECK((res1 - data.res1).norm() == doctest::Approx(0).epsilon(1e-10));
   }
 
-  TEST_CASE("eval_F()" * doctest::description("Testing output")) {
+  TEST_CASE("Eigen::VectorXd eval_F" * doctest::description("Testing output")) {
     // Comparing result with solution
     Eigen::VectorXd res = eval_F(data.X);
+    REQUIRE(res.size() == data.F.size());
     CHECK((res - data.F).norm() == doctest::Approx(0).epsilon(1e-10));
 
     Eigen::VectorXd res1 = eval_F(data.X1);
+    REQUIRE(res1.size() == data.F1.size());
     CHECK((res1 - data.F1).norm() == doctest::Approx(0).epsilon(1e-10));
   }
 
-  TEST_CASE("eval_DF()" * doctest::description("Testing output")) {
+  TEST_CASE("Eigen::MatrixXd eval_DF" *
+            doctest::description("Testing output")) {
     // Comparing result with solution
     Eigen::MatrixXd res = eval_DF(data.X);
+    bool checksize =
+        (res.rows() == data.DF.rows()) && (res.cols() == data.DF.cols());
+    REQUIRE(checksize);
     CHECK((res - data.DF).norm() == doctest::Approx(0).epsilon(1e-10));
 
     Eigen::MatrixXd res1 = eval_DF(data.X1);
+    checksize =
+        (res1.rows() == data.DF1.rows()) && (res1.cols() == data.DF1.cols());
+    REQUIRE(checksize);
     CHECK((res1 - data.DF1).norm() == doctest::Approx(0).epsilon(1e-10));
   }
 }
