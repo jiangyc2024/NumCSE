@@ -1,10 +1,9 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "doctest.h"
-
-#include "copy.hpp"
-
 #include <Eigen/Dense>
 #include <vector>
+
+#include "copy.hpp"
+#include "doctest.h"
 
 struct TestData {
   TestData() {
@@ -21,46 +20,44 @@ struct TestData {
   std::function<Eigen::VectorXd(double, Eigen::VectorXd)> Psi;
   Eigen::VectorXd y0;
   double T;
-  int N;
+  unsigned int N;
 };
 
 TestData data;
 TEST_SUITE("ODEsolve") {
-  TEST_CASE("Vector psitilde" * doctest::description("Test psitilde")) {
+  TEST_CASE("Eigen::VectorXd psitilde" *
+            doctest::description("Test psitilde")) {
     Eigen::VectorXd sol = psitilde(data.Psi, 1, 0.1, data.y0);
     Eigen::VectorXd stud = psitilde_TEST(data.Psi, 1, 0.1, data.y0);
 
+    REQUIRE(sol.size() == stud.size());
     CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
   }
 
-  TEST_CASE("std::vector<Vector> odeintequi" *
+  TEST_CASE("std::vector<Eigen::VectorXd> odeintequi" *
             doctest::description("Test equidistant integration")) {
     std::vector<Eigen::VectorXd> sol_vec =
         odeintequi(data.Psi, data.T, data.y0, data.N);
     std::vector<Eigen::VectorXd> stud_vec =
         odeintequi_TEST(data.Psi, data.T, data.y0, data.N);
 
-    bool correct_num_steps = stud_vec.size() == sol_vec.size();
-    CHECK(correct_num_steps);
+    const bool correct_num_steps = stud_vec.size() == sol_vec.size();
+    REQUIRE(correct_num_steps);
 
-    if (correct_num_steps) {
-      for (int i = 0; i < sol_vec.size(); ++i) {
-        Eigen::VectorXd sol = sol_vec[i];
-        Eigen::VectorXd stud = stud_vec[i];
+    for (unsigned int i = 0; i < sol_vec.size(); ++i) {
+      Eigen::VectorXd sol = sol_vec[i];
+      Eigen::VectorXd stud = stud_vec[i];
 
-        bool vecsize_correct = sol.size() == stud.size();
-        CHECK(vecsize_correct);
-
-        if (vecsize_correct) {
-          CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
-        }
-      }
+      const bool vecsize_correct = sol.size() == stud.size();
+      REQUIRE(vecsize_correct);
+      CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
     }
   }
 
-  TEST_CASE(
-      "std::pair< std::vector<double>, std::vector<Vector> > odeintssctrl" *
+  // clang-format off
+  TEST_CASE("std::pair<std::vector<double>, std::vector<Eigen::VectorXd>> odeintssctrl" *
       doctest::description("Test adaptive integration")) {
+    // clang-format on
     std::vector<Eigen::VectorXd> sol_vec =
         odeintssctrl(data.Psi, data.T, data.y0, 0.01, 1, 10e-5, 10e-5, 10e-5)
             .second;
@@ -69,21 +66,16 @@ TEST_SUITE("ODEsolve") {
                           10e-5)
             .second;
 
-    bool correct_num_steps = stud_vec.size() == sol_vec.size();
-    CHECK(correct_num_steps);
+    const bool correct_num_steps = stud_vec.size() == sol_vec.size();
+    REQUIRE(correct_num_steps);
 
-    if (correct_num_steps) {
-      for (int i = 0; i < sol_vec.size(); ++i) {
-        Eigen::VectorXd sol = sol_vec[i];
-        Eigen::VectorXd stud = stud_vec[i];
+    for (unsigned int i = 0; i < sol_vec.size(); ++i) {
+      Eigen::VectorXd sol = sol_vec[i];
+      Eigen::VectorXd stud = stud_vec[i];
 
-        bool vecsize_correct = sol.size() == stud.size();
-        CHECK(vecsize_correct);
-
-        if (vecsize_correct) {
-          CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
-        }
-      }
+      const bool vecsize_correct = sol.size() == stud.size();
+      REQUIRE(vecsize_correct);
+      CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
     }
   }
 

@@ -1,0 +1,6 @@
+{
+  "includes": [
+    "MatplotlibC++/matplotlibcpp.h",
+    "Utils/polyfit.hpp"
+  ]
+}

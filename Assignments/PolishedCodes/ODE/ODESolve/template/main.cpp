@@ -14,7 +14,7 @@ int main() {
 
   Eigen::VectorXd y0(1);
   y0 << 1.0;
-  double T = 1.0;
+  constexpr double T = 1.0;
   // Test psitilde
   Eigen::VectorXd y1 = psitilde(Psi, 1, 0.1, y0);
   std::cout << "Test psitilde\n" << y1 << std::endl;
@@ -25,35 +25,33 @@ int main() {
   unsigned int flag;
   std::cin >> flag;
   switch (flag) {
-  case 1: {
-    unsigned int N = 8;
+    case 1: {
+      constexpr unsigned int N = 8;
 
-    std::cout << "Test equidistant integration" << std::endl;
-    std::vector<Eigen::VectorXd> Y1 = odeintequi(Psi, T, y0, N);
-    for (int i = 0; i < N; ++i) {
-      std::cout << Y1[i](0) << std::endl;
+      std::cout << "Test equidistant integration" << std::endl;
+      std::vector<Eigen::VectorXd> Y1 = odeintequi(Psi, T, y0, N);
+      for (unsigned int i = 0; i < N; ++i) {
+        std::cout << Y1[i](0) << std::endl;
+      }
+      double rate = testcvpExtrapolatedEuler();
+      std::cout << "\nRate = " << rate << std::endl;
+      break;
     }
-    double rate = testcvpExtrapolatedEuler();
-    std::cout << "\nRate = " << rate << std::endl;
-    break;
-  }
 
-  case 2: {
-    std::cout << "\n\nTest adaptive integration" << std::endl;
-    std::vector<Eigen::VectorXd> mysol =
-        odeintssctrl(Psi, T, y0, 0.01, 1, 10e-5, 10e-5, 10e-5).second;
-    for (int i = 0; i < 8; ++i) {
-      std::cout << mysol[i](0) << std::endl;
+    case 2: {
+      std::cout << "\n\nTest adaptive integration" << std::endl;
+      std::vector<Eigen::VectorXd> mysol =
+          odeintssctrl(Psi, T, y0, 0.01, 1, 10e-5, 10e-5, 10e-5).second;
+      for (unsigned int i = 0; i < 8; ++i) {
+        std::cout << mysol[i](0) << std::endl;
+      }
+
+      solveTangentIVP();
+      break;
     }
-    
-    solveTangentIVP();
-    break;
+    default:
+      break;
   }
-  default:
-    break;
-  }
-
-  // test adaptive integration
 
   return 0;
 }
