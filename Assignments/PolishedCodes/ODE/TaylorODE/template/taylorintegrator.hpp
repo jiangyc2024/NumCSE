@@ -1,16 +1,26 @@
 #ifndef TAYLORINTEGRATORHPP
 #define TAYLORINTEGRATORHPP
 
+#include <Eigen/Dense>
 #include <cassert>
-#include <vector>
-
 #include <iomanip>
 #include <iostream>
-
-#include <Eigen/Dense>
+#include <vector>
 
 #include "ode45.hpp"
 
+/**
+ * \brief Solves the Predator Prey model using the Taylor expansion method.
+ *
+ * \param alpha1 parameter of ODE
+ * \param beta1 parameter of ODE
+ * \param alpha2 parameter of ODE
+ * \param beta2 parameter of ODE
+ * \param T final time
+ * \param y0 initial state
+ * \param M number of steps to take
+ * \return std::vector<Eigen::Vector2d> of states
+ */
 /* SAM_LISTING_BEGIN_1 */
 std::vector<Eigen::Vector2d> SolvePredPreyTaylor(double alpha1, double beta1,
                                                  double alpha2, double beta2,
@@ -19,7 +29,8 @@ std::vector<Eigen::Vector2d> SolvePredPreyTaylor(double alpha1, double beta1,
                                                  unsigned int M) {
   // Vector storing the states
   std::vector<Eigen::Vector2d> res;
-  // TO DO: 11-8.c
+  // TODO: (11-8.c) Solve the predator prey model using the Taylor expansion
+  // method.
   // START
 
   // END
@@ -41,9 +52,10 @@ void PrintErrorTable(const Eigen::ArrayXd &M, const Eigen::ArrayXd &error) {
 }
 
 /* SAM_LISTING_BEGIN_2 */
-double TestCvgTaylorMethod() {
+double testCvgTaylorMethod() {
   double cvgrate = 0;
-  // TO DO: 11-8.d
+  // TODO: (11-8.d) Generate an error table and return an estimate of the
+  // convergence rate of the Taylor method.
   // START
 
   // END
