@@ -1,16 +1,24 @@
 #ifndef NLMATODE_HPP
 #define NLMATODE_HPP
 
+#include <iomanip>
+#include <iostream>
+
 #include "ode45.hpp"
 #include "polyfit.hpp"
 
-//! \param[in] Y0 Initial data Y(0) (as matrix)
-//! \param[in] T final time of simulation
+/**
+ * \brief Finds an approximation of the matrix IVP $Y' = -(Y-Y')*Y$ at time $T$
+ *
+ * \param Y0 Initial data Y(0) (as matrix)
+ * \param T final time of simulation
+ * \return Eigen::MatrixXd solution at final time
+ */
 /* SAM_LISTING_BEGIN_1 */
 Eigen::MatrixXd matode(const Eigen::MatrixXd &Y0, double T) {
-  // TO DO (12-5.a): use the ode45 class to find an approximation
+  Eigen::MatrixXd YT = Y0;  // overwrite this
+  // TODO: (11-5.a): use the ode45 class to find an approximation
   // of the matrix IVP $Y' = -(Y-Y')*Y$ at time $T$
-  Eigen::MatrixXd YT;
   // START
   // Define the RHS
   auto F = [](const Eigen::MatrixXd &M) { return -(M - M.transpose()) * M; };
@@ -28,31 +36,39 @@ Eigen::MatrixXd matode(const Eigen::MatrixXd &Y0, double T) {
 }
 /* SAM_LISTING_END_1 */
 
-//! \param[in] Y0 Initial data Y(0) (as matrix)
-//! \param[in] T final time of simulation
+/**
+ * \brief Checks if invariant $Y'*Y$ is preserved
+ *
+ * \param M Initial data Y(0) (as matrix)
+ * \param T final time of simulation
+ * \return true if invariant $Y' * Y$ is preserved
+ * \return false otherwise
+ */
 /* SAM_LISTING_BEGIN_2 */
 bool checkinvariant(const Eigen::MatrixXd &M, double T) {
-  // TO DO (12-5.c): check if $Y'*Y$ is preserved at the time $T$ by matode.
+  bool inv_holds = false;
+  // TODO: (11-5.c) check if $Y'*Y$ is preserved at the time $T$ by matode.
   // START
   Eigen::MatrixXd N = matode(M, T);
 
   if ((N.transpose() * N - M.transpose() * M).norm() <
       10 * std::numeric_limits<double>::epsilon() * M.norm()) {
-    return true;
+    inv_holds = true;
   } else {
-    return false;
+    inv_holds = false;
   }
   // END
+  return inv_holds;
 }
 /* SAM_LISTING_END_2 */
 
 /* SAM_LISTING_BEGIN_3 */
 double cvgDiscreteGradientMethod() {
-  // TO DO (12-5.d): compute the fitted convergence rate of the Discrete
+  double conv_rate = 0;
+  // TODO: (11-5.d) compute the fitted convergence rate of the Discrete
   // gradient method. Also tabulate the values M and the errors.
-  double conv_rate;
   // START
-  double T = 1.0;
+  constexpr double T = 1.0;
   // initial value
   Eigen::MatrixXd Y0 = Eigen::MatrixXd::Zero(5, 5);
   Y0(4, 0) = 1;
@@ -74,8 +90,8 @@ double cvgDiscreteGradientMethod() {
             << "\t"
             << "Error" << std::endl;
   for (unsigned int i = 0; i < 8; ++i) {
-    unsigned int M = 10 * std::pow(2, i);
-    double h = T / M;
+    const unsigned int M = 10 * std::pow(2, i);
+    const double h = T / M;
     MM(i) = M;
     Eigen::MatrixXd Y = Y0;
     for (unsigned int j = 0; j < M; ++j) {

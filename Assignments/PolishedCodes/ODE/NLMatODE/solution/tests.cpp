@@ -1,11 +1,8 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "doctest.h"
-
-#include "copy.hpp"
-
 #include <Eigen/Dense>
 
-using namespace Eigen;
+#include "copy.hpp"
+#include "doctest.h"
 
 struct TestData {
   TestData() {
@@ -25,21 +22,20 @@ TestData data;
 TEST_SUITE("NLMatODE") {
   TEST_CASE("Eigen::MatrixXd matode" *
             doctest::description("Check matode matrix at T")) {
-    Eigen::MatrixXd sol = matode(data.Y0, data.T);
-    Eigen::MatrixXd stud = matode_TEST(data.Y0, data.T);
+    const Eigen::MatrixXd sol = matode(data.Y0, data.T);
+    const Eigen::MatrixXd stud = matode_TEST(data.Y0, data.T);
 
-    bool samesize = sol.rows() == stud.rows() && sol.cols() == stud.cols();
-    CHECK(samesize);
-    if (samesize) {
-      CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
-    }
+    const bool samesize =
+        sol.rows() == stud.rows() && sol.cols() == stud.cols();
+    REQUIRE(samesize);
+    CHECK((sol - stud).norm() == doctest::Approx(0.).epsilon(1e-6));
   }
 
   TEST_CASE("bool checkinvariant" *
             doctest::description(
                 "Test whether invariant for Y0 was preserved or not")) {
-    bool sol = checkinvariant(data.Y0, data.T);
-    bool stud = checkinvariant_TEST(data.Y0, data.T);
+    const bool sol = checkinvariant(data.Y0, data.T);
+    const bool stud = checkinvariant_TEST(data.Y0, data.T);
 
     CHECK(sol == stud);
   }
