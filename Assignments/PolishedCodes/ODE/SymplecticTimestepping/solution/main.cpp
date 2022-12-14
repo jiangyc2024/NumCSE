@@ -1,14 +1,12 @@
-#include "symplectic.hpp"
 #include <Eigen/Dense>
 #include <algorithm>
 #include <cmath>
 #include <iostream>
 
-using namespace Eigen;
+#include "symplectic.hpp"
 
 int main() {
-
-  Vector2d pq0, pq1;
+  Eigen::Vector2d pq0, pq1;
   pq0 << 0., 1.;
   pq1 << 0.96357170038053707728, 0.12823014413913069731;
   double tol = 1E-8;
@@ -27,9 +25,9 @@ int main() {
   Eigen::Vector3d p0, q0;
   p0 << 0.1, 0.0, 0.5;
   q0 << 0.0, 0.1, 0.5;
-  int M = 5;
-  double T = 1.1;
-  MatrixXd PQsol(3 * 2, M + 1);
+  constexpr unsigned int M = 5;
+  constexpr double T = 1.1;
+  Eigen::MatrixXd PQsol(3 * 2, M + 1);
   PQsol << 0.1, 0.09678001159252096, 0.08529466710449594, 0.06584032145575656,
       0.04296862323725763, 0.02256010635860073, 0, -0.02738875930643383,
       -0.0602025556404987, -0.09072015056737635, -0.1119069922852328,
