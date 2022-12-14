@@ -1,0 +1,37 @@
+#include <Eigen/Dense>
+
+#include "NLmatode.hpp"
+
+int main() {
+  constexpr double T = 1;
+  constexpr unsigned int n = 3;
+
+  Eigen::MatrixXd Y0(n, n);
+  Y0 << 1, 1, 0, 0, 3, 2, 1, 5, 2;
+
+  Eigen::MatrixXd YT = matode(Y0, T);
+
+  std::cout << YT << std::endl << std::endl;
+  Eigen::MatrixXd M0(n, n);
+  M0 << 1, 1, 0, 1, 3, 1, 0, 1, 1;
+  // check whether invariant is perserved or not
+  const bool is_invariant = checkinvariant(Y0, T);
+  const bool is_invar_sym = checkinvariant(M0, T);
+  std::cout << "Test whether invariant was preserved or not..." << std::endl;
+
+  if (is_invariant) {
+    std::cout << "Invariant for Y0 preserved." << std::endl;
+  } else {
+    std::cout << "Invariant for Y0 NOT preserved." << std::endl;
+  }
+  if (is_invar_sym) {
+    std::cout << "Invariant for M0 preserved." << std::endl;
+  } else {
+    std::cout << "Invariant for M0 NOT preserved." << std::endl;
+  }
+
+  const double rate = cvgDiscreteGradientMethod();
+  std::cout << "\nThe fitted rate for the discrete gradient method is:\n"
+            << rate << std::endl;
+  return 0;
+}
