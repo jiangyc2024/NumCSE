@@ -85,7 +85,7 @@ void tabulateRuntime(unsigned int n) {
     // Repeat the test repeat times
     for (unsigned int r = 0; r < repeats; ++r) {
       // TODO: (1-6.c) Measure runtime of your own and Eigen's implementation.
-      // You may use construct_matrix.
+      // You may use construct\_matrix.
       // START
       // Build Vandermonde matrix of size n
       Eigen::MatrixXcd X, A = construct_matrix(n);
