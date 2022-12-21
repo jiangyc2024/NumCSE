@@ -1,0 +1,6 @@
+{
+  "includes": [
+    "Utils/gauleg.hpp",
+    "MatplotlibC++/matplotlibcpp.h"
+  ]
+}
