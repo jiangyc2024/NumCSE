@@ -2,6 +2,7 @@
  * Course "Numerical Methods for CSE", R. Hiptmair, SAM, ETH Zurich
  * Author: R. Hiptmair
  * Date: December 2022
+ * HW problem "Algorithms for Polynomial Interpolation", prb:nhe
  */
 
 #include <cassert>
