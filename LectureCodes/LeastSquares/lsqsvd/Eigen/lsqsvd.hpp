@@ -6,29 +6,29 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 #include <Eigen/Dense>
+#include <Eigen/SVD>
+
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 
 /* SAM_LISTING_BEGIN_0 */
-#include <Eigen/SVD>
-
-VectorXd lsqsvd(const MatrixXd &A, const VectorXd &b) {
+Eigen::VectorXd lsqsvd(const Eigen::MatrixXd &A, const Eigen::VectorXd &b) {
   // Compute economical SVD, compare \cref{cpp:decompositions}
   Eigen::JacobiSVD<MatrixXd> svd(A, Eigen::ComputeThinU | Eigen::ComputeThinV);
-  VectorXd sv = svd.singularValues();
-  unsigned int r = svd.rank(); // Numerical rank, default tolerance
-  MatrixXd U = svd.matrixU(), V = svd.matrixV();
-  // $\cob{\Vx^{\dagger} = \VV_{1}\Sigmabf_{r}^{-1}\VU_{1}^{\herm}\Vb}$, see
-  // \eqref{lsq:svdsol}
+  Eigen::VectorXd sv = svd.singularValues();
+  unsigned int r = svd.rank();  // Numerical rank, default tolerance
+  Eigen::MatrixXd U = svd.matrixU(), V = svd.matrixV();
+  // $\cob{\Vx^{\dagger} = \VV_{1}\Sigmabf_{r}^{-1}\VU_{1}^{\herm}\Vb}$, see \eqref{lsq:svdsol}
   return V.leftCols(r) * (sv.head(r).cwiseInverse().asDiagonal() *
                           (U.leftCols(r).adjoint() * b));
 }
 /* SAM_LISTING_END_0 */
 
 // Conversion into diagonal matrix could be replaced with componentwise scaling.
+// However, the expression template mechanism of Eigen should do this automatically.
 
 /* SAM_LISTING_BEGIN_1 */
-VectorXd lsqsvd_eigen(const MatrixXd &A, const VectorXd &b) {
+Eigen::VectorXd lsqsvd_eigen(const Eigen::MatrixXd &A, const Eigen::VectorXd &b) {
   Eigen::JacobiSVD<MatrixXd> svd(A, Eigen::ComputeThinU | Eigen::ComputeThinV);
   return svd.solve(b);
 }
@@ -43,13 +43,13 @@ VectorXd lsqsvd_eigen(const MatrixXd &A, const VectorXd &b) {
  * by truncating its economical SVD.
  */
 /* SAM_LISTING_BEGIN_3 */
-MatrixXd lowrankbestapprox(const Eigen::MatrixXd &A, unsigned int k) {
+Eigen::MatrixXd lowrankbestapprox(const Eigen::MatrixXd &A, unsigned int k) {
   // Compute economical SVD, compare \cref{cpp:decompositions}
-  const Eigen::JacobiSVD<MatrixXd> svd(A, Eigen::ComputeThinU |
-                                              Eigen::ComputeThinV);
+  const Eigen::JacobiSVD<MatrixXd> svd(
+      A, Eigen::ComputeThinU | Eigen::ComputeThinV);
   // Form matrix product $\cob{\VU_k\Sigmabf_k\VV_k}$.
-  // Extract $\cob{\Sigmabf_k}$ as diagonal matrix of largest $k$ singular values.
-  // \eigen provides singular values in decreasing order!
+  // Extract $\cob{\Sigmabf_k}$ as diagonal matrix of largest $k$ singular
+  // values. \eigen provides singular values in decreasing order!
   return (svd.matrixU().leftCols(k)) *
          (svd.singularValues().head(k).asDiagonal()) *
          (svd.matrixV().leftCols(k).transpose());
