@@ -1,26 +1,29 @@
 #ifndef QSPLINES_HPP
 #define QSPLINES_HPP
 
-#include <math.h>
-
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 #include <Eigen/SparseLU>
+#include <cmath>
 #include <iostream>
 #include <vector>
 
 #include "matplotlibcpp.h"
 
-using namespace Eigen;
 namespace plt = matplotlibcpp;
 
-/* [input] t  Vector of size n-1
-   [output] pair of vectors of size n+2 and n+1, respectively
-*/
+/**
+ * \brief Computes length of knot intervals
+ *
+ * \param t Vector of size n-1
+ * \return std::pair<Eigen::VectorXd, Eigen::VectorXd> of size n+2 and n+1,
+ * respectively
+ */
 /* SAM_LISTING_BEGIN_0 */
-std::pair<VectorXd, VectorXd> increments(const VectorXd &t) {
-  VectorXd dt, ddt;
-  // TO DO (5-6.g) : compute the increments t_j - t_{j-1}
+std::pair<Eigen::VectorXd, Eigen::VectorXd> increments(
+    const Eigen::VectorXd &t) {
+  Eigen::VectorXd dt, ddt;
+  // TODO: (5-6.g) compute the increments t_j - t_{j-1}
   // for j = 0,...,n+1 and t_{j+1} - t_{j-1} for j = 0,...,n
   // Assume that t is sorted and that t does not include the endpoints.
   // Hint: use periodic conditions to define t_{-1}, t_{n+1} for vectorization.
@@ -28,7 +31,7 @@ std::pair<VectorXd, VectorXd> increments(const VectorXd &t) {
   // START
   // Create extended vector using the periodicity:
   const unsigned int n = t.size() + 1;  // number of intervals
-  VectorXd ext_t(n + 3);
+  Eigen::VectorXd ext_t(n + 3);
   ext_t << t(n - 2) - 1, 0, t, 1, 1 + t(0);
   // Increments in t
   dt = ext_t.tail(n + 2).array() - ext_t.head(n + 2).array();
@@ -39,46 +42,50 @@ std::pair<VectorXd, VectorXd> increments(const VectorXd &t) {
 }
 /* SAM_LISTING_END_0 */
 
-/* [input] t  Vector of size n-1
-   [input] y  Vector of size n
-   [output] c Vector of size n
-*/
+/**
+ * \brief Computes spline coefficients c
+ *
+ * \param t Vector of size n-1
+ * \param y Vector of size n
+ * \return Eigen::VectorXd Vector of size n
+ */
 /* SAM_LISTING_BEGIN_1 */
-VectorXd compute_c(const VectorXd &t, const VectorXd &y) {
+Eigen::VectorXd compute_c(const Eigen::VectorXd &t, const Eigen::VectorXd &y) {
   const unsigned int n = y.size();  // number of intervals
-  VectorXd c(n);
-  // TO DO (5-6.g) : Build the (sparse) matrix for spline interpolation
+  Eigen::VectorXd c(n);
+  // TODO: (5-6.g) Build the (sparse) matrix for spline interpolation
   // at midpoints. Then compute the coefficients c for the data y.
 
   // START
   assert(t.size() == n - 1 && "number of intervals mismatch");
   assert(t.minCoeff() > 0 && t.maxCoeff() < 1 && "mesh nodes out of range");
 
-  std::pair<VectorXd, VectorXd> p = increments(t);
-  VectorXd dt = p.first;
-  VectorXd ddt = p.second;
+  std::pair<Eigen::VectorXd, Eigen::VectorXd> p = increments(t);
+  Eigen::VectorXd dt = p.first;
+  Eigen::VectorXd ddt = p.second;
 
   // Note: A_0 = A_n and C_1 = C_{n+1}
-  VectorXd A = dt.tail(n).cwiseQuotient(2 * ddt.tail(n));
-  VectorXd C = dt.head(n).cwiseQuotient(2 * ddt.head(n));
+  Eigen::VectorXd A = dt.tail(n).cwiseQuotient(2 * ddt.tail(n));
+  Eigen::VectorXd C = dt.head(n).cwiseQuotient(2 * ddt.head(n));
 
-  std::vector<Triplet<double>> triplets(3 * n);
+  std::vector<Eigen::Triplet<double>> triplets(3 * n);
 
   // Build matrix as triplets
   for (unsigned int j = 0; j < n - 1; ++j) {
-    triplets.push_back(Triplet<double>(j, j, A(j) + C(j) + 1));
-    triplets.push_back(Triplet<double>(j, j + 1, C(j + 1)));
-    triplets.push_back(Triplet<double>(j + 1, j, A(j)));
+    triplets.push_back(Eigen::Triplet<double>(j, j, A(j) + C(j) + 1));
+    triplets.push_back(Eigen::Triplet<double>(j, j + 1, C(j + 1)));
+    triplets.push_back(Eigen::Triplet<double>(j + 1, j, A(j)));
   }
-  triplets.push_back(Triplet<double>(n - 1, n - 1, A(n - 1) + C(n - 1) + 1));
-  triplets.push_back(Triplet<double>(n - 1, 0, C(0)));
-  triplets.push_back(Triplet<double>(0, n - 1, A(n - 1)));
+  triplets.push_back(
+      Eigen::Triplet<double>(n - 1, n - 1, A(n - 1) + C(n - 1) + 1));
+  triplets.push_back(Eigen::Triplet<double>(n - 1, 0, C(0)));
+  triplets.push_back(Eigen::Triplet<double>(0, n - 1, A(n - 1)));
 
-  SparseMatrix<double> M(n, n);
+  Eigen::SparseMatrix<double> M(n, n);
   M.setFromTriplets(triplets.begin(), triplets.end());
   M.makeCompressed();
   // solve linear system
-  SparseLU<SparseMatrix<double>> solver;
+  Eigen::SparseLU<Eigen::SparseMatrix<double>> solver;
   solver.compute(M);
   c = solver.solve(y);
   // END
@@ -86,27 +93,30 @@ VectorXd compute_c(const VectorXd &t, const VectorXd &y) {
 }
 /* SAM_LISTING_END_1 */
 
-/* [input] c  Vector of size n
-   [input] t Vector of size n-1
-   [output] d_ext Vector of size n+1
-*/
+/**
+ * \brief Computes spline coefficients d with known c
+ *
+ * \param c Vector of size n
+ * \param t Vector of size n-1
+ * \return Eigen::VectorXd Vector of size n+1
+ */
 /* SAM_LISTING_BEGIN_9 */
-VectorXd compute_d(const VectorXd &c, const VectorXd &t) {
+Eigen::VectorXd compute_d(const Eigen::VectorXd &c, const Eigen::VectorXd &t) {
   const unsigned int n = c.size();  // number of intervals
-  VectorXd d_ext(n + 1);
-  // TO DO (5-6.h): compute coefficients d_j for j = 0...n
+  Eigen::VectorXd d_ext(n + 1);
+  // TODO: (5-6.h) compute coefficients d_j for j = 0...n
   // Hint: periodic conditions give d_0 = d_n
   // START
-  std::pair<VectorXd, VectorXd> p = increments(t);
-  VectorXd dt = p.first;
-  VectorXd ddt = p.second;
+  std::pair<Eigen::VectorXd, Eigen::VectorXd> p = increments(t);
+  Eigen::VectorXd dt = p.first;
+  Eigen::VectorXd ddt = p.second;
 
   // extend c periodically for vectorization
-  VectorXd c_ext(c.size() + 1);
+  Eigen::VectorXd c_ext(c.size() + 1);
   c_ext << c, c(0);
 
   // coefficients d_j for j = 1...n
-  VectorXd d =
+  Eigen::VectorXd d =
       c.cwiseProduct(dt.tail(n)) + c_ext.tail(n).cwiseProduct(dt.segment(1, n));
   d = 2 * d.cwiseQuotient(ddt.tail(n));
   // extend d by periodic condition
@@ -116,31 +126,35 @@ VectorXd compute_d(const VectorXd &c, const VectorXd &t) {
 }
 /* SAM_LISTING_END_9 */
 
-/* [input] t  Vector of size n-1
-   [input] x  Vector of size N
-   [input] y  Vector of size n
-   [output] fval Vector of size N
-*/
+/**
+ * \brief Computes values of interpolating quadratic spline at x
+ *
+ * \param t Vector of size n-1
+ * \param y Vector of size n
+ * \param x Vector of size N
+ * \return Eigen::VectorXd Vector of size N
+ */
 /* SAM_LISTING_BEGIN_2 */
-VectorXd quadspline(const VectorXd &t, const VectorXd &y, const VectorXd &x) {
-  VectorXd fval(x.size());
+Eigen::VectorXd quadspline(const Eigen::VectorXd &t, const Eigen::VectorXd &y,
+                           const Eigen::VectorXd &x) {
+  Eigen::VectorXd fval(x.size());
 
-  // TO DO (5-6.i): evaluate the spline at the points defined in x.
+  // TODO: (5-6.i) evaluate the spline at the points defined in x.
   // Assume that x is sorted.
   assert(x.minCoeff() >= 0 && x.maxCoeff() <= 1 &&
          "evaluation samples out of range");
 
   // START
-  VectorXd c = compute_c(t, y);
+  Eigen::VectorXd c = compute_c(t, y);
   const unsigned int n = y.size();  // number of intervals
 
-  std::pair<VectorXd, VectorXd> p = increments(t);
-  VectorXd dt = p.first;
-  VectorXd ddt = p.second;
+  std::pair<Eigen::VectorXd, Eigen::VectorXd> p = increments(t);
+  Eigen::VectorXd dt = p.first;
+  Eigen::VectorXd ddt = p.second;
 
-  VectorXd d_ext = compute_d(c, t);
+  Eigen::VectorXd d_ext = compute_d(c, t);
   // extend t for vectorization
-  VectorXd t_ext(n + 1);
+  Eigen::VectorXd t_ext(n + 1);
   t_ext << 0, t, 1;
 
   unsigned int i = 0;
@@ -148,8 +162,8 @@ VectorXd quadspline(const VectorXd &t, const VectorXd &y, const VectorXd &x) {
   for (unsigned int j = 1; j <= n; ++j) {
     // loop over sample points in the interval
     while (i < x.size() && x(i) <= t_ext(j)) {
-      double tau = (x(i) - t_ext(j - 1)) / dt(j);
-      double uat = 1 - tau;
+      const double tau = (x(i) - t_ext(j - 1)) / dt(j);
+      const double uat = 1 - tau;
       fval(i) = d_ext(j) * tau * tau + 4 * c(j - 1) * tau * uat +
                 d_ext(j - 1) * uat * uat;
       ++i;
@@ -163,28 +177,25 @@ VectorXd quadspline(const VectorXd &t, const VectorXd &y, const VectorXd &x) {
 }
 /* SAM_LISTING_END_2 */
 
-/* [input] filename, string
-   [output] plot
-*/
 /* SAM_LISTING_BEGIN_3 */
 void plotquadspline(const std::string &filename) {
-  VectorXd mesh = VectorXd::LinSpaced(9, .1, .9);
-  auto f = [](VectorXd t) { return (2 * M_PI * t).array().sin().exp(); };
+  Eigen::VectorXd mesh = Eigen::VectorXd::LinSpaced(9, .1, .9);
+  auto f = [](Eigen::VectorXd t) { return (2 * M_PI * t).array().sin().exp(); };
 
   plt::figure();
-  // TO DO (5-6.j) : plot the quadratic spline for the function f based on
+  // TODO: (5-6.j) plot the quadratic spline for the function f based on
   // the intervals defined in t. Plot also the data (interpolation) points.
 
   // START
   // The interpolation points are the midpoints of the intervals
-  VectorXd t = VectorXd::LinSpaced(10, .05, .95);
-  VectorXd y = f(t);
+  Eigen::VectorXd t = Eigen::VectorXd::LinSpaced(10, .05, .95);
+  Eigen::VectorXd y = f(t);
   // plot data points
   plt::plot(t, y, "o", {{"label", "data"}});
 
   // std::cout << y <<std::endl;
-  VectorXd x = VectorXd::LinSpaced(200, 0, 1);
-  VectorXd spline_val = quadspline(mesh, y, x);
+  Eigen::VectorXd x = Eigen::VectorXd::LinSpaced(200, 0, 1);
+  Eigen::VectorXd spline_val = quadspline(mesh, y, x);
   // std::cout << spline_val <<std::endl;
 
   plt::plot(x, spline_val, {{"label", "spline"}});
@@ -200,23 +211,31 @@ void plotquadspline(const std::string &filename) {
 /* [input] q, integer
    [output] Err vector of size n = 2^q
 */
+/**
+ * \brief Computes error norms for n = 2, 4, ..., $2^q$
+ *
+ * \param q
+ * \return std::vector<double> error normes
+ */
 /* SAM_LISTING_BEGIN_4 */
 std::vector<double> qsp_error(unsigned int q) {
   std::vector<double> Err;
   constexpr unsigned int N = 10000;
-  VectorXd x = VectorXd::LinSpaced(N, 0, 1);
-  auto f = [](VectorXd t) { return (2 * M_PI * t).array().sin().exp(); };
-  // TO DO (5-6.k) : compute L^infty errors for all n = 2, 4, ..., 2^q
+  Eigen::VectorXd x = Eigen::VectorXd::LinSpaced(N, 0, 1);
+  auto f = [](Eigen::VectorXd t) { return (2 * M_PI * t).array().sin().exp(); };
+  // TODO: (5-6.k) compute L^infty errors for all n = 2, 4, ..., 2^q
   // START
   const unsigned int n_max = std::pow(2, q);
-  VectorXd f_exact = f(x);
+  Eigen::VectorXd f_exact = f(x);
 
   for (unsigned int n = 2; n <= n_max; n <<= 1) {
-    VectorXd t = VectorXd::LinSpaced(n - 1, 1.0 / n, 1.0 - 1.0 / n);
+    Eigen::VectorXd t =
+        Eigen::VectorXd::LinSpaced(n - 1, 1.0 / n, 1.0 - 1.0 / n);
     // The interpolation points are the midpoints of the intervals
-    VectorXd interp = VectorXd::LinSpaced(n, .5 / n, 1.0 - .5 / n);
-    VectorXd y = f(interp);
-    VectorXd f_spline = quadspline(t, y, x);
+    Eigen::VectorXd interp =
+        Eigen::VectorXd::LinSpaced(n, .5 / n, 1.0 - .5 / n);
+    Eigen::VectorXd y = f(interp);
+    Eigen::VectorXd f_spline = quadspline(t, y, x);
     // compute max error
     Err.push_back((f_spline - f_exact).cwiseAbs().maxCoeff());
   }

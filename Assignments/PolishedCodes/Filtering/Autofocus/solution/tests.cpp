@@ -16,7 +16,7 @@ struct TestData {
 TestData data;
 
 TEST_SUITE("Autofocus") {
-  TEST_CASE("MatrixXd set_focus" * doctest::description("skipped") *
+  TEST_CASE("Eigen::MatrixXd set_focus" * doctest::description("skipped") *
             doctest::skip()) {}
 
   TEST_CASE("double high_frequency_content" *

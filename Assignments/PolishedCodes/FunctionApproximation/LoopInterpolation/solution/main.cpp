@@ -1,38 +1,42 @@
+#include <Eigen/Dense>
+#include <iostream>
+#include <vector>
+
 #include "adaptiveintp.hpp"
 
 #define PI M_PI
 
 int main() {
-  auto c = [](double t) -> Vector2d {
-    Vector2d ct;
+  auto c = [](double t) -> Eigen::Vector2d {
+    Eigen::Vector2d ct;
     ct << std::cos(2 * PI * t) + 2. / 3. * std::cos(4 * PI * t),
         3. / 2. * std::sin(2 * PI * t);
     return ct;
   };
 
-  VectorXd t = VectorXd::LinSpaced(4, 0, 0.75);
+  Eigen::VectorXd t = Eigen::VectorXd::LinSpaced(4, 0, 0.75);
 
-  std::vector<Vector2d> Sigma(t.size());
+  std::vector<Eigen::Vector2d> Sigma(t.size());
   for (unsigned int i = 0; i < t.size(); ++i) {
     Sigma[i] = c(t(i));
   }
 
   unsigned int neval = 5;
-  VectorXd x(neval);
+  Eigen::VectorXd x(neval);
   x << 0.0, 0.4, 0.7, 0.9, 1.;
   /*
    *  run closedPolygonalInterpolant
    */
-  std::vector<Vector2d> v = closedPolygonalInterpolant(Sigma, x);
+  std::vector<Eigen::Vector2d> v = closedPolygonalInterpolant(Sigma, x);
   std::cout << "\nResult of closedPolygonalInterpolant:\n";
-  for (auto & i : v) {
+  for (auto& i : v) {
     std::cout << i.transpose() << std::endl;
   }
 
   /*
    *  test of closedPolygonalInterpolant
    */
-  std::vector<Vector2d> vtest;
+  std::vector<Eigen::Vector2d> vtest;
 
   vtest.emplace_back(1.66667, 0);
   vtest.emplace_back(-0.520348, 0.841566);
@@ -56,16 +60,16 @@ int main() {
   /*
    *  run closedHermiteInterpolant
    */
-  std::vector<Vector2d> w = closedHermiteInterpolant(Sigma, x);
+  std::vector<Eigen::Vector2d> w = closedHermiteInterpolant(Sigma, x);
   std::cout << "\nResult of closedHermiteInterpolant:\n";
-  for (auto & i : w) {
+  for (auto& i : w) {
     std::cout << i.transpose() << std::endl;
   }
 
   /*
    *  test of closedHermiteInterpolant
    */
-  std::vector<Vector2d> wtest;
+  std::vector<Eigen::Vector2d> wtest;
 
   wtest.emplace_back(1.66667, 0);
   wtest.emplace_back(-0.603704, 0.853533);
@@ -90,10 +94,10 @@ int main() {
    *  run adaptedHermiteInterpolant
    */
 
-  std::pair<std::vector<Vector2d>, std::vector<Vector2d> > p =
+  std::pair<std::vector<Eigen::Vector2d>, std::vector<Eigen::Vector2d> > p =
       adaptedHermiteInterpolant(c, 5, x, 1e-3);
   std::cout << "\nResult of adaptedHermiteInterpolant:\n";
-  for (auto & i : p.first) {
+  for (auto& i : p.first) {
     std::cout << i.transpose() << std::endl;
   }
 
@@ -101,7 +105,7 @@ int main() {
    *  test of adaptedHermiteInterpolant
    */
 
-  std::vector<Vector2d> wwtest;
+  std::vector<Eigen::Vector2d> wwtest;
 
   wwtest.emplace_back(1.66667, 0);
   wwtest.emplace_back(-0.606359, 0.88769);
