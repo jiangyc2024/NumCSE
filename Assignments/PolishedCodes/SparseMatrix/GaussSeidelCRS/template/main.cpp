@@ -3,10 +3,6 @@
  * Author: R. Hiptmair
  * Date: January 2022
  */
- 
-#ifdef NICEBACKTRACE
-#include "backtrace.hpp"
-#endif
 
 #include <Eigen/Dense>
 #include <Eigen/QR>
@@ -18,14 +14,11 @@
 #include <string>
 #include <tuple>
 #include <vector>
-#include "gaussseidelcrs.hpp"
+
 #include "auxiliary_functions.hpp"
+#include "gaussseidelcrs.hpp"
 
-#ifdef NICEBACKTRACE
-#include "backtrace.hpp"
-#endif
-
-int main(int /*argc*/, char ** /*argv*/) {
+int main() {
   std::cout << "C++ program for course Numerical Methods for CSE" << std::endl;
   std::cout << "Gauss-Seidel iteration with CRS matrix \n" << std::endl;
 

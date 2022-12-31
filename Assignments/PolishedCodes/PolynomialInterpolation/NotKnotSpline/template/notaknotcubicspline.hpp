@@ -25,7 +25,7 @@ class NotAKnotCubicSpline {
   Eigen::VectorXd c_;  // slopes
 };
 
-// Compute the slopes of the not-a-knot cubic spline interpolant
+// Compute the slopes of the natural cubic spline interpolant
 // The knot vector t is supposed to be sorted!
 /* SAM_LISTING_BEGIN_1 */
 NotAKnotCubicSpline::NotAKnotCubicSpline(Eigen::VectorXd t, Eigen::VectorXd y)
@@ -108,7 +108,6 @@ bool NotAKnotCubicSpline::checkC2() const {
 
 // Determines the index i of the knot interval [t_{i-1},t_{i}] containing the
 // point t
-
 int NotAKnotCubicSpline::getPtIdx(double t) const {
   if ((t < t_[0]) || (t > t_[t_.size() - 1])) {
     throw std::runtime_error("t out of range");

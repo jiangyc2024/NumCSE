@@ -157,8 +157,7 @@ std::pair<std::vector<double>, std::vector<double>> compareErrorAndBound(
                     F = x.unaryExpr(f);
 
     // Use barycentric formula (in intpolyval.hpp)
-    Eigen::VectorXd LnF;
-    intpolyval(t, y, x, LnF);
+    Eigen::VectorXd LnF = intpolyval(t, y, x);
     errInf.push_back((F - LnF).cwiseAbs().maxCoeff());
   }
   // END

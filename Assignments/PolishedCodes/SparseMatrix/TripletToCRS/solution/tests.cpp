@@ -51,4 +51,8 @@ TEST_SUITE("TripletToCRS") {
 
     CHECK((densify(C) - data.X).norm() == doctest::Approx(0.).epsilon(eps));
   }
+
+  TEST_CASE("bool testTripletToCRS" * doctest::description("Conversion test")) {
+    MESSAGE("This function wasn't tested. Run the program to see its output.");
+  }
 }

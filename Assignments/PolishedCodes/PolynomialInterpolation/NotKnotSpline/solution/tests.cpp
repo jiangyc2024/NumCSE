@@ -2,17 +2,17 @@
 #include "doctest.h"
 
 // includes for test data
-#include "notaknotcubicspline.hpp"
 #include <Eigen/Dense>
 #include <cmath>
 
-TEST_SUITE("Not-a-knot Cubic Splines") {
+#include "notaknotcubicspline.hpp"
 
+TEST_SUITE("Not-a-knot Cubic Splines") {
   TEST_CASE(
       "NotAKnotCubicSpline()" *
       doctest::description("Testing if eval() works as expected after invoking "
                            "the constructor (Not testing efficiency)")) {
-    unsigned N = 4;
+    const unsigned int N = 4;
     Eigen::VectorXd t(Eigen::VectorXd::LinSpaced(N, -1, 2));
     Eigen::VectorXd y(4);
     y << 0, 1, 4, 15;
@@ -24,7 +24,7 @@ TEST_SUITE("Not-a-knot Cubic Splines") {
   }
 
   TEST_CASE("evalDerivative()" * doctest::description("Testing the output")) {
-    unsigned N = 4;
+    const unsigned int N = 4;
     Eigen::VectorXd t(Eigen::VectorXd::LinSpaced(N, -1, 2));
     Eigen::VectorXd y(4);
     y << 0, 1, 4, 15;

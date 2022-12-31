@@ -1,10 +1,10 @@
+#ifndef AUXFUNCSHPP
+#define AUXFUNCSHPP
 /* **********************************************************************
  * Course "Numerical Methods for CSE", R. Hiptmair, SAM, ETH Zurich
  * Author: R. Hiptmair
  * Date: January 2022
  */
-#ifndef AUXFUNCSHPP
-#define AUXFUNCSHPP
 
 #include <Eigen/Dense>
 #include <Eigen/QR>
@@ -16,6 +16,7 @@
 #include <string>
 #include <tuple>
 #include <vector>
+
 #include "gaussseidelcrs.hpp"
 
 // One step of a Gauss-Seidel iteration for the linear system of equations Ax=b
@@ -25,16 +26,16 @@
 template <typename MATRIX>
 bool GaussSeidelstep_generic(const MATRIX &A, const Eigen::VectorXd &b,
                              Eigen::VectorXd &x) {
-  const int n = A.cols();
+  const unsigned int n = A.cols();
   assert(n == A.rows() && "Matrix must be square");
   assert(n == b.size() && "Vector length mismatch");
   assert(n == x.size() && "Vector b length mismatch");
 
-  for (int i = 0; i < n; ++i) {
+  for (unsigned int i = 0; i < n; ++i) {
     if (A(i, i) == 0.0) return false;
     double s = b[i];
-    for (int j = 0; j < i; ++j) s -= A(i, j) * x[j];
-    for (int j = i + 1; j < n; ++j) s -= A(i, j) * x[j];
+    for (unsigned int j = 0; j < i; ++j) s -= A(i, j) * x[j];
+    for (unsigned int j = i + 1; j < n; ++j) s -= A(i, j) * x[j];
     x[i] = s / A(i, i);
   }
   return true;
@@ -54,21 +55,15 @@ bool GaussSeidel_iteration_II(
   // Main loop for Gauss-Seidel iteration
   Eigen::VectorXd x_old{x};
   for (unsigned int k = 0; k < maxit; ++k) {
-    // START student code
-    if (!GaussSeidelstep_crs(A, b, x)) return false;
-    const double delta_x_norm = (x - x_old).norm();
-    const double x_norm = x.norm();
-    rec(x_norm, delta_x_norm);  // \Label{xgs:r}
-    if ((delta_x_norm < atol) || (delta_x_norm < rtol * x_norm)) {  // \Label{xgs:1}
-      return true;
-    }
-    x_old = x;
-    // END student code
+    // TODO: (2-18.d; optional) Second function to implement the Gauss-Seidel
+    // iteration, not required to implement.
+    // START
+
+    // END
   }
   // No termination
   return false;
 }
 /* SAM_LISTING_END_4 */
-
 
 #endif

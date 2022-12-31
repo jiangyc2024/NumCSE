@@ -17,11 +17,11 @@
 Eigen::VectorXd polyMult_naive(const Eigen::VectorXd &u,
                                const Eigen::VectorXd &v) {
   // Fetch degrees of input polynomials
-  const unsigned int degu = u.size() - 1;
-  const unsigned int degv = v.size() - 1;
+  const int degu = u.size() - 1;
+  const int degv = v.size() - 1;
 
   // Object for product polynomial p = uv
-  const unsigned int degp = degu + degv;
+  const int degp = degu + degv;
 
   Eigen::VectorXd uv(degp + 1);
 

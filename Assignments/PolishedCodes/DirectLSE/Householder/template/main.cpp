@@ -1,5 +1,3 @@
 #include "householder.hpp"
 
-int main() {
-  return 0;
-}
+int main() {}

@@ -39,8 +39,8 @@ int main() {
     vec_size_pow3[i] = pow(h[i], 3) / pow(h[0], 3);
   }
 
-  plt::loglog(h, vec_size_lin, "k--", {{"label", "$O(n)$"}});
-  plt::loglog(h, vec_size_pow3, "k--", {{"label", "$O(n^3)$"}});
+  plt::loglog(h, vec_size_lin, "k--", {{"label", "$O(h)$"}});
+  plt::loglog(h, vec_size_pow3, "k--", {{"label", "$O(h^3)$"}});
 
   plt::legend();
   plt::savefig("./cx_out/pchi_conv.png");
