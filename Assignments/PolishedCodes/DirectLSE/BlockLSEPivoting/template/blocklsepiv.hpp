@@ -56,18 +56,16 @@ Eigen::VectorXd solveA(const Eigen::VectorXd& d1, const Eigen::VectorXd& d2,
   const unsigned int n = d1.size();
   assert(n == d2.size() && n == c.size() && 2 * n == b.size() &&
          "Size mismatch!");
-
-  Eigen::ArrayXd c1_arr = c, c2_arr = c, d1_arr = d1, d2_arr = d2, b_arr = b;
-
+  Eigen::VectorXd x = Eigen::VectorXd::Zero(2 * n);
   constexpr double eps = std::numeric_limits<double>::epsilon();
 
-  // TODO: (2-2.d) Solve Ax = b for x using Gaussian elimination without using
-  // Eigen's built-in solvers
+  // TODO: (2-2.d) Solve Ax = b for x using Gaussian elimination without
+  // directly envoking Eigen's solvers on the full matrix
   // START
 
   // END
 
-  return b_arr;
+  return x;
 }
 /* SAM_LISTING_END_2 */
 
@@ -77,7 +75,7 @@ Eigen::VectorXd solveA(const Eigen::VectorXd& d1, const Eigen::VectorXd& d2,
  */
 /* SAM_LISTING_BEGIN_3 */
 void numericalExperiment() {
-  constexpr unsigned int repeats = 10;
+  constexpr unsigned int repeats = 5;
   Eigen::VectorXd d1, d2, c, b, y;
   plt::figure();
 

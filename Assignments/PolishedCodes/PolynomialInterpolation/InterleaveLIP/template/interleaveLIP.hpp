@@ -35,20 +35,20 @@ std::vector<std::size_t> order(const Eigen::VectorXd& values) {
 class PwLinIP {
  public:
   /**
-   * @brief Construct a new PwLinIP object
+   * \brief Construct a new PwLinIP object
    *
-   * @param x Vector of knots
-   * @param t Vector of nodes
-   * @param y Vector of values of interpolant in nodes
+   * \param x Vector of knots
+   * \param t Vector of nodes
+   * \param y Vector of values of interpolant in nodes
    */
   PwLinIP(const Eigen::VectorXd& x, const Eigen::VectorXd& t,
           const Eigen::VectorXd& y);
 
   /**
-   * @brief evaluate interpolant at $arg$.
+   * \brief evaluate interpolant at $arg$.
    *
-   * @param arg argument to evaluate at
-   * @return double
+   * \param arg argument to evaluate at
+   * \return double
    */
   double operator()(double arg) const;
 

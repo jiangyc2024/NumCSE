@@ -3,12 +3,7 @@
  * Author: R. Hiptmair
  * Date: January 2022
  */
- 
-#ifdef NICEBACKTRACE
-#include "backtrace.hpp"
-#endif
 
-#include "locationestimation.hpp"
 #include <Eigen/Dense>
 #include <Eigen/QR>
 #include <Eigen/SVD>
@@ -20,11 +15,9 @@
 #include <tuple>
 #include <vector>
 
-#ifdef NICEBACKTRACE
-#include "backtrace.hpp"
-#endif
+#include "locationestimation.hpp"
 
-int main(int /*argc*/, char ** /*argv*/) {
+int main() {
   std::cout << "NumCSE code for location estimation of an acoustic source\n"
             << std::endl;
   // Creation of synthetic test data
@@ -38,11 +31,11 @@ int main(int /*argc*/, char ** /*argv*/) {
   // Source point
   const Eigen::Vector3d ps{(Eigen::Vector3d() << 0.1, 0.1, 0.9).finished()};
   // Starting time
-  double ts = 0.0;
+  constexpr double ts = 0.0;
   // Compute arrival times
-  const int n = Q.cols();
+  const unsigned int n = Q.cols();
   Eigen::VectorXd ta(n);
-  for (int j = 0; j < n; ++j) {
+  for (unsigned int j = 0; j < n; ++j) {
     ta[j] = ts + (Q.col(j) - ps).norm();
   }
   // Estimate source location and starting time using Gauss-Newton Method

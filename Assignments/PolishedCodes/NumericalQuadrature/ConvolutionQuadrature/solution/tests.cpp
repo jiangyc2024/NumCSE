@@ -1,10 +1,10 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "convolutionquadrature.hpp"
-#include "doctest.h"
+#include <Eigen/Dense>
 #include <iomanip>
 #include <random>
-// includes for test data
-#include <Eigen/Dense>
+
+#include "convolutionquadrature.hpp"
+#include "doctest.h"
 
 struct TestData {
   TestData() {
@@ -19,10 +19,9 @@ struct TestData {
 TestData data;
 
 TEST_SUITE("Convolution Quadrature") {
-
-  TEST_CASE("compute_cq_weights()" *
+  TEST_CASE("Eigen::VectorXcd compute_cq_weights" *
             doctest::description("Testing output. Not testing efficiency")) {
-    double n = (double)rand() / RAND_MAX;
+    const double n = static_cast<double>(rand()) / RAND_MAX;
     auto F1 = [&](std::complex<double> x) {
       return std::complex<double>(n, 0);
     };
@@ -30,8 +29,8 @@ TEST_SUITE("Convolution Quadrature") {
     auto F2 = [](std::complex<double> x) {
       return std::complex<double>(1, 0) / x;
     };
-    unsigned N = 10;
-    double tau = .1;
+    constexpr unsigned int N = 10;
+    constexpr double tau = .1;
 
     Eigen::VectorXcd wts1 = compute_cq_weights(F1, N, tau);
     Eigen::VectorXcd ex_wts1 =
@@ -41,8 +40,11 @@ TEST_SUITE("Convolution Quadrature") {
     REQUIRE(wts1.size() == N + 1);
     CHECK((wts1 - ex_wts1).norm() == doctest::Approx(0.).epsilon(1e-7));
 
-    Eigen::VectorXcd wts2 = compute_cq_weights(F2, N, tau,0.5);
+    Eigen::VectorXcd wts2 = compute_cq_weights(F2, N, tau, 0.5);
     REQUIRE(wts2.size() == N + 1);
     CHECK((wts2 - data.wts).norm() == doctest::Approx(0.).epsilon(1e-7));
   }
+
+  TEST_CASE("Eigen::VectorXd compute_cq_weights_sqrt" *
+            doctest::description("helper") * doctest::skip()) {}
 }

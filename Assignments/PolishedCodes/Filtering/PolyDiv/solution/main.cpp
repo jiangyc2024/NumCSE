@@ -6,8 +6,8 @@
 
 int main() {
   // Initialization
-  int m = 4;
-  int n = 3;
+  constexpr unsigned int m = 4;
+  constexpr unsigned int n = 3;
   Eigen::VectorXd u(m);
   Eigen::VectorXd v(n);
   u << 1, 2, 3, 4;  // u = 1 + 2x + 3x^2 + 4x^3
@@ -49,13 +49,13 @@ int main() {
             << std::setw(20) << "time fast [s]" << std::endl;
 
   // Loop over vector size
-  for (int p = 2; p <= 10; ++p) {
+  for (unsigned int p = 2; p <= 10; ++p) {
     // Timers
     Timer tm_naive, tm_effic;
-    int n = pow(2, p);
+    const unsigned int n = pow(2, p);
 
     // Repeat test many times
-    for (int r = 0; r < repeats; ++r) {
+    for (unsigned int r = 0; r < repeats; ++r) {
       u = Eigen::VectorXd::Random(n);
       v = Eigen::VectorXd::Random(n);
 

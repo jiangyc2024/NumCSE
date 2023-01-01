@@ -1,11 +1,11 @@
+#ifndef PERIODICQUADRATICSPLINESHPP
+#define PERIODICQUADRATICSPLINESHPP
+
 /* **********************************************************************
  * Course "Numerical Methods for CSE", R. Hiptmair, SAM, ETH Zurich
  * Author: R. Hiptmair
  * Date: January 2022
  */
-
- #ifndef PERIODICQUADRATICSPLINESHPP
- #define PERIODICQUADRATICSPLINESHPP
 
 #define _USE_MATH_DEFINES
 
@@ -21,8 +21,7 @@
 class ClosedQuadraticSplineCurve {
  public:
   // Constructor
-  explicit ClosedQuadraticSplineCurve(
-      const Eigen::Matrix<double, 2, Eigen::Dynamic> &p);
+  explicit ClosedQuadraticSplineCurve(const Eigen::Matrix2Xd &p);
   ~ClosedQuadraticSplineCurve() = default;
   ClosedQuadraticSplineCurve() = delete;
   ClosedQuadraticSplineCurve(const ClosedQuadraticSplineCurve &) = delete;
@@ -30,8 +29,7 @@ class ClosedQuadraticSplineCurve {
   ClosedQuadraticSplineCurve &operator=(const ClosedQuadraticSplineCurve &) =
       delete;
   // Point evaluation operator for sorted parameter arguments
-  [[nodiscard]] Eigen::Matrix<double, 2, Eigen::Dynamic> curve_points(
-      const Eigen::VectorXd &v) const;
+  [[nodiscard]] Eigen::Matrix2Xd curve_points(const Eigen::VectorXd &v) const;
   // Curvature evaluation operator for sorted parameter arguments
   [[nodiscard]] Eigen::VectorXd local_curvatures(
       const Eigen::VectorXd &v) const;
@@ -43,25 +41,26 @@ class ClosedQuadraticSplineCurve {
   // Number of points to be interpolated
   unsigned int n_;
   // Coordinates of interpolated points, duplicate: $\cob{\Vp^0=\Vp^n}$
-  Eigen::Matrix<double, 2, Eigen::Dynamic> p_;
+  Eigen::Matrix2Xd p_;
   // Knot sequence
   Eigen::VectorXd t_;
   // Coefficients in local representation
-  Eigen::Matrix<double, 2, Eigen::Dynamic> x_;
+  Eigen::Matrix2Xd x_;
 };
 /* SAM_LISTING_END_1 */
 
-
 /* SAM_LISTING_BEGIN_2 */
 ClosedQuadraticSplineCurve::ClosedQuadraticSplineCurve(
-    const Eigen::Matrix<double, 2, Eigen::Dynamic> &p)
+    const Eigen::Matrix2Xd &p)
     : n_(p.cols()), p_(2, p.cols() + 1), t_(p.cols() + 1), x_(2, p.cols()) {
   assert((n_ > 2) && "At least three points have to be supplied");
-  assert((n_ % 2 == 1) && "Number of points must be odd!"); // \Label[line]{pqs:1}
+  assert((n_ % 2 == 1) &&
+         "Number of points must be odd!");  // \Label[line]{pqs:1}
   // Save point coordinates, duplicate endpoints
   p_.col(0) = p.col(n_ - 1);
   p_.rightCols(n_) = p;
-  // START Student code
+  // TODO: (5-15.c) Write the constructor.
+  // START
   // Compute knot set by accumulating length of polygon segments
   Eigen::VectorXd lensum{n_};
   lensum[0] = (p_.col(1) - p_.col(0)).norm();
@@ -123,10 +122,9 @@ ClosedQuadraticSplineCurve::ClosedQuadraticSplineCurve(
     }
 #endif
   }
-  // END Student code
+  // END
 }
 /* SAM_LISTING_END_2 */
-
 
 bool ClosedQuadraticSplineCurve::checkC1(double tol) const {
   bool ok = true;
@@ -173,19 +171,21 @@ bool ClosedQuadraticSplineCurve::checkC1(double tol) const {
   return ok;
 }
 
-
 // Computation of points on the curve for many parameter values
 // Those are assumed to be sorted
 /* SAM_LISTING_BEGIN_3 */
-Eigen::Matrix<double, 2, Eigen::Dynamic>
-ClosedQuadraticSplineCurve::curve_points(const Eigen::VectorXd &v) const {
+Eigen::Matrix2Xd ClosedQuadraticSplineCurve::curve_points(
+    const Eigen::VectorXd &v) const {
   unsigned int N = v.size();
   assert(N > 0);
   // Matrix containing points to be computed
-  Eigen::Matrix<double, 2, Eigen::Dynamic> s(2, N);
+  Eigen::Matrix2Xd s(2, N);
   // Lengths of knot intervals
   const Eigen::VectorXd h = t_.tail(n_) - t_.head(n_);
-  // START Student code
+  // TODO: (5-15.d) Compute the points on the curve for the sorted parameter
+  // values v.
+  // START
+
   // Run through all the provided parameter values
   unsigned int knot_idx = 0;
   for (unsigned int k = 0; k < N; ++k) {
@@ -204,7 +204,7 @@ ClosedQuadraticSplineCurve::curve_points(const Eigen::VectorXd &v) const {
                (h[knot_idx - 1] * tau * (1 - tau)) * x_.col(knot_idx - 1) +
                (tau * p_.col(knot_idx));
   }
-  // END Student code
+  // END
   return s;
 }
 /* SAM_LISTING_END_3 */
@@ -220,7 +220,9 @@ Eigen::VectorXd ClosedQuadraticSplineCurve::local_curvatures(
   Eigen::VectorXd c(N);
   // Lengths of knot intervals
   const Eigen::VectorXd h = t_.tail(n_) - t_.head(n_);
-  // START Student code
+  // TODO: (5-15.e) Compute the local curvature at the parameter values v.
+  // START
+
   // Same as in curve\_points(): Run through all the
   // provided parameter values
   unsigned int knot_idx = 0;
@@ -246,7 +248,7 @@ Eigen::VectorXd ClosedQuadraticSplineCurve::local_curvatures(
     const double determinant = ds[0] * dds[1] - ds[1] * dds[0];
     c[k] = determinant / ds.norm();
   }
-  // END Student code
+  // END
   return c;
 }
 /* SAM_LISTING_END_4 */
@@ -255,6 +257,11 @@ Eigen::VectorXd ClosedQuadraticSplineCurve::local_curvatures(
 // of polygonal approximation up to a given relative tolerance
 double ClosedQuadraticSplineCurve::length(double rtol) const {
   double length = 0.0;
+
+  // TODO: (5-15.f) Return an approximation of the length of the curve.
+  // START
+
+  // END
 
   return length;
 }

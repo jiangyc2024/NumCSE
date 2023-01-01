@@ -45,8 +45,7 @@ Eigen::VectorXd multAx(Eigen::VectorXd &a, const Eigen::VectorXd &b,
   }
 
   // Last row special case
-  if (n > 2)
-    y(n - 1) = 2 * x(n - 1) + b(n - 3) * x(n - 3);
+  if (n > 2) y(n - 1) = 2 * x(n - 1) + b(n - 3) * x(n - 3);
   // END
   return y;
 }
@@ -187,13 +186,11 @@ Eigen::VectorXd solvelseASparse(const Eigen::VectorXd &a,
   // Fill in matrix:
   // We reserve three nonzero entries per row for Gaussian fill-in
   Eigen::SparseMatrix<double> A(n, n);
-  A.reserve(3*n);
+  A.reserve(Eigen::VectorXi::Constant(n, 3));
   for (unsigned int i = 0; i < n; ++i) {
     A.insert(i, i) = 2;
-    if (i < n - 1)
-      A.insert(i, i + 1) = a(i);
-    if (i >= 2)
-      A.insert(i, i - 2) = b(i - 2);
+    if (i < n - 1) A.insert(i, i + 1) = a(i);
+    if (i >= 2) A.insert(i, i - 2) = b(i - 2);
   }
   A.makeCompressed();
 

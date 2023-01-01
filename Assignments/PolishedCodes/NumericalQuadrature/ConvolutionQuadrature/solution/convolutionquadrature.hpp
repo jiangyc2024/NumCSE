@@ -1,3 +1,5 @@
+#ifndef CONVOLUTIONQUADRATURE_HPP
+#define CONVOLUTIONQUADRATURE_HPP
 /* **********************************************************************
  * Course "Numerical Methods for CSE", R. Hiptmair, SAM, ETH Zurich
  * Author: R. Hiptmair
@@ -17,7 +19,6 @@
 #include <unsupported/Eigen/FFT>
 #include <vector>
 
-
 // DFT-based computation of convolution quadrature weights.
 /* SAM_LISTING_BEGIN_1 */
 template <typename FFUNCTOR>
@@ -31,12 +32,15 @@ Eigen::VectorXcd compute_cq_weights(FFUNCTOR&& F, unsigned int N, double tau,
   }
   Eigen::VectorXcd w(N + 1);
   const Comp iu = 2.0 * Comp{0.0, 1.0} * M_PI;  // 2*pi*i
-  // START student code
+  // TODO: (7-15.c) Compute the approximate convolution quadrature weights by
+  // means of the equidistant trapezoidal rule.
+  // START
   Eigen::VectorXcd v(N + 1);
   // Sampling of F on a circle in the complex plane, see \prbeqref{eq:x}
-  const Comp expfac = iu / ((double)N + 1);
+  const Comp expfac = iu / (static_cast<double>(N + 1));
   for (unsigned int k = 0; k <= N; ++k) {
-    const Comp z = (Comp(1.0, 0.0) - r * std::exp(expfac * (double)k)) / tau;
+    const Comp z =
+        (Comp(1.0, 0.0) - r * std::exp(expfac * static_cast<double>(k))) / tau;
     v[k] = F(z);
   }
   // Compute DFT of the vector v
@@ -48,11 +52,10 @@ Eigen::VectorXcd compute_cq_weights(FFUNCTOR&& F, unsigned int N, double tau,
     w[k] /= fac;
     fac *= r;
   }
-  // END Student code
+  // END
   return w;
 }
 /* SAM_LISTING_END_1 */
-
 
 // Exact convolution quadrature weights for F the square root function
 Eigen::VectorXd compute_cq_weights_sqrt(unsigned int N, double tau) {
@@ -64,3 +67,5 @@ Eigen::VectorXd compute_cq_weights_sqrt(unsigned int N, double tau) {
   }
   return w;
 }
+
+#endif

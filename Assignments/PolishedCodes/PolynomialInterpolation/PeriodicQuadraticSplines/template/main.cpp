@@ -6,10 +6,6 @@
 
 #define _USE_MATH_DEFINES
 
-#ifdef NICEBACKTRACE
-#include "backtrace.hpp"
-#endif
-
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 #include <cassert>
@@ -17,15 +13,12 @@
 #include <iomanip>
 #include <iostream>
 #include <string>
-#include "periodicquadraticsplines.hpp"
 
-#ifdef NICEBACKTRACE
-#include "backtrace.hpp"
-#endif
+#include "periodicquadraticsplines.hpp"
 
 #define SMART_LSE_SOLUTION
 
-int main(int /*argc*/, char ** /*argv*/) {
+int main() {
   std::cout << "NumCSE code for close quadratic spline curve" << std::endl;
 
   {
@@ -36,7 +29,9 @@ int main(int /*argc*/, char ** /*argv*/) {
 	 0, 0, 1, 1.5, 1)
             .finished();
     // clang-format on
-    std::cout << "\nClosedQuadraticSplineCurve object created using points \n \n" << p.transpose() << std::endl;
+    std::cout
+        << "\nClosedQuadraticSplineCurve object created using points \n \n"
+        << p.transpose() << std::endl;
     ClosedQuadraticSplineCurve s(p);
 
     // Output points on spline curve
@@ -46,7 +41,7 @@ int main(int /*argc*/, char ** /*argv*/) {
     for (unsigned int k = 0; k < pts.cols(); ++k) {
       std::cout << pts.col(k).transpose() << std::endl;
     }
-    std::cout << p.col(4).transpose() <<  std::endl;
+    std::cout << p.col(4).transpose() << std::endl;
   }
   return 0;
 }

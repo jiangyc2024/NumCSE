@@ -59,6 +59,40 @@ Eigen::VectorXd solveA(const Eigen::VectorXd& d1, const Eigen::VectorXd& d2,
   const unsigned int n = d1.size();
   assert(n == d2.size() && n == c.size() && 2 * n == b.size() &&
          "Size mismatch!");
+  Eigen::VectorXd x = Eigen::VectorXd::Zero(2 * n);
+  constexpr double eps = std::numeric_limits<double>::epsilon();
+
+  // TODO: (2-2.d) Solve Ax = b for x using Gaussian elimination without
+  // directly envoking Eigen's solvers on the full matrix
+  // START
+  Eigen::Matrix2d A;
+  Eigen::Vector2d x_, b_;
+  for (unsigned int k = 0; k < n; ++k) {
+    A << d1(k), c(k), c(k), d2(k);
+    // check for singularity
+    if (std::abs(A.col(0).dot(A.col(1)) / (A.col(0).norm() * A.col(1).norm())) >
+        1. - eps) {
+      std::cerr << "Warning: matrix nearly singular!" << std::endl;
+    }
+    b_ << b(k), b(n + k);
+    x_ = A.fullPivLu().solve(b_);
+    x(k) = x_(0);
+    x(n + k) = x_(1);
+  }
+  // END
+
+  return x;
+}
+/* SAM_LISTING_END_2 */
+
+/************************************
+ * Alternative implementation where everything is done manual
+ ************************************
+Eigen::VectorXd solveA(const Eigen::VectorXd& d1, const Eigen::VectorXd& d2,
+                       const Eigen::VectorXd& c, const Eigen::VectorXd& b) {
+  const unsigned int n = d1.size();
+  assert(n == d2.size() && n == c.size() && 2 * n == b.size() &&
+         "Size mismatch!");
 
   Eigen::ArrayXd c1_arr = c, c2_arr = c, d1_arr = d1, d2_arr = d2, b_arr = b;
 
@@ -116,7 +150,7 @@ Eigen::VectorXd solveA(const Eigen::VectorXd& d1, const Eigen::VectorXd& d2,
 
   return b_arr;
 }
-/* SAM_LISTING_END_2 */
+*/
 
 /**
  * @brief Tabulates runtimes for different n and plots them.
@@ -124,20 +158,21 @@ Eigen::VectorXd solveA(const Eigen::VectorXd& d1, const Eigen::VectorXd& d2,
  */
 /* SAM_LISTING_BEGIN_3 */
 void numericalExperiment() {
-  constexpr unsigned int repeats = 10;
+  constexpr unsigned int repeats = 5;
   Eigen::VectorXd d1, d2, c, b, y;
   plt::figure();
 
   // TODO: (2-2.f) Tabulate runtimes of solveA and plot them using
-  // matplotlibcpp. START
-  std::vector<double> n(7), times(7), o_n(7);
+  // matplotlibcpp.
+  // START
+  std::vector<double> n(19), times(19), o_n(19);
 
   // Table header
   std::cout << std::setw(10) << "k" << std::scientific << std::setprecision(3)
             << std::setw(15) << "runtime [s]" << std::endl;
 
-  // Loop from $2$ to $2^7$
-  for (unsigned int k = 2, i = 0; k <= (1 << 7); k <<= 1, ++i) {
+  // Loop from $4$ to $2^20$
+  for (unsigned int k = 4, i = 0; k <= (1 << 20); k <<= 1, ++i) {
     d1 = Eigen::VectorXd::LinSpaced(k, 1, k);
     d2 = -d1;
     c = Eigen::VectorXd::Ones(k);
@@ -155,7 +190,7 @@ void numericalExperiment() {
 
     // Keep track of data for plotting
     n[i] = k;
-    times[i] = tm.duration();
+    times[i] = tm.mean();
     o_n[i] = k * 1e-5;  // scale to beautify plot
 
     // Print measurements
@@ -166,7 +201,7 @@ void numericalExperiment() {
   // Plotting
   plt::loglog(n, times, "o", {{"label", "solveA"}});
   plt::loglog(n, o_n, {{"label", "O(n)"}});
-  plt::title("timings for solveA accumulated over 10 runs");
+  plt::title("timings for solveA (mean of 5 runs)");
   plt::xlabel("dimension n");
   plt::ylabel("time [s]");
   plt::legend();

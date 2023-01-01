@@ -1,10 +1,10 @@
+#ifndef GAUSSSEIDELCRSHPP
+#define GAUSSSEIDELCRSHPP
 /* **********************************************************************
  * Course "Numerical Methods for CSE", R. Hiptmair, SAM, ETH Zurich
  * Author: R. Hiptmair
  * Date: January 2022
  */
-#ifndef GAUSSSEIDELCRSHPP
-#define GAUSSSEIDELCRSHPP
 
 #include <Eigen/Dense>
 #include <Eigen/QR>
@@ -36,7 +36,10 @@ bool GaussSeidelstep_crs(const CRSMatrix &A, const Eigen::VectorXd &b,
   assert(A.n == b.size() && "Vector b length mismatch");
   assert(A.n == x.size() && "Vector x length mismatch");
 
-  // START student code
+  // TODO: (2-18.b) Implement a single step of the Gauss-Seidel iteration with
+  // the system matrix in CRS format.
+  // START
+
   // Outer loop over rows of the matrix
   for (unsigned int i = 0; i < A.n; ++i) {
     double Aii = 0.0;
@@ -48,7 +51,7 @@ bool GaussSeidelstep_crs(const CRSMatrix &A, const Eigen::VectorXd &b,
       if (j != i) {
         s -= A.val[l] * x[j];
       } else {
-  // Fetch diagonal entry of A.
+        // Fetch diagonal entry of A.
         Aii = A.val[l];
       }
     }
@@ -57,7 +60,7 @@ bool GaussSeidelstep_crs(const CRSMatrix &A, const Eigen::VectorXd &b,
     else
       return false;
   }
-  // END student code
+  // END
   return true;
 }
 /* SAM_LISTING_END_2 */
@@ -74,7 +77,9 @@ bool GaussSeidel_iteration(const CRSMatrix &A, const Eigen::VectorXd &b,
 
   // Main loop for Gauss-Seidel iteration
   for (unsigned int k = 0; k < maxit; ++k) {
-    // START student code
+    // TODO: (2-18.d) Implement the Gauss-Seidel iteration with a
+    // correction-based termination criterion.
+    // START
     double x_normsq = 0.0;
     double delta_x_normsq = 0.0;
     for (unsigned int i = 0; i < A.n; ++i) {
@@ -85,7 +90,7 @@ bool GaussSeidel_iteration(const CRSMatrix &A, const Eigen::VectorXd &b,
         if (j != i) {
           s -= A.val[l] * x[j];
         } else {
-    // Fetch diagonal entry of A
+          // Fetch diagonal entry of A
           Aii = A.val[l];
         }
       }
@@ -104,7 +109,7 @@ bool GaussSeidel_iteration(const CRSMatrix &A, const Eigen::VectorXd &b,
         (delta_x_normsq < rtol * rtol * x_normsq)) {
       return true;
     }
-    // END student code
+    // END
   }
   // No termination
   return false;

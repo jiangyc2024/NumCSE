@@ -1,11 +1,11 @@
+#ifndef GAUSSQUAD_HPP
+#define GAUSSQUAD_HPP
 /* **********************************************************************
  * Course "Numerical Methods for CSE", R. Hiptmair, SAM, ETH Zurich
  * Author: R. Hiptmair
  * Date: January 2020
  */
 
-#ifndef GAUSSQUAD_HPP
-#define GAUSSQUAD_HPP
 #include <Eigen/Dense>
 #include <Eigen/Eigenvalues>
 

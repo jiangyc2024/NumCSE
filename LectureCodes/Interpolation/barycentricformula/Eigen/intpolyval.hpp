@@ -1,3 +1,6 @@
+#ifndef INTPOLYVAL_HPP
+#define INTPOLYVAL_HPP
+
 ///////////////////////////////////////////////////////////////////////////
 /// Demonstration code for lecture "Numerical Methods for CSE" @ ETH Zurich
 /// (C) 2016 SAM, D-MATH
@@ -5,8 +8,6 @@
 /// Repository: https://gitlab.math.ethz.ch/NumCSE/NumCSE/
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
-#ifndef INTPOLYVAL_HPP
-#define INTPOLYVAL_HPP
 
 #include <Eigen/Dense>
 #include <algorithm>

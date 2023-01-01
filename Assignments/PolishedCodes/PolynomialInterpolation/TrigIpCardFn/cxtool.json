@@ -1,0 +1,5 @@
+{
+  "includes": [
+    "MatplotlibC++/matplotlibcpp.h"
+  ]
+}

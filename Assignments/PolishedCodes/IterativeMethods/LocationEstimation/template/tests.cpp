@@ -1,7 +1,8 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include <utility>
+
 #include "doctest.h"
 #include "locationestimation.hpp"
-#include <utility>
 
 // includes for test data
 #include <Eigen/Dense>
@@ -71,15 +72,17 @@ struct TestData {
 TestData data;
 
 TEST_SUITE("Non linear least squares location estimation") {
+  TEST_CASE("VECTOR gn" * doctest::description("Helper function") *
+            doctest::skip()) {}
 
-  TEST_CASE("source_estimation()" * doctest::description("Testing output")) {
-    Eigen::Vector3d p1, p2;
-    double ts1, ts2;
-
-    std::tie(p1, ts1) = source_estimation(data.l1, data.t1);
-    std::tie(p2, ts2) = source_estimation(data.l2, data.t2);
+  TEST_CASE("std::pair<Eigen::Vector2d, double> source_estimation" *
+            doctest::description("Testing output")) {
+    auto [p1, ts1] = source_estimation(data.l1, data.t1);
+    auto [p2, ts2] = source_estimation(data.l2, data.t2);
 
     CHECK((p1 - data.p1).norm() == doctest::Approx(0.).epsilon(1e-6));
     CHECK((p2 - data.p2).norm() == doctest::Approx(0.).epsilon(1e-6));
+    CHECK(ts1 == doctest::Approx(data.ts1).epsilon(1e-7));
+    CHECK(ts2 == doctest::Approx(data.ts2).epsilon(1e-7));
   }
 }

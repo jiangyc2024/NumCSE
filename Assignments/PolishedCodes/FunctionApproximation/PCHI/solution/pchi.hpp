@@ -15,7 +15,7 @@ namespace plt = matplotlibcpp;
  */
 /* SAM_LISTING_BEGIN_0 */
 class CubicHermiteInterpolant {
-public:
+ public:
   /*!
    * \brief Construct the slopes from the data.
    * Use finite-differences or setting $s'(x_j) = 0$.
@@ -44,7 +44,7 @@ public:
   // Difference $t(i)-t(i-1)$
   double h_;
   // Size of $t$, $y$ and $c$.
-  int n_;
+  unsigned int n_;
 };
 /* SAM_LISTING_END_0 */
 
@@ -59,8 +59,8 @@ CubicHermiteInterpolant::CubicHermiteInterpolant(Function &&f,
   assert(n_ >= 3 && "Need at least three nodes.");
   h_ = t_(1) - t_(0);
 
-  //// Reconstruction of the slope,
-  // TODO: implement reconstruction of slopes.
+  // Reconstruction of the slope,
+  // TODO: (6-7.e) Implement reconstruction of slopes.
   // START
   // First order alternative:
   c_(0) = (-1 * y_(2) + 4 * y_(1) - 3 * y_(0)) / 2 / h_;
@@ -78,12 +78,11 @@ CubicHermiteInterpolant::CubicHermiteInterpolant(Function &&f,
 Eigen::VectorXd CubicHermiteInterpolant::eval(const Eigen::VectorXd &x) const {
   Eigen::VectorXd ret(x.size());
 
-  // TO DO: implement evaluation function.
+  // TODO: (6-7.e) Implement evaluation function.
   // START
-
-  int i_star = 0;
+  unsigned int i_star = 0;
   double tmp, h_tmp, t1, t2, y1, y2, c1, c2, a1, a2, a3;
-  for (int j = 0; j < x.size();) {
+  for (unsigned int j = 0; j < x.size();) {
     // Stores the current interval index and some temporary variable
     // Find the interval for $x_j$ while assuming that $x$ values are sorted
     // and within $[t_{\min},t_{\max}]$
@@ -112,7 +111,6 @@ Eigen::VectorXd CubicHermiteInterpolant::eval(const Eigen::VectorXd &x) const {
       continue;
     }
   }
-
   // END
 
   return ret;
@@ -124,13 +122,12 @@ template <typename Function>
 Eigen::VectorXd fppchip(Function &&f, const Eigen::VectorXd &t,
                         const Eigen::VectorXd &x) {
   Eigen::VectorXd ret{x.size()};
-  // TO DO: compute ret.
+  // TODO: (6-7.b) Compute ret.
   // START
-
   Eigen::VectorXd y = t.unaryExpr(f);
-  int i_star = 0;
+  unsigned int i_star = 0;
   double tmp, h_tmp, t1, t2, y1, y2, a1, a2, a3;
-  for (int j = 0; j < x.size();) {
+  for (unsigned int j = 0; j < x.size();) {
     // Stores the current interval index and some temporary variable
     // Find the interval for $x_j$ while assuming that $x$ values are sorted
     // and within $[t_{\min},t_{\max}]$
@@ -138,8 +135,10 @@ Eigen::VectorXd fppchip(Function &&f, const Eigen::VectorXd &t,
       t1 = t(i_star);
       t2 = t(i_star + 1);
       h_tmp = t2 - t1;  // h\_tmp = h\_ for equidistant grid
+      // values of interpolant
       y1 = y(i_star);
       y2 = y(i_star + 1);
+
       a1 = y2 - y1;
       a2 = a1;
       a3 = -a1 - a2;
@@ -153,24 +152,23 @@ Eigen::VectorXd fppchip(Function &&f, const Eigen::VectorXd &t,
       // Otherwise, go to next interval
       ++i_star;
       // Terminate if outside any interval
-      if (i_star >= t.size() - 1) break;
+      if (i_star >= x.size() - 1) break;
       continue;
     }
   }
 
   // END
-
   return ret;
 }
 /* SAM_LISTING_END_3 */
 
 /* SAM_LISTING_BEGIN_4 */
 std::vector<double> fppchipConvergence() {
-  // Interpoland
   auto f = [](double x) { return 1. / (1. + x * x); };
 
-  double a = 5;  // Interval bounds will be (-a,a)
-  int M = 1000;  // Number of  points in which to evaluate the interpoland
+  constexpr double a = 5;  // Interval bounds will be (-a,a)
+  constexpr unsigned int M =
+      1000;  // Number of points in which to evaluate the interpolant
 
   // Precompute values at which evaluate f
   Eigen::VectorXd x = Eigen::VectorXd::LinSpaced(M, -a, a);
@@ -179,10 +177,9 @@ std::vector<double> fppchipConvergence() {
   // Store error and number of nodes
   std::vector<double> N_nodes, err_zero;
 
-  // TO DO: compute err\_zero.
+  // TODO: (6-7.c) Compute err\_zero.
   // START
-
-  for (int i = 4; i <= 512; i = i << 1) {
+  for (unsigned int i = 4; i <= 512; i = i << 1) {
     // Define subintervals and evaluate f there (find pairs (t,y))
     Eigen::VectorXd t = Eigen::VectorXd::LinSpaced(i, -a, a);
 
@@ -204,7 +201,6 @@ std::vector<double> fppchipConvergence() {
       plt::savefig("./cx_out/p_zero.png");
     }
   }
-
   // END
 
   return err_zero;
@@ -213,11 +209,11 @@ std::vector<double> fppchipConvergence() {
 
 /* SAM_LISTING_BEGIN_5 */
 std::vector<double> rspchipConververgence() {
-  // Interpoland
   auto f = [](double x) { return 1. / (1. + x * x); };
 
-  double a = 5;  // Interval bounds will be (-a,a)
-  int M = 1000;  // Number of  points in which to evaluate the interpoland
+  constexpr double a = 5;  // Interval bounds will be (-a,a)
+  constexpr unsigned int M =
+      1000;  // Number of points in which to evaluate the interpolant
 
   // Precompute values at which evaluate f
   Eigen::VectorXd x = Eigen::VectorXd::LinSpaced(M, -a, a);
@@ -226,10 +222,9 @@ std::vector<double> rspchipConververgence() {
   // Store error and number of nodes
   std::vector<double> N_nodes, err_reconstr;
 
-  // TO DO: compute err\_reconstr.
+  // TODO: (6-7.f) Compute err\_reconstr.
   // START
-
-  for (int i = 4; i <= 512; i = i << 1) {
+  for (unsigned int i = 4; i <= 512; i = i << 1) {
     // Define subintervals and evaluate f there (find pairs (t,y))
     Eigen::VectorXd t = Eigen::VectorXd::LinSpaced(i, -a, a);
 

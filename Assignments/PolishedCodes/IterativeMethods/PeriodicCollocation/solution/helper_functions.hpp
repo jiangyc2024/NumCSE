@@ -1,11 +1,10 @@
+#ifndef HELPERFUNCTIONSHPP
+#define HELPERFUNCTIONSHPP
 /* **********************************************************************
  * Course "Numerical Methods for CSE", R. Hiptmair, SAM, ETH Zurich
  * Author: R. Hiptmair
  * Date: January 2022
  */
-
-#ifndef HELPERFUNCTIONSHPP
-#define HELPERFUNCTIONSHPP
 
 #define _USE_MATH_DEFINES
 
@@ -19,6 +18,7 @@
 #include <tuple>
 #include <unsupported/Eigen/FFT>
 #include <vector>
+
 #include "periodiccollocation.hpp"
 
 // Generic Newton's method with correction-based termination based on simplified
@@ -57,15 +57,13 @@ Eigen::VectorXd eval_F_zero_rhs(const Eigen::VectorXd &x) {
 // collocation with N+1 cosine functions
 Eigen::VectorXd solve_per_coll(unsigned int N) {
   // Lambda function realizing F
-  auto F = [&N](Eigen::VectorXd &x) -> Eigen::VectorXd {
+  auto F = [](Eigen::VectorXd &x) -> Eigen::VectorXd {
     // START student code
     return eval_F(x);
     // END student code
   };
   // Lambda function for the Jacobian
-  auto DF = [&N](Eigen::VectorXd &x) -> Eigen::MatrixXd {
-    return eval_DF(x);
-  };
+  auto DF = [](Eigen::VectorXd &x) -> Eigen::MatrixXd { return eval_DF(x); };
   // Initial guess (a constant function)
   Eigen::VectorXd x{Eigen::VectorXd::Constant(N + 1, 1.0)};
   // x[0] = 1.0;
