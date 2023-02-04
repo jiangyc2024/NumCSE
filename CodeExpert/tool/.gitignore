@@ -1,5 +1,3 @@
 taskExport.tar
 taskExport
-
-# The file 'NCSEFL_Prbrefs.aux' is intentionally tracked in version control, even though it is automatically generated during compilation of LaTeX files in the LaTeX repository for this course. We do this to keep this repository agnostic of any LaTeX files in terms of dependencies. Update 'NCSEFL_Prbrefs.aux' when the chapter structure may have changed and assignment codes need to be published to the Code Expert platform
 !*.aux
