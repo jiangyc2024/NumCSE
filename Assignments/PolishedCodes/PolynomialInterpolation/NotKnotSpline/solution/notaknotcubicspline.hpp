@@ -31,7 +31,8 @@ class NotAKnotCubicSpline {
 NotAKnotCubicSpline::NotAKnotCubicSpline(Eigen::VectorXd t, Eigen::VectorXd y)
     : t_(std::move(t)), y_(std::move(y)), c_(y_.size()) {
   // TODO: (5-12.c) Modify the given constructor of a Natural Cubic Spline into
-  // an efficient constructor for Not-a-knot Cubic Spline START
+  // an efficient constructor for Not-a-knot Cubic Spline
+  // START
   const long n = t_.size() - 1;
   assert(n > 2);
   assert(n == y_.size() - 1);
@@ -116,7 +117,6 @@ bool NotAKnotCubicSpline::checkC2() const {
 
 // Determines the index i of the knot interval [t_{i-1},t_{i}] containing the
 // point t
-
 int NotAKnotCubicSpline::getPtIdx(double t) const {
   if ((t < t_[0]) || (t > t_[t_.size() - 1])) {
     throw std::runtime_error("t out of range");

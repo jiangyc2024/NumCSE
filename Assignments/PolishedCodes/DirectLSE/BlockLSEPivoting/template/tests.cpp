@@ -2,7 +2,7 @@
 
 #include <Eigen/Dense>
 
-#include "copy.hpp"
+#include "blocklsepiv.hpp"
 #include "doctest.h"
 
 struct TestData {
@@ -30,13 +30,13 @@ constexpr double eps = 1e-12;
 TEST_SUITE("BlockLSEPiv") {
   TEST_CASE("Eigen::VectorXd multA" * doctest::description("multA")) {
     Eigen::VectorXd ye = t.A * t.b;
-    Eigen::VectorXd yo = multA_TEST(t.d1, t.d2, t.c, t.b);
+    Eigen::VectorXd yo = multA(t.d1, t.d2, t.c, t.b);
     CHECK((ye - yo).norm() == doctest::Approx(0.).epsilon(eps));
   }
 
   TEST_CASE("Eigen::VectorXd solveA" * doctest::description("solveA")) {
     Eigen::VectorXd ye = t.A.partialPivLu().solve(t.b);
-    Eigen::VectorXd yo = solveA_TEST(t.d1, t.d2, t.c, t.b);
+    Eigen::VectorXd yo = solveA(t.d1, t.d2, t.c, t.b);
     CHECK((ye - yo).norm() == doctest::Approx(0.).epsilon(eps));
   }
 

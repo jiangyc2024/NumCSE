@@ -4,16 +4,19 @@
 #include "copy.hpp"
 #include "doctest.h"
 
-auto f = [](double x) { return 1. / (1. + x * x); };
-
-Eigen::VectorXd t = Eigen::VectorXd::LinSpaced(10,-1,6);
-CubicHermiteInterpolant s_reconstr(f, t);
-CubicHermiteInterpolant_TEST s_reconstr_TEST(f, t);
-
 TEST_SUITE("PCHI") {
-  TEST_CASE("eval" * doctest::description("evaluation function")) {
+  TEST_CASE("CubicHermiteInterpolant [OUT OF CLASS]" *
+            doctest::description("skipped") * doctest::skip()) {}
+
+  TEST_CASE("Eigen::VectorXd eval [OUT OF CLASS]" *
+            doctest::description("evaluation function")) {
+    auto f = [](double x) { return 1. / (1. + x * x); };
+
+    Eigen::VectorXd t = Eigen::VectorXd::LinSpaced(10, -1, 6);
+    CubicHermiteInterpolant s_reconstr(f, t);
+    CubicHermiteInterpolant_TEST s_reconstr_TEST(f, t);
     Eigen::VectorXd x = Eigen::VectorXd::LinSpaced(23, -1, 6);
-    
+
     Eigen::VectorXd sol_reconstr = s_reconstr.eval(x);
     Eigen::VectorXd stud_reconstr = s_reconstr_TEST.eval(x);
 

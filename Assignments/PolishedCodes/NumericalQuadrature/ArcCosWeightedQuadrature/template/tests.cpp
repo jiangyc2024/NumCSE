@@ -2,24 +2,24 @@
 #include "doctest.h"
 
 // includes for test data
-#include "arccosquad.hpp"
 #include <Eigen/Dense>
 #include <cmath>
 
-TEST_SUITE("Smooth integrand by transformation") {
+#include "arccosquad.hpp"
 
-  TEST_CASE("void testConvGaussQuad()" *
+TEST_SUITE("Smooth integrand by transformation") {
+  TEST_CASE("void testConvGaussQuad" *
             doctest::description("Convergence table for gaussquad.")) {
-    MESSAGE("This function simply prints a table, and thus is not tested. Run "
-            "the program to see its output.");
+    MESSAGE(
+        "This function simply prints a table, and thus is not tested. Run "
+        "the program to see its output.");
   }
 
-  TEST_CASE("double arccosWeightedQuad()" *
+  TEST_CASE("double arccosWeightedQuad" *
             doctest::description("Approximates I(f) with exponential "
                                  "convergence so a small n should suffice.")) {
-
     // with f(t) = t^3
-    int n = 16;
+    unsigned int n = 16;
     auto f = [](double t) { return t * t * t; };
     double sol = -5 * M_PI / 32.0;
     double ans = arccosWeightedQuad(f, n);
@@ -35,9 +35,10 @@ TEST_SUITE("Smooth integrand by transformation") {
     CHECK(std::abs(sol - ans) == doctest::Approx(0.).epsilon(1e-10));
   }
 
-  TEST_CASE("void testConvTrfGaussQuad()" *
+  TEST_CASE("void testConvTrfGaussQuad" *
             doctest::description("Convergence table for arccosWeightedQuad.")) {
-    MESSAGE("This function simply prints a table, and thus is not tested. Run "
-            "the program to see its output.");
+    MESSAGE(
+        "This function simply prints a table, and thus is not tested. Run "
+        "the program to see its output.");
   }
 }

@@ -1,6 +1,5 @@
-# include <Eigen/Dense>
-
-# include <unsupported/Eigen/FFT>
+#include <Eigen/Dense>
+#include <unsupported/Eigen/FFT>
 
 /*!
  * \brief fft One-dimensional DFT for matrices.
@@ -14,9 +13,9 @@ inline Eigen::MatrixXcd fft(const Eigen::MatrixXcd& X) {
     const Eigen::Index m = X.rows();
     const Eigen::Index n = X.cols();
 
-    Eigen::MatrixXcd Y(m, n);
+  Eigen::MatrixXcd Y(m, n);
 
-    Eigen::FFT<double> fft;
+  Eigen::FFT<double> fft;
 
     for (Eigen::Index j = 0; j < n; ++j) {
         const Eigen::VectorXcd Xj = X.col(j);
@@ -37,9 +36,9 @@ inline Eigen::MatrixXcd ifft(const Eigen::MatrixXcd& X) {
     const Eigen::Index m = X.rows();
     const Eigen::Index n = X.cols();
 
-    Eigen::MatrixXcd Y(m, n);
+  Eigen::MatrixXcd Y(m, n);
 
-    Eigen::FFT<double> fft;
+  Eigen::FFT<double> fft;
 
     for (Eigen::Index j = 0; j < n; ++j) {
         const Eigen::VectorXcd Xj = X.col(j);
@@ -78,21 +77,23 @@ inline Eigen::MatrixXcd ifft2(const Eigen::MatrixXcd& X) {
  * \return A complex matrix, whose columns are transformed
  * under inverse DFT.
  */
+/* SAM_LISTING_BEGIN_3 */
 inline Eigen::MatrixXcd fftr(const Eigen::MatrixXd& X) {
     const Eigen::Index m = X.rows();
     const Eigen::Index n = X.cols();
 
-    Eigen::MatrixXcd Y(m, n);
+  Eigen::MatrixXcd Y(m, n);
 
-    Eigen::FFT<double> fft;
+  Eigen::FFT<double> fft;
 
     for (Eigen::Index j = 0; j < n; ++j) {
         const Eigen::VectorXd Xj = X.col(j);
         Y.col(j) = fft.fwd(Xj);
     }
 
-    return Y;
+  return Y;
 }
+/* SAM_LISTING_END_3 */
 
 /*!
  * \brief ifftr One-dimensional inverse DFT for matrices.
@@ -106,16 +107,16 @@ inline Eigen::MatrixXd ifftr(const Eigen::MatrixXcd& X) {
     const Eigen::Index m = X.rows();
     const Eigen::Index n = X.cols();
 
-    Eigen::MatrixXd Y(m, n);
+  Eigen::MatrixXd Y(m, n);
 
-    Eigen::FFT<double> fft;
+  Eigen::FFT<double> fft;
 
     for (Eigen::Index j = 0; j < n; ++j) {
       const Eigen::VectorXcd Xj = X.col(j);
       Y.col(j) = fft.inv(Xj);
     }
 
-    return Y;
+  return Y;
 }
 
 /*!
@@ -125,9 +126,11 @@ inline Eigen::MatrixXd ifftr(const Eigen::MatrixXcd& X) {
  * \param X A real matrix.
  * \return A complex matrix, with Fourier coeffficients of X.
  */
+/* SAM_LISTING_BEGIN_4 */
 inline Eigen::MatrixXcd fft2r(const Eigen::MatrixXd& X) {
     return fft(fftr(X).transpose()).transpose();
 }
+/* SAM_LISTING_END_4 */
 
 /*!
  * \brief fft Two-dimensional inverse real DFT for matrices.

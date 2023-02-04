@@ -1,10 +1,10 @@
+#ifndef GAUSSSEIDELCRSHPP
+#define GAUSSSEIDELCRSHPP
 /* **********************************************************************
  * Course "Numerical Methods for CSE", R. Hiptmair, SAM, ETH Zurich
  * Author: R. Hiptmair
  * Date: January 2022
  */
-#ifndef GAUSSSEIDELCRSHPP
-#define GAUSSSEIDELCRSHPP
 
 #include <Eigen/Dense>
 #include <Eigen/QR>
@@ -29,24 +29,25 @@ struct CRSMatrix {
 
 // One step of a Gauss-Seidel iteration for the linear system of equations Ax=b
 // with A given in a raw CRS format
+/* SAM_LISTING_BEGIN_2 */
 bool GaussSeidelstep_crs(const CRSMatrix &A, const Eigen::VectorXd &b,
                          Eigen::VectorXd &x) {
   assert(A.n == A.m && "Matrix must be square");
   assert(A.n == b.size() && "Vector b length mismatch");
   assert(A.n == x.size() && "Vector x length mismatch");
 
-  bool out;
-  // TODO : Write a function that executes one step of the Gauss-Seidel 
-  // iteration. It should return false if the iteration is not well defined, 
-  // otherwise it returns true.
-  // START 
-  
-  // END 
-  return out;
+  // TODO: (2-18.b) Implement a single step of the Gauss-Seidel iteration with
+  // the system matrix in CRS format.
+  // START
+
+  // END
+  return true;
 }
+/* SAM_LISTING_END_2 */
 
 // Gauss-Seidel iteration for matrix A and vector b with correction-based
 // termination
+/* SAM_LISTING_BEGIN_5 */
 bool GaussSeidel_iteration(const CRSMatrix &A, const Eigen::VectorXd &b,
                            Eigen::VectorXd &x, double atol = 1.0E-8,
                            double rtol = 1.0E-6, unsigned int maxit = 100) {
@@ -54,16 +55,17 @@ bool GaussSeidel_iteration(const CRSMatrix &A, const Eigen::VectorXd &b,
   assert(A.n == b.size() && "Vector b length mismatch");
   assert(A.n == x.size() && "Vector x length mismatch");
 
-  bool out;
-  // TODO : Write a function that carries out the Gauss-Seidel iteration for
-  // the given inputs A,b and initial guess x^0 passed in x. x should also 
-  // return the final iterate. If the iteration doesn't converge in maxit steps
-  // the function should return false, otherwise it returns true.
-  // START
-  
-  // END
+  // Main loop for Gauss-Seidel iteration
+  for (unsigned int k = 0; k < maxit; ++k) {
+    // TODO: (2-18.d) Implement the Gauss-Seidel iteration with a
+    // correction-based termination criterion.
+    // START
 
-  return out;
+    // END
+  }
+  // No termination
+  return false;
 }
+/* SAM_LISTING_END_5 */
 
 #endif

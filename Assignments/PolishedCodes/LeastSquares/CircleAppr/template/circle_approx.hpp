@@ -58,7 +58,8 @@ inline Eigen::MatrixXd lsqNRM(const Eigen::MatrixXd& A,
  * @return Eigen::Vector3d (m_1, m_2, r) - circle description
  */
 /* SAM_LISTING_BEGIN_1 */
-Eigen::Vector3d circl_alg_fit(const Eigen::VectorXd& x, const Eigen::VectorXd& y) {
+Eigen::Vector3d circl_alg_fit(const Eigen::VectorXd& x,
+                              const Eigen::VectorXd& y) {
   Eigen::Vector3d z = Eigen::VectorXd::Zero(3);
   assert(x.size() == y.size() && "Size mismatch!");
   const unsigned int n = x.size();
@@ -66,7 +67,7 @@ Eigen::Vector3d circl_alg_fit(const Eigen::VectorXd& x, const Eigen::VectorXd& y
   // TODO: (8-12.b) Fit the circle in the least squares sense.
   // START
   // END
-  
+
   return z;
 }
 /* SAM_LISTING_END_1 */
@@ -174,8 +175,9 @@ void plot(const Eigen::VectorXd& x, const Eigen::VectorXd& y,
           const Eigen::Vector3d& z_geo_N, const Eigen::Vector3d& z_svd) {
   plt::figure();
   constexpr unsigned int N = 100;  // number of sample points
-  // (8-12.j) Plot the data points in x, y as well as the fitted circles
+  // TODO: (8-12.j) Plot the data points in x, y as well as the fitted circles
   // using matplotlibcpp and output the circle centers and radii.
+  // START
   plt::plot(x, y, "ok", {{"label", "data points"}});
 
   // sample with 100 angles
@@ -225,7 +227,7 @@ void plot(const Eigen::VectorXd& x, const Eigen::VectorXd& y,
   plt::legend();
   plt::xlabel("x");
   plt::ylabel("y");
-
+  // END
   plt::savefig("./cx_out/comparison.png");
 }
 

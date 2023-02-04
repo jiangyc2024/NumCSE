@@ -12,7 +12,7 @@ TEST_SUITE("Clenshaw Curtis Fejer Quadrature Rule") {
             doctest::description(
                 "Checking weights and nodes, not efficiency. This test "
                 "requires CCFQuadRule class to be unmodified.")) {
-    unsigned n = 16;
+    constexpr unsigned int n = 16;
     const CCFQuadRule_Fast ccfqr_fast(n);
     const CCFQuadRule ccfqr(n);
     CHECK((ccfqr_fast.weights() - ccfqr.weights()).norm() ==

@@ -1,17 +1,18 @@
-#include "clenshawcurtisfejer.hpp"
 #include <cassert>
 #include <cmath>
 #include <iostream>
 #include <limits>
 #include <unsupported/Eigen/FFT>
 
-int main(int /*argc*/, char ** /*argv*/) {
+#include "clenshawcurtisfejer.hpp"
+
+int main() {
   std::cout << "C++ code for NumCSE exam problem on CCF quadrature rules"
             << std::endl;
 
   // Printing nodes and weights of quadrature rules
   std::cout << "List quadrature weights and nodes" << std::endl;
-  for (int n = 1; n < 6; n++) {
+  for (unsigned int n = 1; n < 6; n++) {
     const CCFQuadRule ccfqr(n);
     const CCFQuadRule_Fast ccfqr_fast(n);
     std::cout << "n = " << n << " : " << std::endl

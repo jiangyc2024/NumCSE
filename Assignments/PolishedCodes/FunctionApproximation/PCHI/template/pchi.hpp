@@ -15,7 +15,7 @@ namespace plt = matplotlibcpp;
  */
 /* SAM_LISTING_BEGIN_0 */
 class CubicHermiteInterpolant {
-public:
+ public:
   /*!
    * \brief Construct the slopes from the data.
    * Use finite-differences or setting $s'(x_j) = 0$.
@@ -44,7 +44,7 @@ public:
   // Difference $t(i)-t(i-1)$
   double h_;
   // Size of $t$, $y$ and $c$.
-  int n_;
+  unsigned int n_;
 };
 /* SAM_LISTING_END_0 */
 
@@ -59,48 +59,47 @@ CubicHermiteInterpolant::CubicHermiteInterpolant(Function &&f,
   assert(n_ >= 3 && "Need at least three nodes.");
   h_ = t_(1) - t_(0);
 
-  //// Reconstruction of the slope,
-  // TODO: implement reconstruction of slopes.
+  // Reconstruction of the slope,
+  // TODO: (6-7.e) Implement reconstruction of slopes.
   // START
-  
+
   // END
 }
 /* SAM_LISTING_END_1 */
 
-/* SAM_LISTING_BEGIN_3 */
+/* SAM_LISTING_BEGIN_2 */
 Eigen::VectorXd CubicHermiteInterpolant::eval(const Eigen::VectorXd &x) const {
   Eigen::VectorXd ret(x.size());
 
-  // TO DO: implement evaluation function.
+  // TODO: (6-7.e) Implement evaluation function.
   // START
 
   // END
 
+  return ret;
+}
+/* SAM_LISTING_END_2 */
+
+/* SAM_LISTING_BEGIN_3 */
+template <typename Function>
+Eigen::VectorXd fppchip(Function &&f, const Eigen::VectorXd &t,
+                        const Eigen::VectorXd &x) {
+  Eigen::VectorXd ret{x.size()};
+  // TODO: (6-7.b) Compute ret.
+  // START
+
+  // END
   return ret;
 }
 /* SAM_LISTING_END_3 */
 
 /* SAM_LISTING_BEGIN_4 */
-template <typename Function>
-Eigen::VectorXd fppchip(Function &&f, const Eigen::VectorXd &t,
-                        const Eigen::VectorXd &x) {
-  Eigen::VectorXd ret{x.size()};
-  // TO DO: compute ret.
-  // START
-
-  // END
-
-  return ret;
-}
-/* SAM_LISTING_END_4 */
-
-/* SAM_LISTING_BEGIN_5 */
 std::vector<double> fppchipConvergence() {
-  // Interpoland
   auto f = [](double x) { return 1. / (1. + x * x); };
 
-  double a = 5;  // Interval bounds will be (-a,a)
-  int M = 1000;  // Number of  points in which to evaluate the interpoland
+  constexpr double a = 5;  // Interval bounds will be (-a,a)
+  constexpr unsigned int M =
+      1000;  // Number of points in which to evaluate the interpolant
 
   // Precompute values at which evaluate f
   Eigen::VectorXd x = Eigen::VectorXd::LinSpaced(M, -a, a);
@@ -109,22 +108,22 @@ std::vector<double> fppchipConvergence() {
   // Store error and number of nodes
   std::vector<double> N_nodes, err_zero;
 
-  // TO DO: compute err\_zero.
+  // TODO: (6-7.c) Compute err\_zero.
   // START
 
   // END
 
   return err_zero;
 }
-/* SAM_LISTING_END_5 */
+/* SAM_LISTING_END_4 */
 
-/* SAM_LISTING_BEGIN_6 */
+/* SAM_LISTING_BEGIN_5 */
 std::vector<double> rspchipConververgence() {
-  // Interpoland
   auto f = [](double x) { return 1. / (1. + x * x); };
 
-  double a = 5;  // Interval bounds will be (-a,a)
-  int M = 1000;  // Number of  points in which to evaluate the interpoland
+  constexpr double a = 5;  // Interval bounds will be (-a,a)
+  constexpr unsigned int M =
+      1000;  // Number of points in which to evaluate the interpolant
 
   // Precompute values at which evaluate f
   Eigen::VectorXd x = Eigen::VectorXd::LinSpaced(M, -a, a);
@@ -133,13 +132,13 @@ std::vector<double> rspchipConververgence() {
   // Store error and number of nodes
   std::vector<double> N_nodes, err_reconstr;
 
-  // TO DO: compute err\_reconstr.
+  // TODO: (6-7.f) Compute err\_reconstr.
   // START
 
   // END
 
   return err_reconstr;
 }
-/* SAM_LISTING_END_6 */
+/* SAM_LISTING_END_5 */
 
 #endif  // NUMCSE_PCHI_HPP

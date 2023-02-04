@@ -1,24 +1,28 @@
+#ifndef STRASSEN_HPP
+#define STRASSEN_HPP
+
 ////
 //// Copyright (C) 2016 SAM (D-MATH) @ ETH Zurich
 //// Author(s): lfilippo <filippo.leonardi@sam.math.ethz.ch>
 //// Contributors: tille, jgacon, dcasati
 //// This file is part of the NumCSE repository.
 ////
-#include "timer.h"
 #include <Eigen/Dense>
 #include <iomanip>
 #include <iostream>
 #include <vector>
 
-using namespace Eigen;
+#include "timer.h"
 
-/* \brief Compute the Matrix product $A \times B$ using Strassen's algorithm.
- * @param A Matrix $2^k \times 2^k$
- * @param B Matrix $2^k \times 2^k$
- * @param Matrix product of A and B of dim $2^k \times 2^k$
+/**
+ * \brief Compute the Matrix product $A \times B$ using Strassen's algorithm.
+ * \param A Matrix $2^k \times 2^k$
+ * \param B Matrix $2^k \times 2^k$
+ * \param Matrix product of A and B of dim $2^k \times 2^k$
  */
 /* SAM_LISTING_BEGIN_0 */
-Eigen::MatrixXd strassenMatMult(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B) {
+Eigen::MatrixXd strassenMatMult(const Eigen::MatrixXd &A,
+                                const Eigen::MatrixXd &B) {
   // Ensure square matrix
   assert(A.rows() == A.cols() && "Matrix A must be square");
   assert(B.rows() == B.cols() && "Matrix B must be square");
@@ -29,12 +33,12 @@ Eigen::MatrixXd strassenMatMult(const Eigen::MatrixXd &A, const Eigen::MatrixXd 
 
   // The function is recursive and acts on blocks of size $n/2 \times n/2$
   // i.e. exploits fast product of 2x2 block matrix
-  if (n == 2) { // End of recursion
+  if (n == 2) {  // End of recursion
     Eigen::MatrixXd C(2, 2);
     C << A(0, 0) * B(0, 0) + A(0, 1) * B(1, 0),
-         A(0, 0) * B(0, 1) + A(0, 1) * B(1, 1),
-         A(1, 0) * B(0, 0) + A(1, 1) * B(1, 0),
-         A(1, 0) * B(0, 1) + A(1, 1) * B(1, 1);
+        A(0, 0) * B(0, 1) + A(0, 1) * B(1, 1),
+        A(1, 0) * B(0, 0) + A(1, 1) * B(1, 0),
+        A(1, 0) * B(0, 1) + A(1, 1) * B(1, 1);
     return C;
   }
 
@@ -42,12 +46,12 @@ Eigen::MatrixXd strassenMatMult(const Eigen::MatrixXd &A, const Eigen::MatrixXd 
       Q3(n / 2, n / 2), Q4(n / 2, n / 2), Q5(n / 2, n / 2), Q6(n / 2, n / 2);
 
   Eigen::MatrixXd C(n, n);
-  // TO DO: (1-4.a) Finish Strassen's algorithm.
+  // TODO: (1-4.a) Finish Strassen's algorithm.
   // Hint: Use strassenMatMult() to fill in the matrices Q0,..., Q6,
   // and then use Q0,..., Q6 to fill in the matrix C.
   // Note that comma-initialization works for block matrices.
-  
-  // START:
+
+  // START
   Eigen::MatrixXd A11 = A.topLeftCorner(n / 2, n / 2);
   Eigen::MatrixXd A12 = A.topRightCorner(n / 2, n / 2);
   Eigen::MatrixXd A21 = A.bottomLeftCorner(n / 2, n / 2);
@@ -78,13 +82,14 @@ double test_strassen() {
   // Check algorithm for correctness
 
   // Size of the matrix is a power of 2.
-  int k = 4;
-  int n = std::pow(2, k);
+  constexpr int k = 4;
+  const int n = std::pow(2, k);
   double err = 1;
 
-  // TO DO: (1-4.b) Generate two random matrices using Eigen::MatrixXd::Random(n,n).
-  // and compare the result of strassenMatMult() and the built-in matrix
-  // multiplication. Save the difference in the double err.
+  // TODO: (1-4.b) Generate two random matrices using
+  // Eigen::MatrixXd::Random(n,n). and compare the result of strassenMatMult()
+  // and the built-in matrix multiplication. Save the difference in the double
+  // err.
 
   // START
   Eigen::MatrixXd A = Eigen::MatrixXd::Random(n, n);
@@ -108,7 +113,7 @@ void time_strassen() {
   // long to show the advantage of Strassen's algorithm for large matrices.
 
   // Minimum number of repetitions
-  unsigned int repetitions = 5;
+  constexpr unsigned int repetitions = 5;
 
   // Display header column
   std::cout << std::setw(4) << "k" << std::setw(15) << "A*B" << std::setw(15)
@@ -123,9 +128,9 @@ void time_strassen() {
     // Timer to collect runtime of each individual run
     Timer timer, timer_own;
 
-    // TO DO: Use the .start(), and .stop() methods of timer and timer\_own to
-    // measure the runtimes of Eigen's built-in multiplication and Strassen's
-    // algorithm. Perform a few trials for each k (use the variable
+    // TODO: (1-4.c) Use the .start(), and .stop() methods of timer and
+    // timer\_own to measure the runtimes of Eigen's built-in multiplication and
+    // Strassen's algorithm. Perform a few trials for each k (use the variable
     // repetitions).
 
     // START
@@ -134,24 +139,26 @@ void time_strassen() {
       Eigen::MatrixXd AxB, AxB2;
 
       // Benchmark Eigen's matrix multiplication
-      timer.start(); // start timer
-      AxB = (A * B); // do the multiplication
-      timer.stop();  // stop timer
+      timer.start();  // start timer
+      AxB = (A * B);  // do the multiplication
+      timer.stop();   // stop timer
 
       // Benchmark Strassen's matrix multiplication
-      timer_own.start();            // start timer
-      AxB2 = strassenMatMult(A, B); // do the multiplication
-      timer_own.stop();             // stop timer
+      timer_own.start();             // start timer
+      AxB2 = strassenMatMult(A, B);  // do the multiplication
+      timer_own.stop();              // stop timer
     }
     // END
 
     // Print runtimes
-    std::cout << std::setw(4) << k // power
+    std::cout << std::setw(4) << k  // power
               << std::setprecision(3) << std::setw(15) << std::scientific
-              << timer.min() // eigen timing
+              << timer.min()  // eigen timing
               << std::setprecision(3) << std::setw(15) << std::scientific
-              << timer_own.min() // strassing timing
+              << timer_own.min()  // strassing timing
               << std::endl;
   }
 }
 /* SAM_LISTING_END_2 */
+
+#endif

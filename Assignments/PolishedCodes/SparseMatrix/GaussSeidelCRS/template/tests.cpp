@@ -1,8 +1,9 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include <random>
+
 #include "auxiliary_functions.hpp"
 #include "doctest.h"
 #include "gaussseidelcrs.hpp"
-#include <random>
 
 // includes for test data
 #include <Eigen/Dense>
@@ -48,7 +49,6 @@ struct TestData {
 TestData data;
 
 TEST_SUITE("Gauss Seidel CRS") {
-
   TEST_CASE("GaussSeidelstep_crs()" *
             doctest::description("Testing the output")) {
     // Test case I

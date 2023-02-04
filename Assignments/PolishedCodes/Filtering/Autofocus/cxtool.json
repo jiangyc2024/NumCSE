@@ -1,0 +1,8 @@
+{
+  "includes": [
+    "MatplotlibC++/matplotlibcpp.h",
+    "Utils/conv.hpp",
+    "LectureCodes/Filtering/deblur/Eigen/fft2.hpp",
+    "Utils/pgm.hpp"
+  ]
+}
