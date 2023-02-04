@@ -486,18 +486,11 @@ async function mime_type( path ) {
 //generate a unique identifier with the same format as cx's uids
 function uid( ) {
 
-	var str = "";
 	const chars = "ABCDEFGHIHJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-	for( var i = 0; i < 17; ++ i ) {
-
-		const index = Math.floor( Math.random( ) * chars.length );
-		str += chars[ index ];
-	}
-
-	return str;
+	return [ ...new Array( 17 )].map( _ => chars[ Math.floor( Math.random( ) * chars.length )]).join( "" );
 }
 
+//filter function for async predicates
 async function async_filter( xs, predicate ) {
 	
 	const keep = await Promise.all( xs.map( predicate ));
