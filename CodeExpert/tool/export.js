@@ -54,6 +54,9 @@ const display_name = basename( assignment_path_rel );
 //path/name used for the export directory/archive, relative to working directory
 const export_path = "./taskExport";
 
+//path used to look up the homework problem label definitions
+const label_definitions_path = "./NCSEFL_Prbrefs.aux";
+
 //creation date used for all file meta data
 const date = ( new Date( )).toISOString( );
 
@@ -244,6 +247,9 @@ async function assemble_project( name ) {
 
 	//find the master solution(s) by finding the student work files in the solution project. 
 	const student_work_files = await find_student_work_files( `${ assignment_path }/solution` );
+
+	//substitute references to problem labels in student files
+	await substitute_problem_labels( await find_student_work_files( project_path ));
 
 	//just a parallel for-loop
 	await Promise.all( student_work_files.map( async ( path, i ) => {
@@ -480,22 +486,109 @@ async function mime_type( path ) {
 //generate a unique identifier with the same format as cx's uids
 function uid( ) {
 
-	var str = "";
 	const chars = "ABCDEFGHIHJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-	for( var i = 0; i < 17; ++ i ) {
-
-		const index = Math.floor( Math.random( ) * chars.length );
-		str += chars[ index ];
-	}
-
-	return str;
+	return [ ...new Array( 17 )].map( _ => chars[ Math.floor( Math.random( ) * chars.length )]).join( "" );
 }
 
+//filter function for async predicates
 async function async_filter( xs, predicate ) {
 	
 	const keep = await Promise.all( xs.map( predicate ));
 	return xs.filter(( _, i ) => keep[ i ]);
+}
+
+//substitute problem label references by their number in the homework problem LaTeX document by using
+//an auxilary file created during LaTeX compilation 
+async function substitute_problem_labels( target_files ) {
+
+	//collect all matches for label identifiers
+
+	//parallel for-loop
+	const file_markers = { };
+	await Promise.all( target_files.map( async path => file_markers[ path ] = await find_label_matches_in_file( path )));
+
+	//using the label identifier, look up the label definition in our reference file 
+
+	//extract all labels
+	const labels = Object.values( file_markers ).flatMap( markers => markers.map( marker => marker.label ));
+	const label_map = await look_up_label_definitions( labels );
+
+	//replace all ocurrences of label references in files
+
+	//parallel for-loop
+	await Promise.all( target_files.map( async path => {
+
+		const markers = file_markers[ path ];
+		const ranges = markers.map( marker => [ marker.start, marker.end ]);
+		const replacements = markers.map( marker => `(${ label_map[ marker.label ] ?? "??" })` );
+		await replace_index_ranges_in_file( path, ranges, replacements );
+	}));
+}
+
+async function find_label_matches_in_file( path ) {
+
+	const text = ( await fs.readFile( path )).toString( );
+
+	//find all matches of references to labels (being tolerant with whitespace) and capture the 
+	//label name
+	const matches = [ ...text.matchAll( /\\ref\s*\{\s*([^\{\}\s]*)\s*\}/g )];
+
+	//return preprocessed matches in order of appearance
+	return matches
+		.map( match => ({
+
+			//extract the captured group
+			label: match[ 1 ],
+
+			//extract the match's start index
+			start: match.index,
+
+			//compute the match's end index
+			end: match.index + match[ 0 ].length
+		}))
+		.sort(( x, y ) => x.start - y.start );
+}
+
+//create a look-up table for label definitions
+async function look_up_label_definitions( labels ) {
+
+	const labels_unique = [ ...new Set( labels )];
+	const text = ( await fs.readFile( label_definitions_path )).toString( );
+	const label_map = Object.fromEntries( labels_unique.map( label => {
+
+		//find a match of the label identifer in the text and capture the label value, which is
+		//assumed to be wrapped in parantheses
+		const pattern = new RegExp( String.raw`\{\s*${ label }\s*\}[^\(\)\n]*\(([^\(\)\n]*)\)` );
+		const match = text.match( pattern );
+
+		//extract the captured group if found
+		return [ label, match?.[ 1 ]];
+	}));
+
+	return label_map;
+}
+
+//helper function to replace multiple index ranges in a text file (assumes arrays given in order)
+async function replace_index_ranges_in_file( path, ranges, replacements ) {
+	
+	if( ranges.length > 0 ) {
+
+		if( verbose ) console.log( `replacing locations in ${ path }` );
+		let text = ( await fs.readFile( path )).toString( );
+
+		//process in reverse order
+		while( ranges.length > 0 ) {
+
+			const [ start, end ] = ranges.pop( );
+			const replacement = replacements.pop( );
+
+			if( verbose ) console.log( `  '${ text.substring( start, end )}' -> '${ replacement }'` );
+			text = text.substring( 0, start ) + replacement + text.substring( end );
+		}
+
+		await fs.writeFile( path, text );
+		if( verbose ) console.log( `done.` );
+	}
 }
 
 main( );
