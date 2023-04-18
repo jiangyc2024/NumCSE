@@ -17,17 +17,16 @@ Eigen::VectorXd evalNewtonForm(const Eigen::VectorXd &t,
 }
 /* SAM_LISTING_END_1 */
 
-using Eigen::VectorXd;
 /* SAM_LISTING_BEGIN_0 */
 // Evaluation of polynomial in Newton basis (divided differences)
 // IN:  t = nodes (mutually different)
 //      y = values in t
 //      x = evaluation points (as Eigen::Vector)
 // OUT: p = values in x                                           */
-void evaldivdiff(const VectorXd &t, const VectorXd &y, const VectorXd &x,
-                 VectorXd &p) {
+void evaldivdiff(const Eigen::VectorXd &t, const Eigen::VectorXd &y,
+                 const Eigen::VectorXd &x, Eigen::VectorXd &p) {
   // Get Newton coefficients of polynomial (non in-situ implementation!)
-  VectorXd coeffs;
+  Eigen::VectorXd coeffs;
   divdiff(t, y, coeffs);
   // evaluate
   p = evalNewtonForm(t, coeffs, x);

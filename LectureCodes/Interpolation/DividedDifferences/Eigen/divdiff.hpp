@@ -1,13 +1,12 @@
 #include <Eigen/Dense>
 
-using Eigen::VectorXd;
-
 /* SAM_LISTING_BEGIN_0 */
 // IN:  t = node set (mutually different)
 //      y = nodal values
 // OUT: c = coefficients of polynomial in Newton basis
-void divdiff(const VectorXd &t, const VectorXd &y, VectorXd &c) {
-  const int n = y.size() - 1;
+void divdiff(const Eigen::VectorXd &t, const Eigen::VectorXd &y,
+             Eigen::VectorXd &c) {
+  const int n = y.size();
   c = y;
   // Follow scheme \eqref{eq:ddscheme}, recursion \eqref{eq:acrec}
   for (int l = 1; l < n; ++l)
@@ -20,8 +19,8 @@ void divdiff(const VectorXd &t, const VectorXd &y, VectorXd &c) {
 // IN:  t = node set (mutually different)
 //      y = nodal values
 // OUT: y = coefficients of polynomial in Newton basis
-void divdiff(const VectorXd &t, VectorXd &y) {
-  const int n = y.size() - 1;
+void divdiff(const Eigen::VectorXd &t, Eigen::VectorXd &y) {
+  const int n = y.size();
   // Follow scheme \eqref{eq:ddscheme}, recursion \eqref{eq:acrec}
   for (int l = 1; l < n; ++l)
     for (int j = n - l; j < n; ++j)
