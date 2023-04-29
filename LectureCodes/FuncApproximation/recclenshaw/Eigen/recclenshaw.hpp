@@ -6,8 +6,14 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 # include <Eigen/Dense>
+
+
+namespace recclenshaw {
+
+
 using Eigen::VectorXd;
 
+inline
 /* SAM_LISTING_BEGIN_0 */
 // Recursive evaluation of a polynomial \Blue{$p = \sum_{j=1}^{n+1}a_j T_{j-1}$} at point \texttt{x}
 // based on \eqref{eq:cstr}
@@ -16,12 +22,13 @@ using Eigen::VectorXd;
 // OUT: Value at point x
 double recclenshaw(const VectorXd& a, const double x) {
   const VectorXd::Index n = a.size() - 1;
-  if      (n == 0) return a(0);            // Constant polynomial
-  else if (n == 1) return (x*a(1) + a(0)); // Value \Blue{$\alpha_1*x + \alpha_0$}
-  else {
-    VectorXd new_a(n);
-    new_a << a.head(n - 2), a(n - 2) - a(n), a(n - 1)+ 2*x*a(n);
-    return recclenshaw(new_a,x); // recursion 
-  }
+  if (n == 0) { return a(0); }            // Constant polynomial
+  if (n == 1) { return (x*a(1) + a(0)); } // Value \Blue{$\alpha_1*x + \alpha_0$}
+  VectorXd new_a(n);
+  new_a << a.head(n - 2), a(n - 2) - a(n), a(n - 1)+ 2*x*a(n);
+  return recclenshaw(new_a,x); // recursion 
 }
 /* SAM_LISTING_END_0 */
+
+
+} //namespace recclenshaw
