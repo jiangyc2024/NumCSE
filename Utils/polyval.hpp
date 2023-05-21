@@ -3,8 +3,6 @@
 
 # include <Eigen/Dense>
 
-using Eigen::VectorXd;
-
 /* evaluate polynomial using horner scheme 
  * coefficients in p must be given like: 
  * f(x) = p0*x^n + p1*x^(n-1) + ... + pn
@@ -12,8 +10,8 @@ using Eigen::VectorXd;
  * IN:  p = coefficients as stated above
  *      x = Eigen::VectorXd of points at which to evaluate
  * OUT: y = f(x)                                           */
-void polyval(const VectorXd& p, const VectorXd& x, VectorXd& y) {
-  const VectorXd ones = VectorXd::Ones(x.size());
+inline void polyval(const Eigen::VectorXd& p, const Eigen::VectorXd& x, Eigen::VectorXd& y) {
+  const Eigen::VectorXd ones = Eigen::VectorXd::Ones(x.size());
   y = p(0)*ones;
 
   for (unsigned i = 1; i < p.size(); ++i) {
@@ -30,8 +28,8 @@ void polyval(const VectorXd& p, const VectorXd& x, VectorXd& y) {
  * IN:  p = coefficients as stated above
  *      x = Eigen::VectorXd of points at which to evaluate
  * OUT: y = f(x)                                           */
-VectorXd polyval(const VectorXd& p, const VectorXd& x) {
-  VectorXd y;
+inline Eigen::VectorXd polyval(const Eigen::VectorXd& p, const Eigen::VectorXd& x) {
+  Eigen::VectorXd y;
   polyval(p, x, y);
   return y;
 }

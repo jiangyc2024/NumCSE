@@ -2,6 +2,10 @@
 #include <Eigen/Dense>
 #include <cmath>
 #include <iostream>
+
+namespace remez {
+
+
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 
@@ -16,11 +20,11 @@ template <class Function, class Derivative>
 void remez(const Function &f, const Derivative &df, const double a,
            const double b, const unsigned d, const double tol, VectorXd &c) {
   const unsigned n = 8 * d;                     // number of sampling points
-  VectorXd xtab = VectorXd::LinSpaced(n, a, b); // points of sampling grid
-  VectorXd ftab = feval(f, xtab); // function values at sampling grid
-  double fsupn =
+  const VectorXd xtab = VectorXd::LinSpaced(n, a, b); // points of sampling grid
+  const VectorXd ftab = feval(f, xtab); // function values at sampling grid
+  const double fsupn =
     ftab.cwiseAbs().maxCoeff();   // approximate supremum norm of \Blue{$f$}
-  VectorXd dftab = feval(df, xtab); // derivative values at sampling grid
+  const VectorXd dftab = feval(df, xtab); // derivative values at sampling grid
 
   // The vector xe stores the current guess for the alternants
   // initial guess is Chebychev alternant \eqref{remez:chebalt}
@@ -37,7 +41,8 @@ void remez(const Function &f, const Derivative &df, const double a,
     // Interpolation at \Blue{$d+2$} points xe with deviations
     // \Blue{$\pm\delta$} Algorithm uses monomial basis, which is \textit{not}
     // optimal
-    MatrixXd V = vander(xe), A(d + 2, d + 2);
+    MatrixXd V = vander(xe);
+    MatrixXd A(d + 2, d + 2);
     // build Matrix A, \com{LSE}
     A.block(0, 0, d + 2, d + 1) = V.block(0, 1, d + 2, d + 1);
     for (unsigned r = 0; r < d + 2; ++r) {
@@ -53,10 +58,10 @@ void remez(const Function &f, const Derivative &df, const double a,
 
     // Find initial guesses for the inner extremes by sampling
     // track sign changes of the derivative of the approximation error
-    VectorXd deltab = polyval(cd, xtab) - dftab,
-      s = deltab.head(n - 1).cwiseProduct(deltab.tail(n - 1));
-    VectorXd ind = findNegative(s), // ind = find(s < 0)
-      xx0 = select(xtab, ind);    // approximate zeros of e'
+    VectorXd deltab = polyval(cd, xtab) - dftab;
+    const VectorXd s = deltab.head(n - 1).cwiseProduct(deltab.tail(n - 1));
+    const VectorXd ind = findNegative(s); // ind = find(s < 0)
+    VectorXd xx0 = select(xtab, ind);    // approximate zeros of e'
     const unsigned nx = ind.size(); // number of approximate zeros
 
     if (nx < d) { // too few extrema; bail out
@@ -68,11 +73,11 @@ void remez(const Function &f, const Derivative &df, const double a,
     // error
     VectorXd F0 = polyval(cd, xx0) - feval(df, xx0);
     // initial guesses from shifting sampling points
-    VectorXd xx1 = xx0 + (b - a) / (2 * n) * VectorXd::Ones(xx0.size()),
-      F1 = polyval(cd, xx1) - feval(df, xx1);
+    VectorXd xx1 = xx0 + (b - a) / (2 * n) * VectorXd::Ones(xx0.size());
+    VectorXd F1 = polyval(cd, xx1) - feval(df, xx1);
     // Main loop of the secant method
     while (F1.cwiseAbs().minCoeff() > 1e-12) {
-      VectorXd xx2 = xx1 - (F1.cwiseQuotient(F1 - F0)).cwiseProduct(xx1 - xx0);
+      const VectorXd xx2 = xx1 - (F1.cwiseQuotient(F1 - F0)).cwiseProduct(xx1 - xx0);
       xx0 = xx1;
       xx1 = xx2;
       F0 = F1;
@@ -87,15 +92,17 @@ void remez(const Function &f, const Derivative &df, const double a,
       xe << a, xx0, b;
     } else if (nx == d + 1) {
       xe = VectorXd(xx0.size() + 1);
-      if (xx0.minCoeff() - a > b - xx0.maxCoeff())
+      if (xx0.minCoeff() - a > b - xx0.maxCoeff()) {
         xe << a, xx0;
-      else
+      }
+      else {
         xe << xx0, b;
+      }
     } else if (nx == d + 2) {
       xe = xx0;
     } else {
-      VectorXd del = (polyval(c.head(d + 1), xx0) - feval(f, xx0)).cwiseAbs(),
-	ind = sort_indices(del);
+      const VectorXd del = (polyval(c.head(d + 1), xx0) - feval(f, xx0)).cwiseAbs();
+	    VectorXd ind = sort_indices(del);
       xe = select(xx0, ind.tail(d + 2));
     }
 
@@ -114,8 +121,11 @@ void remez(const Function &f, const Derivative &df, const double a,
       break;
     }
   }
-  VectorXd tmp = c.head(d + 1);
+  const VectorXd tmp = c.head(d + 1);
   c = tmp;
 }
 
 /* SAM_LISTING_END_0 */
+
+
+} //namespace remez
