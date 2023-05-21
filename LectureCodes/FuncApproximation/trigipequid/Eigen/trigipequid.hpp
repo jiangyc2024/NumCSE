@@ -30,7 +30,7 @@ std::pair<VectorXd,VectorXd> trigipequid(const VectorXd& y) {
   // right hand side vector \Blue{$\Vb$} from \eqref{tip:FM}
   VectorXcd b(N);
   for (index_t k = 0; k < N; ++k) {
-    b(k) = y(k) * std::exp(2*M_PI*M_I*(static_cast<double>(n)/static_cast<double>(N*k))); 
+    b(k) = y(k) * std::exp(2*M_PI*M_I*(static_cast<double>(n)/static_cast<double>(N)*static_cast<double>(k))); 
   }
   Eigen::FFT<double> fft; // DFT helper class
   VectorXcd c = fft.fwd(b); // means that ``c = fft(b)''
@@ -69,7 +69,7 @@ void trigipequid(const VectorXd& y, VectorXcd& a, VectorXcd& b) {
 
   for (unsigned k = 0; k < N; ++k) {
     // see \eqref{tip:FM}
-    f[k] = y(k) * std::exp(2*M_PI*i*(static_cast<double>(n)/static_cast<double>(N*k))); 
+    f[k] = y(k) * std::exp(2*M_PI*i*(static_cast<double>(n)/static_cast<double>(N)*static_cast<double>(k))); 
   }
   Eigen::FFT<double> fft;
   fft.fwd(c, f); // -> c = fft(f);
