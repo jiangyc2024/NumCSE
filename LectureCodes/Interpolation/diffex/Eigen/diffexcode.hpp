@@ -6,8 +6,11 @@
 /// Repository: https://gitlab.math.ethz.ch/NumCSE/NumCSE/
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
-# include <vector>
 # include <Eigen/Dense>
+# include <vector>
+
+namespace diffex {
+
 
 using Eigen::VectorXd;
 
@@ -32,13 +35,18 @@ double diffex(Function& f, const double x, const double h0,
     h[i] = h[i-1]/2; // Next width half as big
     y[i] = ( f(x + h[i]) - f(x - h[i]) )/(2.0*h[i]); // difference quotient
     // Aitken-Neville update
-    for (int k = i - 1; k >= 0; --k) 
+    for (int k = static_cast<int>(i - 1); k >= 0; --k) {
       y[k] = y[k+1] - (y[k+1]-y[k])*h[i]/(h[i]-h[k]);
+    }
     // termination of extrapolation when desired tolerance is reached
     const double errest = std::abs(y[1]-y[0]); // \com{error indicator}
-    if ( errest < rtol*std::abs(y[0]) || errest < atol ) // \label{de:1}
+    if ( errest < rtol*std::abs(y[0]) || errest < atol ) { // \label{de:1}
       break;
+    }
   }
   return y[0]; // Return value extrapolated from largest number of difference quotients 
 }
 /* SAM_LISTING_END_0 */
+
+
+} //namespace diffex

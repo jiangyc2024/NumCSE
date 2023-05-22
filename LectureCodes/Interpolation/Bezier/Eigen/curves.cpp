@@ -26,9 +26,9 @@
 Eigen::MatrixXd evalBezier(const Eigen::MatrixXd &nodes,
                            const Eigen::RowVectorXd &t) {
   assert((nodes.rows() == 2) && "Nodes must have two coordinates");
-  const int n = nodes.cols();  // Number of control points
-  const int d = n - 1;         // Polynomial degree
-  const int N = t.size(); // No. of evaluation points
+  const Eigen::Index n = nodes.cols();  // Number of control points
+  const Eigen::Index d = n - 1;         // Polynomial degree
+  const Eigen::Index N = t.size(); // No. of evaluation points
   // Vector containing 1-t ("one minus t")
   const auto oml{Eigen::RowVectorXd::Constant(N, 1.0) - t};
   // Modified Horner scheme for polynomial in Bezier form
@@ -39,7 +39,7 @@ Eigen::MatrixXd evalBezier(const Eigen::MatrixXd &nodes,
   Eigen::RowVectorXd t_pow{Eigen::RowVectorXd::Constant(N, 1.0)};
   for (int i = 1; i < d; ++i) {
     t_pow.array() *= t.array();
-    binom_val *= double(d - i + 1.0) / i;
+    binom_val *= (static_cast<double>(d - i) + 1.0) / i;
     res += binom_val * nodes.col(i) * t_pow;
     res.row(0).array() *= oml.array();
     res.row(1).array() *= oml.array();
@@ -52,11 +52,11 @@ Eigen::MatrixXd evalBezier(const Eigen::MatrixXd &nodes,
 int main(int /*argc*/, char ** /*argv*/) {
   // Initialize nodes
   // clang-format off
-  Eigen::MatrixXd nodes = ((Eigen::MatrixXd(2,9) <<
+  const Eigen::MatrixXd nodes = ((Eigen::MatrixXd(2,9) <<
     -1. ,  0. ,  4. ,  5.5,  9.5, 11. , 15. , 15.5, 15.5,
      0. ,  2. ,  2. ,  4. ,  4. ,  2. ,  2. ,  3. ,  0.).finished());
   // clang-format on 
-  Eigen::RowVectorXd lambda = (Eigen::ArrayXd::LinSpaced(10,0.0,1.0)).matrix();
+  const Eigen::RowVectorXd lambda = (Eigen::ArrayXd::LinSpaced(10,0.0,1.0)).matrix();
   const Eigen::MatrixXd curvevals = evalBezier(nodes,lambda);
   std::cout << "Points on curve" << std::endl << curvevals << std::endl;
   return 0;
