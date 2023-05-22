@@ -3,10 +3,12 @@
 
 int main() {
   const unsigned N = 10;
-  VectorXd y = VectorXd::LinSpaced(5, 0, 1);
-  VectorXcd a, b, q;
-  trigipequid(y, a, b);
-  trigipequidcomp(a, b, N, q);
+  const Eigen::VectorXd y = Eigen::VectorXd::LinSpaced(5, 0, 1);
+  Eigen::VectorXcd a;
+  Eigen::VectorXcd b;
+  Eigen::VectorXcd q;
+  trigipequid::trigipequid(y, a, b);
+  trigipequidcomp::trigipequidcomp(a, b, N, q);
 
   std::cout << q << "\n";
 

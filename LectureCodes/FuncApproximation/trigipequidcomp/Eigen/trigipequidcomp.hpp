@@ -1,10 +1,15 @@
-# include <iostream>
-# include <complex>
 # include <Eigen/Dense>
+# include <complex>
+# include <iostream>
 # include <unsupported/Eigen/FFT>
+
+namespace trigipequidcomp {
+
+
 using Eigen::ArrayXcd;
 using Eigen::VectorXcd;
 
+inline
 /* SAM_LISTING_BEGIN_0 */
 void trigipequidcomp(const VectorXcd& a, const VectorXcd& b, const unsigned N, VectorXcd& y) {
   const unsigned n = a.size() - 1;
@@ -25,12 +30,16 @@ void trigipequidcomp(const VectorXcd& a, const VectorXcd& b, const unsigned N, V
 
   // realize multiplication with conjugate fourier matrix
   Eigen::FFT<double> fft;
-  VectorXcd chCon = ch.conjugate(); 
+  const VectorXcd chCon = ch.conjugate(); 
   VectorXcd v = fft.fwd(chCon).conjugate();
 
   // final scaling, implemented without efficiency considerations
   y = VectorXcd(N);
-  for (unsigned k = 0; k < N; ++k) 
+  for (unsigned k = 0; k < N; ++k) {
     y(k) = v(k) * std::exp( -2.*k*n*M_PI/N*iu );
+  }
 }
 /* SAM_LISTING_END_0 */
+
+
+} //namespace trigipequidcomp
