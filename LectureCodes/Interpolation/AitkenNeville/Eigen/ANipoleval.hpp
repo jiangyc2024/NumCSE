@@ -8,7 +8,11 @@
 
 # include <Eigen/Dense>
 
+namespace ANipoleval {
+
+
 using Eigen::VectorXd;
+inline
 /* SAM_LISTING_BEGIN_0 */
 // Aitken-Neville algorithm for evaluation of interpolating polynomial
 // IN:  t, y: (vectors of) interpolation data points 
@@ -25,3 +29,6 @@ double ANipoleval(const Eigen::VectorXd& t, Eigen::VectorXd y, const double x) {
   return y[0];
 }
 /* SAM_LISTING_END_0 */
+
+
+} //namespace ANipoleval

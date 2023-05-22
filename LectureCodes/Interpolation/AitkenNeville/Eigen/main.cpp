@@ -1,5 +1,5 @@
-# include <iostream>
 # include "./ANipoleval.hpp"
+# include <iostream>
 
 int main () {
   // approximate d/dx sin(x) with aitken neville and extrapolation to 0
@@ -13,13 +13,13 @@ int main () {
 
   for (unsigned n = 2; n < N; n += 2) {
     // interpolate for large h
-    VectorXd t = VectorXd::LinSpaced(n, 0.01, 10),
-             y(t.size());
+    Eigen::VectorXd t = Eigen::VectorXd::LinSpaced(n, 0.01, 10);
+    Eigen::VectorXd y(t.size());
     for (unsigned i = 0; i < t.size(); ++i) {
       y(i) = df(t(i));
     }
 
-    std::cout << "Approximation at n = " << n << ": " << ANipoleval(t, y, 0) << "\n";
+    std::cout << "Approximation at n = " << n << ": " << ANipoleval::ANipoleval(t, y, 0) << "\n";
   }
 
   return 0;
