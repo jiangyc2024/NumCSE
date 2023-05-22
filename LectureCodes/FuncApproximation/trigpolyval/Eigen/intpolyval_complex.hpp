@@ -1,14 +1,19 @@
-# include <complex>
 # include <Eigen/Dense>
+# include <complex>
+
+namespace intpolyval {
+
 
 using Eigen::VectorXcd;
+
+inline
 // IN:  \texttt{t}: vector of nodes \Blue{$t_0, \ldots, t_n$}
 //      \texttt{y}: vector of data \Blue{$y_0, \ldots, y_n$}
 //      \texttt{x}: vector of evaluation points \Blue{$x_1, \ldots, x_N$}
 // OUT: \texttt{p}: interpolant evaluated at x 
 void intpolyval(const VectorXcd& t, const VectorXcd& y, const VectorXcd& x, VectorXcd& p) {
-  const unsigned n = t.size(), // no. of interpolation nodes = deg. of polynomial $-1$
-                 N = x.size(); // no. of evaluation points
+  const unsigned n = t.size(); // no. of interpolation nodes = deg. of polynomial $-1$
+  const unsigned N = x.size(); // no. of evaluation points
 
   p = VectorXcd(N); // resizing 
 
@@ -25,13 +30,16 @@ void intpolyval(const VectorXcd& t, const VectorXcd& y, const VectorXcd& x, Vect
     VectorXcd z = (x(i)*VectorXcd::Ones(n) - t);
 
     // check if we want to evaluate at a node <-> avoid division by zero
-    std::complex<double>* ptr = std::find(z.data(), z.data() + n, std::complex<double>(0,0));
-    if (ptr != z.data() + n) { // if ptr = z.data + n = z.end no zero was found
-      p(i) = y(ptr - z.data()); // ptr - z.data gives the position of the zero
+    auto ptr = std::find(z.begin(), z.end(), std::complex<double>(0,0));
+    if (ptr != z.end()) { // if ptr = z.end no zero was found
+      p(i) = y(ptr - z.begin()); // ptr - z.begin gives the position of the zero
     }
     else {
-      VectorXcd mu = lambda.cwiseQuotient(z);
+      const VectorXcd mu = lambda.cwiseQuotient(z);
       p(i) = (mu.cwiseProduct(y)).sum()/mu.sum();
     }
   }
 }
+
+
+} //namespace intpolyval

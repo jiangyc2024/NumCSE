@@ -24,16 +24,16 @@ private:
 public:
   // Constructors taking node vector \Blue{$[t_{0},\ldots,t_{n}]^{\top}$} as
   // argument
-  BarycPolyInterp(const nodeVec_t &_t);
+  explicit BarycPolyInterp(const nodeVec_t &_t);
   // The interpolation points may also be passed in an STL container
-  template <typename SeqContainer> BarycPolyInterp(const SeqContainer &v);
+  template <typename SeqContainer> explicit BarycPolyInterp(const SeqContainer &v);
   // Computation of \Blue{$p(x_{k})$} for data values
   // \Blue{$(y_{0},\ldots,y_{n})$} and evaluation points \Blue{$x_{k}$}
   template <typename RESVEC, typename DATAVEC>
   RESVEC eval(const DATAVEC &y, const nodeVec_t &x) const;
 
 private:
-  void init_lambda(void);
+  void init_lambda();
 };
 /* SAM_LISTING_END_0 */
 
@@ -49,8 +49,9 @@ template <typename SeqContainer>
 BarycPolyInterp<NODESCALAR>::BarycPolyInterp(const SeqContainer &v)
     : n(v.size()), t(n), lambda(n) {
   idx_t ti = 0;
-  for (auto tp : v)
+  for (auto tp : v) {
     t(ti++) = tp;
+  }
   init_lambda();
 }
 /* SAM_LISTING_END_1 */
@@ -58,14 +59,14 @@ BarycPolyInterp<NODESCALAR>::BarycPolyInterp(const SeqContainer &v)
 /* SAM_LISTING_BEGIN_2 */
 template <typename NODESCALAR>
 template <typename RESVEC, typename DATAVEC>
-RESVEC BarycPolyInterp<NODESCALAR>::eval(const DATAVEC &y,
+[[nodiscard]] RESVEC BarycPolyInterp<NODESCALAR>::eval(const DATAVEC &y,
                                          const nodeVec_t &x) const {
   const idx_t N = x.size(); // No. of evaluation points
   RESVEC p(N);              // Ouput vector
   // Compute quotient of weighted sums  of \Blue{$\frac{\lambda_i}{t - t_i}$},
   // effort \Blue{$O(n)$}
   for (int i = 0; i < N; ++i) {
-    nodeVec_t z = (x[i] * nodeVec_t::Ones(n) - t);
+    const nodeVec_t z = (x[i] * nodeVec_t::Ones(n) - t);
 
     // Check if we want to evaluate close to a node
     const double tref{z.cwiseAbs().maxCoeff()}; // reference size
@@ -111,7 +112,7 @@ SAM_LISTING_END_4 */
 
 /* SAM_LISTING_BEGIN_3 */
 template <typename NODESCALAR>
-void BarycPolyInterp<NODESCALAR>::init_lambda(void) {
+void BarycPolyInterp<NODESCALAR>::init_lambda() {
   // Precompute the weights \Blue{$\lambda_i$} with effort \Blue{$O(n^2)$}
   for (unsigned k = 0; k < n; ++k) {
     // little workaround: in \eigen cannot subtract a vector
