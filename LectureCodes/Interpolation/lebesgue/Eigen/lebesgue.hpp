@@ -1,9 +1,13 @@
+# include <Eigen/Dense>
 # include <cmath>
 # include <vector>
-# include <Eigen/Dense>
+
+namespace lebesgue {
+
 
 using Eigen::VectorXd;
 
+inline
 /* SAM_LISTING_BEGIN_0 */
 // Computation of \Hyperlink{LEBESGUE}{Lebesgue constant} of polynomial interpolation 
 // with nodes \Blue{$t_i$} passed in the vector \texttt{t} based on \eqref{eq:IPN1}. 
@@ -17,9 +21,15 @@ double lebesgue(const VectorXd& t, const unsigned& N) {
   for (unsigned i = 0; i < n; ++i) {
     VectorXd tmp(n - 1);
     // Note: comma initializer can't be used with vectors of length 0
-    if (i == 0) tmp = t.tail(n - 1);
-    else if (i == n - 1) tmp = t.head(n - 1);
-    else tmp << t.head(i), t.tail(n - (i + 1));
+    if (i == 0) {
+      tmp = t.tail(n - 1);
+    }
+    else if (i == n - 1) { 
+      tmp = t.head(n - 1);
+    }
+    else {
+      tmp << t.head(i), t.tail(n - (i + 1));
+    }
     den(i) = (t(i) - tmp.array()).prod();
   }
 
@@ -30,10 +40,16 @@ double lebesgue(const VectorXd& t, const unsigned& N) {
     for (unsigned k = 0; k < n; ++k) {
       // \texttt{v} provides value of normalized Lagrange polynomials
       VectorXd tmp(n - 1);
-      if (k == 0) tmp = t.tail(n - 1);
-      else if (k == n - 1) tmp = t.head(n - 1);
-      else tmp << t.head(k), t.tail(n - (k + 1));
-      double v = (x - tmp.array()).prod()/den(k);
+      if (k == 0) {
+        tmp = t.tail(n - 1);
+      }
+      else if (k == n - 1) {
+       tmp = t.head(n - 1);
+      }
+      else {
+        tmp << t.head(k), t.tail(n - (k + 1));
+      }
+      const double v = (x - tmp.array()).prod()/den(k);
       s += std::abs(v); // sum over modulus of the polynomials
     }
     l = std::max(l, s); // maximum of sampled values
@@ -41,3 +57,6 @@ double lebesgue(const VectorXd& t, const unsigned& N) {
   return l;
 }
 /* SAM_LISTING_END_0 */
+
+
+} //namespace lebesgue
