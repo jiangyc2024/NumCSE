@@ -1,8 +1,13 @@
-# include <iostream>
 # include <Eigen/Dense>
+# include <iostream>
+
+namespace trigpolycoeff {
+
+
 using Eigen::VectorXd;
 using Eigen::MatrixXd;
 
+inline
 /* SAM_LISTING_BEGIN_0 */
 //Computes expansion coefficients of trigonometric polyonomials \eqref{eq:trigpreal}
 // IN : \texttt{t} = vector of nodes \Blue{$t_{0},\ldots,t_n\in[0,1[$}
@@ -10,8 +15,11 @@ using Eigen::MatrixXd;
 // OUT: pair of vectors storing the basis expansion coefficients \Blue{$\alpha_j$}, \Blue{$\beta_j$}, see \cref{def:trip}
 std::pair<VectorXd,VectorXd>
 trigpolycoeff(const VectorXd& t, const VectorXd& y) {
-  const unsigned N = y.size(), n = (N-1)/2;
-  if (N % 2 == 0) throw "Number of points must be odd!\n";
+  const unsigned N = y.size();
+  const unsigned n = (N-1)/2;
+  if (N % 2 == 0) {
+    throw std::logic_error("Number of points must be odd!");
+  }
 
   // build system matrix M
   MatrixXd M(N, N);
@@ -22,11 +30,11 @@ trigpolycoeff(const VectorXd& t, const VectorXd& y) {
   }
   // solve LSE and extract coefficients \Blue{${\alpha_{j}}$} and \Blue{$\beta_{j}$}
   VectorXd c = M.lu().solve(y);
-  return std::pair<VectorXd,VectorXd>(c.head(n + 1),c.tail(n));
+  return {c.head(n + 1),c.tail(n)};
 }
 /* SAM_LISTING_END_0 */
 
-
+inline
 /* SAM_LISTING_BEGIN_1 */
 //Computes expansion coefficients of trigonometric polyonomials \eqref{eq:trigpreal}
 // IN : \texttt{t} = vector of nodes \Blue{$t_{0},\ldots,t_n\in[0,1[$}
@@ -54,3 +62,6 @@ void trigpolycoeff(const VectorXd& t, const VectorXd& y, VectorXd& a, VectorXd& 
   b = c.tail(n);
 }
 /* SAM_LISTING_END_1 */
+
+
+} //namespace trigpolycoeff
