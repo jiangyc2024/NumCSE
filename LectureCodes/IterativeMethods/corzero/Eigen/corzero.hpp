@@ -9,12 +9,16 @@
 #include <Eigen/Dense>
 #include <iostream>
 
+namespace corzero {
+
+
 using Eigen::VectorXd;
 
+inline
 /* SAM_LISTING_BEGIN_0 */
 void fpit(double x0, VectorXd &rates, VectorXd &err)
 {
-  const unsigned int N = 15;
+  const Eigen::Index N = 15;
   double x = x0; // \com{initial guess}
   VectorXd y(N);
 
@@ -27,3 +31,6 @@ void fpit(double x0, VectorXd &rates, VectorXd &err)
   rates = err.bottomRows(N-1).cwiseQuotient(err.topRows(N-1));
 }
 /* SAM_LISTING_END_0 */
+
+
+} //namespace corzero

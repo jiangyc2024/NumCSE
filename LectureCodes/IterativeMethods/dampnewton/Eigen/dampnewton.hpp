@@ -1,3 +1,7 @@
+#include <cmath>
+#include <cstdio>
+#include <stdexcept>
+
 template <typename FuncType, typename JacType, typename VecType>
 void dampnewton(const FuncType &F, const JacType &DF, VecType &x, double rtol,
                 double atol) {
@@ -6,9 +10,11 @@ void dampnewton(const FuncType &F, const JacType &DF, VecType &x, double rtol,
   const index_t n = x.size();
   const scalar_t lmin = 1E-3; // Minimal damping factor
   scalar_t lambda = 1.0;      // Initial and actual damping factor
-  VecType s(n), st(n);        // Newton corrections
+  VecType s(n);               // Newton corrections
+  VecType st(n);
   VecType xn(n);              // Tentative new iterate
-  scalar_t sn, stn;           // Norms of Newton corrections
+  scalar_t sn;                // Norms of Newton corrections
+  scalar_t stn;
 
   do {
     auto jacfac = DF(x).lu(); // LU-factorize Jacobian
@@ -17,8 +23,9 @@ void dampnewton(const FuncType &F, const JacType &DF, VecType &x, double rtol,
     lambda *= 2.0;
     do {
       lambda /= 2;
-      if (lambda < lmin)
-        throw "No convergence: lambda -> 0";
+      if (lambda < lmin) {
+        throw std::logic_error("No convergence: lambda -> 0");
+      }
       xn = x - lambda * s;      // {\bf Tentative next iterate}
       st = jacfac.solve(F(xn)); // Simplified Newton correction
       stn = st.norm();

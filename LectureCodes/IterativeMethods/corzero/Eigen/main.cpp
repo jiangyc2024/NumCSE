@@ -6,18 +6,18 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 
+#include "corzero.hpp"
 #include <Eigen/Dense>
 #include <iostream>
-#include "corzero.hpp"
 
 int main()
 {
   Eigen::VectorXd rates;
   Eigen::VectorXd err;
 
-  fpit(0.4, rates, err);
+  corzero::fpit(0.4, rates, err);
 
-  Eigen::VectorXd x = Eigen::VectorXd::LinSpaced(err.size(), 0, err.size()-1);
+  const Eigen::VectorXd x = Eigen::VectorXd::LinSpaced(err.size(), 0, static_cast<double>(err.size()-1));
 
   std::cout << rates << std::endl;
   std::cout << err << std::endl;
