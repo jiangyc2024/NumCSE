@@ -1,23 +1,27 @@
 # include <Eigen/Dense>
 
+
+namespace pchipslopes {
+
+
 using Eigen::VectorXd;
 
 // using forward declaration of the function pchipend, implementation below
-double pchipend(const double, const double, const double, const double);
+double pchipend(double h1, double h2, double del1, double del2);
 
-void pchipslopes(const VectorXd& t, const VectorXd& y, VectorXd& c) {
+inline void pchipslopes(const VectorXd& t, const VectorXd& y, VectorXd& c) {
   // Calculation of local slopes \Blue{$c_i$} for shape preserving cubic Hermite interpolation, see \eqref{mteq:lim}, \eqref{mteq:hm}
   // \texttt{t}, \texttt{y} are vectors passing the data points
   const unsigned n = t.size();
-  const VectorXd h = t.tail(n - 1) - t.head(n - 1),
-                 delta = (y.tail(n - 1) - y.head(n - 1)).cwiseQuotient(h); // linear slopes
+  const VectorXd h = t.tail(n - 1) - t.head(n - 1);
+  const VectorXd delta = (y.tail(n - 1) - y.head(n - 1)).cwiseQuotient(h); // linear slopes
   c = VectorXd::Zero(n);
   
   // compute reconstruction slope according to \eqref{mteq:hm}
   for (unsigned i = 0; i < n - 2; ++i) {
     if (delta(i)*delta(i + 1) > 0) {
-      const double w1 = 2*h(i + 1) + h(i),
-                   w2 = h(i + 1) + 2*h(i);
+      const double w1 = 2*h(i + 1) + h(i);
+      const double w2 = h(i + 1) + 2*h(i);
       c(i + 1) = (w1 + w2)/(w1/delta(i) + w2/delta(i + 1));
     }
   }
@@ -26,7 +30,7 @@ void pchipslopes(const VectorXd& t, const VectorXd& y, VectorXd& c) {
   c(n - 1) = pchipend(h(n - 2), h(n - 3), delta(n - 2), delta(n - 3));
 }
 
-double pchipend(const double h1, const double h2, const double del1, const double del2) {
+inline double pchipend(const double h1, const double h2, const double del1, const double del2) {
   // Non-centered, shape-preserving, three-point formula
   double d = ((2*h1 + h2)*del1 - h1*del2)/(h1 + h2);
   if (d*del1 < 0) {
@@ -37,3 +41,6 @@ double pchipend(const double h1, const double h2, const double del1, const doubl
   }
   return d;
 }
+
+
+} //namespace pchipslopes
