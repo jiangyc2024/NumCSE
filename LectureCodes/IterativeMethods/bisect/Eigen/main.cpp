@@ -1,6 +1,7 @@
-#include <iostream>
-#include <math.h>
 #include "bisect.hpp"
+#include <cmath>
+#include <iostream>
+
 
 int main()
 {
