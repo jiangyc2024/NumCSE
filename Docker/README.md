@@ -8,7 +8,15 @@ To use (i.e. get a shell on) the container, simply run `enter.sh` (Linux and Mac
 
 ### Editing
 
-The source code in this repository can still be edited using your favorite IDE on your host OS, it is mapped into the container. 
+The source code in this repository can still directly be edited using your favorite text editor (Sublime, vim, Atom, etc.) on your host OS, it is mapped into the container. If you want to use a full-powered IDE there are two options of editing with Visual Studio Code:
+
+#### Browser connected to container Visual Studio Code server (simple)
+
+Launch the container with `enter.sh`. Run `code-server /numcse/Docker/docker.code-workspace --bind-addr 0.0.0.0:8081 --auth none`. In a browser on your host OS, open `http://localhost:8081`. You can now edit the NumCSE code in a full-feature Visual Studio Code IDE in the browser with all necessary extensions preinstalled and the correct workspace configured.
+
+#### Host OS Visual Studio Code connected to container
+
+Using [Visual Studio Code](https://code.visualstudio.com) locally (i.e. on your host OS), install the Dev Containers extension with (ID `ms-vscode-remote.remote-containers`). Use docker to launch/enter the NumCSE development container. Then in Visual Studio Code use the command `Dev Containers: Attach to Running Container`, select this container and make sure to open the provided [workspace](./docker.code-workspace) in the `Docker` directory. When asked to confirm installation of the recommended extensions for this workspace (in the container), confirm. The extensions are important to benefit a full-feature IDE. You may have to repeat this process after the container is destroyed.
 
 ### Compiling
 

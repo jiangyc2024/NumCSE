@@ -1,0 +1,29 @@
+{
+    "folders": [
+        {
+            "path": ".."
+        }
+    ],
+    "settings": {
+        "clang-tidy.buildPath": "/build",
+        "clang-tidy.checks": [
+            "*, -llvmlibc-*, -fuchsia-default-arguments-*, -*-magic-numbers, -modernize-use-trailing-return-type, -cppcoreguidelines-pro-bounds-array-to-pointer-decay, -google-runtime-references, -fuchsia-overloaded-operator, -cert-dcl21-cpp, -llvm-header-guard, -readability-identifier-length, -altera-id-dependent-backward-branch, -altera-unroll-loops, -misc-no-recursion"
+        ],
+        "clang-tidy.compilerArgs": [
+            "-I/usr/local/llvm/lib64/clang/15.0.0/include"
+        ],
+        "clang-tidy.executable": "clang-tidy",
+        "clang-tidy.lintOnSave": false,
+        "clang-tidy.fixOnSave": false,
+        "clang-tidy.compilerArgsBefore": [],
+        "clang-tidy.blacklist": []
+    },
+    "extensions": {
+        "recommendations": [
+            "notskm.clang-tidy",
+            "ms-vscode.cmake-tools",
+            "twxs.cmake",
+            "ms-vscode.cpptools-themes"
+        ]
+    }
+}

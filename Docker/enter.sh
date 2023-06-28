@@ -18,7 +18,7 @@ if [ ! "$( docker ps | grep $container_name )" ]; then
 	cd "$repo_root" && docker build -t numcse_dev_top -f "$parent_dir/top/Dockerfile" .
 
 	# launch container and bind mount the numcse repository for developing codes
-	docker run --name $container_name --rm -it -v "$repo_root:/numcse" numcse_dev_top
+	docker run --name $container_name --rm -it -v "$repo_root:/numcse" -p 8081:8081 numcse_dev_top
 else
 
 	# launch a second shell in the existing container
