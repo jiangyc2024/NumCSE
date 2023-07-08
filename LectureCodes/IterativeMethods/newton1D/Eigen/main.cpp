@@ -1,6 +1,6 @@
-#include <iostream>
-#include <cmath>
 #include "newton1D.hpp"
+#include <cmath>
+#include <iostream>
 
 int main()
 {
