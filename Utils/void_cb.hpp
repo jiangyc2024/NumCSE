@@ -32,7 +32,7 @@ struct void_cb {
   explicit constexpr void_cb(void* dummy = nullptr) {}
 
   template <typename... T>
-  void operator()(T...) {
+  void operator()(T... /*unused*/) {
     assert(false);
   }
 

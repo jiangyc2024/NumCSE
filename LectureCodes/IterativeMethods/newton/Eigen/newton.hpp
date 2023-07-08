@@ -46,8 +46,9 @@ Vector<Scalar, N> newton_ext(FuncType &F, JacType &DFinv,
     s = DFinv(x, F(x)); // compute Newton correction
     x -= s;             // compute next iterate
 
-    if (callback != nullptr)
+    if (callback != nullptr) {
       callback(x, s);
+    }
   }
   // correction based termination (relative and absolute)
   while ((s.norm() > rtol * x.norm()) && (s.norm() > atol));
