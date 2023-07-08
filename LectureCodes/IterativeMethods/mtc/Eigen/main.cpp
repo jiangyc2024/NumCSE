@@ -1,5 +1,5 @@
-#include <iostream>
 #include "sqrtit.hpp"
+#include <iostream>
 
 int main()
 {

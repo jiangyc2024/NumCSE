@@ -5,6 +5,8 @@
 /// Repository: https://gitlab.math.ethz.ch/NumCSE/NumCSE/
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
+
+inline
 /* SAM_LISTING_BEGIN_0 */
 double sqrtit(double a)
 {

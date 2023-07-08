@@ -6,14 +6,15 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 
-#define _USE_MATH_DEFINES
 #include <cmath>
 #include <exception>
 #include <iostream>
+#include <numbers>
+#include <sstream>
 #include <vector>
 
 double Lambert_W(double xi, int maxit = 20) {
-  const double xe = xi * M_E;
+  const double xe = xi * std::numbers::e;
   if (xe < -1.0) {
     throw std::domain_error("W-function argument out of range");
   }
@@ -31,19 +32,21 @@ double Lambert_W(double xi, int maxit = 20) {
     cnt++;
   }
   if (cnt == maxit) {
-    throw cnt;
+    std::stringstream message;
+    message << cnt;
+    throw std::runtime_error(message.str());
   }
   return w;
 }
 
 void check_W(double x) {
-  double W;
+  double W = NAN;
   try {
     W = Lambert_W(x);
   } catch (std::domain_error& err) {
     std::cerr << "W-function: argument out of range" << std::endl;
-  } catch (int cnt) {
-    std::cerr << "W-function: no convergence after " << cnt << " iterations"
+  } catch (std::runtime_error& e) {
+    std::cerr << "W-function: no convergence after " << e.what() << " iterations"
               << std::endl;
   }
   std::cout << "W-function check for x = " << x
@@ -52,7 +55,7 @@ void check_W(double x) {
 
 int main(int /*argc*/, char** /*argv*/) {
   const std::vector<double> xv{-0.2, 0.1, 0.5, 1.0, 2.0, 10.0};
-  for (double x : xv) {
+  for (const double x : xv) {
     check_W(x);
   }
   return 0;
