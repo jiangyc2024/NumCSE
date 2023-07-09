@@ -6,6 +6,8 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 
+#include <cmath>
+
 /* SAM_LISTING_BEGIN_0 */
 // C++ template for simplified Newton method
 template<typename Func, typename Jac, typename Vec>
@@ -13,7 +15,8 @@ void simpnewton(Vec& x, Func F, Jac DF, double rtol, double atol)
 {
   auto lu = DF(x).lu(); // do LU decomposition \com{once}!
   Vec s;                // Newton correction
-  double ns,nx;         // auxiliary variables for termination control
+  double ns = NAN;      // auxiliary variables for termination control
+  double nx = NAN;         
   do {
     s = lu.solve(F(x));
     x = x-s;            // new iterate
