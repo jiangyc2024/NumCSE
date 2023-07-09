@@ -12,8 +12,13 @@
 
 #include <Eigen/Dense>
 
-using namespace std;
-using namespace Eigen;
+namespace lloydmax {
+
+
+using Eigen::MatrixXd;
+using Eigen::MatrixBase;
+using Eigen::VectorXi;
+using Eigen::VectorXd;
 
 /* SAM_LISTING_BEGIN_0 */
 template <class Derived>
@@ -32,11 +37,12 @@ std::tuple<double, VectorXi, VectorXd> distcomp(const MatrixXd & X, const Matrix
 	  // idx(j) tells to which cluster point j belongs
 	  mx(j) = d.col(j).minCoeff(&idx(j));
   }
-  double sumd = mx.sum();	// sum of all squared distances
+  const double sumd = mx.sum();	// sum of all squared distances
   // Computer sum of squared distances within each cluster
   VectorXd cds(C.cols()); cds.setZero();
-  for(int j = 0; j < idx.size(); ++j)	// loop over all points
+  for(int j = 0; j < idx.size(); ++j){ // loop over all points
 	  cds(idx(j)) += mx(j);
+	}
   return std::make_tuple(sumd, idx, cds);
 }
 
@@ -47,13 +53,14 @@ std::tuple<double, VectorXi, VectorXd> distcomp(const MatrixXd & X, const Matrix
 // the association of points with centers.
 template <class Derived>
 void lloydmax(const MatrixXd & X, MatrixBase<Derived> & C, VectorXi & idx, VectorXd & cds, const double tol = 0.0001){
-  int k = X.rows(); // dimension of space
-  int N = X.cols();	// no. of points
-  int n = C.cols(); // no. of clusters
-  if(k != C.rows())
-	throw std::logic_error("dimension mismatch");
+  const Eigen::Index k = X.rows(); // dimension of space
+  const Eigen::Index N = X.cols();	// no. of points
+  const Eigen::Index n = C.cols(); // no. of clusters
+  if(k != C.rows()) {
+		throw std::logic_error("dimension mismatch");
+	}
   double sd_old = std::numeric_limits<double>::max();
-  double sd;
+  double sd = NAN;
   std::tie(sd, idx, cds) = distcomp(X,C);
   // Terminate, if sum of squared minimal distances has not changed much
   while( (sd_old-sd)/sd > tol ){
@@ -66,8 +73,9 @@ void lloydmax(const MatrixXd & X, MatrixBase<Derived> & C, VectorXi & idx, Vecto
 		  ++nj(idx(j));	// count associated points for normalization
 	  }
 	  for(int i = 0; i < Ctmp.cols(); ++i){
-		  if(nj(i) > 0)
-			C.col(i) = Ctmp.col(i)/nj(i);	// normalization
+		  if(nj(i) > 0) {
+				C.col(i) = Ctmp.col(i)/nj(i);	// normalization
+			}
 	  }
 	  sd_old = sd;
 	  // Get new minimum association of the points to cluster points
@@ -80,6 +88,9 @@ void lloydmax(const MatrixXd & X, MatrixBase<Derived> & C, VectorXi & idx, Vecto
 // such as C.leftCols(nc) to be passed by reference (\cpp 11 feature)
 template <class Derived>
 void lloydmax(const MatrixXd & X, MatrixBase<Derived> && C, VectorXi & idx, VectorXd & cds, const double tol = 0.0001){
-	lloydmax(X, C, idx, cds);
+	lloydmax(X, C, idx, cds, tol);
 }
 /* SAM_LISTING_END_0 */
+
+
+} //namespace lloydmax

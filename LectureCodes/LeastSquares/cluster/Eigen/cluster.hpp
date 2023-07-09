@@ -8,26 +8,30 @@
 
 #pragma once
 
+#include "lloydmax.hpp"
+#include "pas.hpp"
 #include <Eigen/Dense>
 
-#include "pas.hpp"
-#include "lloydmax.hpp"
+namespace cluster {
 
-using namespace std;
-using namespace Eigen;
 
+using Eigen::MatrixXd;
+using Eigen::VectorXi;
+using Eigen::VectorXd;
+
+inline
 /* SAM_LISTING_BEGIN_0 */
 // n-quantization of point set in k-dimensional space based on 
 // minimizing the mean square error of Euclidean distances. The 
 // columns of the matrix X contain the point coordinates, n specifies 
 // the desired number of clusters.
 std::pair<MatrixXd, VectorXi> pointcluster(const MatrixXd & X, const int n){
-  int N = X.cols(); // no. of points
-  int k = X.rows(); // dimension of space
+  const Eigen::Index N = X.cols(); // no. of points
+  const Eigen::Index k = X.rows(); // dimension of space
   // Start with two clusters obtained by principal axis separation
   int nc = 1; // Current number of clusters
   // Initial single cluster encompassing all points
-  VectorXi Ibig = VectorXi::LinSpaced(N,0,N-1);
+  VectorXi Ibig = VectorXi::LinSpaced(N,0,static_cast<int>(N-1));
   int nbig = 0; // Index of largest cluster
   MatrixXd C(X.rows(), n);	// matrix for cluster midpoints
   C.col(0) = X.rowwise().sum()/N; // center of gravity
@@ -35,26 +39,32 @@ std::pair<MatrixXd, VectorXi> pointcluster(const MatrixXd & X, const int n){
   // Split largest cluster into two using the principal axis separation
   // algorithm
   while(nc < n){
-	  VectorXi i1, i2;
+	  VectorXi i1;
+	  VectorXi i2;
 	  MatrixXd Xbig(k,Ibig.size());
-	  for(int i = 0; i < Ibig.size(); ++i)	// slicing
-		Xbig.col(i) = X.col(Ibig(i));
+	  for(int i = 0; i < Ibig.size(); ++i) {	// slicing
+			Xbig.col(i) = X.col(Ibig(i));
+		}
 	  // separete Xbig into two clusters, i1 and i2 are index vectors
-	  std::tie(i1, i2) = princaxissep(Xbig);
+	  std::tie(i1, i2) = princaxissep::princaxissep(Xbig);
 	  // new cluster centers of gravity
-	  VectorXd c1(k), c2(k); c1.setZero(); c2.setZero();
-	  for(int i = 0; i < i1.size(); ++i)
+	  VectorXd c1(k); c1.setZero();
+	  VectorXd c2(k); c2.setZero();
+	  for(int i = 0; i < i1.size(); ++i) {
 		  c1 += X.col(Ibig(i1(i)));
-	  for(int i = 0; i < i2.size(); ++i)
+	  }
+	  for(int i = 0; i < i2.size(); ++i){
 		  c2 += X.col(Ibig(i2(i)));
-	  c1 /= i1.size();	  c2 /= i2.size(); // normalization
+	  }
+	  c1 /= static_cast<double>(i1.size());	// normalization  
+	  c2 /= static_cast<double>(i2.size()); 
 	  C.col(nbig) = c1;
 	  C.col(nbig+1) = c2;
 	  ++nc; // Increase number of clusters
 	  // Improve clusters by Lloyd-Max iteration
 	  VectorXd cds;	// saves mean square error of clusters
 	  // Note C.leftCols(nc) is passed as rvalue reference (\cpp 11)
-	  lloydmax(X,C.leftCols(nc),idx,cds); 
+	  lloydmax::lloydmax(X,C.leftCols(nc),idx,cds); 
 	  // Identify cluster with biggest contribution to mean square error
 	  cds.maxCoeff(&nbig);
 	  int counter = 0;
@@ -72,5 +82,6 @@ std::pair<MatrixXd, VectorXi> pointcluster(const MatrixXd & X, const int n){
 /* SAM_LISTING_END_0 */
 
 
+} //namespace cluster
 
 /// algorithms are writen for matlab slicing style, might be better to rewrite everything into c++ style?

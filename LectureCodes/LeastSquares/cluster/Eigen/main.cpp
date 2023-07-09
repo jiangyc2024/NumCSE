@@ -6,17 +6,12 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 
+#include "cluster.hpp"
+#include <Eigen/Dense>
 #include <iostream>
 
-#include <Eigen/Dense>
-
-#include "cluster.hpp"
-
-
-
-
-
-
+using Eigen::MatrixXd;
+using Eigen::VectorXi;
 
 int main () {
 	
@@ -24,21 +19,21 @@ int main () {
 	Eigen::MatrixXd X1(2,4);
 	X1 	<<	0,	4,	0,	4,
 			0,	0,	1,	1;
-	int n1 = 2;
+	const int n1 = 2;
 	Eigen::MatrixXd X2(2,10);
 	X2 	<<	0,	4,	0,	4, 3, 5, 1, 0, 3, 7,
 			0,	0,	1,	1, 4, 8, 3, 9, 2, 7;
-	int n2 = 3;
+	const int n2 = 3;
 	Eigen::MatrixXd X3(3,6);
 	X3 	<<	0,	4,	1,	4,	0,	1,
 			0,	0,	0,	1,	4,	3,
 			0,	0,	0,	0,	2,	2;
-	int n3 = 3;
+	const int n3 = 3;
 	Eigen::MatrixXd X4(3,10);
 	X4 	<<	0,	4,	0,	4, 3, 5, 1, 0, 3, 7,
 			0,	0,	1,	1, 4, 8, 3, 9, 2, 7,
 			3,	5,	3,	0, 4, 5, 9, 3, 5, 5;
-	int n4 =3;
+	const int n4 =3;
 	
 	std::vector<Eigen::MatrixXd> X_vec = {X1, X2, X3, X4};
 	std::vector<int> n_vec = {n1, n2, n3, n4};
@@ -75,11 +70,11 @@ int main () {
 
 	for(unsigned int i = 0; i < X_vec.size(); ++i){
 		std::cout << "##########  Test no. " << i + 1 << "  ##########" << std::endl;
-		Eigen::MatrixXd X = X_vec[i];
-		int n = n_vec[i];
+		const Eigen::MatrixXd X = X_vec[i];
+		const int n = n_vec[i];
 		MatrixXd C;
 		VectorXi idx;
-		std::tie(C,idx) = pointcluster(X,n);
+		std::tie(C,idx) = cluster::pointcluster(X,n);
 		std::cout << "C++, C matrix:\n" << C << "\nMatlab: C matrix:\n" << C_sol_vec[i] << std::endl;
 		std::cout << "C++, idx vector:\n" << idx.transpose() << "\nMatlab: idx vector(C++ indices):\n" << (idx_sol_vec[i] - VectorXi::Ones(idx_sol_vec[i].size())).transpose() << std::endl << std::endl;
 	}
