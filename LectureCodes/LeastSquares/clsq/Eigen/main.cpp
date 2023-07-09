@@ -10,9 +10,11 @@
 #include <Eigen/Dense>
 #include <iostream>
 
-using namespace std;
-using namespace Eigen;
+using std::cout;
+using std::endl;
+using Eigen::MatrixBase;
 
+//NOLINTBEGIN (bugprone-exception-escape)
 int main() {
   Eigen::Matrix<double, 4, 4> A;
   // clang-format off
@@ -22,16 +24,17 @@ int main() {
       1, 7, 8, 10,
       1, 1, 1, 1;
    // clang-format on 
-    typename MatrixBase<decltype(A)>::Index dim = 3;
+    const typename MatrixBase<decltype(A)>::Index dim = 3;
     {
-    auto [c,n] = clsq(A, dim);
+    auto [c,n] = clsq::clsq(A, dim);
     cout << "c = " << c << endl;
     cout << "n = " << endl << n << endl;
     }
     {
-    auto [c,n] = clsq2(A, 4-dim);
+    auto [c,n] = clsq::clsq2(A, 4-dim);
     cout << "c = " << c << endl;
     cout << "n = " << endl << n << endl;
     }
     return 0;
 }
+//NOLINTEND
