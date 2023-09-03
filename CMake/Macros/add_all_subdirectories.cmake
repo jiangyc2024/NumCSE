@@ -14,7 +14,7 @@ MACRO(ADD_ALL_SUBDIRECTORIES directory)
 		if(${contains_cpp_code} EQUAL 0)
 			message("Skipping ${directory}/${SUBDIR} (containing cpp code) because no CMakeLists.txt file was found")
 		else() # otherwise just a debug message
-			#message("Skipping ${directory}/${SUBDIR} since it did not contain any cpp code (e.g. not ported yet)")
+			message("Skipping ${directory}/${SUBDIR} since it did not contain any cpp code (e.g. not ported yet)")
 		endif()		
     endif()
   endforeach()
