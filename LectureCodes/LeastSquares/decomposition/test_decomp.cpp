@@ -10,12 +10,19 @@
 #include "./sparseSolve.hpp"
 #include <iostream>
 
+using Eigen::MatrixXd;
+using Eigen::VectorXd;
+
 void test(const MatrixXd &A, const VectorXd &b) {
-  VectorXd xLu, xQr, xSvd, xSp, xSpd;
-  lu_solve(A, b, xLu);
-  qr_solve(A, b, xQr);
-  svd_solve(A, b, xSvd);
-  sparse_solve(A.sparseView(), b, xSp);
+  VectorXd xLu;
+  VectorXd xQr;
+  VectorXd xSvd;
+  VectorXd xSp;
+  VectorXd xSpd;
+  denseSolve::lu_solve(A, b, xLu);
+  denseSolve::qr_solve(A, b, xQr);
+  denseSolve::svd_solve(A, b, xSvd);
+  sparseSolve::sparse_solve(A.sparseView(), b, xSp);
 
   // build SPD matrix (strongly diagonally dominant & hermitian)
   auto upper = A.template triangularView<Eigen::Upper>();
@@ -25,7 +32,7 @@ void test(const MatrixXd &A, const VectorXd &b) {
     A_spd(i, i) = 2 * (A_spd.row(i).cwiseAbs().sum());
   }
 
-  sparseSpd_solve(A_spd.sparseView(), b, xSpd);
+  sparseSolve::sparseSpd_solve(A_spd.sparseView(), b, xSpd);
 
   std::cout << "-- Error w/ size n = " << b.size() << " ------------\n"
             << "LU:     " << (A * xLu - b).norm() << "\n"
@@ -35,6 +42,7 @@ void test(const MatrixXd &A, const VectorXd &b) {
             << "Sparse: " << (A * xSp - b).norm() << "\n";
 }
 
+//NOLINTBEGIN (bugprone-exception-escape)
 int main() {
   for (int n = 5; n < 50; n *= 2) {
     test(Eigen::MatrixXd::Random(n, n), Eigen::VectorXd::Random(n));
@@ -42,3 +50,4 @@ int main() {
 
   return 0;
 }
+//NOLINTEND

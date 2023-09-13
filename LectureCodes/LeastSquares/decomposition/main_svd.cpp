@@ -11,19 +11,27 @@
 #include "./decomp.hpp"
 #include "./svdspaces.hpp"
 
-using namespace Eigen;
-using namespace std;
+using Eigen::MatrixXd;
+using std::cout;
+using std::endl;
+using std::min;
 
-int main(void) {
+int main() {
   // Initialize a random matrix
-  const int m_init = 9, n_init = 4;
+  const int m_init = 9;
+  const int n_init = 4;
   MatrixXd A = MatrixXd::Random(m_init, n_init);
-  MatrixXd U, Sigma, V;  // SVD factors
+  
+  // SVD factors
+  MatrixXd U; 
+  MatrixXd Sigma;
+  MatrixXd V; 
 
   {
     cout << "full SVD of A = " << endl << A << endl;
-    const int m = A.rows(), n = A.cols();
-    std::tie(U, Sigma, V) = svd_full(A);
+    const Eigen::Index m = A.rows();
+    const Eigen::Index n = A.cols();
+    std::tie(U, Sigma, V) = decomp::svd_full(A);
     cout << "U of size " << U.rows() << "x" << U.cols() << " = " << endl
          << U << endl;
     cout << "S of size " << Sigma.rows() << "x" << Sigma.cols() << " = " << endl
@@ -40,9 +48,10 @@ int main(void) {
 
   {
     cout << "Economical SVD of A = " << endl << A << endl;
-    const int m = A.rows(), n = A.cols();
-    const int p = min(m, n);
-    std::tie(U, Sigma, V) = svd_eco(A);
+    const Eigen::Index m = A.rows();
+    const Eigen::Index n = A.cols();
+    const Eigen::Index p = min(m, n);
+    std::tie(U, Sigma, V) = decomp::svd_eco(A);
     cout << "U of size " << U.rows() << "x" << U.cols() << " = " << endl
          << U << endl;
     cout << "S of size " << Sigma.rows() << "x" << Sigma.cols() << " = " << endl
@@ -57,12 +66,13 @@ int main(void) {
          << endl;
   }
 
-  MatrixXd AT = A.transpose();
+  const MatrixXd AT = A.transpose();
   {
     cout << "Economical SVD of A^T = " << endl << AT << endl;
-    const int m = AT.rows(), n = AT.cols();
-    const int p = min(m, n);
-    std::tie(U, Sigma, V) = svd_eco(AT);
+    const Eigen::Index m = AT.rows();
+    const Eigen::Index n = AT.cols();
+    const Eigen::Index p = min(m, n);
+    std::tie(U, Sigma, V) = decomp::svd_eco(AT);
     cout << "U of size " << U.rows() << "x" << U.cols() << " = " << endl
          << U << endl;
     cout << "S of size " << Sigma.rows() << "x" << Sigma.cols() << " = " << endl

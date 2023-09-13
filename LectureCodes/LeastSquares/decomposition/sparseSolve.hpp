@@ -5,13 +5,21 @@
 // or for QR: \#include <Eigen/SparseQR>
 #include <Eigen/IterativeLinearSolvers> // use only if A is SPD!
 
+#include <stdexcept>
+
+namespace sparseSolve {
+
+
+using Eigen::MatrixXd;
+using Eigen::VectorXd;
+
 /* SAM_LISTING_BEGIN_0 */
 using SparseMatrix = Eigen::SparseMatrix<double>;
 // Perform sparse elimination
-void sparse_solve(const SparseMatrix &A, const VectorXd &b, VectorXd &x) {
-  Eigen::SparseLU<SparseMatrix> solver(A);
+inline void sparse_solve(const SparseMatrix &A, const VectorXd &b, VectorXd &x) {
+  const Eigen::SparseLU<SparseMatrix> solver(A);
   if (solver.info() != Eigen::Success) {
-    throw "Matrix factorization failed";
+    throw std::runtime_error("Matrix factorization failed");
   }
   x = solver.solve(b);
 }
@@ -19,7 +27,10 @@ void sparse_solve(const SparseMatrix &A, const VectorXd &b, VectorXd &x) {
 
 // Solve LSE, if the system matrix A is symmetric, positive definite,
 // using conjugate gradient (CG) iterative solver
-void sparseSpd_solve(const SparseMatrix &A, const VectorXd &b, VectorXd &x) {
-  Eigen::ConjugateGradient<SparseMatrix> solver(A);
+inline void sparseSpd_solve(const SparseMatrix &A, const VectorXd &b, VectorXd &x) {
+  const Eigen::ConjugateGradient<SparseMatrix> solver(A);
   x = solver.solve(b);
 }
+
+
+} //namespace sparseSolve

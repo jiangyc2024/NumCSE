@@ -5,24 +5,34 @@
 /// Repository: https://gitlab.math.ethz.ch/NumCSE/NumCSE/
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
-#include <iostream>
 #include <Eigen/Dense>
+#include <iostream>
 
 #include "./minconst.hpp"
 
-using namespace Eigen;
-using namespace std;
+using Eigen::MatrixXd;
+using Eigen::VectorXd;
+using std::cout;
+using std::endl;
 
-int main(void) {
+//NOLINTBEGIN (bugprone-exception-escape)
+int main() {
   // Initialize a random matrix
-  MatrixXd::Index m=9,n=4;
+  const Eigen::Index m = 9;
+  const Eigen::Index n = 4;
   MatrixXd A(m,n);
-  for(int i=0;i<m;i++) for(int j=0;j<n;j++) A(i,j) = ((double)i-j)/(i+j+1);
+  for(int i=0;i<m;i++) {
+    for(int j=0;j<n;j++) {
+      A(i,j) = static_cast<double>(i-j)/(i+j+1);
+    }
+  }
 
   cout << "rank(A) = " << A.jacobiSvd().rank() << endl;
   cout << "Minimizer of x -> |Ax| on unit sphere:" << endl;
-  VectorXd x(n); double smin = minconst(x,A);
+  VectorXd x(n); 
+  const double smin = minconst::minconst(x,A);
   cout << "x = " << x.transpose() << ", minimum = " << smin << endl;
   return 0;
 }
+//NOLINTEND
   
