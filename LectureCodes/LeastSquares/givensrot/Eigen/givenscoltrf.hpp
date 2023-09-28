@@ -13,31 +13,41 @@
 
 #include "planerot.hpp"
 
-using namespace std;
-using namespace Eigen;
+namespace givenscoltrf {
 
+
+using Eigen::VectorXd;
+using Eigen::MatrixXd;
+using Eigen::Matrix2d;
+using Eigen::Map;
+using Eigen::InnerStride;
+using Eigen::OuterStride;
+
+inline
 /* SAM_LISTING_BEGIN_0 */
 // Orthogonal transformation of a (column) vector into a multiple of
 // the first unit vector by successive Givens transformations
 // Note that the output vector could be computed much more efficiently!
 void givenscoltrf(const VectorXd &aIn, MatrixXd &Q, VectorXd &aOut) {
-  const int n = aIn.size();
+  const Eigen::Index n = aIn.size();
   // Assemble rotations in a dense matrix $\cob{\VQ}$
   // For (more efficient) alternatives see \cref{rem:storeQ}
   Q.setIdentity(); // Start from $\cob{\VQ=\VI}$
   Matrix2d G;
   aOut = aIn;
-  for (int j = 1; j < n; ++j) {
-    double a0 = aOut[0], a1 = aOut[j];
+  for (Eigen::Index j = 1; j < n; ++j) {
+    const double a0 = aOut[0];
+    const double a1 = aOut[j];
     // Determine entries of 2D rotation matrix, see Code~\ref{cpp:planerot}
-    double s, c; // s $\leftrightarrow$ $\cob{\sigma}$, c $\leftrightarrow$ $\cob{\gamma}$
+    double s = NAN; // s $\leftrightarrow$ $\cob{\sigma}$
+    double c = NAN; // c $\leftrightarrow$ $\cob{\gamma}$
     if (a1 != 0.0) {
       if (std::abs(a1) > std::abs(a0)) { // Avoid overflow
-        double t = -a0 / a1;
+        const double t = -a0 / a1;
         s = 1.0 / std::sqrt(1.0 + t * t);
         c = s * t;
       } else {
-        double t = -a1 / a0;
+        const double t = -a1 / a0;
         c = 1.0 / std::sqrt(1.0 + t * t);
         s = c * t;
       }
@@ -57,3 +67,6 @@ void givenscoltrf(const VectorXd &aIn, MatrixXd &Q, VectorXd &aOut) {
   }
 }
 /* SAM_LISTING_END_0 */
+
+
+} //namespace givenscoltrf

@@ -15,6 +15,9 @@
 #include "planerot.hpp"
 #include "qrgivens.hpp"
 
+using Eigen::VectorXd;
+using Eigen::MatrixXd;
+
 int main() {
   std::cout << "#####################################" << std::endl;
   std::cout << "New test of planerot" << std::endl;
@@ -23,7 +26,7 @@ int main() {
   a << 2, 1;
   Eigen::Matrix2d G;
   Eigen::Vector2d x;
-  planerot(a, G, x);
+  planerot::planerot(a, G, x);
   std::cout << "a=\n"
             << a << std::endl
             << "G=\n"
@@ -38,12 +41,12 @@ int main() {
   std::cout << "#####################################" << std::endl;
   std::cout << "Test of givenscoltrf" << std::endl;
   std::cout << "#####################################" << std::endl;
-  int n = 4;
+  const int n = 4;
   VectorXd r1(n);
   Eigen::VectorXd aIn(n);
   aIn << 1, 3, 4, 8; //, 9, 42, 2401, 343;
   MatrixXd Q1(n, n);
-  givenscoltrf(aIn, Q1, r1);
+  givenscoltrf::givenscoltrf(aIn, Q1, r1);
   std::cout << "aIn=\n"
             << aIn << std::endl
             << "Q=\n"
@@ -63,7 +66,7 @@ int main() {
   AIn << 1, 2, 4, 7, 9, 4, 2, 9, 7, 5, 9, 2, 3, 4, 4, 8;
   MatrixXd R2(n, n);
   MatrixXd Q2(n, n);
-  qrgivens(AIn, Q2, R2);
+  qrgivens::qrgivens(AIn, Q2, R2);
   std::cout << "AIn=\n"
             << AIn << std::endl
             << "Q=\n"
