@@ -6,12 +6,16 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 
-#include "gn.hpp"
-#include <iostream>
 #include <Eigen/Dense>
+#include <iostream>
 
-using namespace std;
-using namespace Eigen;
+#include "gn.hpp"
+
+using std::cout;
+using std::endl;
+using std::function;
+using Eigen::VectorXd;
+using Eigen::MatrixXd;
 
 int main()
 {
@@ -32,12 +36,12 @@ int main()
     x0 << 1, 1, 1;
 
     // argmin ||F(x)|| = argmin ||Ax-b||
-    function<VectorXd(const VectorXd &)> F1 =
-        [&A, &b](VectorXd x)
+    const function<VectorXd(const VectorXd &)> F1 =
+        [&A, &b](const VectorXd & x)
         { return A * x - b; };
     // the Jacobian matrix of F at x is A
-    function<MatrixXd(const VectorXd &)> J1 =
-        [&A](VectorXd x)
+    const function<MatrixXd(const VectorXd &)> J1 =
+        [&A](const VectorXd & /*x*/)
         { return A; };
 
     cout << gn(x0, F1, J1, 0.001) << endl;
@@ -48,15 +52,16 @@ int main()
     //////////////////////////////////////////
     cout << "solving nonlinear least square" << endl;
 
-    VectorXd X(7), Y(7);
+    VectorXd X(7);
+    VectorXd Y(7);
     X << 0.038, 0.194, 0.425, 0.626, 1.253, 2.500, 3.740;
     Y << 0.050, 0.127, 0.094, 0.2122, 0.2729, 0.2665, 0.3317;
 
-    function<VectorXd(const VectorXd &)> F2 =
+    const function<VectorXd(const VectorXd &)> F2 =
         [&X, &Y](VectorXd beta)
         { return beta(0) * X.array() / (beta(1) + X.array()) - Y.array(); };
 
-    function<MatrixXd(const VectorXd &)> J2 =
+    const function<MatrixXd(const VectorXd &)> J2 =
         [&X](VectorXd beta)
         {
             MatrixXd J(X.rows(), beta.rows());
