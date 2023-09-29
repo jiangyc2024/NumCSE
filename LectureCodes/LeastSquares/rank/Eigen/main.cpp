@@ -6,9 +6,9 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 
+#include <Eigen/Dense>
 #include <iostream>
 #include <limits>
-#include <Eigen/Dense>
 
 using Eigen::MatrixXd;
 
@@ -16,7 +16,7 @@ using Eigen::MatrixXd;
 int main() {
   MatrixXd A(3,2);
   // Inquire about machine precision $\to$ \cref{ex:IEEEeps}
-  double eps = std::numeric_limits<double>::epsilon();
+  const double eps = std::numeric_limits<double>::epsilon();
   // << initialization of matrix $\to$ \cref{par:eigeninit}
   A << 1, 1, sqrt(eps), 0, 0, sqrt(eps);
   // Output rank of \Blue{$\VA^{\top}\VA$}
