@@ -6,8 +6,9 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
 #include <iomanip>
+#include <iostream>
+
 #include <numeric>
 
 #include <Eigen/Dense>
@@ -18,7 +19,10 @@ int main () {
 	std::cout << "#####################################" << std::endl;
 	std::cout << "Test of tridiagqr" << std::endl;
 	std::cout << "#####################################" << std::endl;
-	Eigen::VectorXd c(3),d(4),e(3),b(4);
+	Eigen::VectorXd c(3);
+	Eigen::VectorXd d(4);
+	Eigen::VectorXd e(3);
+	Eigen::VectorXd b(4);
 	c << 1,2,5;
 	d << 4,6,5,9;
 	e << 5,2,4;
@@ -29,6 +33,6 @@ int main () {
 			0,	0,	4,	9]
  	 */
  	b << 1, 2, 3, 4;
-	std::cout << tridiagqr(c,d,e,b) << std::endl;
+	std::cout << tridiagqr::tridiagqr(c,d,e,b) << std::endl;
 	return 0;
 }

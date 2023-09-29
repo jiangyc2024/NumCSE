@@ -8,13 +8,20 @@
 
 #pragma once
 
-#include <cmath>
 #include <Eigen/Dense>
+#include <cmath>
 
 #include "planerot.hpp"
 
-using namespace Eigen;
+namespace tridiagqr {
 
+
+using Eigen::VectorXd;
+using Eigen::Matrix2d;
+using Eigen::Vector2d;
+using planerot::planerot;
+
+inline
 /* SAM_LISTING_BEGIN_0 */
 //! @brief Solves the tridiagonal system \Blue{$\VA\Vx=\Vb$} with QR-decomposition
 //! @param[in] \Blue{$\Vd$} Vector of dim $n$; the diagonal elements
@@ -23,18 +30,21 @@ using namespace Eigen;
 //! @param[in] \Blue{$\Vb$} Vector of dim $n$; the rhs.
 //! @param[out] \Blue{$\Vx$} Vector of dim $n$
 VectorXd tridiagqr(VectorXd c, VectorXd d, VectorXd e, VectorXd& b){
-  int n = d.size();
+  const Eigen::Index n = d.size();
   // resize the vectors c and d to correct length if needed
   c.conservativeResize(n); e.conservativeResize(n);
-  double t = d.norm() + e.norm() + c.norm();
-  Matrix2d R;	Vector2d z, tmp;
-  for(int k = 0; k < n-1; ++k){
+  const double t = d.norm() + e.norm() + c.norm();
+  Matrix2d R;	
+  Vector2d z;
+  Vector2d tmp;
+  for(Eigen::Index k = 0; k < n-1; ++k){
     tmp(0) = d(k); tmp(1) = e(k);
     // Use givensrotation to set the entries below the diagonal
     // to zero
     planerot(tmp, R, z); // see Code~\ref{cpp:planerot}
-    if( std::abs(z(0))/t < std::numeric_limits<double>::epsilon() )
+    if( std::abs(z(0))/t < std::numeric_limits<double>::epsilon() ) {
       throw std::runtime_error("A nearly singular");
+    }
     // Update all other entries of the matrix and rhs. which 
     // were affected by the givensrotation
     d(k) = z(0);
@@ -56,9 +66,13 @@ VectorXd tridiagqr(VectorXd c, VectorXd d, VectorXd e, VectorXd& b){
     // 2nd last row
     x(n-2) = (b(n-2)-c(n-2)*x(n-1))/d(n-2);
     // remaining rows
-    for(int i = n-3; i >= 0; --i)
+    for(Eigen::Index i = n-3; i >= 0; --i) {
       x(i) = ( b(i) - c(i) * x(i+1) - e(i)*x(i+2) ) / d(i);
+    }
   }
   return x;
 }
 /* SAM_LISTING_END_0 */
+
+
+} // namespace tridiagqr
