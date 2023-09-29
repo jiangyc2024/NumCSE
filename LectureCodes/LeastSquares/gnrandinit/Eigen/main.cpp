@@ -7,17 +7,17 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "gnrandinit.hpp"
-#include <iostream>
 #include <Eigen/Dense>
+#include <iostream>
 
-using namespace std;
-using namespace Eigen;
+using std::cout;
+using std::endl;
 
 int main()
 {
-    Eigen::Vector3d x(1., 2., 1.);
+    const Eigen::Vector3d x(1., 2., 1.);
 
-    cout << gnrandinit(x) << endl;
+    cout << gnrandinit::gnrandinit(x) << endl;
 
     return 0;
 }

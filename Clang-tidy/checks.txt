@@ -69,3 +69,8 @@ misc-no-recursion
 =================
 
 In mathematical codes, some algorithms are most easily formulated using recursion and in this form should provide more didactic value than their iterative counterpart.
+
+cert-msc32-c, cert-msc51-cpp
+============================
+
+This check flags initializations of pseudorandom number generators with constants or user-controlled sources for security reasons. We do not require cryptographically secure pseudorandom numbers.
