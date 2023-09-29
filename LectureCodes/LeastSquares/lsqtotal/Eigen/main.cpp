@@ -7,11 +7,12 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "lsqtotal.hpp"
-#include <iostream>
 #include <Eigen/Dense>
+#include <iostream>
 
-using namespace std;
-using namespace Eigen;
+
+using std::cout;
+using std::endl;
 
 int main()
 {
@@ -24,7 +25,7 @@ int main()
     Eigen::VectorXd b(4);
     b << 3, 3, 4, 0;
 
-    cout << lsqtotal(A, b) << endl;
+    cout << lsqtotal::lsqtotal(A, b) << endl;
 
     return 0;
 }
