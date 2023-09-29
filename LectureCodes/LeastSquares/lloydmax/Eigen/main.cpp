@@ -12,7 +12,7 @@
 
 #include "lloydmax.hpp"
 
-
+//NOLINTBEGIN(bugprone-exception-escape)
 int main () {
 	Eigen::MatrixXd X(2,5);
 	X 	<<	10,	2,	3,	4,	5,
@@ -20,10 +20,11 @@ int main () {
 	Eigen::MatrixXd C(2,3);
 	Eigen::VectorXi idx;
 	Eigen::VectorXd cds;
-	double tol = 1e-5;
+	const double tol = 1e-5;
 	
-	lloydmax(X, C, idx, cds, tol);
+	lloydmax::lloydmax(X, C, idx, cds, tol);
 	std::cout << C << std::endl << idx << std::endl;
 	
 	return 0;
 }
+//NOLINTEND(bugprone-exception-escape)
