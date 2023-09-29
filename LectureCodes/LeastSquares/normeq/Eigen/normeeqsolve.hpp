@@ -7,19 +7,30 @@
 
 #pragma once
 
-#include <stdexcept>
 #include <Eigen/Dense>
+#include <stdexcept>
 
-using namespace Eigen;
+namespace normeqsolve {
 
+
+using Eigen::MatrixXd;
+using Eigen::VectorXd;
+using std::runtime_error;
+
+inline
 /* SAM_LISTING_BEGIN_0 */
 //! Solving the overdetermined linear system of equations
 //! \Blue{$\VA\Vx=\Vb$} by solving \cor{normal equations} \eqref{lsq:normeq}
 //! The least squares solution is returned by value
 VectorXd normeqsolve(const MatrixXd &A,const VectorXd &b) {
-  if (b.size() != A.rows()) throw runtime_error("Dimension mismatch");
+  if (b.size() != A.rows()) {
+    throw runtime_error("Dimension mismatch");
+  }
   // Use Cholesky factorization for s.p.d. system matrix, \cref{par:chol} 
   VectorXd x = (A.transpose()*A).llt().solve(A.transpose()*b);
   return x;
 }
 /* SAM_LISTING_END_0 */
+
+
+} // namespace normeqsolve
