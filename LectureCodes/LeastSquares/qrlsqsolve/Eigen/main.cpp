@@ -7,11 +7,14 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "qrlsqsolve.hpp"
-#include <iostream>
 #include <Eigen/Dense>
+#include <iostream>
 
-using namespace std;
-using namespace Eigen;
+
+using std::cout;
+using std::endl;
+using Eigen::Matrix;
+using Eigen::VectorXd;
 
 int main()
 {
@@ -25,13 +28,13 @@ int main()
     VectorXd b(4);
     b << 3, 3, 4, 0;
 
-    VectorXd x,x1;
-    double res,res1;
-    res = qrlsqsolve(A, b, x);
-    res1 = lsqsolve_eigen(A,b,x1);
+    VectorXd x;
+    VectorXd x1;
+    const double res = qrlsqsolve::qrlsqsolve(A, b, x);
+    const double res1 = qrlsqsolve::lsqsolve_eigen(A,b,x1);
     
     cout << "x = " << endl << x << ", res = " << res << endl;
-    cout << "x1 = " << endl << x1 << ", res1 = " << res << endl;
+    cout << "x1 = " << endl << x1 << ", res1 = " << res1 << endl;
 
     return 0;
 }
