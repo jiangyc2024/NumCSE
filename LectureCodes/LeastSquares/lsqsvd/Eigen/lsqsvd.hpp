@@ -8,17 +8,22 @@
 #include <Eigen/Dense>
 #include <Eigen/SVD>
 
+namespace lsqsvd {
+
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 
+inline
 /* SAM_LISTING_BEGIN_0 */
 Eigen::VectorXd lsqsvd(const Eigen::MatrixXd &A, const Eigen::VectorXd &b) {
   // Compute economical SVD, compare \cref{cpp:decompositions}
-  Eigen::JacobiSVD<MatrixXd> svd(A, Eigen::ComputeThinU | Eigen::ComputeThinV);
-  Eigen::VectorXd sv = svd.singularValues();
-  unsigned int r = svd.rank();  // Numerical rank, default tolerance
-  Eigen::MatrixXd U = svd.matrixU(), V = svd.matrixV();
+  const Eigen::JacobiSVD<MatrixXd> svd(A, Eigen::ComputeThinU | Eigen::ComputeThinV);
+  const Eigen::VectorXd & sv = svd.singularValues();
+  const unsigned int r = svd.rank();  // Numerical rank, default tolerance
   // $\cob{\Vx^{\dagger} = \VV_{1}\Sigmabf_{r}^{-1}\VU_{1}^{\herm}\Vb}$, see \eqref{lsq:svdsol}
+  const MatrixXd & U = svd.matrixU();
+  const MatrixXd & V = svd.matrixV();
+  
   return V.leftCols(r) * (sv.head(r).cwiseInverse().asDiagonal() *
                           (U.leftCols(r).adjoint() * b));
 }
@@ -27,13 +32,15 @@ Eigen::VectorXd lsqsvd(const Eigen::MatrixXd &A, const Eigen::VectorXd &b) {
 // Conversion into diagonal matrix could be replaced with componentwise scaling.
 // However, the expression template mechanism of Eigen should do this automatically.
 
+inline
 /* SAM_LISTING_BEGIN_1 */
 Eigen::VectorXd lsqsvd_eigen(const Eigen::MatrixXd &A, const Eigen::VectorXd &b) {
-  Eigen::JacobiSVD<MatrixXd> svd(A, Eigen::ComputeThinU | Eigen::ComputeThinV);
+  const Eigen::JacobiSVD<MatrixXd> svd(A, Eigen::ComputeThinU | Eigen::ComputeThinV);
   return svd.solve(b);
 }
 /* SAM_LISTING_END_1 */
 
+inline
 /**
  * @brief low-rank compression of a dense matrix via SVD
  * @param A real matrix of arbitrary size
@@ -55,3 +62,6 @@ Eigen::MatrixXd lowrankbestapprox(const Eigen::MatrixXd &A, unsigned int k) {
          (svd.matrixV().leftCols(k).transpose());
 }
 /* SAM_LISTING_END_3 */
+
+
+} // namespace lsqsvd

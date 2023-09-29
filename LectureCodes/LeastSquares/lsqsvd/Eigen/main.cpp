@@ -7,11 +7,12 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "lsqsvd.hpp"
-#include <iostream>
 #include <Eigen/Dense>
+#include <iostream>
 
-using namespace std;
-using namespace Eigen;
+
+using std::cout;
+using std::endl;
 
 int main()
 {
@@ -25,7 +26,7 @@ int main()
     Eigen::VectorXd b(4);
     b << 3, 3, 4, 0;
 
-    cout << lsqsvd(A, b) << endl;
+    cout << lsqsvd::lsqsvd(A, b) << endl;
 
     return 0;
 }
