@@ -37,7 +37,7 @@ void rowcolaccesstiming()
         A.row(j+1) -= A.row(j); // row access
       }
       auto toc = high_resolution_clock::now();
-      value_t t = static_cast<value_t>(duration_cast<microseconds>(toc-tic).count())/1E6;
+      const value_t t = static_cast<value_t>(duration_cast<microseconds>(toc-tic).count())/1E6;
       t1 = std::min(t1,t);
     }
     value_t t2 = 1000.0;
@@ -47,7 +47,7 @@ void rowcolaccesstiming()
         A.col(j+1) -= A.col(j); //column access
       }
       auto toc = high_resolution_clock::now();
-      value_t t = static_cast<value_t>(duration_cast<microseconds>(toc-tic).count())/1E6;
+      const value_t t = static_cast<value_t>(duration_cast<microseconds>(toc-tic).count())/1E6;
       t2 = std::min(t2,t);
     }
     times(l-N_min,0) = static_cast<value_t>(n);
@@ -91,7 +91,7 @@ void retmattiming()
       auto tic =  high_resolution_clock::now();
       retMatRef(v,M); M(n-1,n-1) += static_cast<value_t>(k);
       auto toc = high_resolution_clock::now();
-      value_t t = static_cast<value_t>(duration_cast<microseconds>(toc-tic).count())/1E6;
+      const value_t t = static_cast<value_t>(duration_cast<microseconds>(toc-tic).count())/1E6;
       t1 = std::min(t1,t);
       v *= 1.5;
     }
@@ -100,7 +100,7 @@ void retmattiming()
       auto tic =  high_resolution_clock::now();
       M = retMatVal(v);  M(n-1,n-1) += static_cast<value_t>(k); //NOLINT(clang-analyzer-core.uninitialized.Assign) //bug in NDEBUG version of Eigen
       auto toc = high_resolution_clock::now();
-      value_t t = static_cast<value_t>(duration_cast<microseconds>(toc-tic).count())/1E6;
+      const value_t t = static_cast<value_t>(duration_cast<microseconds>(toc-tic).count())/1E6;
       t2 = std::min(t2,t);
       v *= 1.5;
     }
