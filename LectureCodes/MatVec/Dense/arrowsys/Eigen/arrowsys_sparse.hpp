@@ -11,17 +11,26 @@
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 
-using namespace Eigen;
+namespace arrowsys {
 
+
+using Eigen::VectorXd;
+using Eigen::SparseMatrix;
+using Eigen::VectorXi;
+
+//NOLINTBEGIN(bugprone-easily-swappable-parameters)
 /* SAM_LISTING_BEGIN_0 */
 template <class solver_t>
-VectorXd arrowsys_sparse(const VectorXd &d, const VectorXd &c, const VectorXd &b, const double alpha, const VectorXd &y){
-	int n = d.size();
+VectorXd arrowsys_sparse(const VectorXd &d, 
+                         const VectorXd &c,
+                         const VectorXd &b, double alpha,
+                         const VectorXd &y) {
+	const Eigen::Index n = d.size();
 	SparseMatrix<double> A(n+1, n+1); // default: column-major
 	VectorXi reserveVec = VectorXi::Constant(n+1, 2); // nnz per col
-	reserveVec(n) = n+1;		// last full col
+	reserveVec(n) = static_cast<int>(n+1); // last full col
 	A.reserve(reserveVec);
-	for(int j = 0; j < n; ++j){	// initalize along cols for efficency
+	for(int j = 0; j < n; ++j){	// initalize along cols for efficiency
 		A.insert(j,j) = d(j);	// diagonal entries
 		A.insert(n,j) = b(j);	// bottom row entries
 	}
@@ -33,3 +42,6 @@ VectorXd arrowsys_sparse(const VectorXd &d, const VectorXd &c, const VectorXd &b
 	return solver_t(A).solve(y);
 }
 /* SAM_LISTING_END_0 */
+//NOLINTEND(bugprone-easily-swappable-parameters)
+
+} // namespace arrowsys

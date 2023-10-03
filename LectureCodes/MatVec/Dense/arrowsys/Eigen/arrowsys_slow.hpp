@@ -10,18 +10,30 @@
 
 #include <Eigen/Dense>
 
-using namespace Eigen;
+namespace arrowsys {
 
+
+using Eigen::VectorXd;
+using Eigen::MatrixXd;
+
+//NOLINTBEGIN(bugprone-easily-swappable-parameters)
+inline
 /* SAM_LISTING_BEGIN_0 */
-VectorXd arrowsys_slow(const VectorXd &d, const VectorXd &c, const VectorXd &b,
-                       const double alpha, const VectorXd &y) {
-  int n = d.size();
+VectorXd arrowsys_slow(const VectorXd &d, 
+                       const VectorXd &c,
+                       const VectorXd &b, double alpha,
+                       const VectorXd &y) {
+  const Eigen::Index n = d.size();
   MatrixXd A(n + 1, n + 1); // Empty dense matrix
   A.setZero();              // Initialize with all zeros.
-  A.diagonal().head(n) = d; // Initializee matrix diagonal from a vector.
+  A.diagonal().head(n) = d; // Initialize matrix diagonal from a vector.
   A.col(n).head(n) = c;     // Set rightmost column $\cob{\Vc}$.
   A.row(n).head(n) = b;     // Set bottom row $\cob{\Vb^{\top}}$.
   A(n, n) = alpha;          // Set bottom-right entry $\cob{\alpha}$.
   return A.lu().solve(y);   // Gaussian elimination
 }
 /* SAM_LISTING_END_0 */
+//NOLINTEND(bugprone-easily-swappable-parameters)
+
+
+} // namespace arrowsys

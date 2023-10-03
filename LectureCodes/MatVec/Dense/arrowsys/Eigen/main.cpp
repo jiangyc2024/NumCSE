@@ -6,11 +6,12 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 
 #include "arrowsystiming.hpp"
+
 int main () {
-	std::cout << std::scientific << std::setprecision(3) << arrowsystiming() << std::endl;
+	std::cout << std::scientific << std::setprecision(3) << arrowsys::arrowsystiming() << std::endl;
 	return 0;
 }

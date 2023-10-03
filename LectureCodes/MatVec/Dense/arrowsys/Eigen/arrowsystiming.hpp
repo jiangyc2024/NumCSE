@@ -14,29 +14,44 @@
 #include <Eigen/IterativeLinearSolvers>
 #include <Eigen/Sparse>
 
-using namespace Eigen;
-
 #include "arrowsys_fast.hpp"
 #include "arrowsys_slow.hpp"
 #include "arrowsys_sparse.hpp"
 #include "timer.h"
 
+namespace arrowsys {
+
+
+using Eigen::MatrixXd;
+using Eigen::VectorXd;
+using Eigen::SparseLU;
+using Eigen::SparseMatrix;
+using Eigen::BiCGSTAB;
+
+inline
 /* SAM_LISTING_BEGIN_0 */
 MatrixXd arrowsystiming() {
   std::vector<int> n = {8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096};
-  int nruns = 3;
+  const int nruns = 3;
   MatrixXd times(n.size(), 6);
-  for (std::size_t i = 0; i < n.size(); ++i) {
-    Timer t1, t2, t3, t4; // timer class
-    double alpha = 2;
-    VectorXd b = VectorXd::Ones(n[i], 1);
-    VectorXd c = VectorXd::LinSpaced(n[i], 1, n[i]);
-    VectorXd d = -b;
-    VectorXd y = VectorXd::Constant(n[i] + 1, -1)
+  for (Eigen::Index i = 0; i < static_cast<Eigen::Index>(n.size()); ++i) {
+    // timer class
+    Timer t1;
+    Timer t2;
+    Timer t3;
+    Timer t4; 
+    const double alpha = 2;
+    const VectorXd b = VectorXd::Ones(n[i], 1);
+    const VectorXd c = VectorXd::LinSpaced(n[i], 1, n[i]);
+    const VectorXd d = -b;
+    const VectorXd y = VectorXd::Constant(n[i] + 1, -1)
                      .binaryExpr(VectorXd::LinSpaced(n[i] + 1, 1, n[i] + 1),
                                  [](double x, double y) { return pow(x, y); })
                      .array();
-    VectorXd x1(n[i] + 1), x2(n[i] + 1), x3(n[i] + 1), x4(n[i] + 1);
+    VectorXd x1(n[i] + 1);
+    VectorXd x2(n[i] + 1);
+    VectorXd x3(n[i] + 1);
+    VectorXd x4(n[i] + 1);
     for (int j = 0; j < nruns; ++j) {
       t1.start();
       x1 = arrowsys_slow(d, c, b, alpha, y);
@@ -61,3 +76,6 @@ MatrixXd arrowsystiming() {
   return times;
 }
 /* SAM_LISTING_END_0 */
+
+
+} // namespace arrowsys

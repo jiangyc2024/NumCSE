@@ -1,8 +1,8 @@
 # ifndef TIMER_HPP
 # define TIMER_HPP
 
-# include <iostream>
 # include <chrono>
+# include <iostream>
 # include <vector>
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -23,51 +23,53 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 class Timer {
-  typedef std::chrono::nanoseconds prec;
-  typedef std::chrono::high_resolution_clock clock;
-  typedef std::chrono::duration<double> duration_t;
+  
+  using prec = std::chrono::nanoseconds;
+  using clock = std::chrono::high_resolution_clock;
+  using duration_t = std::chrono::duration<double>;
+  
   private:
+
     static const unsigned divisor = 1e9;
     clock::time_point t_start, t_end;
-    duration_t t_min;
+    duration_t t_min = {};
     std::vector<duration_t> t_laps;
 
   public:
 
-   Timer();
-   void start();
-   void stop();
-   void lap();
-   void reset();
+    Timer();
+    void start();
+    void stop();
+    void lap();
+    void reset();
 
-   double duration() const;
-   double mean() const;
-   double min() const;
-
+    [[nodiscard]] double duration() const;
+    [[nodiscard]] double mean() const;
+    [[nodiscard]] double min() const;
 };
 
 // start the timer
-void Timer::start(){
+inline void Timer::start(){
   t_start = clock::now();
   t_end = t_start;
 }
 
 // stop the timer (equivalent to lap)
-void Timer::stop(){
+inline void Timer::stop(){
   // stop is just another lap
   lap();
 }
 
 // new lap
-void Timer::lap(){
-  clock::time_point tmp = clock::now();
+inline void Timer::lap(){
+  const clock::time_point tmp = clock::now();
 
   // get laptime
   duration_t laptime;
   laptime = tmp - t_end;
 
   // check if this lap was faster
-  if (t_min > laptime || t_laps.size() == 0) {
+  if (t_min > laptime || t_laps.empty()) {
     t_min = laptime;
   }
 
@@ -79,7 +81,7 @@ void Timer::lap(){
 }
 
 // idle constructor
-Timer::Timer() {
+inline Timer::Timer() {
   #ifndef NDEBUG
   static bool runonce = true;
   if (runonce) {
@@ -90,27 +92,29 @@ Timer::Timer() {
 }
 
 // resets all values
-void Timer::reset(){
+inline void Timer::reset(){
   t_laps = std::vector<duration_t>();
   start();
 }
 
 // returns total duration timer has been running
-double Timer::duration() const {
-  if (t_laps.size() > 0){
+inline double Timer::duration() const {
+  double result = 0.;
+  if (!t_laps.empty()){
     // returning time in seconds! thats what the divisor is for
     auto dur = std::chrono::duration_cast<prec>(t_end - t_start);
-    return double(dur.count())/divisor;
+    result = static_cast<double>(dur.count())/divisor;
   }
   else {
     std::cerr << "Before calling Timer::duration() you need to call Timer::lap() or Timer::stop()!\n";
-    return 0.;
   }
+  return result;
 }
 
 // returns mean of all laps
-double Timer::mean() const {
-  if (t_laps.size() > 0){
+inline double Timer::mean() const {
+  double result = 0.;
+  if (!t_laps.empty()){
     // save total time in std::chrono units
     auto total_time = t_laps[0];
     for (unsigned int i = 1; i < t_laps.size(); ++i) {
@@ -118,19 +122,18 @@ double Timer::mean() const {
     }
     // convert time to double
     auto total_dur = std::chrono::duration_cast<prec>(total_time);
-    double avg = double(total_dur.count())/divisor;
-    return avg;
+    result = static_cast<double>(total_dur.count())/divisor/static_cast<double>(t_laps.size());
   }
   else {
     std::cerr << "Before calling Timer::mean() you need to call Timer::lap() or Timer::stop()!\n";
-    return 0.;
   }
+  return result;
 }
 
 // returns minimum of all laps
-double Timer::min() const {
+inline double Timer::min() const {
   auto min = std::chrono::duration_cast<prec>(t_min);
-  return double(min.count())/divisor;
+  return static_cast<double>(min.count())/divisor;
 }
 
 # endif
