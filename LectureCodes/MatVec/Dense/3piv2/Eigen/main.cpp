@@ -8,8 +8,10 @@
 
 #include <Eigen/Dense>
 #include <iostream>
-using namespace std;
-using namespace Eigen;
+
+using Eigen::MatrixXd;
+using Eigen::StrictlyLower;
+using Eigen::Upper;
 
 int main() {
   MatrixXd A(3, 3);
@@ -17,14 +19,14 @@ int main() {
   /* SAM_LISTING_BEGIN_0 */
   const Eigen::MatrixXd::Index n = A.cols();
   assert(n == A.rows()); // ensure square matrix
-  Eigen::PartialPivLU<MatrixXd> lu(A);
+  const Eigen::PartialPivLU<MatrixXd> lu(A);
   // Normalized lower-triangule factor
   MatrixXd L = MatrixXd::Identity(n, n);
   L.triangularView<StrictlyLower>() += lu.matrixLU();
   // Upper triangular factor
-  MatrixXd U = lu.matrixLU().triangularView<Upper>();
+  const MatrixXd U = lu.matrixLU().triangularView<Upper>();
   // Permutation matrix, see \cref{def:permmat}
-  MatrixXd P = lu.permutationP();
+  const MatrixXd P = lu.permutationP();
   /* SAM_LISTING_END_0 */
   std::cout << "A = " << A << std::endl;
   std::cout << "L = " << L << std::endl;
