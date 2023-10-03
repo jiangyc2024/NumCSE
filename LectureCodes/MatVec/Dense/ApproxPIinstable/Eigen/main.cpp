@@ -16,7 +16,7 @@
 
 int main () {
 	std::cout << std::setprecision(15) << std::fixed;
-	Eigen::MatrixXd res = ApproxPIinstable::ApproxPIinstable();
+	const Eigen::MatrixXd res = ApproxPIinstable::ApproxPIinstable();
 	std::cout << res << std::endl;
 	return 0;
 }
