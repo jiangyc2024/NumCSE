@@ -25,12 +25,18 @@ double fun(double x) {
   double num = x;
   double den = 1.0;
   for (int i = 2; true; ++i) {
-    double s = (num *= x) / (den *= i);
-    if (s == 0.0) break; // \Label[line]{ec:1}
+    const double s = (num *= x) / (den *= i);
+    if (s == 0.0) {
+      break; // \Label[line]{ec:1}
+    }
     v += s;
   }
-  while (f--) v = v * v;
-  if (neg) v = 1.0 / v;
+  while (f-- > 0) { 
+    v = v * v;
+  }
+  if (neg) {
+    v = 1.0 / v;
+  }
   return v;
 }
 /* SAM_LISTING_END_1 */
