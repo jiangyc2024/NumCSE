@@ -14,7 +14,7 @@
 
 int main () {
 	std::cout << std::setprecision(15) << std::fixed;
-	Eigen::MatrixXd res = apprpistable::apprpistable();
+	const Eigen::MatrixXd res = apprpistable::apprpistable();
 	std::cout << res << std::endl;
 	return 0;
 }
