@@ -5,7 +5,7 @@ ColumnMajorMatrix ColumnMajorMatrix::gemmMultiply(ColumnMajorMatrix &B) {
   ColumnMajorMatrix C(n, B.m);  // important: must be zero: (done in
                                 // constructor)
   double alpha(1.0), beta(1.0);
-  cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, n, m, B.m, alpha, data,
-              n, B.data, B.n, beta, C.data, C.n);
+  cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, n, m, B.m, alpha, data.data(),
+              n, B.data.data(), B.n, beta, C.data.data(), C.n);
   return C;
 }

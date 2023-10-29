@@ -5,9 +5,11 @@ ColumnMajorMatrix ColumnMajorMatrix::gemvMultiply(ColumnMajorMatrix &B) {
   assert(m == B.n);
   ColumnMajorMatrix C(n, B.m);  // important: must be zero: (done in
                                 // constructor)
-  double alpha(1.0), beta(1.0);
-  for (int j = 0; j < m; ++j)
-    cblas_dgemv(CblasColMajor, CblasNoTrans, m, n, alpha, data, n, &(B(0, j)),
+  const double alpha(1.0);
+  const double beta(1.0);
+  for (int j = 0; j < m; ++j) {
+    cblas_dgemv(CblasColMajor, CblasNoTrans, m, n, alpha, data.data(), n, &(B(0, j)),
                 1, beta, &C(0, j), 1);
+  }
   return C;
 }

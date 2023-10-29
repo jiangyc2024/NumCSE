@@ -19,22 +19,26 @@ int main() {
   const int n = 5;     // length of vector
   const int incx = 1;  // stride
   const int incy = 1;  // stride
-  double alpha = 2.5;  // scaling factor
+  const double alpha = 2.5;  // scaling factor
 
   // Allocated raw arrays of doubles
   std::vector<double> x(n);
   std::vector<double> y(n);
 
   for (size_t i = 0; i < n; i++) {
-    x[i] = 3.1415 * i;
+    x[i] = 3.1415 * static_cast<double>(i);
     y[i] = 1.0 / static_cast<double>(i + 1);
   }
 
   cout << "x=[";
-  for (size_t i = 0; i < n; i++) cout << x[i] << ' ';
+  for (size_t i = 0; i < n; i++) {
+    cout << x[i] << ' ';
+  }
   cout << "]" << endl;
   cout << "y=[";
-  for (size_t i = 0; i < n; i++) cout << y[i] << ' ';
+  for (size_t i = 0; i < n; i++) {
+    cout << y[i] << ' ';
+  }
   cout << "]" << endl;
 
   // Call the BLAS library function passing pointers to all arguments
@@ -42,7 +46,9 @@ int main() {
   daxpy_(&n, &alpha, x.data(), &incx, y.data(), &incy);
 
   cout << "y = " << alpha << " * x + y = [";
-  for (int i = 0; i < n; i++) cout << y[i] << ' ';
+  for (int i = 0; i < n; i++) {
+    cout << y[i] << ' ';
+  }
   cout << "]" << endl;
   return (0);
 }

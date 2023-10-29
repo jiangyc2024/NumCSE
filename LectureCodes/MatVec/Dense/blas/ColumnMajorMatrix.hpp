@@ -23,12 +23,12 @@ extern "C" {
 #include <mkl.h>
 #endif
 #include <cmath>
-typedef double Real;
-using namespace std;
+#include <vector>
+using Real = double;
 
 class ColumnMajorMatrix {
  private:  // Data Members:
-  Real *data;
+  std::vector<Real> data;
   int n, m;
 
  public:
@@ -36,10 +36,13 @@ class ColumnMajorMatrix {
   // Constructors
   ColumnMajorMatrix(int _n, int _m);
   ColumnMajorMatrix(const ColumnMajorMatrix &B);
+  ColumnMajorMatrix(ColumnMajorMatrix &&B) noexcept;
   // Destructor
-  ~ColumnMajorMatrix();
-  // Assignment operator
+  ~ColumnMajorMatrix() = default; //data is automatically cleaned up in std::vector destructor
+  // Copy assignment operator
   ColumnMajorMatrix &operator=(const ColumnMajorMatrix &B);
+  // Move assignment operator
+  ColumnMajorMatrix &operator=(ColumnMajorMatrix &&B) noexcept;
   // Access for ColumnMajorArrangement
   inline Real &operator()(int i, int j) {
     assert(i < n && j < m);

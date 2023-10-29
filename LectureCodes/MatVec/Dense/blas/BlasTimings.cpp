@@ -2,25 +2,42 @@
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
+#include <span>
 
 #include "ColumnMajorMatrix.hpp"
 #include "simpleTimer.hpp"
+
+using std::cout;
+using std::endl;
 
 /* Main Routine for the timing of different
  * Matrix Matrix Multiplication implementations */
 int main(int argc, char* const argv[]) {
   std::cout << "NumCSE timing code for BLAS routines" << std::endl;
-  double T0(1e20), T1(1e20), T2(1e20), T3(1e20);
+  double T0(1e20);
+  double T1(1e20);
+  double T2(1e20);
+  double T3(1e20);
   simpleTimer watch;
-  int rep(5), n(500);
-  if (argc > 1) n = atoi(argv[1]);
-  if (argc > 2) rep = atoi(argv[2]);
+  int rep(5);
+  int n(500);
+  if (argc > 1) {
+    auto args = std::span(argv, argc);
+    n = static_cast<int>(strtol(args[1], nullptr, 10));
+  }
+  if (argc > 2) {
+    auto args = std::span(argv, argc);
+    rep = static_cast<int>(strtol(args[2], nullptr, 10));
+  }
   // Declare Input Data
   ColumnMajorMatrix A(n, n);
   A.initRand();  // A.initGrow();
   ColumnMajorMatrix B(A);
   // The Results:
-  ColumnMajorMatrix C(n, n), D(n, n), E(n, n), F(n, n);
+  ColumnMajorMatrix C(n, n);
+  ColumnMajorMatrix D(n, n);
+  ColumnMajorMatrix E(n, n);
+  ColumnMajorMatrix F(n, n);
   // loop for repetitions (always take timing results over several
   // measurements!)
   for (int r = 0; r < rep; ++r) {
@@ -41,9 +58,10 @@ int main(int argc, char* const argv[]) {
     T3 = std::min(T3, watch.getTime());
     watch.reset();
   }
-  printf("Timing Results: (min. of : %i Repetitions) \n", rep);
-  printf("N: %i StraightForward: %g \n", n, T0);
-  printf("N: %i dotMultiply: %g ,error: %g \n", n, T1, D.CalcErr(C));
-  printf("N: %i gemvMultiply: %g, error: %g \n", n, T2, E.CalcErr(C));
-  printf("N: %i gemmMultiply: %g, error: %g \n", n, T3, F.CalcErr(C));
+
+  cout << "Timing Results: (min. of : " << rep << " Repetitions" << endl;
+  cout << "N: " << n << " StraightForward: " << T0 << endl; 
+  cout << "N: " << n << " dotMultiply: " << T1 << ", error: " << D.CalcErr(C) << endl; 
+  cout << "N: " << n << " gemvMultiply: " << T2 << ", error: " << E.CalcErr(C) << endl; 
+  cout << "N: " << n << " gemmMultiply: " << T3 << ", error: " << F.CalcErr(C) << endl; 
 }
