@@ -31,8 +31,8 @@ void blockAccess(Eigen::MatrixBase<MatType> &M)
   
   cout << "Matrix M = " << endl << M << endl; // Print matrix
   // Block size half the size of the matrix
-  index_t p = nrows/2;
-  index_t q = ncols/2; 
+  const index_t p = nrows/2;
+  const index_t q = ncols/2; 
   // Output submatrix with left upper entry at position {\sf (i,i)}
   for(index_t i=0; i < std::min(p,q); i++) {
     cout << "Block (" << i << ',' << i << ',' << p << ',' << q 
@@ -42,7 +42,7 @@ void blockAccess(Eigen::MatrixBase<MatType> &M)
   M.block(1,1,p,q) += Eigen::MatrixBase<MatType>::Constant(p,q,1.0);
   cout << "M = " << endl << M << endl;
   // r-value access: extract sub-matrix
-  MatrixXd B = M.block(1,1,p,q);
+  const MatrixXd B = M.block(1,1,p,q);
   cout << "Isolated modified block = " << endl << B << endl;
   // Special sub-matrices
   cout << p << " top rows of m = " << M.topRows(p) << endl;
