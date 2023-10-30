@@ -26,7 +26,7 @@ double expeval(double x,
   uint64_t k = 1;
   // \textbf{Termination} criterion
   while(abs(term) > tol*y) {
-    term *= x/k;	// next summand
+    term *= x/static_cast<double>(k);	// next summand
     y += term; // Summation
     ++k;
   }

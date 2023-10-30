@@ -16,7 +16,7 @@
 #include "expeval.hpp"
 
 int main () {
-	int n = 20;
+	const int n = 20;
 	Eigen::VectorXd x = Eigen::VectorXd::LinSpaced(21,-20, n);
 	Eigen::MatrixXd res(n+1,4);
 	for(int i = 0; i <= n; ++i){
