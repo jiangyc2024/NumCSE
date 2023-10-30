@@ -12,13 +12,13 @@
 #include "gausselimsolve.hpp"
 
 int main () {
-	int n = 3;
+	const int n = 3;
 	Eigen::MatrixXd A(n,n);
 	
 	A << 	1, 0, 2,
 			-1, 4, 1,
 			-2, 1, 2;
-	Eigen::VectorXd b = Eigen::VectorXd::LinSpaced(n,0,2);
+	const Eigen::VectorXd b = Eigen::VectorXd::LinSpaced(n,0,2);
 	std::cout << "A=\n" << A << std::endl << "b=\n"<< b << std::endl;
 	Eigen::VectorXd x(n);
 	gausselimsolve::gausselimsolve(A, b, x);

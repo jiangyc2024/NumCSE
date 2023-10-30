@@ -24,14 +24,14 @@ inline
 //! The result is returned in \texttt{x}
 void gausselimsolve(const MatrixXd &A, const VectorXd& b,
 		    VectorXd& x) {
-  Index n = A.rows();
+  const Index n = A.rows();
   MatrixXd Ab(n,n+1); // Augmented matrix \Blue{$[\VA,\Vb]$}
   Ab << A, b; //\Label[line]{cppgse:1}
   // \com{Forward elimination} (\textit{cf.} step \ding{192} in Ex.~\ref{ex:GE})
   for(Index i = 0; i < n-1; ++i) {
-    double pivot = Ab(i,i);
+    const double pivot = Ab(i,i);
     for(Index k = i+1; k < n; ++k) {
-      double fac = Ab(k, i) / pivot; // the multiplier \Label[line]{cppgse:fac}
+      const double fac = Ab(k, i) / pivot; // the multiplier \Label[line]{cppgse:fac}
       Ab.block(k,i+1,1,n-i)-= fac * Ab.block(i,i+1,1,n-i); //\Label[line]{cppgse:vec}
     }
   }
