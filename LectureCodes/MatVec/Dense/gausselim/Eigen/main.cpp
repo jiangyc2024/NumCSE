@@ -13,8 +13,8 @@
 #include "gausselim.hpp"
 
 int main () {
-	int n = 3;
-	int m = 4;
+	const int n = 3;
+	const int m = 4;
 	Eigen::MatrixXd A(n,n);
 	Eigen::MatrixXd B(n,m);
 	A << 	1, 0, 2,
