@@ -6,21 +6,23 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
 #include <Eigen/Dense>
+#include <iostream>
 
 #include "gepiv.hpp"
 
+//NOLINTBEGIN(bugprone-exception-escape)
 int main () {
-	int n = 3;
+	const int n = 3;
 	Eigen::MatrixXd A(n,n);
 	A << 	1, 0, 2,
 			-1, 4, 1,
 			-2, 1, 2;
-	Eigen::VectorXd b = Eigen::VectorXd::LinSpaced(n,0,2);
+	const Eigen::VectorXd b = Eigen::VectorXd::LinSpaced(n,0,2);
 	std::cout << "A=\n" << A << std::endl << "b=\n"<< b << std::endl;
 	Eigen::VectorXd x(n);
-	gepiv(A, b, x);
+	gepiv::gepiv(A, b, x);
 	std::cout << std::endl << "x=\n" << x << std::endl;
 	return 0;
 }
+//NOLINTEND(bugprone-exception-escape)
