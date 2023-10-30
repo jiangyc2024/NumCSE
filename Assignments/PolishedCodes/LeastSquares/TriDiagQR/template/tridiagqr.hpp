@@ -53,10 +53,10 @@ int sgn(T val) {
 inline Eigen::Matrix2d Givens(double rho) {
   double gamma, sigma;
   if (std::abs(rho) < 1.0) {
-    sigma = 0.5 * std::sqrt(2.0) * rho;
+    sigma = 2.0 * rho;
     gamma = std::sqrt(1.0 - sigma * sigma);
   } else if (std::abs(rho) > 1.0) {
-    gamma = 0.5 * std::sqrt(2.0) / rho;
+    gamma = 2.0 / rho;
     sigma = std::sqrt(1 - gamma * gamma);
   } else {
     gamma = 0.0;
