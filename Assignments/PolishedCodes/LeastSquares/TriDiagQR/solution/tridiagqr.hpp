@@ -53,10 +53,10 @@ int sgn(T val) {
 inline Eigen::Matrix2d Givens(double rho) {
   double gamma, sigma;
   if (std::abs(rho) < 1.0) {
-    sigma = 0.5 * std::sqrt(2.0) * rho;
+    sigma = 2.0 * rho;
     gamma = std::sqrt(1.0 - sigma * sigma);
   } else if (std::abs(rho) > 1.0) {
-    gamma = 0.5 * std::sqrt(2.0) / rho;
+    gamma = 2.0 / rho;
     sigma = std::sqrt(1 - gamma * gamma);
   } else {
     gamma = 0.0;
@@ -104,9 +104,9 @@ std::tuple<double, double, double> compGivensRotation(Eigen::Vector2d a) {
   if (gamma == 0.0)
     rho = sign(sigma);
   else if (std::abs(gamma) > std::abs(sigma))
-    rho = std::sqrt(2.0) * sign(gamma) * sigma;
+    rho = 0.5 * sign(gamma) * sigma;
   else
-    rho = 0.5 * std::sqrt(2.0) * sign(sigma) / gamma;
+    rho = 2.0 * sign(sigma) / gamma;
   // END
   return std::make_tuple(rho, gamma, sigma);
 }
