@@ -46,7 +46,7 @@ void gsroundoff(MatrixXd& A){
   // Test orthonormality
   cout << "I1 = " << endl << Q1.transpose()*Q1 << endl;
   // Check orthonormality and span property \eqref{gsorth:span}
-  MatrixXd R1 = qr.matrixQR().triangularView<Upper>(); 
+  const MatrixXd R1 = qr.matrixQR().triangularView<Upper>(); 
   cout << scientific << "A-Q1*R1 = " << endl << A-Q1*R1 << endl; 
 }
 /* SAM_LISTING_END_0 */
