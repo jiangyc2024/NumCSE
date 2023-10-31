@@ -6,19 +6,20 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
 #include <Eigen/Dense>
-using namespace Eigen;
-using namespace std;
+#include <iostream>
+
+using Eigen::MatrixXd;
+using Eigen::VectorXd;
 #include "invpowit.hpp"
 
 int main(){	
-	int n = 10;
-	double tol = 1e-6;
+	const int n = 10;
+	const double tol = 1e-6;
 /* SAM_LISTING_BEGIN_0 */
-MatrixXd A = MatrixXd::Random(n,n);
-MatrixXd B = MatrixXd::Random(n,n);
-VectorXd ev = invpowit<VectorXd>(A+B, tol);
+const MatrixXd A = MatrixXd::Random(n,n);
+const MatrixXd B = MatrixXd::Random(n,n);
+const auto ev = invpowit<VectorXd>(A+B, tol);
 /* SAM_LISTING_END_0 */
 
 }

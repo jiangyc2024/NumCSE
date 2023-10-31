@@ -10,14 +10,11 @@
 
 #include <Eigen/Dense>
 
-using namespace Eigen;
-
 /* SAM_LISTING_BEGIN_0 */
 template<class VecType, class MatType>
 VecType invpowit(const Eigen::MatrixBase<MatType> &A,double tol)
 {
   using index_t = typename MatType::Index;
-  using scalar_t = typename VecType::Scalar;
   // Make sure that the function is called with a square matrix
   const index_t n = A.cols();
   const index_t m = A.rows();
