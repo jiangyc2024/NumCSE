@@ -6,8 +6,8 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
 #include <cmath>
+#include <iostream>
 #include <vector>
 
 #include <Eigen/Dense>
@@ -15,10 +15,10 @@
 #include "linsolvetest.hpp"
 
 int main () {
-	std::cout << timing() << std::endl;
-	int n = 10;
-	Eigen::MatrixXd A = Eigen::MatrixXd::Random(n,n);
-	Eigen::VectorXd b = Eigen::VectorXd::Random(n);
+	std::cout << timing::timing() << std::endl;
+	const int n = 10;
+	const Eigen::MatrixXd A = Eigen::MatrixXd::Random(n,n);
+	const Eigen::VectorXd b = Eigen::VectorXd::Random(n);
 	Eigen::VectorXd x(A.cols());
 /* SAM_LISTING_BEGIN_0 */
 // A is lower triangular
