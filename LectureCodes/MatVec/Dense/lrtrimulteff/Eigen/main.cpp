@@ -13,7 +13,7 @@
 #include "lrtrimulteff.hpp"
 
 int main(){
-  int n = 3;
+  const int n = 3;
   Eigen::MatrixXd A(n,n);
   A << 1,2,3,4,5,6,7,8,9;
   Eigen::MatrixXd B(n,n);
