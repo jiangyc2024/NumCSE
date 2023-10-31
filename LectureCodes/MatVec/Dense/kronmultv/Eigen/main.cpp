@@ -13,16 +13,17 @@
 #include "kronmultv.hpp"
 
 int main () {
-	unsigned int m = 3; unsigned int n = 2;
-	unsigned int l = 2; unsigned int k = 4;
+	const Eigen::Index m = 3; 
+	const Eigen::Index n = 2;
+	const Eigen::Index l = 2; 
+	const Eigen::Index k = 4;
 	Eigen::MatrixXd A(m,n);
 	A << 1, 2, 3, 4, 5, 6;
 	Eigen::MatrixXd B(l,k);
 	B << 5, 6, 7, 8, 9, 10, 11, 12;
-	Eigen::MatrixXd C;
 	Eigen::VectorXd x(n*k);
 	x << 1, 3, 8, 13, 7, 4, 42, 343;
-	Eigen::VectorXd y = kronmultv(A,B,x);
+	const Eigen::VectorXd y = kronmultv(A,B,x);
 	std::cout << "kron(A,B)*x = " << std::endl << y << std::endl;
 	Eigen::VectorXd y_matlab(m*l);
 	y_matlab << 6377,9645,12937,19573,19497,29501;

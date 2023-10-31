@@ -17,8 +17,10 @@
 /* SAM_LISTING_BEGIN_0 */
 template <class Matrix, class Vector>
 Vector kronmultv(const Matrix &A, const Matrix &B, const Vector &x){
-    unsigned int m = A.rows(); unsigned int n = A.cols();
-    unsigned int l = B.rows(); unsigned int k = B.cols();
+    const size_t m = A.rows(); 
+    const size_t n = A.cols();
+    const size_t l = B.rows(); 
+    const size_t k = B.cols();
     // 1st matrix mult. computes the products \Blue{$\VB\Vx^{j}$}
     // 2nd matrix mult. combines them linearly with the coefficients of \Blue{$\VA$}
     Matrix t = B * Matrix::Map(x.data(),k,n) * A.transpose(); // \Label[line]{kvcpp:1}
