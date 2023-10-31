@@ -16,8 +16,8 @@ using Eigen::MatrixXd;
 /* SAM_LISTING_BEGIN_1 */
 int main () { /* SAM_SOLUTION_BEGIN */
     // Ortho test
-    unsigned int n = 9;
-    MatrixXd A = MatrixXd::Random(n,n);
+    const unsigned int n = 9;
+    const MatrixXd A = MatrixXd::Random(n,n);
     MatrixXd Q = gramschmidt( A );
 
     // Output should be idenity matrix
