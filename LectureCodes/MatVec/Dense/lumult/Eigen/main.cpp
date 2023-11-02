@@ -13,12 +13,12 @@
 #include "lumult.hpp"
 
 int main() {
-  int n = 3;
+  const int n = 3;
   Eigen::MatrixXd L(n, n);
   Eigen::MatrixXd U(n, n);
   L << 1, 0, 0, -1, 1, 0, -2, 0.25, 1;
   U << 1, 0, 2, 0, 4, 3, 0, 0, 5.25;
-  Eigen::MatrixXd A = lumult(L, U);
+  const Eigen::MatrixXd A = lumult::lumult(L, U);
 
   std::cout << "L=\n" << L << std::endl << "U=\n" << U << std::endl;
   std::cout << "A=\n" << A << std::endl;
