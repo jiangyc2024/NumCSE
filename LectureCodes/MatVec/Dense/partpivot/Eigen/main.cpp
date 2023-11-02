@@ -13,25 +13,27 @@
 #include "gausselimsolve.hpp"
 #include "lufak.hpp"
 
-using namespace std;
-using namespace Eigen;
+using Eigen::MatrixXd;
+using Eigen::VectorXd;
 
 int main() {
   /* SAM_LISTING_BEGIN_0 */
-  double epsilon = 5.0e-17;
-  MatrixXd A(2, 2), D(2, 2);
+  const double epsilon = 5.0e-17;
+  MatrixXd A(2, 2);
+  MatrixXd D(2, 2);
   A << epsilon, 1.0, 1.0, 1.0;
   D << 1. / epsilon, 0.0, 0.0, 1.0;
-  VectorXd b(2), x2(2);
+  VectorXd b(2);
+  VectorXd x2(2);
   b << 1.0, 2.0;
   A = D * A;
   b = D * b;
-  VectorXd x1 = A.fullPivLu().solve(b);
+  const VectorXd x1 = A.fullPivLu().solve(b);
   gausselimsolve::gausselimsolve(A, b, x2); // see Code~\ref{cpp:gausselim}
-  auto [L, U] = lufak::lufak(A); // see Code~\ref{cpp:lufak}
-  VectorXd z = L.lu().solve(b);
-  VectorXd x3 = U.lu().solve(z);
-  cout << "x1 = \n"
+  const auto [L, U] = lufak::lufak(A); // see Code~\ref{cpp:lufak}
+  const VectorXd z = L.lu().solve(b);
+  const VectorXd x3 = U.lu().solve(z);
+  std::cout << "x1 = \n"
        << x1 << "\nx2 = \n"
        << x2 << "\nx3 = \n"
        << x3 << std::endl;
