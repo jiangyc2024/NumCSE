@@ -10,8 +10,14 @@
 
 #include <Eigen/Dense>
 
-using namespace Eigen;
+namespace lupiv {
 
+
+using Eigen::MatrixXd;
+using Eigen::Upper;
+using Eigen::StrictlyLower;
+
+inline
 /* SAM_LISTING_BEGIN_0 */
 void lupivdriver(const MatrixXd &A, MatrixXd &L, MatrixXd &U){
 	MatrixXd Adec = A;
@@ -21,3 +27,6 @@ void lupivdriver(const MatrixXd &A, MatrixXd &L, MatrixXd &U){
 	L += Adec.triangularView<StrictlyLower>();
 }
 /* SAM_LISTING_END_0 */
+
+
+} //namespace lupiv
