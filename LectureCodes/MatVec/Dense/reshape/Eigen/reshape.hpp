@@ -33,7 +33,7 @@ void reshapetest(MatType &M)
     // Reinterpretation of data of M
     Map<Eigen::Matrix<entry_t,Dynamic,Dynamic>> R(Mdat,2,nsize/2);
     // (Deep) copy data of M into matrix of different size
-    Eigen::Matrix<entry_t,Dynamic,Dynamic> S =
+    const Eigen::Matrix<entry_t,Dynamic,Dynamic> S =
       Map<Eigen::Matrix<entry_t,Dynamic,Dynamic>>(Mdat,2,nsize/2);
 
     cout << "Matrix M = " << endl << M << endl;
