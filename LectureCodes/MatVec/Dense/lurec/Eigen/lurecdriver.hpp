@@ -10,12 +10,18 @@
 
 #include <Eigen/Dense>
 
-using namespace Eigen;
+namespace lurec {
 
+
+using Eigen::MatrixXd;
+using Eigen::Upper;
+using Eigen::StrictlyLower;
+
+inline
 /* SAM_LISTING_BEGIN_0 */
 //! post-processing: extract \Blue{$\VL$} and \Blue{$\VU$}
 void lurecdriver(const MatrixXd &A, MatrixXd &L, MatrixXd &U){
-	MatrixXd A_dec = lurec(A);
+	const MatrixXd A_dec = lurec(A);
 	// post-processing: 
 	//extract \Blue{$\VL$} and \Blue{$\VU$}
 	U = A_dec.triangularView<Upper>();
@@ -23,3 +29,6 @@ void lurecdriver(const MatrixXd &A, MatrixXd &L, MatrixXd &U){
 	L += A_dec.triangularView<StrictlyLower>();
 }
 /* SAM_LISTING_END_0 */
+
+
+} //namespace lurec
