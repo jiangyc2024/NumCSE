@@ -13,8 +13,8 @@
 #include "zerosquadpol.hpp"
 
 int main () {
-  double alpha = 1; 
-  double beta = -1;
+  const double alpha = 1; 
+  const double beta = -1;
   std::cout << zerosquadpol::zerosquadpol(alpha, beta) << std::endl;
   return 0;
 }

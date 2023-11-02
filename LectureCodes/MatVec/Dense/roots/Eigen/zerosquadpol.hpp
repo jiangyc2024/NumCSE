@@ -24,10 +24,10 @@ using Eigen::Vector2d;
 //! returned in a column vector
 inline Vector2d zerosquadpol(double alpha, double beta) {
   Vector2d z;
-  double D = std::pow(alpha, 2) - 4 * beta; // discriminant
+  const double D = std::pow(alpha, 2) - 4 * beta; // discriminant
   if (D >= 0) {
     // The famous discriminant formula
-    double wD = std::sqrt(D);
+    const double wD = std::sqrt(D);
     z << (-alpha - wD) / 2, (-alpha + wD) / 2; // \Label[line]{zsq:1}
   }
   else {
