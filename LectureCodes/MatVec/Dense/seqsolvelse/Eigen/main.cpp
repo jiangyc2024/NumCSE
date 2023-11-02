@@ -6,16 +6,17 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
 #include <cmath>
+#include <iostream>
 
 #include <Eigen/Dense>
 
-using namespace Eigen;
+using Eigen::VectorXd;
+using Eigen::MatrixXd;
 
 int main () {
-	int N = 10;
-	int n = 100;
+	const int N = 10;
+	const int n = 100;
 	VectorXd x(n);
 	x.setOnes();
 	MatrixXd A(n,n);
