@@ -28,9 +28,9 @@ void inline matArray(int nrows,int ncols){
     }
   }
   // \com{Entry-wise} product, not a matrix product
-  Eigen::MatrixXd m3 = (m1.array() * m2.array()).matrix();
+  const Eigen::MatrixXd m3 = (m1.array() * m2.array()).matrix();
   // Explicit entry-wise operations on matrices are possible
-  Eigen::MatrixXd m4(m1.cwiseProduct(m2)); 
+  const Eigen::MatrixXd m4(m1.cwiseProduct(m2)); 
   // \com{Entry-wise} logarithm 
   cout << "Log(m1) = " << endl << log(m1.array()) << endl;
   // Entry-wise boolean expression, \texttt{true} cases counted
