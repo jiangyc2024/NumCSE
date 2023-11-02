@@ -21,7 +21,7 @@ inline
 /* SAM_LISTING_BEGIN_0 */
 //! Algorithm of Crout: LU-factorization of \Blue{$\VA\in\bbK^{n,n}$}
 std::pair<MatrixXd, MatrixXd> lufak(const MatrixXd &A) {
-  Index n = A.rows(); 
+  const Index n = A.rows(); 
   assert(n == A.cols()); // Ensure matrix is square
   MatrixXd L{MatrixXd::Identity(n, n)};
   MatrixXd U{MatrixXd::Zero(n, n)};
