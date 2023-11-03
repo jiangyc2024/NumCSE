@@ -16,9 +16,9 @@ using std::endl;
 
 int main(){	
 	cout.precision(15);
-	double min = numeric_limits<double>::min();
-	double res1 = M_PI*min/123456789101112;
-	double res2 = res1*123456789101112/min;
+	const double min = numeric_limits<double>::min();
+	const double res1 = M_PI*min/123456789101112;
+	const double res2 = res1*123456789101112/min;
 	cout << res1 << endl << res2 << endl;
 }
 /* SAM_LISTING_END_0 */
