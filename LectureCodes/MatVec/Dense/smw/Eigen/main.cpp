@@ -7,21 +7,24 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
 #include <Eigen/Dense>
+#include <iostream>
 
-using namespace Eigen;
+
+using Eigen::MatrixXd;
+using Eigen::VectorXd;
+
 #include "smw.hpp"
 
 int main () {
-	int n = 10;
-	MatrixXd A = MatrixXd::Random(n,n);
-	VectorXd b = VectorXd::Random(n);
-	VectorXd u = VectorXd::Random(n);
-	VectorXd v = VectorXd::Random(n);
-	Eigen::PartialPivLU<MatrixXd> lu(A);
+	const int n = 10;
+	const MatrixXd A = MatrixXd::Random(n,n);
+	const VectorXd b = VectorXd::Random(n);
+	const VectorXd u = VectorXd::Random(n);
+	const VectorXd v = VectorXd::Random(n);
+	const Eigen::PartialPivLU<MatrixXd> lu(A);
 	std::cout << "Solving rank-1 updated LSE" << std::endl;
-	std::cout << smw(lu,u,v,b) << std::endl << std::endl;
+	std::cout << smw::smw(u,v,lu,b) << std::endl << std::endl;
 	std::cout << (A + u * v.transpose()).lu().solve(b) << std::endl;
 	return 0;
 }
