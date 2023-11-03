@@ -6,36 +6,44 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 
+#include "spy.hpp"
 #include <Eigen/Sparse>
 #include <iostream>
+#include <span>
 #include <string>
 #include <unsupported/Eigen/SparseExtra>  // for import
-#include "spy.hpp"
 
-using namespace Eigen;
+using Eigen::SparseMatrix;
+using Eigen::SimplicialLDLT;
+using Eigen::Lower;
+using Eigen::AMDOrdering;
+using Eigen::NaturalOrdering;
+using Eigen::MatrixXd;
 
+//NOLINTBEGIN(bugprone-exception-escape)
 int main(int argc, char *argv[]) {
+  const std::span args(argv, argc);
   typedef SparseMatrix<double> SpMat_t;
   SpMat_t M;
   // load file
   std::string filename = "poisson2D.mtx";
   if (argc >= 2) {
-    filename = argv[1];
+    filename = args[1];
   }
-  if (loadMarket(M, "./" + filename) != true) {
+  if (! loadMarket(M, "./" + filename)) {
     std::cout << "failed import of " << filename << std::endl;
     return 0;
   }
   std::cout << "import successful\n";
   /* SAM_LISTING_BEGIN_0 */
   // L and U cannot be extracted from SparseLU --> LDLT
-  SimplicialLDLT<SpMat_t, Lower, AMDOrdering<int> > solver1(M);
-  SimplicialLDLT<SpMat_t, Lower, NaturalOrdering<int> > solver2(M);
-  MatrixXd U1 =
+  const SimplicialLDLT<SpMat_t, Lower, AMDOrdering<int> > solver1(M);
+  const SimplicialLDLT<SpMat_t, Lower, NaturalOrdering<int> > solver2(M);
+  const MatrixXd U1 =
       solver1.matrixU() *
       MatrixXd::Identity(
           M.rows(), M.cols());  // explicit conversion fixes occasional segfault
-  MatrixXd U2 = MatrixXd(solver2.matrixU());
+  const MatrixXd U2 = MatrixXd(solver2.matrixU());
   // Plotting
   spy(M, "Sparse matrix M", "MSpy.eps");
   spy(U1, "U factor (approximate minimum degree)", "AMDUSpy.eps");
@@ -43,3 +51,4 @@ int main(int argc, char *argv[]) {
   /* SAM_LISTING_END_0 */
   return 0;
 }
+//NOLINTEND(bugprone-exception-escape)
