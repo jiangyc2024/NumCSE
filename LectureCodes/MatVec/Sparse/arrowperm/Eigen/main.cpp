@@ -6,13 +6,14 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 
+#include "spy.hpp"
 #include <Eigen/Dense>
 #include <iostream>
-#include "spy.hpp"
 
-using namespace std;
-using namespace Eigen;
+using Eigen::MatrixXd;
+using Eigen::RowVectorXd;
 
+//NOLINTBEGIN(bugprone-exception-escape)
 int main() {
   /* SAM_LISTING_BEGIN_0 */
   MatrixXd A(11, 11);
@@ -30,3 +31,4 @@ int main() {
   /* SAM_LISTING_END_0 */
   return 0;
 }
+//NOLINTEND(bugprone-exception-escape)
