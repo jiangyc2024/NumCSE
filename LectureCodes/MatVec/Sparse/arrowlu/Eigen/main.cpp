@@ -8,12 +8,15 @@
 
 #include <iostream>
 
-#include <Eigen/Dense>
 #include "spy.hpp"
+#include <Eigen/Dense>
 
-using namespace std;
-using namespace Eigen;
 
+using Eigen::MatrixXd;
+using Eigen::StrictlyLower;
+using Eigen::Upper;
+
+//NOLINTBEGIN(bugprone-exception-escape)
 int main() {
   /* SAM_LISTING_BEGIN_0 */
   // Build matrix
@@ -25,8 +28,8 @@ int main() {
   auto solver = A.lu();
   MatrixXd L = MatrixXd::Identity(11, 11);
   L += solver.matrixLU().triangularView<StrictlyLower>();
-  MatrixXd U = solver.matrixLU().triangularView<Upper>();
-  MatrixXd Ainv = A.inverse();
+  const MatrixXd U = solver.matrixLU().triangularView<Upper>();
+  const MatrixXd Ainv = A.inverse();
   // Plotting
   spy(A, "Pattern of A", "Apat_cpp.eps");
   spy(L, "Pattern of L", "Lpat_cpp.eps");
@@ -35,3 +38,4 @@ int main() {
   /* SAM_LISTING_END_0 */
   return 0;
 }
+//NOLINTEND(bugprone-exception-escape)
