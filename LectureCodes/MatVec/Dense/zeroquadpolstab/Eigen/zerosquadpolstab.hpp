@@ -26,17 +26,17 @@ inline
 //! The zeros are returned in a column vector
 Eigen::VectorXd zerosquadpolstab(double alpha, double beta) {
   Eigen::Vector2d z(2);
-  double D = std::pow(alpha, 2) - 4 * beta; // discriminant
+  const double D = std::pow(alpha, 2) - 4 * beta; // discriminant
   if (D >= 0) {
-    double wD = std::sqrt(D);
+    const double wD = std::sqrt(D);
     // Use discriminant formula only for zero far away from $0$
     // in order to \com{avoid cancellation}. For the other zero
     // use Vieta's formula.
     if (alpha >= 0) {
-      double t = 0.5 * (-alpha - wD); // \Label[line]{zqs:11}
+      const double t = 0.5 * (-alpha - wD); // \Label[line]{zqs:11}
       z << t, beta / t;
     } else {
-      double t = 0.5 * (-alpha + wD); // \Label[line]{zqs:12}
+      const double t = 0.5 * (-alpha + wD); // \Label[line]{zqs:12}
       z << beta / t, t;
     }
   }

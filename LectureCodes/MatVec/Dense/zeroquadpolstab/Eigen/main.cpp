@@ -12,8 +12,8 @@
 #include "zerosquadpolstab.hpp"
 
 int main () {
-	double alpha = 1;
-	double beta = -1;
+	const double alpha = 1;
+	const double beta = -1;
 	std::cout << zerosquadpolstab::zerosquadpolstab(alpha, beta) << std::endl;
 	return 0;
 }
