@@ -6,14 +6,18 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
 #include <cmath>
+#include <iostream>
 
-using namespace std;
+using std::cout;
+using std::endl;
 
 int main(){
 /* SAM_LISTING_BEGIN_0 */
-double x = exp(1000), y = 3/x, z = x*sin(M_PI), w = x*log(1);
+const double x = exp(1000);
+const double y = 3/x;
+const double z = x*sin(M_PI);
+const double w = x*log(1);
 cout << x << endl << y << endl << z << endl << w << endl;
 /* SAM_LISTING_END_0 */
 }
