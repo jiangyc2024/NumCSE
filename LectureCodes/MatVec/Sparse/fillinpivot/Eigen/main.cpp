@@ -6,21 +6,22 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 
-#include <Eigen/Dense>
 #include "spy.hpp"
+#include <Eigen/Dense>
 
+//NOLINTBEGIN(bugprone-exception-escape)
 int main() {
   /* SAM_LISTING_BEGIN_0 */
   // Study of fill-in with LU-factorization due to pivoting
-  MatrixXd A(11, 11);
+  Eigen::MatrixXd A(11, 11);
   A.setZero();
-  A.diagonal() = VectorXd::LinSpaced(11, 1, 11).cwiseInverse();
+  A.diagonal() = Eigen::VectorXd::LinSpaced(11, 1, 11).cwiseInverse();
   A.col(10).setConstant(2);
   A.row(10).setConstant(2);
   auto solver = A.lu();
-  MatrixXd L = MatrixXd::Identity(11, 11);
-  L += solver.matrixLU().triangularView<StrictlyLower>();
-  MatrixXd U = solver.matrixLU().triangularView<Upper>();
+  Eigen::MatrixXd L = Eigen::MatrixXd::Identity(11, 11);
+  L += solver.matrixLU().triangularView<Eigen::StrictlyLower>();
+  const Eigen::MatrixXd U = solver.matrixLU().triangularView<Eigen::Upper>();
   // Plotting
   spy(A, "Arrow matrix A", "fillinpivotA.eps");
   spy(L, "L factor", "fillinpivotL.eps");
@@ -29,3 +30,4 @@ int main() {
   /* SAM_LISTING_END_0 */
   return 0;
 }
+//NOLINTEND(bugprone-exception-escape)
