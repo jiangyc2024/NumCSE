@@ -1,11 +1,9 @@
 #include <chrono>
+#include <functional>
 #include <iomanip>
 #include <iostream>
+#include <limits>
 #include <vector>
-#include <functional>
-
-using namespace std;
-using namespace std::chrono;
 
 /**
  * @brief time an action by minimum execution time of N repetitions
@@ -15,13 +13,13 @@ using namespace std::chrono;
  */
 template <class Action>
 size_t time(Action&& a, size_t const N) {
-  size_t minimum = ~0;
+  size_t minimum = std::numeric_limits<size_t>::max();
   for (size_t i = 0; i < N; ++i) {
-    auto start = high_resolution_clock::now();
+    auto start = std::chrono::high_resolution_clock::now();
     a();
-    auto end = high_resolution_clock::now();
-    auto duration = duration_cast<microseconds>(end - start);
-    minimum = std::min(minimum, (size_t)duration.count());
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    minimum = std::min(minimum, static_cast<size_t>(duration.count()));
   }
 
   return minimum;
@@ -41,44 +39,46 @@ size_t time(Action&& a, size_t const N) {
  */
 template <class ParamVector, class InitF, class PostF>
 void timeTable(const ParamVector& params,
-               const vector<function<void()>>& actions, InitF&& init,
-               PostF&& post, const size_t N, const size_t w,
-               const vector<string>& header = {}) {
-  if (header.size()) {
-    for (auto h : header) cout << setw(w) << h;
-    cout << endl;
+               const std::vector<std::function<void()>>& actions, InitF&& init,
+               PostF&& post, const size_t N, const int w,
+               const std::vector<std::string>& header = {}) {
+  if (!header.empty()) {
+    for (auto const & h : header) {
+      std::cout << std::setw(w) << h;
+    }
+    std::cout << std::endl;
   }
 
   for (size_t i(0); i < params.size(); ++i) {
     init(params[i]);
-    cout << setw(w) << params[i];
-    for (auto a : actions) {
-      cout << setw(w) << time(a, N);
+    std::cout << std::setw(w) << params[i];
+    for (auto const & a : actions) {
+      std::cout << std::setw(w) << time(a, N);
     }
-    cout << endl;
+    std::cout << std::endl;
     post();
   }
 }
 
 template <class ParamVector, class InitF>
 void timeTable(const ParamVector& params,
-               const vector<function<void()>>& actions, InitF&& init,
-               const vector<string>& header = {}) {
+               const std::vector<std::function<void()>>& actions, InitF&& init,
+               const std::vector<std::string>& header = {}) {
   timeTable(
       params, actions, init, [] {}, 5, 10, header);
 }
 
 template <class ParamVector, class InitF, class PostF>
 void timeTable(const ParamVector& params,
-               const vector<function<void()>>& actions, InitF&& init,
-               PostF&& post, const vector<string>& header = {}) {
+               const std::vector<std::function<void()>>& actions, InitF&& init,
+               PostF&& post, const std::vector<std::string>& header = {}) {
   timeTable(params, actions, init, post, 5, 10, header);
 }
 
 template <class ParamVector, class InitF>
 void timeTable(const ParamVector& params,
-               const vector<function<void()>>& actions, InitF&& init,
+               const std::vector<std::function<void()>>& actions, InitF&& init,
                const size_t N, const size_t w,
-               const vector<string>& header = {}) {
+               const std::vector<std::string>& header = {}) {
   timeTable( params, actions, init, [] {}, N, w, header );
 }
