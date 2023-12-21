@@ -17,7 +17,11 @@ struct TestData {
 
 TestData data;
 
-double f(const Eigen::VectorXd &y) { return y(0) * (1.0 - y(0)); }
+Eigen::VectorXd f(const Eigen::VectorXd &y) { 
+  Eigen::VectorXd fy(1);
+  fy << y(0) * (1.0 - y(0));
+  return fy;
+}
 Eigen::MatrixXd df(const Eigen::VectorXd &y) {
   Eigen::MatrixXd dfy(1, 1);
   dfy << 1.0 - 2.0 * y(0);
