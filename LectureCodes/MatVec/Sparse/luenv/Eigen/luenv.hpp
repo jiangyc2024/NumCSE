@@ -15,30 +15,35 @@
 #include "bandwidth.hpp"
 #include "substenv.hpp"
 
-using namespace std;
-using namespace Eigen;
+namespace envelope {
 
+
+using Eigen::MatrixXd;
+using Eigen::MatrixXd;
+using Eigen::VectorXi;
+using bandwidth::rowbandwidth;
+
+inline
 /* SAM_LISTING_BEGIN_0 */
 //! envelope aware recursive LU-factorization
 //! of structurally symmetric matrix
 void luenv(const MatrixXd &A, MatrixXd &L, MatrixXd &U) {
-  int n = A.cols();
+  const Eigen::Index n = A.cols();
   assert(n == A.rows() && "A must be square");
   if (n == 1) {
     L.setIdentity();
     U = A;
   } else {
     VectorXi mr = rowbandwidth(A);  // = colbandwidth thanks to symmetry
-    double gamma;
-    MatrixXd L1(n - 1, n - 1), U1(n - 1, n - 1);
+    MatrixXd L1(n - 1, n - 1);
+    MatrixXd U1(n - 1, n - 1);
     luenv(A.topLeftCorner(n - 1, n - 1), L1, U1);
     VectorXd u = substenv(L1, A.col(n - 1).head(n - 1), mr);
     VectorXd l =
         substenv(U1.transpose(), A.row(n - 1).head(n - 1).transpose(), mr);
-    if (mr(n - 1) > 0)
-      gamma = A(n - 1, n - 1) - l.tail(mr(n - 1)).dot(u.tail(mr(n - 1)));
-    else
-      gamma = A(n - 1, n - 1);
+    const double gamma = mr(n - 1) > 0 ? 
+      A(n - 1, n - 1) - l.tail(mr(n - 1)).dot(u.tail(mr(n - 1))) :
+      A(n - 1, n - 1);
     L.topLeftCorner(n - 1, n - 1) = L1;
     L.col(n - 1).setZero();
     L.row(n - 1).head(n - 1) = l.transpose();
@@ -50,3 +55,5 @@ void luenv(const MatrixXd &A, MatrixXd &L, MatrixXd &U) {
   }
 }
 /* SAM_LISTING_END_0 */
+
+} //namespace envelope
