@@ -46,7 +46,7 @@ double evalQuadFormCOO(const COOMat &A, const Eigen::VectorXd &x) {
 
 int main(int /*argc*/, char ** /*argv*/) {
 
-  QuadFormCOO::COOMat A{
+  const QuadFormCOO::COOMat A{
       Eigen::Triplet<double>(0, 0, 1.0), Eigen::Triplet<double>(1, 1, 1.0),
       Eigen::Triplet<double>(2, 2, 1.0), Eigen::Triplet<double>(0, 1, 2.0),
       Eigen::Triplet<double>(1, 0, 2.0), Eigen::Triplet<double>(1, 2, 3.0),
