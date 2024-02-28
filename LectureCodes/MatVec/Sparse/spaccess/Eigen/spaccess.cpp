@@ -11,12 +11,12 @@
 
 Eigen::SparseMatrix<double, Eigen::RowMajor> reserve_demo(unsigned int n) {
   const Eigen::Index rows = n;
-  const Eigen::Index cols = 2 * n;
+  const auto cols = 2 * static_cast<Eigen::Index>(n);
   const unsigned int max_no_nnz_per_row = 3;
   Eigen::SparseMatrix<double, Eigen::RowMajor> mat(rows, cols);
   mat.reserve(Eigen::RowVectorXi::Constant(rows, max_no_nnz_per_row));
   // do many (incremental) initializations
-  for (int i = 0; i < rows; ++i) {
+  for (Eigen::Index i = 0; i < rows; ++i) {
     mat.insert(i, i) = -1.0;  // only for matrix entries not yet set!
     mat.insert(i, i + 1) = 1.0;
     mat.coeffRef(i, 2 * i) -= 1.0;  // access entry possibly not set yet
@@ -28,7 +28,7 @@ Eigen::SparseMatrix<double, Eigen::RowMajor> reserve_demo(unsigned int n) {
 int main(int /*argc*/, char** /*argv*/) {
   std::cout << "C++ demo program for course Numerical Methods for CSE"
             << std::endl;
-  Eigen::SparseMatrix<double, Eigen::RowMajor> mat{reserve_demo(21)};
+  const Eigen::SparseMatrix<double, Eigen::RowMajor> mat{reserve_demo(21)};
   const Eigen::MatrixXd M = mat;
   std::cout << "M = " << M.rows() << " x " << M.cols()
             << ", outerSize = " << mat.outerSize()
