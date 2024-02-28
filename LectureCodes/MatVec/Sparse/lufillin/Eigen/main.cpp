@@ -8,21 +8,24 @@
 
 #include <iostream>
 
-#include <Eigen/Dense>
-#include <Eigen/Sparse>
 #include "matplotlibcpp.h"
 #include "spdiags.hpp"
 #include "spy.hpp"
+#include <Eigen/Dense>
+#include <Eigen/Sparse>
 
-using namespace std;
-using namespace Eigen;
+using Eigen::RowVectorXd;
+using Eigen::VectorXi;
+using Eigen::MatrixXd;
+using Eigen::SparseMatrix;
+using Eigen::StrictlyLower;
+using Eigen::Upper;
 
-namespace plt = matplotlibcpp;
-
+//NOLINTBEGIN(bugprone-exception-escape)
 int main() {
   /* SAM_LISTING_BEGIN_0 */
   // Build matrix
-  int n = 100;
+  const Eigen::Index n = 100;
   RowVectorXd diag_el(5);
   diag_el << -1, -1, 3, -1, -1;
   VectorXi diag_no(5);
@@ -31,14 +34,14 @@ int main() {
   B(n - 1, 1) = 0;
   B(n, 3) = 0;  // delete elements
   // A custom function from the Utils folder
-  SparseMatrix<double> A = spdiags(B, diag_no, 2 * n, 2 * n);
+  const SparseMatrix<double> A = spdiags(B, diag_no, 2 * n, 2 * n);
   // It is not possible to access the LU-factors in the case of
   // \eigen's LU-decomposition for sparse matrices.
   // Therefore we have to resort to the dense version.
   auto solver = MatrixXd(A).lu();
   MatrixXd L = MatrixXd::Identity(2 * n, 2 * n);
   L += solver.matrixLU().triangularView<StrictlyLower>();
-  MatrixXd U = solver.matrixLU().triangularView<Upper>();
+  const MatrixXd U = solver.matrixLU().triangularView<Upper>();
   // Plotting
   spy(A, "Sparse matrix", "sparseA_cpp.eps");
   spy(L, "Sparse matrix: L factor", "sparseL_cpp.eps");
@@ -47,3 +50,4 @@ int main() {
 
   return 0;
 }
+//NOLINTEND(bugprone-exception-escape)
