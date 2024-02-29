@@ -49,7 +49,7 @@ void timeTable(const ParamVector& params,
     std::cout << std::endl;
   }
 
-  for (size_t i(0); i < params.size(); ++i) {
+  for (typename ParamVector::Index i(0); i < params.size(); ++i) {
     init(params[i]);
     std::cout << std::setw(w) << params[i];
     for (auto const & a : actions) {
