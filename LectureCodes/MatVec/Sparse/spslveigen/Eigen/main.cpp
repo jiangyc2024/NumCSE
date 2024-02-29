@@ -14,25 +14,34 @@
 #include <Eigen/Sparse>
 #include <iostream>
 
-using namespace std;
-using namespace Eigen;
+
+using std::cout;
+using std::endl;
+using std::cerr;
+using Eigen::Triplet;
+using Eigen::SparseMatrix;
+using Eigen::RowMajor;
+using Eigen::VectorXd;
+using Eigen::SparseLU;
 
 /* SAM_LISTING_BEGIN_0 */
 template <class SpMat>
-SpMat initSparseMatrix(size_t n) {
+SpMat initSparseMatrix(int n) {
   using scalar_t = typename SpMat::Scalar;
   using index_t = typename SpMat::Index;
-  vector<Triplet<scalar_t>> triplets(5 * n);
+  std::vector<Triplet<scalar_t>> triplets(5 * n);
 
-  for (index_t l = 0; l < n; ++l) triplets.push_back({l, l, (scalar_t)5.0});
+  for (index_t l = 0; l < n; ++l) {
+    triplets.emplace_back(l, l, static_cast<scalar_t>(5.0));
+  }
   for (index_t l = 1; l < n; ++l) {
-    triplets.push_back({l - 1, l, (scalar_t)1.0});
-    triplets.push_back({l, l - 1, (scalar_t)1.0});
+    triplets.emplace_back(l - 1, l, static_cast<scalar_t>(1.0));
+    triplets.emplace_back(l, l - 1, static_cast<scalar_t>(1.0));
   }
   const index_t m = n / 2;
   for (index_t l = 0; l < m; ++l) {
-    triplets.push_back({l, l + m, (scalar_t)1.0});
-    triplets.push_back({l + m, l, (scalar_t)1.0});
+    triplets.emplace_back(l, l + m, static_cast<scalar_t>(1.0));
+    triplets.emplace_back(l + m, l, static_cast<scalar_t>(1.0));
   }
   SpMat M(n, n);
   M.setFromTriplets(triplets.begin(), triplets.end());
@@ -43,19 +52,21 @@ SpMat initSparseMatrix(size_t n) {
 /* SAM_LISTING_BEGIN_1 */
 template <class SpMat>
 void printTriplets(const SpMat &M) {
-  for (int k = 0; k < M.outerSize(); ++k)
-    for (typename SpMat::InnerIterator it(M, k); it; ++it)
+  for (int k = 0; k < M.outerSize(); ++k) {
+    for (typename SpMat::InnerIterator it(M, k); it; ++it){
       cout << "(" << it.row() << ',' << it.col() << ") -> " << it.value()
            << endl;
+    }
+  }
 }
 /* SAM_LISTING_END_1 */
 
 /* SAM_LISTING_BEGIN_2 */
 int main() {
-  const size_t n(100);
+  const int n(100);
   using SpMat = SparseMatrix<double, RowMajor>;
 
-  const SpMat M = initSparseMatrix<SpMat>(n);
+  const auto M = initSparseMatrix<SpMat>(n);
   cout << "M = " << M.rows() << 'x' << M.cols() << "-matrix with "
        << M.nonZeros() << " non-zeros" << endl;
   printTriplets(M);
