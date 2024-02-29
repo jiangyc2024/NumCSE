@@ -10,7 +10,13 @@
 #include <Eigen/Sparse>
 #include <iostream>
 
-using namespace Eigen;
+using Eigen::RowVectorXd;
+using Eigen::VectorXd;
+using Eigen::MatrixXd;
+using Eigen::SparseMatrix;
+using Eigen::StrictlyLower;
+using Eigen::Upper;
+using Eigen::VectorXi;
 
 #include "bandwidth.hpp"
 #include "spdiags.hpp"
@@ -18,7 +24,7 @@ using namespace Eigen;
 
 int main() {
   // Build matrix
-  int n = 5;
+  const Eigen::Index n = 5;
   RowVectorXd diag_el(5);
   diag_el << -1, -1, 3, -1, -1;
   VectorXi diag_no(5);
@@ -26,20 +32,20 @@ int main() {
   MatrixXd B = diag_el.replicate(2 * n, 1);
   B(n - 1, 1) = 0;
   B(n, 3) = 0;  // delete elements
-  SparseMatrix<double> A = spdiags(B, diag_no, 2 * n, 2 * n);
+  const SparseMatrix<double> A = spdiags(B, diag_no, 2 * n, 2 * n);
   // It's not possible to get L, U with the sparseLU --> dense
   auto solver = MatrixXd(A).lu();
   MatrixXd L = MatrixXd::Identity(2 * n, 2 * n);
   L += solver.matrixLU().triangularView<StrictlyLower>();
-  MatrixXd U = solver.matrixLU().triangularView<Upper>();
+  const MatrixXd U = solver.matrixLU().triangularView<Upper>();
 
   std::cout << "L\n" << L << std::endl;
-  VectorXd y = VectorXd::LinSpaced(2 * n, 1, 2 * n);
+  const VectorXd y = VectorXd::LinSpaced(2 * n, 1, 2 * n);
   std::cout << "y\n" << y << std::endl;
-  VectorXd x_ex = L.lu().solve(y);
+  const VectorXd x_ex = L.lu().solve(y);
   std::cout << "x from Eigen\n" << x_ex << std::endl;
-  VectorXi mr = rowbandwidth(L);
-  VectorXd x_own = substenv(L, y, mr);
+  const VectorXi mr = bandwidth::rowbandwidth(L);
+  const VectorXd x_own = envelope::substenv(L, y, mr);
   std::cout << "x from own impl.\n" << x_own << std::endl;
   return 0;
 }
