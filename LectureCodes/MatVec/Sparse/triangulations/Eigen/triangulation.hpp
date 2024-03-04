@@ -16,6 +16,7 @@
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 
+inline
 /* SAM_LISTING_BEGIN_0 */
 //! @brief \eigen function extracting the edge information of a mesh
 //! @param[in] T Matrix $M \times 3$ containing the vertex numbers of each of
@@ -29,9 +30,9 @@
 void processmesh(const Eigen::MatrixXi& T, Eigen::MatrixXi& E,
                  Eigen::MatrixXi& Eb) {
   // Number of nodes of the triangular mesh
-  int N = T.maxCoeff() + 1;
+  const int N = T.maxCoeff() + 1;
   // Number of triangles of the mesh
-  int M = T.rows();
+  const Eigen::Index M = T.rows();
   // Triplet vector for initializing a sparse matrix
   std::vector<Eigen::Triplet<int> > triplets;
   // Reserve enough space for the vector to prevent reallocation
@@ -46,11 +47,13 @@ void processmesh(const Eigen::MatrixXi& T, Eigen::MatrixXi& E,
      */
     for (int i = 0; i < 2; ++i) {
       for (int j = i + 1; j < 3; ++j) {
-        if (T(k, i) < T(k, j))  // insert combinations sorted wrt. to node
-                                // numbering (ascending)
-          triplets.push_back({T(k, i), T(k, j), 1});
-        else
-          triplets.push_back({T(k, j), T(k, i), 1});
+        if (T(k, i) < T(k, j)) { 
+          // insert combinations sorted wrt. to node numbering (ascending)
+          triplets.emplace_back(T(k, i), T(k, j), 1);
+        } 
+        else {
+          triplets.emplace_back(T(k, j), T(k, i), 1);
+        }
       }
     }
   }
@@ -66,7 +69,7 @@ void processmesh(const Eigen::MatrixXi& T, Eigen::MatrixXi& E,
   A.setFromTriplets(triplets.begin(), triplets.end());
   // Get the number of nnz entries which is corresponding to the
   // number of edges
-  int E_size = A.nonZeros();
+  const Eigen::Index E_size = A.nonZeros();
   // resize E accordingly
   E.resize(E_size, 2);
   // Used to dynamically store the boundary edges {startpoint1, endpoint1, ...}
@@ -77,12 +80,12 @@ void processmesh(const Eigen::MatrixXi& T, Eigen::MatrixXi& E,
   for (int i = 0; i < A.outerSize(); ++i) {
     for (Eigen::SparseMatrix<int>::InnerIterator it(A, i); it; ++it) {
       if (it.value() == 1) {  // boundary edge == 1
-        eb.push_back(it.row());
-        eb.push_back(it.col());
+        eb.push_back(static_cast<int>(it.row()));
+        eb.push_back(static_cast<int>(it.col()));
       }
       // boundary edge == 1 or interior edge == 2
-      E(E_counter, 0) = it.row();
-      E(E_counter, 1) = it.col();
+      E(E_counter, 0) = static_cast<int>(it.row());
+      E(E_counter, 1) = static_cast<int>(it.col());
       ++E_counter;
     }
   }
@@ -90,10 +93,11 @@ void processmesh(const Eigen::MatrixXi& T, Eigen::MatrixXi& E,
   // matrices Eb. Note that the RowMajor keyword. Copying is
   // unfortunately not prevented
   Eb = Eigen::Matrix<int, -1, -1, Eigen::RowMajor>::Map(eb.data(),
-                                                        eb.size() / 2, 2);
+         static_cast<int>(eb.size()) / 2, 2);
 }
 /* SAM_LISTING_END_0 */
 
+inline
 /* SAM_LISTING_BEGIN_1 */
 //! @brief \eigen function extracting the triangle-edge mapping
 //! @param[in] T Matrix $M \times 3$ containing the vertex numbers of each of
@@ -106,17 +110,17 @@ void processmesh(const Eigen::MatrixXi& T, Eigen::MatrixXi& E,
 void getinfo(const Eigen::MatrixXi& T, const Eigen::MatrixXi& E,
              Eigen::MatrixXi& ET) {
   // Number of edges $ L = \sharp \mathcal{E} $
-  int L = E.rows();
+  const Eigen::Index L = E.rows();
   // Number of nodes of the triangular mesh
-  int N = T.maxCoeff() + 1;
+  const int N = T.maxCoeff() + 1;
   // Triplet vector for initializing a sparse matrix
   std::vector<Eigen::Triplet<int> > triplets;
   // Reserve enough space for the vector to prevent reallocation
   triplets.reserve(2 * L);
   // loop over all edges
   for (int i = 0; i < L; ++i) {
-    triplets.push_back({E(i, 0), E(i, 1), i});
-    triplets.push_back({E(i, 1), E(i, 0), i});  // symmetrical
+    triplets.emplace_back(E(i, 0), E(i, 1), i);
+    triplets.emplace_back(E(i, 1), E(i, 0), i);  // symmetrical
   }
   // Initialize sparse matrix
   Eigen::SparseMatrix<int> A(N, N);
@@ -138,6 +142,7 @@ void getinfo(const Eigen::MatrixXi& T, const Eigen::MatrixXi& E,
 }
 /* SAM_LISTING_END_1 */
 
+inline
 /* SAM_LISTING_BEGIN_2 */
 //! @brief \eigen function extracting the triangle edge mapping
 //! @param[in] x Vector of dim $N$ containing the x-coordinates of nodes of the
@@ -156,7 +161,9 @@ void refinemesh(const Eigen::VectorXd& x, const Eigen::VectorXd& y,
                 const Eigen::MatrixXi& T, Eigen::VectorXd& x_ref,
                 Eigen::VectorXd& y_ref, Eigen::MatrixXi& T_ref) {
   // Instantiate needed matrices for passing by reference
-  Eigen::MatrixXi E, Eb, ET;
+  Eigen::MatrixXi E; 
+  Eigen::MatrixXi Eb;
+  Eigen::MatrixXi ET;
   // Extract the edge information of a mesh
   // E and Eb are matrices whose rows contain the numbers of the
   // endpoints of edges
@@ -174,13 +181,13 @@ void refinemesh(const Eigen::VectorXd& x, const Eigen::VectorXd& y,
   // Extract the triangle-edge mapping
   getinfo(T, E, ET);
   // Build a new list of triangles
-  int Nt = T.rows();  // Number of triangles
-  int Nv = x.size();  // Number of vertices
+  const Eigen::Index Nt = T.rows();  // Number of triangles
+  const int Nv = static_cast<int>(x.size());  // Number of vertices
   // Resize the refined triangle (refinement creates 4 triangles per
   // 1 triangle
   T_ref.resize(4 * Nt, 3);
   // Fill T_ref with the new triangles
-  for (int i = 0; i < Nt; ++i) {
+  for (Eigen::Index i = 0; i < Nt; ++i) {
     // 1st son triangle
     T_ref(4 * i, 0) = T(i, 0);        // old vertex
     T_ref(4 * i, 1) = ET(i, 1) + Nv;  // new vertex
@@ -201,6 +208,7 @@ void refinemesh(const Eigen::VectorXd& x, const Eigen::VectorXd& y,
 }
 /* SAM_LISTING_END_2 */
 
+inline
 /* SAM_LISTING_BEGIN_3 */
 //! @brief \eigen function for smoothing a planar triangular mesh by moving all
 //! vertices to the barycenter of their neighboring nodes.
@@ -218,23 +226,25 @@ void smoothmesh(const Eigen::VectorXd& x, const Eigen::VectorXd& y,
                 const Eigen::MatrixXi& T, Eigen::VectorXd& xs,
                 Eigen::VectorXd& ys) {
   // Number of nodes of the mesh
-  int Nv = x.size();
+  const Eigen::Index Nv = x.size();
   // Instantiate needed matrices for passing by reference
-  Eigen::MatrixXi E, Eb;
+  Eigen::MatrixXi E;
+  Eigen::MatrixXi Eb;
   // Extract the edge information of a mesh
   // E and Eb are matrices whose rows contain the numbers of the
   // endpoints of edges
   processmesh(T, E, Eb);
   // Initialize a vector containing all boundary nodes indices
-  std::vector<int> bd_nodes(Eb.data(), Eb.data() + Eb.size());
+  std::vector<int> bd_nodes(Eb.reshaped().begin(), Eb.reshaped().end());
   // erase the duplicates
   std::sort(bd_nodes.begin(), bd_nodes.end());
   auto last = std::unique(bd_nodes.begin(), bd_nodes.end());
   bd_nodes.erase(last, bd_nodes.end());
   // Number of boundary nodes
-  int Nb = bd_nodes.size();
+  const Eigen::Index Nb = bd_nodes.size();
   // get the coordinates of the boundary nodes
-  Eigen::VectorXd x_bd(Nb), y_bd(Nb);
+  Eigen::VectorXd x_bd(Nb);
+  Eigen::VectorXd y_bd(Nb);
   int counter = 0;
   for (auto idx : bd_nodes) {
     x_bd(counter) = x(idx);
@@ -244,7 +254,7 @@ void smoothmesh(const Eigen::VectorXd& x, const Eigen::VectorXd& y,
   // Get interior nodes
   std::vector<int> int_nodes;
   // Number of interior nodes
-  int Ni = Nv - Nb;
+  const Eigen::Index Ni = Nv - Nb;
   int_nodes.reserve(Ni);
   // Create a vector with {$0,1,2, \ldots, \texttt{Nv}-1$}
   std::vector<int> nodes_map(Nv);
@@ -281,22 +291,23 @@ void smoothmesh(const Eigen::VectorXd& x, const Eigen::VectorXd& y,
   // Assemble the (symmetric) interior graph laplacian (triplets_int)
   // and the exterior graph laplacian (not symmetric)
   for (int i = 0; i < E.rows(); ++i) {
-    int idx1 = nodes_map[E(i, 0)];
-    int idx2 = nodes_map[E(i, 1)];
+    const int idx1 = nodes_map[E(i, 0)];
+    const int idx2 = nodes_map[E(i, 1)];
     if (idx1 < Ni && idx2 < Ni) {  // edge belongs to interior area
-      triplets_int.push_back({idx1, idx2, -1});
-      triplets_int.push_back({idx2, idx1, -1});
+      triplets_int.emplace_back(idx1, idx2, -1);
+      triplets_int.emplace_back(idx2, idx1, -1);
     } else if (idx1 < Ni) {  // only 1st edge node belongs to interior area
-      triplets_bd.push_back({idx1, idx2 - Ni, -1});
+      triplets_bd.emplace_back(idx1, idx2 - Ni, -1);
     } else if (idx2 < Ni) {  // only 2nd edge node belongs to interior area
-      triplets_bd.push_back({idx2, idx1 - Ni, -1});
+      triplets_bd.emplace_back(idx2, idx1 - Ni, -1);
     }
     ++neighbours(idx1);
     ++neighbours(idx2);
   }
   // Insert $\sharp S(i)$ on the diagonal of the interior matrix
-  for (int i = 0; i < Ni; ++i)  // interior
-    triplets_int.push_back({i, i, neighbours(i)});
+  for (int i = 0; i < Ni; ++i) { // interior
+    triplets_int.emplace_back(i, i, neighbours(i));
+  }
   // Build matrices from Triplets
   Eigen::SparseMatrix<double> A_int(Ni, Ni);
   A_int.setFromTriplets(triplets_int.begin(), triplets_int.end());
@@ -326,6 +337,7 @@ void smoothmesh(const Eigen::VectorXd& x, const Eigen::VectorXd& y,
 }
 /* SAM_LISTING_END_3 */
 
+inline
 /* SAM_LISTING_BEGIN_4 */
 //! @brief Copy of smoothmesh for the analysis of the runtimg, see ADDED FOR
 //! ANALYIS
@@ -336,23 +348,25 @@ void smoothmesh_analysis(const Eigen::VectorXd& x, const Eigen::VectorXd& y,
                          Eigen::SparseMatrix<double>& A_int_out,
                          Eigen::MatrixXd& rhs_out) {
   // Number of nodes of the mesh
-  int Nv = x.size();
+  const Eigen::Index Nv = x.size();
   // Instantiate needed matrices for passing by reference
-  Eigen::MatrixXi E, Eb;
+  Eigen::MatrixXi E;
+  Eigen::MatrixXi Eb;
   // Extract the edge information of a mesh
   // E and Eb are matrices whose rows contain the numbers of the
   // endpoints of edges
   processmesh(T, E, Eb);
   // Initialize a vector containing all boundary nodes indices
-  std::vector<int> bd_nodes(Eb.data(), Eb.data() + Eb.size());
+  std::vector<int> bd_nodes(Eb.reshaped().begin(), Eb.reshaped().end());
   // erase the duplicates
   std::sort(bd_nodes.begin(), bd_nodes.end());
   auto last = std::unique(bd_nodes.begin(), bd_nodes.end());
   bd_nodes.erase(last, bd_nodes.end());
   // Number of boundary nodes
-  int Nb = bd_nodes.size();
+  const Eigen::Index Nb = bd_nodes.size();
   // get the coordinates of the boundary nodes
-  Eigen::VectorXd x_bd(Nb), y_bd(Nb);
+  Eigen::VectorXd x_bd(Nb);
+  Eigen::VectorXd y_bd(Nb);
   int counter = 0;
   for (auto idx : bd_nodes) {
     x_bd(counter) = x(idx);
@@ -362,7 +376,7 @@ void smoothmesh_analysis(const Eigen::VectorXd& x, const Eigen::VectorXd& y,
   // Get interior nodes
   std::vector<int> int_nodes;
   // Number of interior nodes
-  int Ni = Nv - Nb;
+  const Eigen::Index Ni = Nv - Nb;
   int_nodes.reserve(Ni);
   // Create a vector with {$0,1,2, \ldots, \texttt{Nv}-1$}
   std::vector<int> nodes_map(Nv);
@@ -399,22 +413,22 @@ void smoothmesh_analysis(const Eigen::VectorXd& x, const Eigen::VectorXd& y,
   // Assemble the (symmetric) interior graph laplacian (triplets_int)
   // and the exterior graph laplacian (not symmetric)
   for (int i = 0; i < E.rows(); ++i) {
-    int idx1 = nodes_map[E(i, 0)];
-    int idx2 = nodes_map[E(i, 1)];
+    const int idx1 = nodes_map[E(i, 0)];
+    const int idx2 = nodes_map[E(i, 1)];
     if (idx1 < Ni && idx2 < Ni) {  // edge belongs to interior area
-      triplets_int.push_back({idx1, idx2, -1});
-      triplets_int.push_back({idx2, idx1, -1});
+      triplets_int.emplace_back(idx1, idx2, -1);
+      triplets_int.emplace_back(idx2, idx1, -1);
     } else if (idx1 < Ni) {  // only 1st edge node belongs to interior area
-      triplets_bd.push_back({idx1, idx2 - Ni, -1});
+      triplets_bd.emplace_back(idx1, idx2 - Ni, -1);
     } else if (idx2 < Ni) {  // only 2nd edge node belongs to interior area
-      triplets_bd.push_back({idx2, idx1 - Ni, -1});
+      triplets_bd.emplace_back(idx2, idx1 - Ni, -1);
     }
     ++neighbours(idx1);
     ++neighbours(idx2);
   }
   // Insert $\sharp S(i)$ on the diagonal of the interior matrix
   for (int i = 0; i < Ni; ++i)  // interior
-    triplets_int.push_back({i, i, neighbours(i)});
+    triplets_int.emplace_back(i, i, neighbours(i));
   // Build matrices from Triplets
   Eigen::SparseMatrix<double> A_int(Ni, Ni);
   A_int.setFromTriplets(triplets_int.begin(), triplets_int.end());

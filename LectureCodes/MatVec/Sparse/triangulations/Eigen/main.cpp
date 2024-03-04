@@ -6,22 +6,27 @@
 /// Do not remove this header.
 //////////////////////////////////////////////////////////////////////////
 
-#include <Eigen/Dense>
-#include <iostream>
 #include "matplotlibcpp.h"
 #include "pltextensions.hpp"
 #include "spy.hpp"
 #include "triangulation.hpp"
+#include <Eigen/Dense>
+#include <iostream>
 
 namespace plt = matplotlibcpp;
 
-using namespace Eigen;
+using Eigen::VectorXd;
+using Eigen::MatrixXi;
+using Eigen::SparseMatrix;
+using Eigen::MatrixXd;
 
+//NOLINTNEXTLINE(bugprone-exception-escape)
 int main() {
   /* SAM_LISTING_BEGIN_0 */
   // Demonstration for visualizing a plane triangular mesh
   // Initialize node coordinates
-  VectorXd x(10), y(10);
+  VectorXd x(10);
+  VectorXd y(10);
   // x and y coordinate of mesh
   x << 1.0, 0.60, 0.12, 0.81, 0.63, 0.09, 0.27, 0.54, 0.95, 0.96;
   y << 0.15, 0.97, 0.95, 0.48, 0.80, 0.14, 0.42, 0.91, 0.79, 0.95;
@@ -35,7 +40,7 @@ int main() {
   plt::triplot(
       x, y, T,
       {{"color", "b"}, {"lw", ".5"}});  // drawing triangulation with numbers
-  for (size_t i(0); i < x.size(); ++i) {
+  for (Eigen::Index i(0); i < x.size(); ++i) {
     plt::text(x[i], y[i], std::to_string(i), {{"ha", "center"}});
   }
   plt::plot(
@@ -43,15 +48,18 @@ int main() {
       {{"marker", "*"}, {"color", "r"}, {"linestyle", " "}});  // mark vertices
   plt::savefig("./meshplot_cpp.eps");
   /* SAM_LISTING_END_0 */
-  VectorXd x_start = x;
-  VectorXd y_start = y;
-  MatrixXi T_start = T;
+  const VectorXd x_start = x;
+  const VectorXd y_start = y;
+  const MatrixXi T_start = T;
   // Start new block
   {
     /* SAM_LISTING_BEGIN_1 */
-    VectorXd x_ref, y_ref, xs, ys;
+    VectorXd x_ref; 
+    VectorXd y_ref;
+    VectorXd xs;
+    VectorXd ys;
     MatrixXi T_ref;
-    int refine_steps = 3;
+    const int refine_steps = 3;
     for (int i = 1; i <= refine_steps; ++i) {
       refinemesh(x, y, T, x_ref, y_ref, T_ref);
       plt::figure();
@@ -76,9 +84,12 @@ int main() {
   {
     /* SAM_LISTING_BEGIN_2 */
     // Spyplot of graph laplacian
-    VectorXd x_ref, y_ref, xs, ys;
+    VectorXd x_ref;
+    VectorXd y_ref;
+    VectorXd xs;
+    VectorXd ys;
     MatrixXi T_ref;
-    int refine_steps = 3;
+    const int refine_steps = 3;
     for (int i = 1; i <= refine_steps; ++i) {
       refinemesh(x, y, T, x_ref, y_ref, T_ref);
       SparseMatrix<double> A_int;
@@ -88,15 +99,16 @@ int main() {
       y = ys;
       T = T_ref;
 
-      MatrixXi E, Eb;
+      MatrixXi E;
+      MatrixXi Eb;
       // Extract the edge information of a mesh
       // E and Eb are matrices whose rows contain the numbers of the
       // endpoints of edges
       processmesh(T, E, Eb);
-      int Nv = T.maxCoeff() + 1;
-      int Ne = E.rows();
-      int Nt = T.rows();
-      std::string title = "level " + std::to_string(i) + ": " +
+      const int Nv = T.maxCoeff() + 1;
+      const Eigen::Index Ne = E.rows();
+      const Eigen::Index Nt = T.rows();
+      const std::string title = "level " + std::to_string(i) + ": " +
                           std::to_string(Nv) + " points, " +
                           std::to_string(Ne) + " edges, " + std::to_string(Nt) +
                           " cells";
