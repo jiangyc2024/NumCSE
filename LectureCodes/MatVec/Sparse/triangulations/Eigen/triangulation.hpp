@@ -241,7 +241,7 @@ void smoothmesh(const Eigen::VectorXd& x, const Eigen::VectorXd& y,
   auto last = std::unique(bd_nodes.begin(), bd_nodes.end());
   bd_nodes.erase(last, bd_nodes.end());
   // Number of boundary nodes
-  const Eigen::Index Nb = bd_nodes.size();
+  const auto Nb = static_cast<Eigen::Index>(bd_nodes.size());
   // get the coordinates of the boundary nodes
   Eigen::VectorXd x_bd(Nb);
   Eigen::VectorXd y_bd(Nb);
@@ -363,7 +363,7 @@ void smoothmesh_analysis(const Eigen::VectorXd& x, const Eigen::VectorXd& y,
   auto last = std::unique(bd_nodes.begin(), bd_nodes.end());
   bd_nodes.erase(last, bd_nodes.end());
   // Number of boundary nodes
-  const Eigen::Index Nb = bd_nodes.size();
+  const auto Nb = static_cast<Eigen::Index>(bd_nodes.size());
   // get the coordinates of the boundary nodes
   Eigen::VectorXd x_bd(Nb);
   Eigen::VectorXd y_bd(Nb);
@@ -427,8 +427,9 @@ void smoothmesh_analysis(const Eigen::VectorXd& x, const Eigen::VectorXd& y,
     ++neighbours(idx2);
   }
   // Insert $\sharp S(i)$ on the diagonal of the interior matrix
-  for (int i = 0; i < Ni; ++i)  // interior
+  for (int i = 0; i < Ni; ++i) { // interior
     triplets_int.emplace_back(i, i, neighbours(i));
+  }
   // Build matrices from Triplets
   Eigen::SparseMatrix<double> A_int(Ni, Ni);
   A_int.setFromTriplets(triplets_int.begin(), triplets_int.end());
