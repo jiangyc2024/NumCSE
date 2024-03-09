@@ -2,15 +2,17 @@
 // Eigen codes related to Newton's method
 // **********************************************************************
 
-#include <iostream>
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
+#include <iostream>
+#include <span>
 
 template <typename FuncType,typename DervType,typename Scalar>
 Scalar newton1D(const FuncType &F,const DervType &DF,
 		const Scalar &x0,double rtol,double atol)
 {
-  Scalar s,z = x0;
+  Scalar s;
+  Scalar z = x0;
   do {
     s = F(z)/DF(z);  // compute Newton correction
     z -= s;           // compute next iterate
@@ -64,10 +66,12 @@ void dampnewton(const FuncType &F,const JacType &DF,
   using scalar_t = typename VecType::Scalar;
   const index_t n = x.size();
   const scalar_t lmin = 1E-3; // Minimal damping factor
-  scalar_t lambda = 1.0; // Actual damping factor
-  VecType s(n),st(n); // Newton corrections
+  scalar_t lambda = 1.0;      // Actual damping factor
+  VecType s(n);
+  VecType st(n);      // Newton corrections
   VecType xn(n);      // Tentative new iterate
-  scalar_t sn,stn;    // Norms of Newton corrections
+  scalar_t sn;
+  scalar_t stn;       // Norms of Newton corrections
 
   do {
     auto jacfac = DF(x).lu(); // LU-factorize Jacobian
@@ -76,7 +80,9 @@ void dampnewton(const FuncType &F,const JacType &DF,
     lambda *= 2.0; 
     do {
       lambda /= 2;
-      if (lambda < lmin) throw "No convergence: lambda -> 0";
+      if (lambda < lmin) {
+        throw std::runtime_error("No convergence: lambda -> 0");
+      }
       xn = x-lambda*s;           // Tentative next iterate
       st = jacfac.solve(F(xn));  // Simplified Newton correction  
       stn = st.norm(); 
@@ -98,21 +104,23 @@ void newton1Ddriver(double x0)
 {
   auto F = [](double x) { return x*exp(x)-1.0; };
   auto DF = [](double x) { return exp(x)*(1.0+x); };
-  double z = newton1D(F,DF,x0,1E-6,1E-8);
+  const double z = newton1D(F,DF,x0,1E-6,1E-8);
   std::cout << "F(z) = " << F(z) << std::endl;
 }
 
-void newton2Ddriver(void)
+void newton2Ddriver()
 {
   auto F = [](const Eigen::Vector2d &x) {
     Eigen::Vector2d z;
-    const double x1 = x(0),x2=x(1);
+    const double x1 = x(0);
+    const double x2 = x(1);
     z << x1*x1-2*x1-x2+1,x1*x1+x2*x2-1;
     return(z);
   };
   auto DF = [](const Eigen::Vector2d &x,const Eigen::Vector2d &f) {
     Eigen::Matrix2d J;
-    const double x1 = x(0),x2=x(1);
+    const double x1 = x(0);
+    const double x2 = x(1);
     J << 2*x1-2,-1,2*x1,2*x2;
     Eigen::Vector2d s = J.lu().solve(f);
     return(s);
@@ -122,17 +130,19 @@ void newton2Ddriver(void)
   std::cout << "||F(x)|| = " << F(x).norm() << std::endl;
 }
 
-void newtonstc2Ddriver(void)
+void newtonstc2Ddriver()
 {
   auto F = [](const Eigen::Vector2d &x) {
     Eigen::Vector2d z;
-    const double x1 = x(0),x2=x(1);
+    const double x1 = x(0);
+    const double x2 = x(1);
     z << x1*x1-2*x1-x2+1,x1*x1+x2*x2-1;
     return(z);
   };
   auto Jac = [](const Eigen::Vector2d &x) {
     Eigen::Matrix2d J;
-    const double x1 = x(0),x2=x(1);
+    const double x1 = x(0);
+    const double x2 = x(1);
     J << 2*x1-2,-1,2*x1,2*x2;
     return(J);
   };
@@ -145,13 +155,15 @@ void dampnewtondriver(double x0 = 2,double x1 =3)
 {
   auto F = [](const Eigen::Vector2d &x) {
     Eigen::Vector2d z;
-    const double x1 = x(0),x2=x(1);
+    const double x1 = x(0);
+    const double x2 = x(1);
     z << x1*x1-2*x1-x2+1,x1*x1+x2*x2-1;
     return(z);
   };
   auto Jac = [](const Eigen::Vector2d &x) {
     Eigen::Matrix2d J;
-    const double x1 = x(0),x2=x(1);
+    const double x1 = x(0);
+    const double x2 = x(1);
     J << 2*x1-2,-1,2*x1,2*x2;
     return(J);
   };
@@ -163,32 +175,35 @@ void dampnewtondriver(double x0 = 2,double x1 =3)
   std::cout << "||F(x)|| = " << F(x).norm() << std::endl;
 }
 
-
+//NOLINTNEXTLINE(bugprone-exception-escape)
 int main(int argc,char **argv)
 {
+  auto args = std::span(argv, argc);
+  int exitCode = 0;
   std::cout << "EIGEN NEWTON METHOD codes" << std::endl;
-  if (argc < 2) {
-    std::cerr << "Usage: " << argv[0] << " <selection>" << std::endl;
-    return(-1L);
-  }
-  else {
-    const int sel = std::atoi(argv[1]);
+  
+  if(argc > 1){
+    const int64_t sel = std::strtol(args[1], nullptr, 10);
     switch (sel) {
     case 1: { newton1Ddriver(2.0); break; }
     case 2: { newton2Ddriver(); break; } 
     case 3: { newtonstc2Ddriver(); break; } 
     case 4: {
-      double x0,x1;
+      double x0 = 2;
+      double x1 = 3;
       if (argc == 4) {
-	x0 = std::atof(argv[2]);
-	x1 = std::atof(argv[3]);
+        x0 = std::strtod(args[2], nullptr);
+        x1 = std::strtod(args[3], nullptr);
       }
-      else { x0 = 2; x1 = 3; } 
       dampnewtondriver(x0,x1);
       break; 
     } 
-    default: { std::cerr << "Invalid selection" << std::endl; std::exit(-1L); }
+    default: { std::cerr << "Invalid selection" << std::endl; exitCode = -1L; }
     }
   }
-  return 0;
+  else {
+    std::cerr << "Usage: " << args[0] << " <selection>" << std::endl;
+    exitCode = -1L;
+  }
+  return exitCode;
 }
