@@ -1,7 +1,7 @@
-# include <iostream>
-# include <vector>
 # include <complex>
+# include <iostream>
 # include <unsupported/Eigen/FFT>
+# include <vector>
 
 template <class Function>
 void fourcoeffcomp(std::vector<std::complex<double>>& y, Function& c, const unsigned m, const unsigned ovsmpl = 2) {

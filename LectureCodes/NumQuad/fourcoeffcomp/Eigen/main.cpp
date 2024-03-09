@@ -1,11 +1,11 @@
-# include <iostream>
+# include "./fourcoeffcomp.hpp"
 # include <cmath>
 # include <complex>
 # include <functional>
-# include "./fourcoeffcomp.hpp"
+# include <iostream>
 
 int main () {
-  std::complex<double> I(0,1); // imaginary unit
+  const std::complex<double> I(0,1); // imaginary unit
   std::function<std::complex<double>(double)> c = [I](double x) { 
     return std::exp(I*x*M_PI); 
   };
