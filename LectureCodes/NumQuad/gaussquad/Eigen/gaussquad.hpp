@@ -7,7 +7,6 @@
 
 /* SAM_LISTING_BEGIN_0 */
 struct QuadRule {
-  //__attribute__((aligned(32)))
   Eigen::VectorXd nodes_, weights_;
 } __attribute__((aligned(32)));
 
