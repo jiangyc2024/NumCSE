@@ -7,10 +7,11 @@
 
 /* SAM_LISTING_BEGIN_0 */
 struct QuadRule {
+  //__attribute__((aligned(32)))
   Eigen::VectorXd nodes_, weights_;
-};
+} __attribute__((aligned(32)));
 
-QuadRule gaussquad(const unsigned int n) {
+inline QuadRule gaussquad(const unsigned int n) {
   QuadRule qr;
   // Symmetric matrix whose eigenvalues provide Gauss points
   Eigen::MatrixXd M = Eigen::MatrixXd::Zero(n, n);
@@ -19,7 +20,7 @@ QuadRule gaussquad(const unsigned int n) {
     M(i, i - 1) = M(i - 1, i) = b;
   }  // \Label[line]{gw:3x}
   // using Eigen's built-in solver for symmetric eigenvalue problems
-  Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eig(M);
+  const Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eig(M);
 
   qr.nodes_ = eig.eigenvalues();  //
   qr.weights_ =
