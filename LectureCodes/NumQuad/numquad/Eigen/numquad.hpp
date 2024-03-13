@@ -1,10 +1,10 @@
-# include <vector>
-# include <Eigen/Dense>
-# include "polyfit.hpp"
 # include "./gaussquad.hpp"
+# include "polyfit.hpp"
+# include <Eigen/Dense>
+# include <vector>
 
 template <class Function>
-std::vector<double> numquad(Function& F, const double a, const double b, const unsigned N, const std::string mode) {
+std::vector<double> numquad(Function& F, const double a, const double b, const unsigned N, const std::string & mode) {
   // saving the results in this vector
   std::vector<double> res;
   res.reserve(N);
@@ -33,7 +33,7 @@ std::vector<double> numquad(Function& F, const double a, const double b, const u
 
   // weights for clenshaw curtis quadrature
   Eigen::VectorXd w(N + 1);
-  for (int i = N + 1; i >= 1; --i) {
+  for (unsigned i = N + 1; i >= 1; --i) {
     w(N + 1 - i) = (std::pow(b, i) - std::pow(a, i))/i;
   }
   
@@ -56,7 +56,7 @@ std::vector<double> numquad(Function& F, const double a, const double b, const u
     }
 
     // get monomial basis coefficients using polyfit
-    Eigen::VectorXd coeffs = polyfit(x, y, n);
+    const Eigen::VectorXd coeffs = polyfit(x, y, n);
 
     // compute integral
     res.push_back( coeffs.dot(w.tail(n + 1)) );

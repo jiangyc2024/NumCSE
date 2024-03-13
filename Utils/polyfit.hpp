@@ -12,6 +12,7 @@
 # include <Eigen/Dense>
 # include <Eigen/QR>
 
+inline
 /* SAM_LISTING_BEGIN_0 */
 // Solver for polynomial linear least squares data fitting problem
 // data points passed in t and y, 'order' = degree + 1 

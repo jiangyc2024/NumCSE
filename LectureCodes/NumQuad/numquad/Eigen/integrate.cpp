@@ -27,8 +27,8 @@ auto integrate(const QUADRULE &qr, FUNCTION &&f)
 
 int main(int /*argc*/, char ** /*argv*/) {
   const double sqrt3 = std::sqrt(3) / 3.0;
-  std::vector<std::pair<double, double>> twoPtsGaussRule{{-sqrt3, 1.0},
-                                                         {sqrt3, 1.0}};
+  const std::vector<std::pair<double, double>> twoPtsGaussRule{
+    {-sqrt3, 1.0}, {sqrt3, 1.0}};
   std::cout << "I = "
             << integrate(twoPtsGaussRule,
                          [](double t) -> std::complex<double> {
