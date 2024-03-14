@@ -83,7 +83,7 @@ int main() {
     B = MatrixXd::Random(s, s);
   };
 
-  const vector<size_t> sizes = {10, 20, 40, 80, 160, 320, 640};
+  const std::vector<size_t> sizes = {10, 20, 40, 80, 160, 320, 640};
 
   timeTable(
       sizes,
