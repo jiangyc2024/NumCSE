@@ -20,8 +20,10 @@ template <typename Functor>
 double equidTrapezoidalRule(Functor &&f, double a, double b, unsigned int n) {
   assert(n>=2);
   const double h = (b - a)/(n-1);
-  double t = a + h, s = 0.0;
-  for (unsigned int i = 1; i < n-1; t += h, ++i)
+  double t = a + h;
+  double s = 0.0;
+  for (unsigned int i = 1; i < n-1; t += h, ++i) {
     s += f(t);
+  }
   return (0.5 * h * f(a) + 0.5 * h * f(b) + h * s);
 }
