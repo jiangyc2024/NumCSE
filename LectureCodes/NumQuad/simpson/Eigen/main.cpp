@@ -1,12 +1,12 @@
-# include <iostream>
-# include <cmath>
 # include "simpson.hpp"
+# include <cmath>
+# include <iostream>
 
 int main() {
   auto f = [](double x){ return x*x; };
   auto g = [](double x){ return std::sin(100*x); };
-  const double a = 0,
-               b = 1;
+  const double a = 0;
+  const double b = 1;
   const unsigned N = 1000;
 
   for (unsigned n = 2; n < N; n *= 4){
