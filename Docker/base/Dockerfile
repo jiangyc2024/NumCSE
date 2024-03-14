@@ -54,3 +54,14 @@ run curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
 # ==== install blas ================================================================
 
 run apt-get -y install libblas-dev
+
+# ==== install vscode ==============================================================
+
+RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version 4.14.1
+
+# install VS Code extensions
+RUN code-server \
+       --install-extension notskm.clang-tidy \
+       --install-extension ms-vscode.cmake-tools \
+       --install-extension twxs.cmake \
+       --install-extension ms-vscode.cpptools-themes
