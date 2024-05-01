@@ -33,7 +33,7 @@ int main(int /*argc*/, char** /*argv*/) {
   std::vector<std::pair<StateType, double>> states =
       integrator.solve(y0, 1.0, normFunc);
   // Output information accumulation during numerical integration
-  integrator.options.do_statistics = true;
+  integrator.options().do_statistics = true;
   integrator.print();
   // Output norm of discretization error in nodes of adaptively generated
   // temporal mesh

@@ -46,13 +46,13 @@ int main(int argc, char **argv) {
         // Invoke explicit Runge-Kutta method with stepsize control
         Ode45<StateType, RhsType> integrator(f);
         // Set rather loose tolerances
-        integrator.options.rtol = 0.1;
-        integrator.options.atol = 0.001;
-        integrator.options.min_dt = 1E-18;
+        integrator.options().rtol = 0.1;
+        integrator.options().atol = 0.001;
+        integrator.options().min_dt = 1E-18;
         std::vector<std::pair<StateType, double>> states =
             integrator.solve(y0, 1.0, normFunc);
         // Output information accumulation during numerical integration
-        integrator.options.do_statistics = true;
+        integrator.options().do_statistics = true;
         integrator.print();
         /* SAM_LISTING_END_0 */
 
@@ -79,13 +79,13 @@ int main(int argc, char **argv) {
         // Invoke explicit Runge-Kutta method with stepsize control
         Ode45<StateType, RhsType> integrator(f);
         // Set rather loose tolerances
-        integrator.options.rtol = 0.1;
-        integrator.options.atol = 0.001;
-        integrator.options.min_dt = 1E-18;
+        integrator.options().rtol = 0.1;
+        integrator.options().atol = 0.001;
+        integrator.options().min_dt = 1E-18;
         std::vector<std::pair<StateType, double>> states =
             integrator.solve(y0, 1.0, normFunc);
         // Output information accumulation during numerical integration
-        integrator.options.do_statistics = true;
+        integrator.options().do_statistics = true;
         integrator.print();
         /* SAM_LISTING_END_1 */
 
