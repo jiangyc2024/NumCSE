@@ -169,8 +169,7 @@ class Ode45 {
   //! Copy of r.h.s (of \f$ y'(t) = rhs((y(t)) \f$) is stored internally.
   //! \param[in] f function for the computation of r.h.s.
   //! (e.g. a lambda function).
-  explicit Ode45(RhsType rhs) : f(std::move(rhs)), t(0) { /* EMPTY */
-  }
+  explicit Ode45(RhsType rhs);
 
   //! \brief Performs solutions of IVP up to specified final time.
   //! Evolves ODE with initial data \f$y0\f$, up to time \f$T\f$ or
@@ -189,20 +188,22 @@ class Ode45 {
   void print();
 
   //! \brief getter function for options
-  ode45::Options & options(){ return m_options; }
+  [[nodiscard]] ode45::Options & options(){ return m_options; }
   
-  //! \brief const getter function for options
-  ode45::Statistics const & statistics() const { return m_statistics; }
+  //! \brief const getter function for statistics
+  [[nodiscard]] ode45::Statistics const & statistics() const { return m_statistics; }
 
  private:
-  // A copy of rhs stored during initialization
-  RhsType f;
-  // Current time
-  double t {0};
-
+  
   ode45::Options m_options = {};  
 
   ode45::Statistics m_statistics = {};
+
+  // Current time
+  double t {0};
+
+  // A copy of rhs stored during initialization
+  RhsType f;
 
   // RK45 coefficients and data, cf. https://github.com/rngantner/
   ////////////////////////////////////////
@@ -216,77 +217,70 @@ class Ode45 {
   static constexpr double _pow = 1. / 5;
   // Number of stages
 #ifdef MATLABCOEFF
-  static const unsigned int _s = 7;
+  static constexpr unsigned int _s = 7;
 #else
-  static const unsigned int _s = 6;
+  static constexpr unsigned int _s = 6;
 #endif
   // Matrix \Blue{$\FA$} from the Butcher scheme
-  static Eigen::MatrixXd _mA;
+  const Eigen::MatrixXd _mA;
   // Quadrature weights b_i
-  static Eigen::VectorXd _vb4, _vb5;
+  const Eigen::VectorXd _vb4, _vb5;
   // Coefficients c_i relevant for non-autonomous ODEs
-  static Eigen::VectorXd _vc;
+  const Eigen::VectorXd _vc;
 };
 
-// Matrix \Blue{$\FA$} in Butcher scheme \eqref{eq:BSexpl}
 template <class StateType, class RhsType>
-Eigen::MatrixXd Ode45<StateType, RhsType>::_mA =
-    (Eigen::MatrixXd(Ode45<StateType, RhsType>::_s,
-                     Ode45<StateType, RhsType>::_s - 1)
-         <<
-#ifdef MATLABCOEFF
-         0,
-     0, 0, 0, 0, 0, 1. / 5., 0, 0, 0, 0, 0, 3. / 40., 9. / 40., 0, 0, 0, 0,
-     44. / 45., -56. / 15., 32. / 9., 0, 0, 0, 19372. / 6561., -25360. / 2187.,
-     64448. / 6561., -212. / 729., 0, 0, 9017. / 3168., -355 / 33,
-     46732. / 5247., 49. / 176., -5103. / 18656., 0, 35. / 384., 0,
-     500. / 1113., 125. / 192., -2187. / 6784., 11. / 84.
-#else
-         0,
-     0, 0, 0, 0, 1. / 4., 0, 0, 0, 0, 3. / 32., 9. / 32., 0, 0, 0, 1932. / 2197,
-     -7200. / 2197, 7296. / 2197, 0, 0, 439. / 216, -8, 3680. / 513,
-     -845. / 4104, 0, -8. / 27., 2, -3544. / 2565, 1859. / 4104, -11. / 40.
-#endif
-     )
-        .finished();
+Ode45<StateType, RhsType>::Ode45(RhsType rhs) : 
 
-// Quadrature weights \Blue{$b_i$} for the 4th-order method
-template <class StateType, class RhsType>
-Eigen::VectorXd Ode45<StateType, RhsType>::_vb4 =
-    (Eigen::VectorXd(Ode45<StateType, RhsType>::_s) <<
-#ifdef MATLABCOEFF
-         5179. / 57600.,
-     0, 7571. / 16695., 393. / 640., -92097. / 339200., 187. / 2100., 1. / 40.
-#else
-         25. / 216,
-     0, 1408. / 2565, 2197. / 4104, -1. / 5, 0
-#endif
-     )
-        .finished();
+  f(std::move(rhs)),
 
-// Quadrature weights \Blue{$b_i$} for the 5th-order method
-template <class StateType, class RhsType>
-Eigen::VectorXd Ode45<StateType, RhsType>::_vb5 =
-    (Eigen::VectorXd(Ode45<StateType, RhsType>::_s) <<
-#ifdef MATLABCOEFF
-         35. / 384.,
-     0, 500. / 1113., 125. / 192., -2187. / 6784., 11. / 84., 0
-#else
-         16. / 135,
-     0, 6656. / 12825, 28561. / 56430, -9. / 50, 2. / 55
-#endif
-     )
-        .finished();
+  // Matrix \Blue{$\FA$} in Butcher scheme \eqref{eq:BSexpl}
+  _mA((Eigen::MatrixXd(_s, _s - 1) <<
+  #ifdef MATLABCOEFF
+           0,
+       0, 0, 0, 0, 0, 1. / 5., 0, 0, 0, 0, 0, 3. / 40., 9. / 40., 0, 0, 0, 0,
+       44. / 45., -56. / 15., 32. / 9., 0, 0, 0, 19372. / 6561., -25360. / 2187.,
+       64448. / 6561., -212. / 729., 0, 0, 9017. / 3168., -355 / 33,
+       46732. / 5247., 49. / 176., -5103. / 18656., 0, 35. / 384., 0,
+       500. / 1113., 125. / 192., -2187. / 6784., 11. / 84.
+  #else
+           0,
+       0, 0, 0, 0, 1. / 4., 0, 0, 0, 0, 3. / 32., 9. / 32., 0, 0, 0, 1932. / 2197,
+       -7200. / 2197, 7296. / 2197, 0, 0, 439. / 216, -8, 3680. / 513,
+       -845. / 4104, 0, -8. / 27., 2, -3544. / 2565, 1859. / 4104, -11. / 40.
+  #endif
+       )
+      .finished()),
 
-// The coefficients \Blue{$c_i$}, relevant for non-autonomous ODEs.
-// Can be computed via row sums of \Blue{$FA$}
-template <class StateType, class RhsType>
-Eigen::VectorXd Ode45<StateType, RhsType>::_vc =
-    Ode45<StateType, RhsType>::_mA.rowwise().sum();
+  // Quadrature weights \Blue{$b_i$} for the 4th-order method
+  _vb4((Eigen::VectorXd(_s) <<
+  #ifdef MATLABCOEFF
+           5179. / 57600.,
+       0, 7571. / 16695., 393. / 640., -92097. / 339200., 187. / 2100., 1. / 40.
+  #else
+           25. / 216,
+       0, 1408. / 2565, 2197. / 4104, -1. / 5, 0
+  #endif
+       )
+      .finished()),
 
-// Stage number of the RK scheme
-template <class StateType, class RhsType>
-const unsigned int Ode45<StateType, RhsType>::_s;
+  // Quadrature weights \Blue{$b_i$} for the 5th-order method
+  _vb5((Eigen::VectorXd(_s) <<
+  #ifdef MATLABCOEFF
+           35. / 384.,
+       0, 500. / 1113., 125. / 192., -2187. / 6784., 11. / 84., 0
+  #else
+           16. / 135,
+       0, 6656. / 12825, 28561. / 56430, -9. / 50, 2. / 55
+  #endif
+       )
+      .finished()),
+
+  // The coefficients \Blue{$c_i$}, relevant for non-autonomous ODEs.
+  // Can be computed via row sums of \Blue{$FA$}
+  _vc(_mA.rowwise().sum())
+
+{/*EMPTY*/}
 
 // solve(): main timestepping method, for autonomous ODEs only
 template <class StateType, class RhsType>
