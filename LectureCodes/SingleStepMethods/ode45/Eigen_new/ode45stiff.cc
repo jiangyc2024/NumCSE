@@ -10,23 +10,26 @@
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
+#include <span>
 #include <string>
 
 #define MATLABCOEFF true
 
 #include "ode45.h"
 
+//NOLINTBEGIN(bugprone-exception-escape)
 int main(int argc, char **argv) {
+  auto args = std::span(argv, argc);
+  int exitCode = 0;
   if (argc != 2) {
-    std::cerr << "Usage: " << argv[0] << "[1-2]" << std::endl;
-    exit(-1L);
+    std::cerr << "Usage: " << args[0] << "[1-2]" << std::endl;
+    exitCode = -1;
   } else {
-    int select;
+    int64_t select = 0;
     try {
-      select = std::stoi(argv[1]);
+      select = std::strtol(args[1], nullptr, 10);
     } catch (const std::exception &e) {
       std::cout << e.what() << std::endl;
-      select = 0;
     }
     switch (select) {
       case 1: {
@@ -37,11 +40,11 @@ int main(int argc, char **argv) {
         using StateType = double;
         using RhsType = std::function<StateType(StateType)>;
         // Logistic differential equation \eqref{eq:logode}
-        double lambda = 500.0;
-        RhsType f = [lambda](StateType y) { return lambda * y * y * (1 - y); };
-        StateType y0 = 0.01;  // Initial value, will create a STIFF IVP
+        const double lambda = 500.0;
+        const RhsType f = [lambda](StateType y) { return lambda * y * y * (1 - y); };
+        const StateType y0 = 0.01;  // Initial value, will create a STIFF IVP
         // State space \Blue{$\bbR$}, simple modulus supplies norm
-        auto normFunc = [](StateType x) { return fabs(x); };
+        const auto normFunc = [](StateType x) { return fabs(x); };
 
         // Invoke explicit Runge-Kutta method with stepsize control
         Ode45<StateType, RhsType> integrator(f);
@@ -49,7 +52,7 @@ int main(int argc, char **argv) {
         integrator.options().rtol = 0.1;
         integrator.options().atol = 0.001;
         integrator.options().min_dt = 1E-18;
-        std::vector<std::pair<StateType, double>> states =
+        const std::vector<std::pair<StateType, double>> states =
             integrator.solve(y0, 1.0, normFunc);
         // Output information accumulation during numerical integration
         integrator.options().do_statistics = true;
@@ -70,11 +73,11 @@ int main(int argc, char **argv) {
         using StateType = double;
         using RhsType = std::function<StateType(StateType)>;
         // Decay differential equation \eqref{eq:logode}
-        double lambda = 80.0;
-        RhsType f = [lambda](StateType y) { return -lambda * y; };
-        StateType y0 = 1.0;  // Initial value, will create a STIFF IVP
+        const double lambda = 80.0;
+        const RhsType f = [lambda](StateType y) { return -lambda * y; };
+        const StateType y0 = 1.0;  // Initial value, will create a STIFF IVP
         // State space \Blue{$\bbR$}, simple modulus supplies norm
-        auto normFunc = [](StateType x) { return fabs(x); };
+        const auto normFunc = [](StateType x) { return fabs(x); };
 
         // Invoke explicit Runge-Kutta method with stepsize control
         Ode45<StateType, RhsType> integrator(f);
@@ -82,7 +85,7 @@ int main(int argc, char **argv) {
         integrator.options().rtol = 0.1;
         integrator.options().atol = 0.001;
         integrator.options().min_dt = 1E-18;
-        std::vector<std::pair<StateType, double>> states =
+        const std::vector<std::pair<StateType, double>> states =
             integrator.solve(y0, 1.0, normFunc);
         // Output information accumulation during numerical integration
         integrator.options().do_statistics = true;
@@ -96,9 +99,11 @@ int main(int argc, char **argv) {
         break;
       }
       default: {
-        std::cerr << "Usage: " << argv[0] << "[1-2]" << std::endl;
-        exit(-1L);
+        std::cerr << "Usage: " << args[0] << "[1-2]" << std::endl;
+        exitCode = -1;
       }
     }
   }
+  return exitCode;
 }
+//NOLINTEND(bugprone-exception-escape)
