@@ -10,10 +10,19 @@
 #include <Eigen/Dense>
 #include <cassert>
 #include <cmath>
+#include <functional>
 #include <iostream>
 #include <vector>
 
 namespace EmbeddedRKSSM {
+
+struct Options {
+  double T;       // final time
+  double h0;      // initial stepsize
+  double reltol;  // reltol relative tolerance for timestep control
+  double abstol;  // abstol absolute tolerance for timestep control
+  double hmin;    // minimal admissible stepsize
+} __attribute__((aligned(64)));
 
 /**
  * @brief Adaptive embedded Runge-Kutta-Fehlberg timestepping
@@ -27,38 +36,34 @@ namespace EmbeddedRKSSM {
  * @param bh weight vector for RKSSM of order p
  * @param p order of lower-order method
  * @param y0 intial value
- * @param T final time
- * @param h0 initial stepsize
- * @param reltol relative tolerance for timestep control
- * @param abstol absolute tolerance for timestep control
- * @param hmin minimal admissible stepsize
+ * @param opt user options
  */
 template <typename RHSFunction>
 std::vector<std::pair<double, Eigen::VectorXd>> embeddedRKSSM(
     RHSFunction &&f_rhs, const Eigen::MatrixXd &A, const Eigen::VectorXd &b,
     const Eigen::VectorXd &bh, unsigned int p, const Eigen::VectorXd &y0,
-    double T, double h0, double reltol, double abstol, double hmin) {
+    const Options &opt) {
   // Check parameters defining embedded RK-SSM
-  unsigned int s = A.cols();  // Number of stages
+  const unsigned int s = A.cols();  // Number of stages
   assert((s == A.rows()) && "Butcher matrix must be square");
   assert((s == b.size()) && "Length of weight vector b != no of stages");
   assert((s == bh.size()) && "Length of weight vector bh != no of stages");
-  unsigned int N = y0.size();  // Dimension of state space
+  const unsigned int N = y0.size();  // Dimension of state space
   Eigen::MatrixXd K(N, s);     // Columns hold increment vectors
 
   double t = 0.0;  // Initial time zero for autonomous initial-value problem
-  double h = h0;   // Current timestep size
+  double h = opt.h0;   // Current timestep size
   std::vector<std::pair<double, Eigen::VectorXd>> states{
       {t, y0}};            // State sequence
   Eigen::VectorXd y = y0;  // Current state
   states.emplace_back(t, y);
   // Main timestepping loop
-  while ((states.back().first < T) && (h >= hmin)) {
+  while ((states.back().first < opt.T) && (h >= opt.hmin)) {
     // Compute increments
     K.col(0) = f_rhs(y);
-    for (int l = 1; l < s; ++l) {
+    for (unsigned int l = 1; l < s; ++l) {
       Eigen::VectorXd v{Eigen::VectorXd::Zero(N)};
-      for (int i = 0; i < l; ++i) {
+      for (unsigned int i = 0; i < l; ++i) {
         v += A(l, i) * K.col(i);
       }
       K.col(l) = f_rhs(y + h * v);
@@ -66,8 +71,8 @@ std::vector<std::pair<double, Eigen::VectorXd>> embeddedRKSSM(
     // Compute next two approximate states
     auto yh = y + h * K * b;   // high-order method
     auto yH = y + h * K * bh;  // low-order method
-    double est = (yh - yH).norm();
-    double tol = std::max(reltol * y.norm(), abstol);
+    const double est = (yh - yH).norm();
+    const double tol = std::max(opt.reltol * y.norm(), opt.abstol);
     if (est <= tol) {
       y = yh;  // Advance to next approximate state
       t += h;  // Next time
@@ -78,14 +83,14 @@ std::vector<std::pair<double, Eigen::VectorXd>> embeddedRKSSM(
     //   std::cout << "tol/est = " << tol / est << ", h = " << h << std::endl;
     // }
     h *= std::max(0.5, std::min(2., 0.9 * std::pow(tol / est, 1. / (p + 1))));
-    if (h < hmin) {
+    if (h < opt.hmin) {
       std::cerr
           << "Warning: Failure at t=" << states.back().first
           << ". Unable to meet integration tolerances without reducing the step"
-          << " size below the smallest value allowed (" << hmin
+          << " size below the smallest value allowed (" << opt.hmin
           << ") at time t." << std::endl;
     } else {
-      h = std::min(T - t + hmin, h);
+      h = std::min(opt.T - t + opt.hmin, h);
     }
   }
   return states;
@@ -100,20 +105,18 @@ void testrun(const Eigen::MatrixXd &A, const Eigen::VectorXd &b,
   std::cout << "Weight vector (order p) = " << bh.transpose() << std::endl;
   // Simple linear test case: rotation ODE
   auto f = [](Eigen::Vector2d y) -> Eigen::Vector2d {
-    return Eigen::Vector2d(-y[1], y[0]);
+    return {-y[1], y[0]};
   };
   Eigen::VectorXd y0(2);
   y0 << 1.0, 0.0;
   // Final time
   const double T = 2.0 * 3.14159265358979323846;
-  const double hmin = T / 1E6;
-  const double h0 = T / 100;
   // Test different tolerances
   const int m = 6;
-  std::array<double, m> rtol{0.1, 0.01, 0.001, 0.0001, 0.00001, 0.000001};
-  std::array<double, m> atol{0.01, 0.001, 0.0001, 0.00001, 0.000001, 0.0000001};
+  std::vector<double> rtol{0.1, 0.01, 0.001, 0.0001, 0.00001, 0.000001};
+  std::vector<double> atol{0.01, 0.001, 0.0001, 0.00001, 0.000001, 0.0000001};
   for (int j = 0; j < m; ++j) {
-    auto res = embeddedRKSSM(f, A, b, bh, p, y0, T, h0, rtol[j], atol[j], hmin);
+    auto res = embeddedRKSSM(f, A, b, bh, p, y0, {.T=T, .h0= T / 100, .reltol=rtol[j], .abstol=atol[j], .hmin=T / 1E6});
     double err = 0.0;
     for (const auto &i : res) {
       const double t = i.first;
