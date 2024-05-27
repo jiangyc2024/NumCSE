@@ -15,10 +15,11 @@ int main()
   // State space \Blue{$\bbR$}, simple modulus supplies norm
   auto normFunc = [](double x){ return fabs(x); };
   
-  double y0 = 0.2; // initial value
+  const double y0 = 0.2; // initial value
   // Invoke explicit Runge-Kutta-Fehlberg method with stepsize control
-  std::vector<std::pair<double, double>> states = rkf45(f, y0, 1, normFunc);
+  const std::vector<std::pair<double, double>> states = rkf45(f, y0, 1, normFunc);
   
-  for (auto state : states)
+  for (auto state : states) {
     std::cout << "t = " << state.first << ", y = " << state.second << std::endl;
+  }
 }

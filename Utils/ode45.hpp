@@ -31,6 +31,8 @@
 //! integration.
 
 /*** BEGIN AUXILIARY FUNCTIONS ***/
+namespace ode45 {
+
 
 //! \brief Compute the norm for a Eigen compatible vector.
 //! Wrapper around Eigen norm method. Returns lpNorm<Eigen::Infinity>
@@ -41,7 +43,7 @@
 template <class T,
           typename std::enable_if<!std::numeric_limits<T>::is_specialized,
                                   bool>::type = true>
-inline typename T::Scalar _norm(const T &t) {
+inline typename T::Scalar defaultnorm(const T &t) {
   return t.template lpNorm<Eigen::Infinity>();
 }
 
@@ -53,15 +55,66 @@ inline typename T::Scalar _norm(const T &t) {
 template <class T,
           typename std::enable_if<std::numeric_limits<T>::is_specialized,
                                   bool>::type = false>
-inline T _norm(const T &t) {
+inline T defaultnorm(const T &t) {
   return std::abs(t);
 }
 
+// Exception in case integrator grinds to a halt
 class termination_error : public std::exception {
-  virtual const char *what() const throw() {
+  [[nodiscard]] const char *what() const noexcept override {
     return "Integration terminated prematurely.";
   }
 };
+
+//! \brief Stores configuration parameters (a.k.a. options).
+//! Setting values here configures the Ode45 class to use the selected
+//! options.
+//! Setup this before calling solve(...), e.g. with
+//!     Ode45<StateType> O(f);
+//!     Ode45.options().rtol = 10e-5;
+struct Options {
+  //!< Set true if you want to save the initial data
+  bool save_init = true;
+  //!< TODO: Set true if you want a fixed step size
+  bool fixed_stepsize = false;
+  //!< Set the maximum number of rejected iterations
+  unsigned int max_iterations = 5000;
+  //!< Set the minimum step size (-1 for none)
+  double min_dt = -1.;
+  //!< Set the maximum step size (-1 for none)
+  double max_dt = -1.;
+  //!< Set an initial step size
+  double initial_dt = -1.;
+  //!< Set a starting time
+  double start_time = 0;
+  //!< Relative tolerance for the error.
+  double rtol = 1e-6;
+  //!< Absolute tolerance for the error.
+  double atol = 1e-8;
+  //!< Set to true before solving to save statistics
+  bool do_statistics = false;
+  //!< TODO: Perform runtime measurements.
+  bool do_timings = false;
+  //!< Print more output.
+  bool verbose = false;
+} __attribute__((aligned(64)));
+
+//! \brief Contain usage statistics.
+//! This will be written (i.e. contain meaningful values)
+//! after a call of solve(...), if do_statistics is set to true.
+struct Statistics {
+  //!< Number of loops (sum of all accepted and rejected steps)
+  unsigned int cycles = 0;
+  //!< Number of actual time steps performed (accepted step)
+  unsigned int steps = 0;
+  //!< Number of rejected steps per step
+  unsigned int rejected_steps = 0;
+  //!< Function calls
+  unsigned int funcalls = 0;
+} __attribute__((aligned(16)));
+
+
+} // namespace ode45
 
 /*** END AUXILIARY FUNCTIONS ***/
 
@@ -77,7 +130,7 @@ class termination_error : public std::exception {
 //!
 //! 1. Call constructor templated by state type and taking the right-hand-side
 //! vector field as argument, for example:
-//!     ode45<Eigen::VectorXd> O(f);
+//!     Ode45<Eigen::VectorXd> O(f);
 //!
 //! 2. (optional) Set options, for instance:
 //!     O.options.<name> = <value>;
@@ -89,7 +142,7 @@ class termination_error : public std::exception {
 //! in addition a norm can be passed as third argument.
 //!
 //! 4. (optional) Get statistics:
-//!     O.statistics.<stat_you_want_to_get>
+//!     O.statistics().<stat_you_want_to_get>
 //!
 //! 5. (optional) Print data (statistics and options):
 //!     O.print();
@@ -98,7 +151,7 @@ class termination_error : public std::exception {
 //! solution \f$y(t)\f$. We require to be able to
 //! do basic operations on StateSpace, like copy/copy-construct. Furthermore, it
 //! is assumed that we have a vector space structure implemented
-//! using operators +, *, +=, *=. Moreover we require a norm StateType._norm().
+//! using operators +, *, +=, *=. Moreover we require a norm StateType.defaultnorm().
 //! \tparam RhsType type of the r.h.s. function \f$f\f$, providing
 //!      StateType operator()(const StateType & y)
 //!
@@ -108,7 +161,7 @@ class termination_error : public std::exception {
 //! Asher
 template <class StateType,
           class RhsType = std::function<StateType(const StateType &)>>
-class ode45 {
+class Ode45 {
  public:
   //! \brief Initialize the class by providing a r.h.s.
   //! RhsType is automatically deduced by the constructor at
@@ -116,8 +169,7 @@ class ode45 {
   //! Copy of r.h.s (of \f$ y'(t) = rhs((y(t)) \f$) is stored internally.
   //! \param[in] f function for the computation of r.h.s.
   //! (e.g. a lambda function).
-  ode45(const RhsType &rhs) : f(rhs) { /* EMPTY */
-  }
+  explicit Ode45(RhsType rhs);
 
   //! \brief Performs solutions of IVP up to specified final time.
   //! Evolves ODE with initial data \f$y0\f$, up to time \f$T\f$ or
@@ -126,67 +178,32 @@ class ode45 {
   //! \param[in] y0 initial data \f$y_0 = y(0)\f$.
   //! \param[in] T final time for the integration (initial time = 0)
   //! \param[in] norm optional norm function (if a custom norm is needed or
-  //! _norm is not defined, i.e. we use a custom vector type).
+  //! defaultnorm is not defined, i.e. we use a custom vector type).
   //! \return vector of pairs \f$ (y(t), t) \f$ at snapshot times.
-  template <class NormFunc = decltype(_norm<StateType>)>
+  template <class NormFunc = decltype(ode45::defaultnorm<StateType>)>
   std::vector<std::pair<StateType, double>> solve(
-      const StateType &y0, double T, const NormFunc &norm = _norm<StateType>);
+      const StateType &y0, double T, const NormFunc &norm = ode45::defaultnorm<StateType>);
 
   //! \brief Print statistics and options of this class instance.
   void print();
 
-  //! \brief Stores configuration parameters (a.k.a. options).
-  //! Setting values here configures the ode45 class to use the selected
-  //! options.
-  //! Setup this before calling solve(...), e.g. with
-  //!     ode45<StateType> O(f);
-  //!     ode45.options.rtol = 10e-5;
-  struct Options {
-    //!< Set true if you want to save the initial data
-    bool save_init = true;
-    //!< TODO: Set true if you want a fixed step size
-    bool fixed_stepsize = false;
-    //!< Set the maximum number of rejected iterations
-    unsigned int max_iterations = 5000;
-    //!< Set the minimum step size (-1 for none)
-    double min_dt = -1.;
-    //!< Set the maximum step size (-1 for none)
-    double max_dt = -1.;
-    //!< Set an initial step size
-    double initial_dt = -1.;
-    //!< Set a starting time
-    double start_time = 0;
-    //!< Relative tolerance for the error.
-    double rtol = 1e-6;
-    //!< Absolute tolerance for the error.
-    double atol = 1e-8;
-    //!< Set to true before solving to save statistics
-    bool do_statistics = false;
-    //!< TODO: Perform runtime measurements.
-    bool do_timings = false;
-    //!< Print more output.
-    bool verbose = false;
-  } options;
-
-  //! \brief Contain usage statistics.
-  //! This will be written (i.e. contain meaningful values)
-  //! after a call of solve(...), if do_statistics is set to true.
-  struct Statistics {
-    //!< Number of loops (sum of all accepted and rejected steps)
-    unsigned int cycles = 0;
-    //!< Number of actual time steps performed (accepted step)
-    unsigned int steps = 0;
-    //!< Number of rejected steps per step
-    unsigned int rejected_steps = 0;
-    //!< Function calls
-    unsigned int funcalls = 0;
-  } statistics;
+  //! \brief getter function for options
+  [[nodiscard]] ode45::Options & options(){return m_options;}
+  
+  //! \brief const getter function for statistics
+  [[nodiscard]] ode45::Statistics const & statistics() const {return m_statistics;}
 
  private:
+  
+  ode45::Options m_options = {};  
+
+  ode45::Statistics m_statistics = {};
+
+  // Current time
+  double t {0};
+
   // A copy of rhs stored during initialization
   RhsType f;
-  // Current time
-  double t;
 
   // RK45 coefficients and data, cf. https://github.com/rngantner/
   ////////////////////////////////////////
@@ -200,112 +217,115 @@ class ode45 {
   static constexpr double _pow = 1. / 5;
   // Number of stages
 #ifdef MATLABCOEFF
-  static const unsigned int _s = 7;
+  static constexpr unsigned int _s = 7;
 #else
-  static const unsigned int _s = 6;
+  static constexpr unsigned int _s = 6;
 #endif
   // Matrix \Blue{$\FA$} from the Butcher scheme
-  static Eigen::MatrixXd _mA;
+  const Eigen::MatrixXd _mA;
   // Quadrature weights b_i
-  static Eigen::VectorXd _vb4, _vb5;
+  const Eigen::VectorXd _vb4, _vb5;
   // Coefficients c_i relevant for non-autonomous ODEs
-  static Eigen::VectorXd _vc;
+  const Eigen::VectorXd _vc;
+
+  void initializeStepSize(double T);
 };
 
-// Matrix \Blue{$\FA$} in Butcher scheme \eqref{eq:BSexpl}
 template <class StateType, class RhsType>
-Eigen::MatrixXd ode45<StateType, RhsType>::_mA =
-    (Eigen::MatrixXd(ode45<StateType, RhsType>::_s,
-                     ode45<StateType, RhsType>::_s - 1)
-         <<
-#ifdef MATLABCOEFF
-         0,
-     0, 0, 0, 0, 0, 1. / 5., 0, 0, 0, 0, 0, 3. / 40., 9. / 40., 0, 0, 0, 0,
-     44. / 45., -56. / 15., 32. / 9., 0, 0, 0, 19372. / 6561., -25360. / 2187.,
-     64448. / 6561., -212. / 729., 0, 0, 9017. / 3168., -355 / 33,
-     46732. / 5247., 49. / 176., -5103. / 18656., 0, 35. / 384., 0,
-     500. / 1113., 125. / 192., -2187. / 6784., 11. / 84.
-#else
-         0,
-     0, 0, 0, 0, 1. / 4., 0, 0, 0, 0, 3. / 32., 9. / 32., 0, 0, 0, 1932. / 2197,
-     -7200. / 2197, 7296. / 2197, 0, 0, 439. / 216, -8, 3680. / 513,
-     -845. / 4104, 0, -8. / 27., 2, -3544. / 2565, 1859. / 4104, -11. / 40.
-#endif
-     )
-        .finished();
+Ode45<StateType, RhsType>::Ode45(RhsType rhs) : 
 
-// Quadrature weights \Blue{$b_i$} for the 4th-order method
-template <class StateType, class RhsType>
-Eigen::VectorXd ode45<StateType, RhsType>::_vb4 =
-    (Eigen::VectorXd(ode45<StateType, RhsType>::_s) <<
-#ifdef MATLABCOEFF
-         5179. / 57600.,
-     0, 7571. / 16695., 393. / 640., -92097. / 339200., 187. / 2100., 1. / 40.
-#else
-         25. / 216,
-     0, 1408. / 2565, 2197. / 4104, -1. / 5, 0
-#endif
-     )
-        .finished();
+  f(std::move(rhs)),
 
-// Quadrature weights \Blue{$b_i$} for the 5th-order method
-template <class StateType, class RhsType>
-Eigen::VectorXd ode45<StateType, RhsType>::_vb5 =
-    (Eigen::VectorXd(ode45<StateType, RhsType>::_s) <<
-#ifdef MATLABCOEFF
-         35. / 384.,
-     0, 500. / 1113., 125. / 192., -2187. / 6784., 11. / 84., 0
-#else
-         16. / 135,
-     0, 6656. / 12825, 28561. / 56430, -9. / 50, 2. / 55
-#endif
-     )
-        .finished();
+  // Matrix \Blue{$\FA$} in Butcher scheme \eqref{eq:BSexpl}
+  _mA((Eigen::MatrixXd(_s, _s - 1) <<
+  #ifdef MATLABCOEFF
+           0,
+       0, 0, 0, 0, 0, 1. / 5., 0, 0, 0, 0, 0, 3. / 40., 9. / 40., 0, 0, 0, 0,
+       44. / 45., -56. / 15., 32. / 9., 0, 0, 0, 19372. / 6561., -25360. / 2187.,
+       64448. / 6561., -212. / 729., 0, 0, 9017. / 3168., -355. / 33.,
+       46732. / 5247., 49. / 176., -5103. / 18656., 0, 35. / 384., 0,
+       500. / 1113., 125. / 192., -2187. / 6784., 11. / 84.
+  #else
+           0,
+       0, 0, 0, 0, 1. / 4., 0, 0, 0, 0, 3. / 32., 9. / 32., 0, 0, 0, 1932. / 2197,
+       -7200. / 2197, 7296. / 2197, 0, 0, 439. / 216, -8, 3680. / 513,
+       -845. / 4104, 0, -8. / 27., 2, -3544. / 2565, 1859. / 4104, -11. / 40.
+  #endif
+       )
+      .finished()),
 
-// The coefficients \Blue{$c_i$}, relevant for non-autonomous ODEs.
-// Can be computed via row sums of \Blue{$FA$}
-template <class StateType, class RhsType>
-Eigen::VectorXd ode45<StateType, RhsType>::_vc =
-    ode45<StateType, RhsType>::_mA.rowwise().sum();
+  // Quadrature weights \Blue{$b_i$} for the 4th-order method
+  _vb4((Eigen::VectorXd(_s) <<
+  #ifdef MATLABCOEFF
+           5179. / 57600.,
+       0, 7571. / 16695., 393. / 640., -92097. / 339200., 187. / 2100., 1. / 40.
+  #else
+           25. / 216,
+       0, 1408. / 2565, 2197. / 4104, -1. / 5, 0
+  #endif
+       )
+      .finished()),
 
-// Stage number of the RK scheme
+  // Quadrature weights \Blue{$b_i$} for the 5th-order method
+  _vb5((Eigen::VectorXd(_s) <<
+  #ifdef MATLABCOEFF
+           35. / 384.,
+       0, 500. / 1113., 125. / 192., -2187. / 6784., 11. / 84., 0
+  #else
+           16. / 135,
+       0, 6656. / 12825, 28561. / 56430, -9. / 50, 2. / 55
+  #endif
+       )
+      .finished()),
+
+  // The coefficients \Blue{$c_i$}, relevant for non-autonomous ODEs.
+  // Can be computed via row sums of \Blue{$FA$}
+  _vc(_mA.rowwise().sum())
+
+{/*EMPTY*/}
+
+// Setup step size default values if not provided by user
 template <class StateType, class RhsType>
-const unsigned int ode45<StateType, RhsType>::_s;
+void Ode45<StateType, RhsType>::initializeStepSize(double T) {
+
+    t = m_options.start_time;
+    const unsigned int default_nsteps = 100;
+    const unsigned int default_minsteps = 10;
+    if (m_options.initial_dt == -1.) {
+      m_options.initial_dt = (T - t) / default_nsteps;
+    }
+    if (m_options.max_dt == -1.) {
+      m_options.max_dt = (T - t) / default_minsteps;
+    }
+    if (m_options.min_dt == -1.) {
+      m_options.min_dt = (T - t) * std::numeric_limits<double>::epsilon();
+    }
+
+    // The desired (initial) timestep size
+    if (m_options.initial_dt <= 0) {
+      std::stringstream ss;
+      ss << "Invalid option, dt must be positive (was " << m_options.initial_dt << ")!";
+      throw std::invalid_argument(ss.str());
+    }
+};
 
 // solve(): main timestepping method, for autonomous ODEs only
 template <class StateType, class RhsType>
 template <class NormFunc>
-std::vector<std::pair<StateType, double>> ode45<StateType, RhsType>::solve(
+std::vector<std::pair<StateType, double>> Ode45<StateType, RhsType>::solve(
     const StateType &y0, double T, const NormFunc &norm) {
-  const double epsilon = std::numeric_limits<double>::epsilon();
-  // Setup step size default values if not provided by user
-  t = options.start_time;
-  unsigned int default_nsteps = 100;
-  unsigned int default_minsteps = 10;
-  if (options.initial_dt == -1.) {
-    options.initial_dt = (T - t) / default_nsteps;
-  }
-  if (options.max_dt == -1.) {
-    options.max_dt = (T - t) / default_minsteps;
-  }
-  if (options.min_dt == -1.) {
-    options.min_dt = (T - t) * epsilon;
-  }
+  
+  initializeStepSize(T);
 
   // Vector for returning solution \Blue{$(t_k,\Vy_k)$}
   std::vector<std::pair<StateType, double>> snapshots;
 
   // The desired (initial) timestep size
-  double dt = options.initial_dt;
-  if (dt <= 0) {
-    std::stringstream ss;
-    ss << "Invalid option, dt must be positive (was " << dt << ")!";
-    throw std::invalid_argument(ss.str());
-  }
+  double dt = m_options.initial_dt;
 
   // Push initial data
-  if (options.save_init) {
-    snapshots.push_back(std::make_pair(y0, t));
+  if (m_options.save_init) {
+    snapshots.emplace_back(y0, t);
   }
 
   // Temporary containers
@@ -313,7 +333,9 @@ std::vector<std::pair<StateType, double>> ode45<StateType, RhsType>::solve(
   StateType ytemp1 = y0;
   StateType ytemp2 = y0;
   // Pointers for swapping of temporary containers
-  StateType *yprev = &ytemp0, *y4 = &ytemp1, *y5 = &ytemp2;
+  StateType *yprev = &ytemp0;
+  StateType *y4 = &ytemp1;
+  StateType *y5 = &ytemp2;
 
   // Increments \Blue{$\Vk_i$}
   std::vector<StateType> mK;
@@ -323,9 +345,11 @@ std::vector<std::pair<StateType, double>> ode45<StateType, RhsType>::solve(
   unsigned int iterations = 0;  // Iterations for current step
 
   // Main loop, exit if dt too small or final time reached
-  while (t < T && dt >= options.min_dt) {
+  while (t < T && dt >= m_options.min_dt) {
     // Force hitting the endpoint of the time slot exactly
-    if (t + dt > T) dt = T - t;
+    if (t + dt > T) {
+      dt = T - t;
+    }
     // Compute the Runge-Kutta increments using the
     // coefficients provided in _mA, _vb, _vc
     mK.front() = f(*yprev);
@@ -336,7 +360,7 @@ std::vector<std::pair<StateType, double>> ode45<StateType, RhsType>::solve(
       }
       mK.at(j) = f(mK.at(j));
     }
-    statistics.funcalls += _s;
+    m_statistics.funcalls += _s;
 
     // Compute the 4th and the 5th order approximations
     *y4 = *yprev;
@@ -346,49 +370,50 @@ std::vector<std::pair<StateType, double>> ode45<StateType, RhsType>::solve(
       *y5 += (dt * _vb5(i)) * mK.at(i);
     }
 
-    double tau = 2., delta = 1.;
+    double tau = 2.;
+    double delta = 1.;
     // Calculate the absolute local truncation error and the acceptable  error
-    if (!options.fixed_stepsize) {  // if (!fixed_stepsize)
+    if (!m_options.fixed_stepsize) {  // if (!fixed_stepsize)
       delta =
           norm(*y5 - *y4);  // estimated 1-step error \Blue{$\mathtt{EST}_k$}
-      tau = std::max(options.rtol * norm(*yprev), options.atol);
+      tau = std::max(m_options.rtol * norm(*yprev), m_options.atol);
     }
 
     // Check if step is \com{accepted}, if so, advance
     if (delta <= tau) {
       t += dt;
-      snapshots.push_back(std::make_pair(*y5, t));
+      snapshots.emplace_back(*y5, t);
       std::swap(y5, yprev);
-      ++statistics.steps;
-      statistics.rejected_steps += iterations;
+      ++m_statistics.steps;
+      m_statistics.rejected_steps += iterations;
       iterations = 0;
     }
 
     // Update the step size for the next integration step
-    if (!options.fixed_stepsize) {
+    if (!m_options.fixed_stepsize) {
       if (delta <= std::numeric_limits<double>::epsilon()) {
         dt *= 2;
       } else {
         // Apply formula \eqref{eq:ssc}
         dt *= 0.8 * std::pow(tau / delta, _pow);
       }
-      dt = std::min(options.max_dt, dt);
+      dt = std::min(m_options.max_dt, dt);
     }
     ++iterations;
-    ++statistics.cycles;
+    ++m_statistics.cycles;
 
     // Check if maximum number of iterations have been exeded
-    if (iterations >= options.max_iterations) {
+    if (iterations >= m_options.max_iterations) {
       std::cerr << "Fatal error: the solver has not been successful. The"
                 << " integration loop exited at time t = " << t
                 << " before the endpoint at tend = " << T
                 << " was reached. This happened because the "
-                << " maximum number of iterations " << options.max_iterations
+                << " maximum number of iterations " << m_options.max_iterations
                 << " was reached. Try to reduce the value of"
-                << " \"initial_dt\" and/or \"max_dt\", or increase the"
-                << " value of \"max_iterations\". Your ODE may be ill-posed."
+                << R"( "initial_dt" and/or "max_dt", or increase the)"
+                << R"( value of "max_iterations". Your ODE may be ill-posed.)"
                 << std::endl;
-      throw termination_error();
+      throw ode45::termination_error();
     }
   }
 
@@ -398,21 +423,21 @@ std::vector<std::pair<StateType, double>> ode45<StateType, RhsType>::solve(
               << " The integration loop exited at time t = " << t
               << " before the endpoint at tend = " << T
               << " was reached. This may happen if the step size becomes"
-              << " smaller than the size defined in \"min_dt\"."
+              << R"( smaller than the size defined in "min_dt".)"
               << " Try to reduce the value of "
-              << " \"initial_dt\" and/or \"max_dt\"." << std::endl;
-    throw termination_error();
+              << R"( "initial_dt" and/or "max_dt".)" << std::endl;
+    throw ode45::termination_error();
   }
 
   // Returns all collected snapshots
-  // TODO: option to select which snapshot to save
+  // TODO(unknown): option to select which snapshot to save
   return snapshots;
 }
 
 template <class StateType, class RhsType>
-void ode45<StateType, RhsType>::print(void) {
+void Ode45<StateType, RhsType>::print() {
   std::cout << "----------------------------------" << std::endl;
-  std::cout << "--- Report of ODE solve ode45. ---" << std::endl;
+  std::cout << "--- Report of ODE solve Ode45. ---" << std::endl;
 #ifdef MATLABCOEFF
   std::cout << "--- MATLAB's Runge-Kutta-Fehlberg method used ---" << std::endl;
 #else
@@ -422,36 +447,37 @@ void ode45<StateType, RhsType>::print(void) {
   std::cout << " + Data:" << std::endl;
   std::cout << "    - current time of simulation:         " << t << std::endl;
   std::cout << " + Options:" << std::endl;
-  std::cout << "    - relative tolerance:                 " << options.rtol
+  std::cout << "    - relative tolerance:                 " << m_options.rtol
             << std::endl;
-  std::cout << "    - absolute tolerance:                 " << options.atol
+  std::cout << "    - absolute tolerance:                 " << m_options.atol
             << std::endl;
-  std::cout << "    - minimal stepsize:                   " << options.min_dt
+  std::cout << "    - minimal stepsize:                   " << m_options.min_dt
             << std::endl;
-  std::cout << "    - maximal stepsize:                   " << options.max_dt
+  std::cout << "    - maximal stepsize:                   " << m_options.max_dt
             << std::endl;
   std::cout << "    - initial stepsize:                   "
-            << options.initial_dt << std::endl;
+            << m_options.initial_dt << std::endl;
   std::cout << "    - max. allowed rejected steps:        "
-            << options.max_iterations << std::endl;
+            << m_options.max_iterations << std::endl;
   std::cout << "    - starting time:                      "
-            << options.start_time << std::endl;
-  std::cout << "    - save initial data y(0):             " << options.save_init
+            << m_options.start_time << std::endl;
+  std::cout << "    - save initial data y(0):             " << m_options.save_init
             << std::endl;
   std::cout << "    - use fixed stepsize:                 "
-            << options.fixed_stepsize << std::endl;
-  if (!options.do_statistics) return;
-  std::cout << " + Statistics:" << std::endl;
-  std::cout << "    - number of steps:                    " << statistics.steps
-            << std::endl;
-  std::cout << "    - number of rejected steps:           "
-            << statistics.rejected_steps << std::endl;
-  std::cout << "    - number of (while-)loops:            " << statistics.cycles
-            << std::endl;
-  std::cout << "    - function calls:                     "
-            << statistics.funcalls << std::endl;
-  std::cout << " + Timing:" << std::endl;
-  std::cout << "----------------------------------" << std::endl;
-  std::cout << "----------------------------------" << std::endl;
-  // TODO: time solver
+            << m_options.fixed_stepsize << std::endl;
+  if (m_options.do_statistics) {
+    std::cout << " + Statistics:" << std::endl;
+    std::cout << "    - number of steps:                    " << m_statistics.steps
+              << std::endl;
+    std::cout << "    - number of rejected steps:           "
+              << m_statistics.rejected_steps << std::endl;
+    std::cout << "    - number of (while-)loops:            " << m_statistics.cycles
+              << std::endl;
+    std::cout << "    - function calls:                     "
+              << m_statistics.funcalls << std::endl;
+    std::cout << " + Timing:" << std::endl;
+    std::cout << "----------------------------------" << std::endl;
+    std::cout << "----------------------------------" << std::endl;
+    // TODO(unknown): time solver
+  } 
 }

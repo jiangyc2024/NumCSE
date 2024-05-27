@@ -13,11 +13,11 @@
 // stepsize control
 template <class Func, class State, class NormFunc>
 std::vector<std::pair<double, State>>
-rkf45(Func &f, State &initialState, double T, NormFunc &norm, double h0 = 1e-3,
+rkf45(Func &f, State const &initialState, double T, NormFunc &norm, double h0 = 1e-3,
       double reltol = 1e-7, double abstol = 1e-7, double hmin = 1e-4,
       bool predictiveStepsize = true) {
   double h = h0; // initial stepsize
-  double t = 0;  // initial time
+  const double t = 0;  // initial time
 
   std::vector<std::pair<double, State>>
       states; // saves the state vector after every steps
@@ -31,10 +31,12 @@ rkf45(Func &f, State &initialState, double T, NormFunc &norm, double h0 = 1e-3,
   A << 0, 0, 0, 0, 0, 0, 0, 1. / 5., 0, 0, 0, 0, 0, 0, 3. / 40., 9. / 40., 0, 0,
       0, 0, 0, 44. / 45., -56. / 15., 32. / 9., 0, 0, 0, 0, 19372. / 6561.,
       -25360. / 2187., 64448. / 6561., -212. / 729., 0, 0, 0, 9017. / 3168.,
-      -355 / 33, 46732. / 5247., 49. / 176., -5103. / 18656., 0, 0, 35. / 384.,
+      -355. / 33., 46732. / 5247., 49. / 176., -5103. / 18656., 0, 0, 35. / 384.,
       0, 500. / 1113., 125. / 192., -2187. / 6784., 11. / 84., 0;
 
-  State y0, y1, y1low;
+  State y0;
+  State y1;
+  State y1low;
   y0 = initialState;
 
   while ((states.back().first < T) && (h >= hmin)) {
@@ -55,10 +57,10 @@ rkf45(Func &f, State &initialState, double T, NormFunc &norm, double h0 = 1e-3,
       y1low += h * E(i) * K.back(); // fourth-order solution
     }
     // stepsize control
-    double est = norm(y1 - y1low); // estimated error
+    const double est = norm(y1 - y1low); // estimated error
     if (predictiveStepsize) {
-      double tol = std::max(reltol * norm(y0), abstol);
-      double hOld = h;
+      const double tol = std::max(reltol * norm(y0), abstol);
+      const double hOld = h;
       // Optimal stepsize according to \eqref{eq:ssc}\Label[line]{ssctrl:6b}
       // with \Blue{$p=4$}
       h = h * std::max(0.5, std::min(2., pow(tol / est, 1. / 5.)));
@@ -67,9 +69,10 @@ rkf45(Func &f, State &initialState, double T, NormFunc &norm, double h0 = 1e-3,
         y0 = y1;
         states.push_back(
             {states.back().first + std::min(T - states.back().first, h), y0});
-        if (h == hOld && est >= tol)
+        if (h == hOld && est >= tol) {
           std::cerr << "Warning: Unable to meet tolerance requirements at t="
                     << states.back().first << std::endl;
+        }
       }
     } else {
       if (est < std::max(reltol * norm(y0), abstol)) // \label{odeintadapt:6}
