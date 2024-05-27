@@ -46,7 +46,7 @@ Eigen::VectorXd diagmodsolve2(const Eigen::MatrixXd &A,
 
 /* SAM_LISTING_BEGIN_2 */
 double sumtrv1(const Eigen::MatrixXd &A, const Eigen::VectorXd &b) {
-  const int n = A.cols();
+  const Eigen::Index n = A.cols();
   assert((A.rows() == n) && (b.size() == n));
 
   return b.transpose() *
@@ -59,7 +59,7 @@ double sumtrv1(const Eigen::MatrixXd &A, const Eigen::VectorXd &b) {
 
 /* SAM_LISTING_BEGIN_3 */
 double sumtrv2(const Eigen::MatrixXd &A, const Eigen::VectorXd &b) {
-  const int n = A.cols();
+  const Eigen::Index n = A.cols();
   assert((A.rows() == n) && (b.size() == n));
 
   return b.transpose() * A.triangularView<Eigen::Upper>().solve(b);
