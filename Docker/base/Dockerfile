@@ -33,16 +33,16 @@ run wget https://apt.llvm.org/llvm.sh \
     && ./llvm.sh ${clang_tidy_version} all \
     && ln -s /usr/bin/clang-tidy-${clang_tidy_version} /usr/bin/clang-tidy
 
-# ==== install Eigen ===============================================================
+# ==== install Eigen from git source ===============================================
 
-arg eigen_version=3.4.0 
+arg eigen_commit=352ede96e4c331daae4e1be9a5f3f50fff951b8d
 
 run apt-get update
 run apt-get -y install unzip
 run mkdir -p "/eigen" cd "/eigen" \
-    && curl -L https://gitlab.com/libeigen/eigen/-/archive/${eigen_version}/eigen-${eigen_version}.zip > ./eigen.zip \
+    && curl -L https://gitlab.com/libeigen/eigen/-/archive/${eigen_commit}/eigen-${eigen_commit}.zip > ./eigen.zip \
     && unzip eigen.zip \
-    && mv eigen-${eigen_version} /usr/include/eigen3 \
+    && mv eigen-${eigen_commit} /usr/include/eigen3 \
     && rm -rf "/eigen" \
     || exit 1
 

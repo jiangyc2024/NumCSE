@@ -1,17 +1,23 @@
+set(USE_MKL ON)
 find_package(MKL)
 
 get_target_name_numcse(ncse_denselinalg target_name)
 
 if(MKL_FOUND)
   message("${target_name} Compiling with MKL")
-  # create executable
+
   add_executable_numcse(ncse_denselinalg main.cpp)
-  
-  # Specify libraries to link with
-  target_link_libraries(${target_name} ${MKL_LIBRARIES})
-  
-  # Specify defines for MKL
-  ADD_DEFINITIONS(-DEIGEN_USE_MKL_ALL)
+
+  set_target_properties(${target_name} PROPERTIES 
+    
+    COMPILE_DEFINITIONS "EIGEN_USE_MKL_ALL"
+    COMPILE_OPTIONS "-fopenmp;-m64"
+    LINK_OPTIONS "-fopenmp;-m64;-Wl,--no-as-needed"
+    LINK_LIBRARIES "${MKL_LP_LIBRARY};${MKL_CORE_LIBRARY};${MKL_GNUTHREAD_LIBRARY};pthread"
+  )
+
+  target_include_directories(${target_name} PRIVATE ${MKL_INCLUDE_DIR})
+
 else()
   message("${target_name} MKL was not found.")
   add_executable_numcse(ncse_denselinalg main.cpp)
