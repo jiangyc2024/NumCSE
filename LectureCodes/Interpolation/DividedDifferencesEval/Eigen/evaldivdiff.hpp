@@ -8,7 +8,7 @@ Eigen::VectorXd evalNewtonForm(const Eigen::VectorXd &t,
                                const Eigen::VectorXd &a,
                                const Eigen::VectorXd &x) {
   const unsigned int n = a.size() - 1;
-  const Eigen::VectorXd ones = VectorXd::Ones(x.size());
+  const Eigen::VectorXd ones = Eigen::VectorXd::Ones(x.size());
   Eigen::VectorXd p{a[n] * ones};
   for (int j = n - 1; j >= 0; --j) {
     p = (x - t[j] * ones).cwiseProduct(p) + a[j] * ones;
