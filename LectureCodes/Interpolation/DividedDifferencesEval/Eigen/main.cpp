@@ -7,15 +7,15 @@ int main() {
    */
   for (unsigned n = 4; n <= 10; n += 2) {
     // (0) : Runge function
-    VectorXd t0 = VectorXd::LinSpaced(n, -5, 5),
+    Eigen::VectorXd t0 = Eigen::VectorXd::LinSpaced(n, -5, 5),
              y0 = (1. / (1 + t0.array() * t0.array())).matrix();
     // (1) : sine
-    VectorXd t1 = VectorXd::LinSpaced(n, 0, 2 * M_PI),
+    Eigen::VectorXd t1 = Eigen::VectorXd::LinSpaced(n, 0, 2 * M_PI),
              y1 = t1.array().sin().matrix();
     // evaluating
-    VectorXd x0 = VectorXd::LinSpaced(100, -5, 5),
-             x1 = VectorXd::LinSpaced(100, 0, 2 * M_PI);
-    VectorXd p0, p1;
+    Eigen::VectorXd x0 = Eigen::VectorXd::LinSpaced(100, -5, 5),
+             x1 = Eigen::VectorXd::LinSpaced(100, 0, 2 * M_PI);
+    Eigen::VectorXd p0, p1;
     evaldivdiff(t0, y0, x0, p0);
     evaldivdiff(t1, y1, x1, p1);
     // output results
