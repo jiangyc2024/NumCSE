@@ -1,0 +1,5 @@
+{
+	"CheckOptions": [
+		{ "key": "bugprone-easily-swappable-parameters.MinimumLength", "value": 3 }
+	]
+}
